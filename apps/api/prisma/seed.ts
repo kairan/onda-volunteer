@@ -3,33 +3,92 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  const church = await prisma.church.upsert({
+  const churchCentral = await prisma.church.upsert({
     where: { id: 'seed-church-demo' },
-    update: {},
+    update: {
+      name: 'Igreja Central',
+      defaultTimezone: 'America/Sao_Paulo',
+    },
     create: {
       id: 'seed-church-demo',
-      name: 'Demo Church',
-      defaultTimezone: 'America/Chicago',
+      name: 'Igreja Central',
+      defaultTimezone: 'America/Sao_Paulo',
+    },
+  });
+
+  const churchNorte = await prisma.church.upsert({
+    where: { id: 'seed-church-norte' },
+    update: {
+      name: 'Comunidade Norte',
+      defaultTimezone: 'America/Manaus',
+    },
+    create: {
+      id: 'seed-church-norte',
+      name: 'Comunidade Norte',
+      defaultTimezone: 'America/Manaus',
+    },
+  });
+
+  await prisma.campus.upsert({
+    where: { id: 'seed-campus-central-sede' },
+    update: {},
+    create: {
+      id: 'seed-campus-central-sede',
+      churchId: churchCentral.id,
+      name: 'Sede',
+      timezone: 'America/Sao_Paulo',
+    },
+  });
+
+  await prisma.campus.upsert({
+    where: { id: 'seed-campus-central-sul' },
+    update: {},
+    create: {
+      id: 'seed-campus-central-sul',
+      churchId: churchCentral.id,
+      name: 'Zona Sul',
+      timezone: 'America/Sao_Paulo',
+    },
+  });
+
+  await prisma.campus.upsert({
+    where: { id: 'seed-campus-norte-unico' },
+    update: {},
+    create: {
+      id: 'seed-campus-norte-unico',
+      churchId: churchNorte.id,
+      name: 'Único',
+      timezone: 'America/Manaus',
     },
   });
 
   await prisma.ministry.upsert({
     where: { id: 'seed-ministry-demo' },
-    update: {},
+    update: { churchId: churchCentral.id },
     create: {
       id: 'seed-ministry-demo',
       name: 'Hospitality',
-      churchId: church.id,
+      churchId: churchCentral.id,
     },
   });
 
   const ministryBand = await prisma.ministry.upsert({
     where: { id: 'seed-ministry-band' },
-    update: {},
+    update: { churchId: churchCentral.id },
     create: {
       id: 'seed-ministry-band',
       name: 'Band',
-      churchId: church.id,
+      churchId: churchCentral.id,
+    },
+  });
+
+  await prisma.ministry.upsert({
+    where: { id: 'seed-ministry-norte' },
+    update: {},
+    create: {
+      id: 'seed-ministry-norte',
+      name: 'Louvor',
+      churchId: churchNorte.id,
     },
   });
 
@@ -89,6 +148,21 @@ async function main() {
     },
   });
 
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: 'seed-ministry-norte',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-norte',
+      status: 'ACTIVE',
+    },
+  });
+
   await prisma.ministryRole.upsert({
     where: { id: 'seed-role-greeter' },
     update: { retired: false },
@@ -125,14 +199,14 @@ async function main() {
 
   await prisma.event.upsert({
     where: { id: 'seed-event-public' },
-    update: {},
+    update: { churchId: churchCentral.id },
     create: {
       id: 'seed-event-public',
       kind: 'PUBLIC',
       title: 'Sunday Gathering',
       startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
       endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
-      churchId: church.id,
+      churchId: churchCentral.id,
     },
   });
 }

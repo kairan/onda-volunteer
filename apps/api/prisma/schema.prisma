@@ -22,9 +22,20 @@ model Church {
   id                   String               @id @default(cuid())
   name                 String
   defaultTimezone      String
+  campuses             Campus[]
   ministries           Ministry[]
   events               Event[]
   adminAccreditations  AdminAccreditation[]
+}
+
+model Campus {
+  id        String @id @default(cuid())
+  churchId  String
+  church    Church @relation(fields: [churchId], references: [id], onDelete: Cascade)
+  name      String
+  timezone  String
+
+  @@index([churchId])
 }
 
 model Ministry {

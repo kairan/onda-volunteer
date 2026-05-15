@@ -1,7 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { DEMO_CHURCHES } from '@/organization/demoOrganizations';
+import { useOrganizationContext } from '@/organization/useOrganizationContext';
 import { OrganizationContextControls } from './OrganizationContextControls';
 import { useTranslation } from 'react-i18next';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -19,16 +19,18 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const { t } = useTranslation(['shell', 'common']);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [activeChurchId, setActiveChurchId] = useState(DEMO_CHURCHES[0].id);
-  const [activeCampusId, setActiveCampusId] = useState(
-    DEMO_CHURCHES[0].campuses[0]?.id ?? null,
-  );
-
-  function handleChurchChange(churchId: string) {
-    setActiveChurchId(churchId);
-    const church = DEMO_CHURCHES.find((item) => item.id === churchId);
-    setActiveCampusId(church?.campuses[0]?.id ?? null);
-  }
+  const demoVolunteerId = import.meta.env.VITE_DEMO_VOLUNTEER_ID as
+    | string
+    | undefined;
+  const {
+    churches,
+    loading,
+    error,
+    activeChurchId,
+    activeCampusId,
+    onChurchChange,
+    onCampusChange,
+  } = useOrganizationContext(demoVolunteerId);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -45,13 +47,23 @@ export function AppShell({ children }: { children?: ReactNode }) {
           aria-label={t('shell:openMenu')}
         >
           <ShellBrand />
-          <OrganizationContextControls
-            churches={DEMO_CHURCHES}
-            activeChurchId={activeChurchId}
-            activeCampusId={activeCampusId}
-            onChurchChange={handleChurchChange}
-            onCampusChange={setActiveCampusId}
-          />
+          {loading ? (
+            <p className="px-3 pb-3 text-xs text-foreground/70">
+              {t('shell:organizationLoading')}
+            </p>
+          ) : error ? (
+            <p className="px-3 pb-3 text-xs text-destructive" role="alert">
+              {error}
+            </p>
+          ) : churches.length > 0 && activeChurchId ? (
+            <OrganizationContextControls
+              churches={churches}
+              activeChurchId={activeChurchId}
+              activeCampusId={activeCampusId}
+              onChurchChange={onChurchChange}
+              onCampusChange={onCampusChange}
+            />
+          ) : null}
           <nav className="flex flex-1 flex-col gap-1 px-3 py-4" aria-label="Primary">
             {PRIMARY_NAV_MANIFEST.map((item) => (
               <ShellNavLink

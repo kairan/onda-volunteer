@@ -9,6 +9,7 @@ export const DEMO_CHURCHES: Church[] = [
       { id: 'campus-a1', name: 'Sede', timezone: 'America/Sao_Paulo' },
       { id: 'campus-a2', name: 'Zona Sul', timezone: 'America/Sao_Paulo' },
     ],
+    ministries: [{ id: 'ministry-a', name: 'Recepção' }],
   },
   {
     id: 'church-b',
@@ -17,5 +18,6 @@ export const DEMO_CHURCHES: Church[] = [
     campuses: [
       { id: 'campus-b1', name: 'Único', timezone: 'America/Manaus' },
     ],
+    ministries: [{ id: 'ministry-b', name: 'Louvor' }],
   },
 ];

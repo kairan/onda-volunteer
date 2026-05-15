@@ -25,7 +25,7 @@ pnpm install
 cd apps/api && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm prisma:seed
 ```
 
-The seed creates demo church `seed-church-demo` and public event `seed-event-public` (used by the web `.env.example`).
+The seed creates multi-church demo data (`seed-church-demo`, `seed-church-norte` with campuses) and public event `seed-event-public` (used by the web `.env.example`).
 
 ## Supabase Auth (optional)
 
