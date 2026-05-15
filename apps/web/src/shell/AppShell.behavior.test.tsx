@@ -1,9 +1,27 @@
+import type { ReactElement } from 'react';
 import { cleanup, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
+import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { buildTestRouteTree } from '@/router.testUtils';
+
+vi.mock('@/organization/fetchOrganizationContext', () => ({
+  fetchOrganizationContext: vi.fn(async () => ({ churches: [] })),
+}));
+
+function shellTestProviders(ui: ReactElement) {
+  return (
+    <I18nProvider>
+      <AuthSessionTestProvider
+        state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-demo' }}
+      >
+        {ui}
+      </AuthSessionTestProvider>
+    </I18nProvider>
+  );
+}
 
 afterEach(() => {
   cleanup();
@@ -16,11 +34,7 @@ describe('App shell routing', () => {
     const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
     const routed = createRouter({ routeTree, history });
 
-    render(
-      <I18nProvider>
-        <RouterProvider router={routed} />
-      </I18nProvider>,
-    );
+    render(shellTestProviders(<RouterProvider router={routed} />));
 
     const skip = await screen.findByRole('link', { name: /conteúdo principal/i });
     expect(skip).toHaveAttribute('href', '#main');
@@ -37,11 +51,7 @@ describe('App shell routing', () => {
     const history = createMemoryHistory({ initialEntries: ['/'] });
     const routed = createRouter({ routeTree, history });
 
-    render(
-      <I18nProvider>
-        <RouterProvider router={routed} />
-      </I18nProvider>,
-    );
+    render(shellTestProviders(<RouterProvider router={routed} />));
 
     expect(await screen.findByRole('heading', { name: /volunteer roster/i })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
@@ -69,11 +79,7 @@ describe('App shell routing', () => {
     const history = createMemoryHistory({ initialEntries: ['/events/evt-1'] });
     const routed = createRouter({ routeTree, history });
 
-    render(
-      <I18nProvider>
-        <RouterProvider router={routed} />
-      </I18nProvider>,
-    );
+    render(shellTestProviders(<RouterProvider router={routed} />));
 
     expect(await screen.findByRole('heading', { name: 'Sunday' })).toBeInTheDocument();
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();

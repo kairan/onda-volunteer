@@ -6,13 +6,14 @@ Domain glossary: `CONTEXT.md`
 
 Completed slices are kept under **`done/`** for history. Active slices live in this directory; each links to a **GitHub issue** for workflow (assign, close, PR linking). **Spec bodies** in markdown are the source of truth.
 
-Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cleared (only **15** and **16** are unblocked at publish time).
+Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cleared.
 
 ## Active backlog (dependency order)
 
 | Slice | Spec | GH | Type | Summary |
 |------:|------|----|------|---------|
 | 15 | `15-organization-context-reads.md` | [#5](https://github.com/kairan/onda-volunteer/issues/5) | AFK | Real **Church** / **Campus** reads → shell switchers |
+| 30 | `30-auth-gate-volunteer-provisioning.md` | [#22](https://github.com/kairan/onda-volunteer/issues/22) | HITL | Auth gate + **Volunteer** provisioning (full sign-in cycle) |
 | 16 | `16-identity-persisted-ui-locale.md` | [#6](https://github.com/kairan/onda-volunteer/issues/6) | AFK | Persist **Language switcher** on **Identity** |
 | 17 | `17-dashboard-my-upcoming-assignments.md` | [#7](https://github.com/kairan/onda-volunteer/issues/7) | AFK | **Dashboard** upcoming **Assignments** |
 | 18 | `18-time-away-list-create-unavailability.md` | [#8](https://github.com/kairan/onda-volunteer/issues/8) | AFK | **Time away** list + create |

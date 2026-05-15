@@ -21,7 +21,8 @@ Persist **Language switcher** choice on **Identity** (or an agreed **Volunteer**
 
 ## Blocked by
 
-None — can start immediately (requires auth slice **07** complete).
+- `docs/issues/30-auth-gate-volunteer-provisioning.md` — stable sign-in → **Volunteer** bootstrap before persisting preferences on **Identity**.
+- Auth slice **07** (complete).
 
 ## Tracker
 

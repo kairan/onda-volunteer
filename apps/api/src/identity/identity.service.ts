@@ -11,6 +11,10 @@ function devHeadersAllowed(): boolean {
   return process.env.AUTH_ALLOW_DEV_HEADERS === 'true';
 }
 
+function autoLinkSeedVolunteerId(): string | undefined {
+  return process.env.AUTH_AUTO_LINK_SEED_VOLUNTEER_ID?.trim() || undefined;
+}
+
 @Injectable()
 export class IdentityService {
   constructor(
@@ -18,17 +22,46 @@ export class IdentityService {
     private readonly jwtVerifier: SupabaseJwtVerifier,
   ) {}
 
+  async getMe(input: {
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const volunteer = await this.resolveVolunteer(input, {
+      attemptAutoLink: true,
+    });
+    return {
+      volunteer: {
+        id: volunteer.id,
+        displayName: volunteer.displayName,
+      },
+      authSubjectId: volunteer.authSubjectId,
+    };
+  }
+
   async requireVolunteer(input: {
     authorizationHeader: string | undefined;
     devVolunteerIdHeader: string | undefined;
   }): Promise<Volunteer> {
+    return this.resolveVolunteer(input, { attemptAutoLink: false });
+  }
+
+  private async resolveVolunteer(
+    input: {
+      authorizationHeader: string | undefined;
+      devVolunteerIdHeader: string | undefined;
+    },
+    options: { attemptAutoLink: boolean },
+  ): Promise<Volunteer> {
     if (input.authorizationHeader?.startsWith('Bearer ')) {
       const { sub } = this.jwtVerifier.verifyBearerToken(
         input.authorizationHeader,
       );
-      const volunteer = await this.prisma.volunteer.findUnique({
+      let volunteer = await this.prisma.volunteer.findUnique({
         where: { authSubjectId: sub },
       });
+      if (!volunteer && options.attemptAutoLink) {
+        volunteer = await this.tryAutoLinkSeedVolunteer(sub);
+      }
       if (!volunteer) {
         throw new ForbiddenException({
           code: 'PROFILE_NOT_LINKED',
@@ -57,6 +90,33 @@ export class IdentityService {
       message: devHeadersAllowed()
         ? 'Provide Authorization Bearer token or X-Volunteer-Id (dev only).'
         : 'Provide Authorization Bearer token.',
+    });
+  }
+
+  private async tryAutoLinkSeedVolunteer(
+    authSubjectId: string,
+  ): Promise<Volunteer | null> {
+    const seedVolunteerId = autoLinkSeedVolunteerId();
+    if (!seedVolunteerId) {
+      return null;
+    }
+
+    const seed = await this.prisma.volunteer.findUnique({
+      where: { id: seedVolunteerId },
+    });
+    if (!seed) {
+      return null;
+    }
+    if (seed.authSubjectId === authSubjectId) {
+      return seed;
+    }
+    if (seed.authSubjectId) {
+      return null;
+    }
+
+    return this.prisma.volunteer.update({
+      where: { id: seedVolunteerId },
+      data: { authSubjectId },
     });
   }
 

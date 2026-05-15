@@ -15,7 +15,7 @@ import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
 import { DashboardPage } from './routes/dashboard';
 import { PlaceholderPage } from './routes/placeholderPage';
 import { RouteErrorPanel } from './shell/RouteErrorPanel';
-import { AppShell } from './shell/AppShell';
+import { ProtectedAppShell } from './shell/ProtectedAppShell';
 import { shellPage } from './shell/shellPage';
 
 function defaultAssignmentWindow(payload: EventDetailPayload): {
@@ -64,18 +64,18 @@ async function errorMessageFromResponse(res: Response): Promise<string> {
 }
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="mx-auto min-h-screen max-w-2xl p-6">
-      <AuthPanel />
-      <Outlet />
-    </div>
-  ),
+  component: () => <Outlet />,
 });
 
 const legacyLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'legacy',
-  component: () => <Outlet />,
+  component: () => (
+    <div className="mx-auto min-h-screen max-w-2xl p-6">
+      <AuthPanel variant="legacy" />
+      <Outlet />
+    </div>
+  ),
 });
 
 const indexRoute = createRoute({
@@ -537,9 +537,9 @@ function shellErrorComponent({
   reset: () => void;
 }) {
   return (
-    <AppShell>
+    <ProtectedAppShell>
       <RouteErrorPanel message={error.message} onRetry={reset} />
-    </AppShell>
+    </ProtectedAppShell>
   );
 }
 
