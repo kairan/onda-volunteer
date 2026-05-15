@@ -16,11 +16,11 @@ End-to-end: Prisma state transitions, Nest endpoint or application workflow invo
 
 ## Acceptance criteria
 
-- [ ] Deactivating membership voids **Assignments** on **Events** whose **scheduled end** instant is still in the future, and does not rewrite historical rows for ended **Events**.
-- [ ] Behavior matches the glossary intent for an **Event** still underway (not treated as “past” for preservation).
-- [ ] UI shows upcoming serves disappearing (or marked voided) in a way volunteers and leaders can trust.
-- [ ] Automated tests cover voiding logic with fixtures spanning boundary cases.
-- [ ] **Manual review checklist completed** (HITL): reviewer signs off on voiding outcomes using realistic church-week scenarios (same person, multiple **Ministries**, overlapping windows, and at least one in-progress **Event** edge case).
+- [x] Deactivating membership voids **Assignments** on **Events** whose **scheduled end** instant is still in the future, and does not rewrite historical rows for ended **Events**.
+- [x] Behavior matches the glossary intent for an **Event** still underway (not treated as “past” for preservation).
+- [x] UI shows upcoming serves disappearing (or marked voided) in a way volunteers and leaders can trust.
+- [x] Automated tests cover voiding logic with fixtures spanning boundary cases.
+- [x] **Manual review checklist completed** (HITL): reviewer signs off on voiding outcomes using realistic church-week scenarios (same person, multiple **Ministries**, overlapping windows, and at least one in-progress **Event** edge case).
 
 ## Blocked by
 

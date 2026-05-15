@@ -15,6 +15,7 @@ enum EventKind {
 enum MembershipStatus {
   PENDING
   ACTIVE
+  INACTIVE
 }
 
 model Church {
@@ -91,6 +92,7 @@ model Assignment {
   roleId      String
   startsAtUtc DateTime     @db.Timestamptz
   endsAtUtc   DateTime     @db.Timestamptz
+  voidedAtUtc DateTime?    @db.Timestamptz
   event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
   ministry    Ministry     @relation(fields: [ministryId], references: [id], onDelete: Cascade)
   volunteer   Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)

@@ -89,7 +89,14 @@ const eventRoute = createRoute({
   path: '/events/$eventId',
   loader: async ({ params }): Promise<EventDetailPayload> => {
     const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
-    const res = await fetch(`${base}/events/${params.eventId}`);
+    let res: Response;
+    try {
+      res = await fetch(`${base}/events/${params.eventId}`);
+    } catch {
+      throw new Error(
+        `Cannot reach the API at ${base}. Start Postgres (docker compose up -d), then run pnpm dev:api in another terminal.`,
+      );
+    }
     if (res.status === 404) {
       throw new Error('Event not found');
     }
@@ -117,7 +124,18 @@ const eventRoute = createRoute({
     const [startsAtUtc, setStartsAtUtc] = useState(initialWindow.startsAtUtc);
     const [endsAtUtc, setEndsAtUtc] = useState(initialWindow.endsAtUtc);
     const [busy, setBusy] = useState(false);
+    const [deactivateBusy, setDeactivateBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [deactivateMessage, setDeactivateMessage] = useState<string | null>(
+      null,
+    );
+    const [releasedOffer, setReleasedOffer] = useState<{
+      ministryId: string;
+      startsAtUtc: string;
+      endsAtUtc: string;
+    } | null>(null);
+    const [offerBusy, setOfferBusy] = useState(false);
+    const [offerDone, setOfferDone] = useState(false);
 
     async function submitAssignment() {
       if (!demoMinistry || !demoVolunteer || !demoRole) {
@@ -147,6 +165,103 @@ const eventRoute = createRoute({
       }
       await router.invalidate();
     }
+
+    async function deactivateMembership() {
+      if (!demoMinistry || !demoVolunteer) {
+        return;
+      }
+      setDeactivateBusy(true);
+      setDeactivateMessage(null);
+      setError(null);
+      const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+      const res = await fetch(
+        `${base}/ministries/${demoMinistry}/memberships/${demoVolunteer}/deactivate`,
+        {
+          method: 'POST',
+          headers: { 'X-Leader-Ministry-Id': demoMinistry },
+        },
+      );
+      setDeactivateBusy(false);
+      if (!res.ok) {
+        setError(await errorMessageFromResponse(res));
+        return;
+      }
+      setDeactivateMessage(
+        'Membership deactivated; upcoming assignments for this ministry are voided on events whose scheduled end is still in the future.',
+      );
+      await router.invalidate();
+    }
+
+    async function releaseAssignment(assignmentId: string) {
+      if (!demoVolunteer) {
+        return;
+      }
+      setBusy(true);
+      setError(null);
+      setReleasedOffer(null);
+      setOfferDone(false);
+      const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+      const res = await fetch(`${base}/assignments/${assignmentId}/release`, {
+        method: 'POST',
+        headers: { 'X-Volunteer-Id': demoVolunteer },
+      });
+      setBusy(false);
+      if (!res.ok) {
+        setError(await errorMessageFromResponse(res));
+        return;
+      }
+      const body = (await res.json()) as {
+        ministryId: string;
+        window: { startsAtUtc: string; endsAtUtc: string };
+      };
+      setReleasedOffer({
+        ministryId: body.ministryId,
+        startsAtUtc: body.window.startsAtUtc,
+        endsAtUtc: body.window.endsAtUtc,
+      });
+      await router.invalidate();
+    }
+
+    async function confirmUnavailabilityOffer() {
+      if (!demoVolunteer || !releasedOffer) {
+        return;
+      }
+      setOfferBusy(true);
+      setError(null);
+      const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+      const res = await fetch(
+        `${base}/volunteers/${demoVolunteer}/unavailability`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Volunteer-Id': demoVolunteer,
+          },
+          body: JSON.stringify({
+            ministryId: releasedOffer.ministryId,
+            startsAtUtc: releasedOffer.startsAtUtc,
+            endsAtUtc: releasedOffer.endsAtUtc,
+          }),
+        },
+      );
+      setOfferBusy(false);
+      if (!res.ok) {
+        setError(await errorMessageFromResponse(res));
+        return;
+      }
+      setOfferDone(true);
+      setReleasedOffer(null);
+    }
+
+    function dismissUnavailabilityOffer() {
+      setReleasedOffer(null);
+      setOfferDone(false);
+    }
+
+    const myAssignments =
+      demoVolunteer != null
+        ? data.assignments.filter((a) => a.volunteer.id === demoVolunteer)
+        : [];
 
     return (
       <article>
@@ -208,10 +323,76 @@ const eventRoute = createRoute({
                   <span style={{ color: '#555', fontSize: 13 }}>
                     ({a.window.startsAtUtc} → {a.window.endsAtUtc})
                   </span>
+                  {demoVolunteer && a.volunteer.id === demoVolunteer ? (
+                    <button
+                      type="button"
+                      onClick={() => void releaseAssignment(a.id)}
+                      disabled={busy}
+                      style={{
+                        marginLeft: 8,
+                        padding: '2px 8px',
+                        fontSize: 13,
+                        cursor: busy ? 'wait' : 'pointer',
+                      }}
+                    >
+                      Release
+                    </button>
+                  ) : null}
                 </li>
               ))}
             </ul>
           </section>
+        ) : null}
+        {releasedOffer ? (
+          <section
+            style={{
+              marginTop: 24,
+              padding: 16,
+              border: '1px solid #c7d2fe',
+              borderRadius: 8,
+              background: '#eef2ff',
+            }}
+            aria-labelledby="unavailability-offer-heading"
+          >
+            <h2 id="unavailability-offer-heading" style={{ fontSize: 16, marginTop: 0 }}>
+              Mark unavailable for this ministry?
+            </h2>
+            <p style={{ margin: '8px 0', fontSize: 14 }}>
+              Optional: record unavailability for the same UTC window you just
+              released ({releasedOffer.startsAtUtc} → {releasedOffer.endsAtUtc}).
+              Nothing is saved until you confirm.
+            </p>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => void confirmUnavailabilityOffer()}
+                disabled={offerBusy}
+                style={{ padding: '8px 14px', cursor: offerBusy ? 'wait' : 'pointer' }}
+              >
+                {offerBusy ? 'Saving…' : 'Yes, mark unavailable'}
+              </button>
+              <button
+                type="button"
+                onClick={dismissUnavailabilityOffer}
+                disabled={offerBusy}
+                style={{ padding: '8px 14px', cursor: offerBusy ? 'wait' : 'pointer' }}
+              >
+                No thanks
+              </button>
+            </div>
+          </section>
+        ) : null}
+        {offerDone ? (
+          <p style={{ marginTop: 16, fontSize: 14, color: '#166534' }}>
+            Unavailability recorded for this ministry and time window.
+          </p>
+        ) : null}
+        {myAssignments.length === 0 && demoVolunteer && data.assignments.length > 0 ? (
+          <p style={{ marginTop: 16, fontSize: 14, color: '#555' }}>
+            Assignments above belong to other volunteers. Set{' '}
+            <code>VITE_DEMO_VOLUNTEER_ID</code> to your rostered volunteer to
+            release your own slot.
+          </p>
         ) : null}
         {canAssign ? (
           <section style={{ marginTop: 24 }}>
@@ -261,6 +442,37 @@ const eventRoute = createRoute({
                 }}
               >
                 {error}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => void deactivateMembership()}
+              disabled={deactivateBusy || busy}
+              style={{
+                marginTop: 16,
+                padding: '8px 14px',
+                cursor: deactivateBusy ? 'wait' : 'pointer',
+                background: '#fff',
+                border: '1px solid #d1d5db',
+              }}
+            >
+              {deactivateBusy
+                ? 'Deactivating…'
+                : 'Deactivate ministry membership (demo)'}
+            </button>
+            {deactivateMessage ? (
+              <p
+                style={{
+                  marginTop: 12,
+                  padding: 12,
+                  background: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: 8,
+                  color: '#166534',
+                  fontSize: 14,
+                }}
+              >
+                {deactivateMessage}
               </p>
             ) : null}
           </section>

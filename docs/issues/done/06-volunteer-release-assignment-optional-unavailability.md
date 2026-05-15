@@ -14,10 +14,10 @@ Implement **Volunteer**-initiated **release**/**decline** of an **Assignment**, 
 
 ## Acceptance criteria
 
-- [ ] A **Volunteer** can release/decline only their own **Assignment** (authorization enforced server-side).
-- [ ] Successful release updates persistence so the **Assignment** no longer appears as an active commitment (voided or equivalent state—choose one consistent model and document it in the PR).
-- [ ] Optional offer path exists in UI and does not silently create **Unavailability** without explicit confirmation.
-- [ ] Automated tests cover server-side authorization and the primary state transition at minimum.
+- [x] A **Volunteer** can release/decline only their own **Assignment** (authorization enforced server-side).
+- [x] Successful release updates persistence so the **Assignment** no longer appears as an active commitment (`voidedAtUtc` on **Assignment**; active roster omits voided rows).
+- [x] Optional offer path exists in UI and does not silently create **Unavailability** without explicit confirmation.
+- [x] Automated tests cover server-side authorization and the primary state transition at minimum.
 
 ## Blocked by
 
