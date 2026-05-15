@@ -11,8 +11,8 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 | 2 | `done/02-leader-first-assignment-public-event.md` | Done | First **Assignment** create path |
 | 3 | `done/03-unavailability-blocks-assign.md` | Done | **Unavailability** blocks assign |
 | 4 | `done/04-cross-ministry-double-booking-rejected.md` | Done | Cross-**Ministry** overlap rejected |
-| 5 | `05-membership-deactivate-void-future-assignments.md` | **HITL** | Membership voiding (**manual review**) |
-| 6 | `06-volunteer-release-assignment-optional-unavailability.md` | AFK | **Volunteer** release + optional offer |
+| 5 | `done/05-membership-deactivate-void-future-assignments.md` | Done | Membership voiding |
+| 6 | `done/06-volunteer-release-assignment-optional-unavailability.md` | Done | **Volunteer** release + optional offer |
 | 7 | `07-supabase-auth-identity-mapping.md` | **HITL** | **Supabase** auth wiring |
 | 8 | `08-web-client-design-system-shell-i18n.md` | Epic | Web client epic — implement via **`09`–`14`** only |
 | 9 | `09-web-client-design-foundation.md` | AFK | Tailwind + shadcn + tokens + fonts + icon facade |
@@ -24,7 +24,6 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 
 **HITL notes**
 
-- **05 — Lifecycle:** requires a quick **manual review** of voiding behavior on realistic fixtures (including “**Event** still underway” vs “**scheduled end** in the past”) before the slice is considered finalized, even if automated tests pass.
 - **07 — Auth:** requires **Supabase** configuration decisions and secrets handling suitable for your environments.
 - **14 — Web polish & a11y:** triage with **`ready-for-agent`** when **09–11** are done so an agent can implement; **merge** still needs recorded **human** review (**WCAG 2.2 AA** perception + brand motion), even if automated checks pass.
 

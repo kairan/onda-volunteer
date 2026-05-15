@@ -6,6 +6,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
+import { CLOCK, type Clock } from '../common/clock';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type CreateAssignmentInput = {
@@ -34,9 +36,25 @@ function halfOpenIntervalsOverlap(a0: Date, a1: Date, b0: Date, b1: Date): boole
   return a0 < b1 && b0 < a1;
 }
 
+export type ReleaseAssignmentInput = {
+  assignmentId: string;
+  volunteerIdHeader: string | undefined;
+};
+
+export type CreateUnavailabilityInput = {
+  volunteerId: string;
+  volunteerIdHeader: string | undefined;
+  ministryId: string;
+  startsAtUtc: string;
+  endsAtUtc: string;
+};
+
 @Injectable()
 export class SchedulingService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(CLOCK) private readonly clock: Clock,
+  ) {}
 
   async createAssignment(input: CreateAssignmentInput) {
     if (!input.leaderMinistryIdHeader?.trim()) {
@@ -148,6 +166,7 @@ export class SchedulingService {
       where: {
         volunteerId: input.volunteerId,
         ministryId: { not: input.ministryId },
+        voidedAtUtc: null,
       },
     });
     for (const ex of otherMinistryAssignments) {
@@ -180,6 +199,111 @@ export class SchedulingService {
       volunteerId: created.volunteerId,
       ministryId: created.ministryId,
       roleId: created.roleId,
+      window: {
+        startsAtUtc: created.startsAtUtc.toISOString(),
+        endsAtUtc: created.endsAtUtc.toISOString(),
+      },
+    };
+  }
+
+  async releaseAssignment(input: ReleaseAssignmentInput) {
+    if (!input.volunteerIdHeader?.trim()) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_ID_REQUIRED',
+        message:
+          'Missing X-Volunteer-Id header (non-production dev gate for volunteer-scoped actions).',
+      });
+    }
+
+    const assignment = await this.prisma.assignment.findUnique({
+      where: { id: input.assignmentId },
+    });
+    if (!assignment) {
+      throw new NotFoundException();
+    }
+    if (assignment.volunteerId !== input.volunteerIdHeader) {
+      throw new ForbiddenException({
+        code: 'ASSIGNMENT_NOT_OWNED',
+        message: 'Volunteers may only release their own assignments.',
+      });
+    }
+    if (assignment.voidedAtUtc !== null) {
+      throw new BadRequestException({
+        code: 'ASSIGNMENT_ALREADY_VOIDED',
+        message: 'This assignment is no longer an active commitment.',
+      });
+    }
+
+    const now = this.clock.now();
+    const updated = await this.prisma.assignment.update({
+      where: { id: assignment.id },
+      data: { voidedAtUtc: now },
+    });
+
+    return {
+      id: updated.id,
+      voidedAtUtc: updated.voidedAtUtc!.toISOString(),
+      ministryId: updated.ministryId,
+      window: {
+        startsAtUtc: updated.startsAtUtc.toISOString(),
+        endsAtUtc: updated.endsAtUtc.toISOString(),
+      },
+    };
+  }
+
+  async createUnavailability(input: CreateUnavailabilityInput) {
+    if (!input.volunteerIdHeader?.trim()) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_ID_REQUIRED',
+        message:
+          'Missing X-Volunteer-Id header (non-production dev gate for volunteer-scoped actions).',
+      });
+    }
+    if (input.volunteerIdHeader !== input.volunteerId) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_MISMATCH',
+        message: 'Volunteer scope does not match this request.',
+      });
+    }
+
+    const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
+    const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
+    if (!(u0 < u1)) {
+      throw new BadRequestException({
+        code: 'INVALID_UNAVAILABILITY_WINDOW',
+        message:
+          'Unavailability window must have startsAtUtc strictly before endsAtUtc.',
+      });
+    }
+
+    const membership = await this.prisma.ministryMembership.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+    });
+    if (!membership) {
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_REQUIRED',
+        message:
+          'Volunteer must have ministry membership before recording unavailability.',
+      });
+    }
+
+    const created = await this.prisma.unavailability.create({
+      data: {
+        volunteerId: input.volunteerId,
+        ministryId: input.ministryId,
+        startsAtUtc: u0,
+        endsAtUtc: u1,
+      },
+    });
+
+    return {
+      id: created.id,
+      ministryId: created.ministryId,
       window: {
         startsAtUtc: created.startsAtUtc.toISOString(),
         endsAtUtc: created.endsAtUtc.toISOString(),

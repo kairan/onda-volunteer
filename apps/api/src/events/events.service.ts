@@ -43,6 +43,7 @@ export class EventsService {
         church: true,
         ministry: true,
         assignments: {
+          where: { voidedAtUtc: null },
           orderBy: { startsAtUtc: 'asc' },
           include: {
             volunteer: true,
