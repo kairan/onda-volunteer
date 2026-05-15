@@ -3,11 +3,11 @@
 **Type:** AFK  
 **Label when unblocked:** `ready-for-agent`  
 **Normative refs:** PRD user stories **5**, **6** (hit targets), **31** (structure), **42–44**, **43**, **50**; ADR 0001 (shell, skip link, sidebar width, sticky mobile top bar, Help/account placement)  
-**Parent:** Epic **`08-web-client-design-system-shell-i18n.md`**
+**Parent:** Epic **`done/08-web-client-design-system-shell-i18n.md`**
 
 ## Parent
 
-- Epic: `docs/issues/08-web-client-design-system-shell-i18n.md`
+- Epic: `docs/issues/done/08-web-client-design-system-shell-i18n.md`
 - PRD: `docs/prd/web-client-design-system-shell-i18n.md`
 
 ## What to build

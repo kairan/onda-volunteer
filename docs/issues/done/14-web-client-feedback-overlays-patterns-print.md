@@ -4,11 +4,11 @@
 **Triage label:** `ready-for-agent` once dependencies for slice **14** are satisfied (**09**, **10**, **11** complete). Use this label for AFK agent pickup even though the slice type is **HITL**.  
 **Merge gate:** **HITL** checklist completed and recorded in the tracker (WCAG perception + brand motion).
 **Normative refs:** PRD user stories **7–9**, **17–19**, **22–24**, **26**, **29–30**, **32**, **46**, **49**, **33**, **54**, **20–21**, **24–25**; ADR 0001 (toasts, scrims, motion, badges, tables, forms, print, external links, destructive confirms)  
-**Parent:** Epic **`08-web-client-design-system-shell-i18n.md`**
+**Parent:** Epic **`done/08-web-client-design-system-shell-i18n.md`**
 
 ## Parent
 
-- Epic: `docs/issues/08-web-client-design-system-shell-i18n.md`
+- Epic: `docs/issues/done/08-web-client-design-system-shell-i18n.md`
 - PRD: `docs/prd/web-client-design-system-shell-i18n.md`
 
 ## What to build

@@ -14,7 +14,7 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 | 5 | `done/05-membership-deactivate-void-future-assignments.md` | Done | Membership voiding |
 | 6 | `done/06-volunteer-release-assignment-optional-unavailability.md` | Done | **Volunteer** release + optional offer |
 | 7 | `done/07-supabase-auth-identity-mapping.md` | Done | **Supabase** auth + **Identity** mapping |
-| 8 | `08-web-client-design-system-shell-i18n.md` | Epic | Web client epic — implement via **`09`–`14`** only |
+| 8 | `done/08-web-client-design-system-shell-i18n.md` | Done | Web client epic — slices **`09`–`14`** complete |
 | 9 | `done/09-web-client-design-foundation.md` | Done | Tailwind + shadcn + tokens + fonts + icon facade |
 | 10 | `done/10-web-client-i18n-controller.md` | Done | **`react-i18next`**, namespaces, **`pt-BR`/`en`**, switcher |
 | 11 | `done/11-web-client-shell-routing-landmarks.md` | Done | Shell layout, skip link, **`/dashboard`**, preserve **`/`** + **events** |

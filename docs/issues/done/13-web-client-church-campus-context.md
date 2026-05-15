@@ -3,11 +3,11 @@
 **Type:** AFK  
 **Label when unblocked:** `ready-for-agent`  
 **Normative refs:** PRD user stories **13–16**; ADR 0001 (prominent **Church** dropdown, **Campus** secondary selector, timezone cue); `CONTEXT.md` (**Church**, **Campus**)  
-**Parent:** Epic **`08-web-client-design-system-shell-i18n.md`**
+**Parent:** Epic **`done/08-web-client-design-system-shell-i18n.md`**
 
 ## Parent
 
-- Epic: `docs/issues/08-web-client-design-system-shell-i18n.md`
+- Epic: `docs/issues/done/08-web-client-design-system-shell-i18n.md`
 - PRD: `docs/prd/web-client-design-system-shell-i18n.md`
 
 ## What to build

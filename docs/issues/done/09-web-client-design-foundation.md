@@ -3,11 +3,11 @@
 **Type:** AFK  
 **Label when unblocked:** `ready-for-agent`  
 **Normative refs:** `docs/prd/web-client-design-system-shell-i18n.md` (user stories 27–28, 34–39, 47–48, 51–53, 35–38, 52, 37), `docs/adr/0001-visual-system-shell-and-i18n-baseline.md`, `CONTEXT.md`  
-**Parent:** Epic **`08-web-client-design-system-shell-i18n.md`** (PRD: web client design system)
+**Parent:** Epic **`done/08-web-client-design-system-shell-i18n.md`** (PRD: web client design system)
 
 ## Parent
 
-- Epic: `docs/issues/08-web-client-design-system-shell-i18n.md`
+- Epic: `docs/issues/done/08-web-client-design-system-shell-i18n.md`
 - PRD: `docs/prd/web-client-design-system-shell-i18n.md`
 
 ## What to build

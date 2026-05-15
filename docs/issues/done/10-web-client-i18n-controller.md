@@ -3,11 +3,11 @@
 **Type:** AFK  
 **Label when unblocked:** `ready-for-agent`  
 **Normative refs:** PRD user stories **1–3**, **40**, **45**; ADR 0001 (i18n + **Default UI language** + **Language switcher**); `CONTEXT.md`  
-**Parent:** Epic **`08-web-client-design-system-shell-i18n.md`**
+**Parent:** Epic **`done/08-web-client-design-system-shell-i18n.md`**
 
 ## Parent
 
-- Epic: `docs/issues/08-web-client-design-system-shell-i18n.md`
+- Epic: `docs/issues/done/08-web-client-design-system-shell-i18n.md`
 - PRD: `docs/prd/web-client-design-system-shell-i18n.md`
 
 ## What to build
