@@ -9,6 +9,7 @@ async function bootstrap() {
     credentials: true,
     allowedHeaders: [
       'Content-Type',
+      'Authorization',
       'X-Leader-Ministry-Id',
       'X-Volunteer-Id',
     ],

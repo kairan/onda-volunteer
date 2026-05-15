@@ -19,23 +19,25 @@ enum MembershipStatus {
 }
 
 model Church {
-  id              String     @id @default(cuid())
-  name            String
-  defaultTimezone String
-  ministries      Ministry[]
-  events          Event[]
+  id                   String               @id @default(cuid())
+  name                 String
+  defaultTimezone      String
+  ministries           Ministry[]
+  events               Event[]
+  adminAccreditations  AdminAccreditation[]
 }
 
 model Ministry {
-  id           String                 @id @default(cuid())
-  churchId     String
-  church       Church                 @relation(fields: [churchId], references: [id], onDelete: Cascade)
-  name         String
-  events       Event[]
-  roles        MinistryRole[]
-  memberships MinistryMembership[]
-  assignments Assignment[]
+  id               String                 @id @default(cuid())
+  churchId         String
+  church           Church                 @relation(fields: [churchId], references: [id], onDelete: Cascade)
+  name             String
+  events           Event[]
+  roles            MinistryRole[]
+  memberships      MinistryMembership[]
+  assignments      Assignment[]
   unavailabilities Unavailability[]
+  leaders          MinistryLeader[]
 }
 
 model Event {
@@ -54,11 +56,36 @@ model Event {
 }
 
 model Volunteer {
-  id               String               @id @default(cuid())
-  displayName      String
-  memberships      MinistryMembership[]
-  assignments      Assignment[]
-  unavailabilities Unavailability[]
+  id                  String               @id @default(cuid())
+  authSubjectId       String?              @unique
+  displayName         String
+  memberships         MinistryMembership[]
+  assignments         Assignment[]
+  unavailabilities    Unavailability[]
+  ministryLeaderships MinistryLeader[]
+  adminAccreditations AdminAccreditation[]
+}
+
+model MinistryLeader {
+  id          String    @id @default(cuid())
+  volunteerId String
+  ministryId  String
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  ministry    Ministry  @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  @@unique([volunteerId, ministryId])
+  @@index([ministryId])
+}
+
+model AdminAccreditation {
+  id          String    @id @default(cuid())
+  volunteerId String
+  churchId    String
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  church      Church    @relation(fields: [churchId], references: [id], onDelete: Cascade)
+
+  @@unique([volunteerId, churchId])
+  @@index([churchId])
 }
 
 model MinistryMembership {

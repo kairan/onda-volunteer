@@ -15,6 +15,7 @@ describe('POST /ministries/:ministryId/memberships/:volunteerId/deactivate (e2e)
   let prisma: PrismaService;
 
   beforeAll(async () => {
+    process.env.AUTH_ALLOW_DEV_HEADERS = 'true';
     if (!process.env.DATABASE_URL) {
       throw new Error('DATABASE_URL is required for e2e tests');
     }

@@ -13,7 +13,7 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 | 4 | `done/04-cross-ministry-double-booking-rejected.md` | Done | Cross-**Ministry** overlap rejected |
 | 5 | `done/05-membership-deactivate-void-future-assignments.md` | Done | Membership voiding |
 | 6 | `done/06-volunteer-release-assignment-optional-unavailability.md` | Done | **Volunteer** release + optional offer |
-| 7 | `07-supabase-auth-identity-mapping.md` | **HITL** | **Supabase** auth wiring |
+| 7 | `done/07-supabase-auth-identity-mapping.md` | Done | **Supabase** auth + **Identity** mapping |
 | 8 | `08-web-client-design-system-shell-i18n.md` | Epic | Web client epic — implement via **`09`–`14`** only |
 | 9 | `09-web-client-design-foundation.md` | AFK | Tailwind + shadcn + tokens + fonts + icon facade |
 | 10 | `10-web-client-i18n-controller.md` | AFK | **`react-i18next`**, namespaces, **`pt-BR`/`en`**, switcher |
@@ -24,7 +24,6 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 
 **HITL notes**
 
-- **07 — Auth:** requires **Supabase** configuration decisions and secrets handling suitable for your environments.
 - **14 — Web polish & a11y:** triage with **`ready-for-agent`** when **09–11** are done so an agent can implement; **merge** still needs recorded **human** review (**WCAG 2.2 AA** perception + brand motion), even if automated checks pass.
 
 When you create tickets in your tracker, paste each issue body and apply **`ready-for-agent`** when that issue’s **Blocked by** dependencies are cleared (see each slice file).

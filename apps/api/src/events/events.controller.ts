@@ -32,11 +32,13 @@ export class EventsController {
   @Post(':id/assignments')
   createAssignment(
     @Param('id') eventId: string,
+    @Headers('authorization') authorization: string | undefined,
     @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
     @Body() body: CreateAssignmentBody,
   ) {
     return this.scheduling.createAssignment({
       eventId,
+      authorizationHeader: authorization,
       leaderMinistryIdHeader: leaderMinistryId,
       volunteerId: body.volunteerId,
       ministryId: body.ministryId,

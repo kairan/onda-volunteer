@@ -8,10 +8,12 @@ import {
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
+import { IdentityService } from '../identity/identity.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type CreateAssignmentInput = {
   eventId: string;
+  authorizationHeader: string | undefined;
   leaderMinistryIdHeader: string | undefined;
   volunteerId: string;
   ministryId: string;
@@ -38,11 +40,13 @@ function halfOpenIntervalsOverlap(a0: Date, a1: Date, b0: Date, b1: Date): boole
 
 export type ReleaseAssignmentInput = {
   assignmentId: string;
+  authorizationHeader: string | undefined;
   volunteerIdHeader: string | undefined;
 };
 
 export type CreateUnavailabilityInput = {
   volunteerId: string;
+  authorizationHeader: string | undefined;
   volunteerIdHeader: string | undefined;
   ministryId: string;
   startsAtUtc: string;
@@ -53,23 +57,16 @@ export type CreateUnavailabilityInput = {
 export class SchedulingService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly identity: IdentityService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async createAssignment(input: CreateAssignmentInput) {
-    if (!input.leaderMinistryIdHeader?.trim()) {
-      throw new ForbiddenException({
-        code: 'LEADER_MINISTRY_REQUIRED',
-        message:
-          'Missing X-Leader-Ministry-Id header (non-production dev gate for ministry-scoped leader actions).',
-      });
-    }
-    if (input.leaderMinistryIdHeader !== input.ministryId) {
-      throw new ForbiddenException({
-        code: 'LEADER_MINISTRY_MISMATCH',
-        message: 'Leader ministry scope does not match this assignment ministry.',
-      });
-    }
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
 
     const event = await this.prisma.event.findUnique({
       where: { id: input.eventId },
@@ -207,13 +204,10 @@ export class SchedulingService {
   }
 
   async releaseAssignment(input: ReleaseAssignmentInput) {
-    if (!input.volunteerIdHeader?.trim()) {
-      throw new ForbiddenException({
-        code: 'VOLUNTEER_ID_REQUIRED',
-        message:
-          'Missing X-Volunteer-Id header (non-production dev gate for volunteer-scoped actions).',
-      });
-    }
+    const volunteer = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
 
     const assignment = await this.prisma.assignment.findUnique({
       where: { id: input.assignmentId },
@@ -221,7 +215,7 @@ export class SchedulingService {
     if (!assignment) {
       throw new NotFoundException();
     }
-    if (assignment.volunteerId !== input.volunteerIdHeader) {
+    if (assignment.volunteerId !== volunteer.id) {
       throw new ForbiddenException({
         code: 'ASSIGNMENT_NOT_OWNED',
         message: 'Volunteers may only release their own assignments.',
@@ -252,17 +246,14 @@ export class SchedulingService {
   }
 
   async createUnavailability(input: CreateUnavailabilityInput) {
-    if (!input.volunteerIdHeader?.trim()) {
-      throw new ForbiddenException({
-        code: 'VOLUNTEER_ID_REQUIRED',
-        message:
-          'Missing X-Volunteer-Id header (non-production dev gate for volunteer-scoped actions).',
-      });
-    }
-    if (input.volunteerIdHeader !== input.volunteerId) {
+    const volunteer = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
+    if (volunteer.id !== input.volunteerId) {
       throw new ForbiddenException({
         code: 'VOLUNTEER_MISMATCH',
-        message: 'Volunteer scope does not match this request.',
+        message: 'Authenticated identity does not match this request.',
       });
     }
 

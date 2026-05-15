@@ -7,6 +7,8 @@ import {
   useRouter,
 } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
+import { AuthPanel } from './AuthPanel';
+import { buildProtectedHeaders } from './apiAuthHeaders';
 import type { EventDetailPayload } from './eventDetailPayload';
 
 function defaultAssignmentWindow(payload: EventDetailPayload): {
@@ -57,6 +59,7 @@ async function errorMessageFromResponse(res: Response): Promise<string> {
 const rootRoute = createRootRoute({
   component: () => (
     <div style={{ fontFamily: 'system-ui', padding: '1.5rem', maxWidth: 640 }}>
+      <AuthPanel />
       <Outlet />
     </div>
   ),
@@ -146,10 +149,10 @@ const eventRoute = createRoute({
       const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
       const res = await fetch(`${base}/events/${eventId}/assignments`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Leader-Ministry-Id': demoMinistry,
-        },
+        headers: await buildProtectedHeaders(
+          { leaderMinistryId: demoMinistry },
+          { json: true },
+        ),
         body: JSON.stringify({
           volunteerId: demoVolunteer,
           ministryId: demoMinistry,
@@ -178,7 +181,9 @@ const eventRoute = createRoute({
         `${base}/ministries/${demoMinistry}/memberships/${demoVolunteer}/deactivate`,
         {
           method: 'POST',
-          headers: { 'X-Leader-Ministry-Id': demoMinistry },
+          headers: await buildProtectedHeaders({
+            leaderMinistryId: demoMinistry,
+          }),
         },
       );
       setDeactivateBusy(false);
@@ -203,7 +208,7 @@ const eventRoute = createRoute({
       const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
       const res = await fetch(`${base}/assignments/${assignmentId}/release`, {
         method: 'POST',
-        headers: { 'X-Volunteer-Id': demoVolunteer },
+        headers: await buildProtectedHeaders({ volunteerId: demoVolunteer }),
       });
       setBusy(false);
       if (!res.ok) {
@@ -233,10 +238,10 @@ const eventRoute = createRoute({
         `${base}/volunteers/${demoVolunteer}/unavailability`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Volunteer-Id': demoVolunteer,
-          },
+          headers: await buildProtectedHeaders(
+            { volunteerId: demoVolunteer },
+            { json: true },
+          ),
           body: JSON.stringify({
             ministryId: releasedOffer.ministryId,
             startsAtUtc: releasedOffer.startsAtUtc,
