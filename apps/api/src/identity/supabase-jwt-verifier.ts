@@ -8,6 +8,7 @@ export type VerifiedAccessToken = {
 @Injectable()
 export class SupabaseJwtVerifier {
   verifyBearerToken(authorizationHeader: string | undefined): VerifiedAccessToken {
+    // Require a Bearer token in the Authorization header
     if (!authorizationHeader?.startsWith('Bearer ')) {
       throw new UnauthorizedException({
         code: 'AUTH_REQUIRED',
@@ -23,6 +24,7 @@ export class SupabaseJwtVerifier {
       });
     }
 
+    // Symmetric verification (HS256), same secret Supabase uses for user access tokens in this setup
     const secret = process.env.SUPABASE_JWT_SECRET?.trim();
     if (!secret) {
       throw new UnauthorizedException({
