@@ -92,15 +92,12 @@ async function main() {
     },
   });
 
-  const demoAuthSubjectId = '00000000-0000-0000-0000-000000000001';
-
   await prisma.volunteer.upsert({
     where: { id: 'seed-volunteer-demo' },
-    update: { authSubjectId: demoAuthSubjectId },
+    update: { displayName: 'Demo Volunteer' },
     create: {
       id: 'seed-volunteer-demo',
       displayName: 'Demo Volunteer',
-      authSubjectId: demoAuthSubjectId,
     },
   });
 

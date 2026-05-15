@@ -1,6 +1,8 @@
 import { Link, Outlet } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { demoVolunteerId } from '@/auth/authSession';
 import { useOrganizationContext } from '@/organization/useOrganizationContext';
 import { OrganizationContextControls } from './OrganizationContextControls';
 import { useTranslation } from 'react-i18next';
@@ -19,9 +21,11 @@ export function AppShell({ children }: { children?: ReactNode }) {
   const { t } = useTranslation(['shell', 'common']);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const demoVolunteerId = import.meta.env.VITE_DEMO_VOLUNTEER_ID as
-    | string
-    | undefined;
+  const auth = useAuthSession();
+  const orgReady =
+    auth.status === 'authenticated' || auth.status === 'dev-bypass';
+  const devVolunteerIdForOrg =
+    auth.status === 'dev-bypass' ? auth.volunteerId : demoVolunteerId();
   const {
     churches,
     loading,
@@ -30,7 +34,10 @@ export function AppShell({ children }: { children?: ReactNode }) {
     activeCampusId,
     onChurchChange,
     onCampusChange,
-  } = useOrganizationContext(demoVolunteerId);
+  } = useOrganizationContext({
+    enabled: orgReady,
+    devVolunteerId: devVolunteerIdForOrg,
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">

@@ -34,6 +34,7 @@ Example `apps/web/.env` (add/update):
 VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 VITE_AUTH_USE_DEV_HEADERS=true
+VITE_DEMO_VOLUNTEER_ID=seed-volunteer-demo
 ```
 
 Example `apps/api/.env` (add/update):
@@ -41,45 +42,38 @@ Example `apps/api/.env` (add/update):
 ```env
 SUPABASE_JWT_SECRET=your-jwt-secret-from-dashboard
 AUTH_ALLOW_DEV_HEADERS=true
+AUTH_AUTO_LINK_SEED_VOLUNTEER_ID=seed-volunteer-demo
 ```
 
 Restart `pnpm dev:api` and `pnpm dev:web` after changing env.
 
-## 4. Sign in on the web
+## 4. Happy path (shell routes)
 
-1. Open [http://localhost:5173](http://localhost:5173).
-2. Use the **Sign in (Supabase)** panel → enter email → **Send code** → paste the code from email → **Verify code**.
-3. When signed in, the panel shows your **auth subject** (UUID). Copy it.
+1. Run migrations and seed: `pnpm --filter @onda/api prisma:migrate` and `pnpm --filter @onda/api prisma:seed`.
+2. Open [http://localhost:5173/dashboard](http://localhost:5173/dashboard) (or any shell nav route).
+3. Sign in with email OTP when prompted.
+4. On first sign-in, `GET /identity/me` auto-links your Supabase `sub` to `seed-volunteer-demo` when `AUTH_AUTO_LINK_SEED_VOLUNTEER_ID` is set and that volunteer has no `authSubjectId` yet.
+5. The shell loads **Church** / **Campus** context from the API using your Bearer token.
 
-## 5. Link auth subject → demo Volunteer
+Legacy demo pages at `/` and `/events/...` still work; they may show the auth panel at the top without the shell gate.
 
-The API maps JWT `sub` to `Volunteer.authSubjectId`. Link your Supabase user to the seeded demo volunteer:
+## 5. Optional: manual link to a specific volunteer
+
+If auto-link is disabled or the seed volunteer is already linked to someone else:
 
 ```bash
 pnpm link:volunteer-auth -- <your-auth-subject-uuid>
 ```
 
-Default volunteer id is `seed-volunteer-demo` (also a **Leader** for `seed-ministry-demo` after seed).
+Default volunteer id is `seed-volunteer-demo`.
 
-## 6. Try JWT-protected actions
+## 6. Dev bypass (no Supabase)
 
-With a session active, the web sends `Authorization: Bearer <token>` instead of dev headers (when `VITE_AUTH_USE_DEV_HEADERS` is not `false`).
+If `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are unset but `VITE_AUTH_USE_DEV_HEADERS=true` and `VITE_DEMO_VOLUNTEER_ID` are set, shell routes use `X-Volunteer-Id` without sign-in. The API must have `AUTH_ALLOW_DEV_HEADERS=true`.
 
-On the demo event page you can **Create assignment**, **Release**, etc. using real auth.
+## 7. Try JWT-protected actions on legacy demo pages
 
-To test API-only:
-
-```bash
-# After sign-in, copy access_token from browser devtools → Application → localStorage
-# key like sb-<project>-auth-token, or use the Auth panel subject + link script first.
-
-curl -X POST http://localhost:3000/assignments/<id>/release \
-  -H "Authorization: Bearer <access_token>"
-```
-
-## Grant Admin stewardship (optional)
-
-To test **Admin** (not **Leader**) creating assignments: add an `AdminAccreditation` row for the volunteer and the event’s church, or extend seed. JWT identity must still match `Volunteer.authSubjectId`.
+With a session active, protected calls send `Authorization: Bearer <token>` (dev headers only when there is no valid session).
 
 ## Optional: turn off dev headers
 
@@ -95,9 +89,9 @@ Then every protected call **requires** a valid Bearer token.
 | Symptom | Fix |
 |--------|-----|
 | Yellow “Supabase not configured” on web | Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, restart Vite |
-| `AUTH_MISCONFIGURED` / `AUTH_INVALID` | `SUPABASE_JWT_SECRET` must match the **same** Supabase project as the web anon key |
-| `PROFILE_NOT_LINKED` | Run `pnpm link:volunteer-auth -- <sub>` |
-| `LEADER_NOT_AUTHORIZED` | Seed creates leadership for demo volunteer; re-run `pnpm --filter @onda/api prisma:seed` or add `MinistryLeader` row |
+| `AUTH_MISCONFIGURED` / `AUTH_INVALID` | `SUPABASE_JWT_SECRET` must match the **same** Supabase project as the web anon key; sign out or clear site localStorage for a stale session |
+| `PROFILE_NOT_LINKED` on shell | Enable `AUTH_AUTO_LINK_SEED_VOLUNTEER_ID`, re-seed so demo volunteer has no `authSubjectId`, or run `pnpm link:volunteer-auth -- <sub>` |
+| `LEADER_NOT_AUTHORIZED` | Seed creates leadership for demo volunteer; re-run `pnpm --filter @onda/api prisma:seed` |
 | No email received | Check spam; confirm Email provider enabled; free tier rate limits apply |
 
 ## Alternative: full local Supabase stack

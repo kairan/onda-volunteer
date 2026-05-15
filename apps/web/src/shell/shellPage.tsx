@@ -1,12 +1,12 @@
 import type { ComponentType } from 'react';
-import { AppShell } from './AppShell';
+import { ProtectedAppShell } from './ProtectedAppShell';
 
 export function shellPage(Page: ComponentType) {
   return function ShellPage() {
     return (
-      <AppShell>
+      <ProtectedAppShell>
         <Page />
-      </AppShell>
+      </ProtectedAppShell>
     );
   };
 }

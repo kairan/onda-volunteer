@@ -15,7 +15,7 @@ import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
 import { DashboardPage } from './routes/dashboard';
 import { PlaceholderPage } from './routes/placeholderPage';
 import { RouteErrorPanel } from './shell/RouteErrorPanel';
-import { AppShell } from './shell/AppShell';
+import { ProtectedAppShell } from './shell/ProtectedAppShell';
 import { shellPage } from './shell/shellPage';
 
 function defaultAssignmentWindow(payload: EventDetailPayload): {
@@ -537,9 +537,9 @@ function shellErrorComponent({
   reset: () => void;
 }) {
   return (
-    <AppShell>
+    <ProtectedAppShell>
       <RouteErrorPanel message={error.message} onRetry={reset} />
-    </AppShell>
+    </ProtectedAppShell>
   );
 }
 

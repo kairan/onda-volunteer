@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { isAccessTokenUsable } from './sessionToken';
 
 let client: SupabaseClient | null | undefined;
 
@@ -21,6 +22,27 @@ export async function getAccessToken(): Promise<string | null> {
   if (!supabase) {
     return null;
   }
+
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError || !userData.user) {
+    return null;
+  }
+
   const { data } = await supabase.auth.getSession();
-  return data.session?.access_token ?? null;
+  const session = data.session;
+  if (!session?.access_token) {
+    return null;
+  }
+  if (!isAccessTokenUsable(session.expires_at)) {
+    return null;
+  }
+  return session.access_token;
+}
+
+export async function signOut(): Promise<void> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return;
+  }
+  await supabase.auth.signOut();
 }
