@@ -64,18 +64,18 @@ async function errorMessageFromResponse(res: Response): Promise<string> {
 }
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="mx-auto min-h-screen max-w-2xl p-6">
-      <AuthPanel />
-      <Outlet />
-    </div>
-  ),
+  component: () => <Outlet />,
 });
 
 const legacyLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'legacy',
-  component: () => <Outlet />,
+  component: () => (
+    <div className="mx-auto min-h-screen max-w-2xl p-6">
+      <AuthPanel variant="legacy" />
+      <Outlet />
+    </div>
+  ),
 });
 
 const indexRoute = createRoute({

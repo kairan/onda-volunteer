@@ -20,17 +20,13 @@ export function ProtectedAppShell({ children }: { children: ReactNode }) {
   if (auth.status === 'unauthenticated') {
     return (
       <AuthGateLayout>
-        <h1 className="font-display text-xl font-bold uppercase tracking-tight">
-          {t('signInTitle')}
-        </h1>
         {auth.reason === 'supabase-not-configured' ? (
           <p className="text-sm text-foreground/80">
             {t('supabaseNotConfigured')}
           </p>
         ) : (
-          <p className="text-sm text-foreground/80">{t('signInPrompt')}</p>
+          <AuthPanel variant="gate" />
         )}
-        <AuthPanel />
       </AuthGateLayout>
     );
   }

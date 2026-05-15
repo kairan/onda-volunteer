@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getSupabaseClient } from './supabaseClient';
 
-export function AuthPanel() {
+type AuthPanelProps = {
+  variant?: 'legacy' | 'gate';
+};
+
+export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
+  const { t } = useTranslation('shell');
   const supabase = getSupabaseClient();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -95,7 +101,7 @@ export function AuthPanel() {
     return (
       <aside
         style={{
-          marginBottom: 24,
+          marginBottom: variant === 'legacy' ? 24 : 0,
           padding: 16,
           border: '1px solid #bbf7d0',
           borderRadius: 8,
@@ -106,24 +112,28 @@ export function AuthPanel() {
         <p style={{ margin: '0 0 8px' }}>
           <strong>Signed in</strong> as {emailDisplay ?? 'user'}
         </p>
-        <p style={{ margin: '0 0 8px', wordBreak: 'break-all' }}>
-          Auth subject (<code>sub</code>): <code>{userId}</code>
-        </p>
-        <p style={{ margin: '0 0 12px', color: '#166534' }}>
-          Link the demo volunteer once (from repo root, with Postgres running):
-        </p>
-        <pre
-          style={{
-            margin: '0 0 12px',
-            padding: 12,
-            background: '#fff',
-            borderRadius: 6,
-            fontSize: 12,
-            overflow: 'auto',
-          }}
-        >
-          {`pnpm link:volunteer-auth ${userId}`}
-        </pre>
+        {variant === 'legacy' ? (
+          <>
+            <p style={{ margin: '0 0 8px', wordBreak: 'break-all' }}>
+              Auth subject (<code>sub</code>): <code>{userId}</code>
+            </p>
+            <p style={{ margin: '0 0 12px', color: '#166534' }}>
+              Link the demo volunteer once (from repo root, with Postgres running):
+            </p>
+            <pre
+              style={{
+                margin: '0 0 12px',
+                padding: 12,
+                background: '#fff',
+                borderRadius: 6,
+                fontSize: 12,
+                overflow: 'auto',
+              }}
+            >
+              {`pnpm link:volunteer-auth ${userId}`}
+            </pre>
+          </>
+        ) : null}
         <button
           type="button"
           onClick={() => void signOut()}
@@ -138,7 +148,7 @@ export function AuthPanel() {
   return (
     <aside
       style={{
-        marginBottom: 24,
+        marginBottom: variant === 'legacy' ? 24 : 0,
         padding: 16,
         border: '1px solid #e5e7eb',
         borderRadius: 8,
@@ -146,11 +156,25 @@ export function AuthPanel() {
         fontSize: 14,
       }}
     >
-      <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>Sign in (Supabase)</h2>
-      <p style={{ margin: '0 0 12px', color: '#555' }}>
-        Email one-time code. After sign-in, link your auth subject to the seeded
-        demo volunteer (command shown above).
-      </p>
+      {variant === 'gate' ? (
+        <>
+          <h1
+            className="font-display text-xl font-bold uppercase tracking-tight"
+            style={{ margin: '0 0 8px' }}
+          >
+            {t('signInTitle')}
+          </h1>
+          <p style={{ margin: '0 0 12px', color: '#555' }}>{t('signInPrompt')}</p>
+        </>
+      ) : (
+        <>
+          <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>Sign in (Supabase)</h2>
+          <p style={{ margin: '0 0 12px', color: '#555' }}>
+            Email one-time code. After sign-in, link your auth subject to the seeded
+            demo volunteer (command shown above).
+          </p>
+        </>
+      )}
       {step === 'email' ? (
         <form onSubmit={(e) => void sendOtp(e)}>
           <label style={{ display: 'block' }}>
