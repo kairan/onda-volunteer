@@ -10,6 +10,7 @@ import {
 import { ApiRequestError } from '@/apiError';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { getSupabaseClient } from '@/supabaseClient';
+import { isAccessTokenUsable } from '@/sessionToken';
 import {
   type AuthSessionState,
   demoVolunteerId,
@@ -69,7 +70,18 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const sessionUser = sessionData.session.user;
+    let session = sessionData.session;
+
+    let accessToken = session.access_token;
+    if (!isAccessTokenUsable(session.expires_at)) {
+      const { data: refreshed } = await supabase.auth.refreshSession();
+      if (refreshed.session?.access_token) {
+        session = refreshed.session;
+        accessToken = session.access_token;
+      }
+    }
+
+    const sessionUser = session.user;
     const { data: userData } = await supabase.auth.getUser();
 
     const user = userData?.user ?? sessionUser;
@@ -80,7 +92,7 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const me = await fetchIdentityMe();
+      const me = await fetchIdentityMe({ bearerAccessToken: accessToken });
       setState({
         status: 'authenticated',
         volunteerId: me.volunteer.id,

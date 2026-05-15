@@ -27,7 +27,12 @@ function applyDevHeaders(
 
 export async function buildProtectedHeaders(
   scope: ProtectedScope,
-  options?: { json?: boolean; forceDev?: boolean },
+  options?: {
+    json?: boolean;
+    forceDev?: boolean;
+    /** Skip getAccessToken(); use this Bearer when already resolved from getSession(). */
+    bearerAccessToken?: string;
+  },
 ): Promise<Record<string, string>> {
   const headers: Record<string, string> = {};
   if (options?.json) {
@@ -39,7 +44,8 @@ export async function buildProtectedHeaders(
     return headers;
   }
 
-  const token = await getAccessToken();
+  const token =
+    options?.bearerAccessToken ?? (await getAccessToken());
   if (token) {
     headers.Authorization = `Bearer ${token}`;
     return headers;
@@ -54,9 +60,11 @@ export async function fetchWithProtectedHeaders(
   url: string,
   scope: ProtectedScope,
   init?: RequestInit,
+  bearerAccessToken?: string,
 ): Promise<Response> {
   const headers = await buildProtectedHeaders(scope, {
     json: init?.body !== undefined && init?.body !== null,
+    bearerAccessToken,
   });
   let res = await fetch(url, {
     ...init,
@@ -90,8 +98,9 @@ export async function fetchJsonWithProtectedHeaders<T>(
   url: string,
   scope: ProtectedScope,
   init?: RequestInit,
+  bearerAccessToken?: string,
 ): Promise<T> {
-  const res = await fetchWithProtectedHeaders(url, scope, init);
+  const res = await fetchWithProtectedHeaders(url, scope, init, bearerAccessToken);
   if (!res.ok) {
     throw await apiErrorFromResponse(res);
   }

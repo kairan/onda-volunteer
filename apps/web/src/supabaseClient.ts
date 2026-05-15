@@ -34,16 +34,13 @@ export async function getAccessToken(): Promise<string | null> {
 
   if (session && !isAccessTokenUsable(session.expires_at)) {
     const { data: refreshed } = await supabase.auth.refreshSession();
-    session = refreshed.session ?? null;
+    if (refreshed.session?.access_token) {
+      session = refreshed.session;
+    }
   }
 
   if (!session?.access_token) {
     return null;
-  }
-
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError || !userData.user) {
-    return session.access_token;
   }
 
   return session.access_token;
