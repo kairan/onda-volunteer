@@ -13,7 +13,13 @@ export function getSupabaseClient(): SupabaseClient | null {
     client = null;
     return client;
   }
-  client = createClient(url, anonKey);
+  client = createClient(url, anonKey, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  });
   return client;
 }
 
@@ -23,19 +29,23 @@ export async function getAccessToken(): Promise<string | null> {
     return null;
   }
 
-  const { data: userData, error: userError } = await supabase.auth.getUser();
-  if (userError || !userData.user) {
-    return null;
+  const { data: sessionData } = await supabase.auth.getSession();
+  let session = sessionData.session;
+
+  if (session && !isAccessTokenUsable(session.expires_at)) {
+    const { data: refreshed } = await supabase.auth.refreshSession();
+    session = refreshed.session ?? null;
   }
 
-  const { data } = await supabase.auth.getSession();
-  const session = data.session;
   if (!session?.access_token) {
     return null;
   }
-  if (!isAccessTokenUsable(session.expires_at)) {
-    return null;
+
+  const { data: userData, error: userError } = await supabase.auth.getUser();
+  if (userError || !userData.user) {
+    return session.access_token;
   }
+
   return session.access_token;
 }
 

@@ -63,6 +63,12 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      setState({ status: 'unauthenticated', reason: 'signed-out' });
+      return;
+    }
+
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) {
       setState({ status: 'unauthenticated', reason: 'signed-out' });

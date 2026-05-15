@@ -93,6 +93,19 @@ Then every protected call **requires** a valid Bearer token.
 | `PROFILE_NOT_LINKED` on shell | Enable `AUTH_AUTO_LINK_SEED_VOLUNTEER_ID`, re-seed so demo volunteer has no `authSubjectId`, or run `pnpm link:volunteer-auth -- <sub>` |
 | `LEADER_NOT_AUTHORIZED` | Seed creates leadership for demo volunteer; re-run `pnpm --filter @onda/api prisma:seed` |
 | No email received | Check spam; confirm Email provider enabled; free tier rate limits apply |
+| `email rate limit exceeded` | Supabase free tier caps auth emails/hour; wait ~1h or use **dev bypass** below without sending more OTPs |
+| Session lost after reload | Ensure `SUPABASE_JWT_SECRET` matches your project; a wrong secret used to trigger sign-out on API 401 — fixed in app, but verify env and restart API |
+
+### Dev bypass when email limit is hit
+
+With API running (`AUTH_ALLOW_DEV_HEADERS=true`) and in `apps/web/.env`:
+
+```env
+VITE_AUTH_USE_DEV_HEADERS=true
+VITE_DEMO_VOLUNTEER_ID=seed-volunteer-demo
+```
+
+Open `/dashboard` **without** sending another OTP — the shell uses `X-Volunteer-Id` when there is no valid Supabase session.
 
 ## Alternative: full local Supabase stack
 

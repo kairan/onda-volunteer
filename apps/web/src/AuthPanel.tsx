@@ -6,6 +6,13 @@ type AuthPanelProps = {
   variant?: 'legacy' | 'gate';
 };
 
+function formatAuthError(message: string): string {
+  if (/rate limit/i.test(message)) {
+    return 'Limite de e-mails do Supabase atingido. Aguarde cerca de 1 hora ou use o bypass local (veja o runbook).';
+  }
+  return message;
+}
+
 export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
   const { t } = useTranslation('shell');
   const supabase = getSupabaseClient();
@@ -65,7 +72,7 @@ export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(formatAuthError(err.message));
       return;
     }
     setStep('otp');
@@ -83,7 +90,7 @@ export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
     });
     setBusy(false);
     if (err) {
-      setError(err.message);
+      setError(formatAuthError(err.message));
       return;
     }
     setMessage('Signed in. Protected API calls will use your access token.');

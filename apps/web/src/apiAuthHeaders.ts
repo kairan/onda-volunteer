@@ -1,4 +1,4 @@
-import { apiErrorFromResponse } from './apiError';
+import { apiErrorCode, apiErrorFromResponse, parseApiErrorBody } from './apiError';
 import { getAccessToken, signOut } from './supabaseClient';
 
 export type ProtectedScope = {
@@ -70,7 +70,14 @@ export async function fetchWithProtectedHeaders(
     Boolean(headers.Authorization);
 
   if (res.status === 401 && headers.Authorization) {
-    await signOut();
+    try {
+      const body = parseApiErrorBody(await res.clone().text());
+      if (apiErrorCode(body) === 'AUTH_INVALID') {
+        await signOut();
+      }
+    } catch {
+      // Keep the session when the 401 body cannot be read.
+    }
   }
 
   if (canRetryWithDev) {
