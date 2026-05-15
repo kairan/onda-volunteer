@@ -16,11 +16,11 @@ This slice must remain separate from **Unavailability** blocking (slice 3) so PR
 
 ## Acceptance criteria
 
-- [ ] Fixture data can represent two **Ministries** rostering the same **Volunteer** onto overlapping windows.
-- [ ] Second assign attempt fails with a stable domain error code carried through HTTP.
-- [ ] UI surfaces the conflict clearly.
-- [ ] Automated tests cover the overlap rejection using **UTC** instants and **half-open** semantics per `CONTEXT.md`.
+- [x] Fixture data can represent two **Ministries** rostering the same **Volunteer** onto overlapping windows.
+- [x] Second assign attempt fails with a stable domain error code carried through HTTP.
+- [x] UI surfaces the conflict clearly.
+- [x] Automated tests cover the overlap rejection using **UTC** instants and **half-open** semantics per `CONTEXT.md`.
 
 ## Blocked by
 
-`docs/issues/02-leader-first-assignment-public-event.md`
+`docs/issues/done/02-leader-first-assignment-public-event.md`

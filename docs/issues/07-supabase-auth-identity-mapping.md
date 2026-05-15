@@ -24,5 +24,5 @@ This slice should land after the core flows exist so auth is integrating reality
 
 ## Blocked by
 
-`docs/issues/02-leader-first-assignment-public-event.md` (recommended).  
+`docs/issues/done/02-leader-first-assignment-public-event.md` (recommended).  
 May optionally wait until slices **03–06** are underway if you prefer stabilizing domain endpoints first—update this field in your tracker if you choose that ordering.

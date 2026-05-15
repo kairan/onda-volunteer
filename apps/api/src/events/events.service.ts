@@ -23,6 +23,13 @@ export type EventDetailResponse = {
     };
   };
   ministry: { id: string; name: string } | null;
+  assignments: Array<{
+    id: string;
+    volunteer: { id: string; displayName: string };
+    ministry: { id: string; name: string };
+    role: { id: string; name: string };
+    window: { startsAtUtc: string; endsAtUtc: string };
+  }>;
 };
 
 @Injectable()
@@ -35,6 +42,14 @@ export class EventsService {
       include: {
         church: true,
         ministry: true,
+        assignments: {
+          orderBy: { startsAtUtc: 'asc' },
+          include: {
+            volunteer: true,
+            ministry: true,
+            role: true,
+          },
+        },
       },
     });
 
@@ -82,6 +97,19 @@ export class EventsService {
       ministry: row.ministry
         ? { id: row.ministry.id, name: row.ministry.name }
         : null,
+      assignments: row.assignments.map((a) => ({
+        id: a.id,
+        volunteer: {
+          id: a.volunteer.id,
+          displayName: a.volunteer.displayName,
+        },
+        ministry: { id: a.ministry.id, name: a.ministry.name },
+        role: { id: a.role.id, name: a.role.name },
+        window: {
+          startsAtUtc: a.startsAtUtc.toISOString(),
+          endsAtUtc: a.endsAtUtc.toISOString(),
+        },
+      })),
     };
   }
 }

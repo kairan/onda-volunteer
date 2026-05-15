@@ -7,5 +7,5 @@
     "dev:api": "pnpm --filter @onda/api dev",
     "dev:web": "pnpm --filter @onda/web dev"
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@11.1.2"
 }

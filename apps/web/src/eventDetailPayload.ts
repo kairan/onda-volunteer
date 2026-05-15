@@ -19,4 +19,11 @@ export type EventDetailPayload = {
     };
   };
   ministry: { id: string; name: string } | null;
+  assignments: Array<{
+    id: string;
+    volunteer: { id: string; displayName: string };
+    ministry: { id: string; name: string };
+    role: { id: string; name: string };
+    window: { startsAtUtc: string; endsAtUtc: string };
+  }>;
 };

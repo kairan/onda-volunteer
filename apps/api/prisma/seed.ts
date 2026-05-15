@@ -13,6 +13,99 @@ async function main() {
     },
   });
 
+  await prisma.ministry.upsert({
+    where: { id: 'seed-ministry-demo' },
+    update: {},
+    create: {
+      id: 'seed-ministry-demo',
+      name: 'Hospitality',
+      churchId: church.id,
+    },
+  });
+
+  const ministryBand = await prisma.ministry.upsert({
+    where: { id: 'seed-ministry-band' },
+    update: {},
+    create: {
+      id: 'seed-ministry-band',
+      name: 'Band',
+      churchId: church.id,
+    },
+  });
+
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-demo' },
+    update: {},
+    create: {
+      id: 'seed-volunteer-demo',
+      displayName: 'Demo Volunteer',
+    },
+  });
+
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: 'seed-ministry-demo',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-demo',
+      status: 'ACTIVE',
+    },
+  });
+
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: ministryBand.id,
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: ministryBand.id,
+      status: 'ACTIVE',
+    },
+  });
+
+  await prisma.ministryRole.upsert({
+    where: { id: 'seed-role-greeter' },
+    update: { retired: false },
+    create: {
+      id: 'seed-role-greeter',
+      ministryId: 'seed-ministry-demo',
+      name: 'Greeter',
+      retired: false,
+    },
+  });
+
+  await prisma.ministryRole.upsert({
+    where: { id: 'seed-role-keys' },
+    update: { retired: false },
+    create: {
+      id: 'seed-role-keys',
+      ministryId: ministryBand.id,
+      name: 'Keys',
+      retired: false,
+    },
+  });
+
+  await prisma.unavailability.upsert({
+    where: { id: 'seed-unavailability-morning' },
+    update: {},
+    create: {
+      id: 'seed-unavailability-morning',
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-demo',
+      startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
+    },
+  });
+
   await prisma.event.upsert({
     where: { id: 'seed-event-public' },
     update: {},

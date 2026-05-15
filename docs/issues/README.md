@@ -3,14 +3,14 @@
 Parent product definition: `docs/prd/volunteer-management-platform.md`  
 Domain glossary: `CONTEXT.md`
 
-Work these issues **in dependency order**. Each issue is a **vertical slice** (Prisma → Nest → TanStack Router → automated tests) **unless** the row is a **web-client-only** slice (**`09`–`14`**), where the stack is **tooling → theme → components → routes → automated tests** with **no API/schema change** unless explicitly stated in that slice.
+Completed slices are kept under **`done/`** for history. Work remaining issues **in dependency order**. Each issue is a **vertical slice** (Prisma → Nest → TanStack Router → automated tests) **unless** the row is a **web-client-only** slice (**`09`–`14`**), where the stack is **tooling → theme → components → routes → automated tests** with **no API/schema change** unless explicitly stated in that slice.
 
 | Order | File | Type | Summary |
 |------:|------|------|---------|
-| 1 | `01-read-path-event-detail.md` | AFK | Read **Event** through API + Router |
-| 2 | `02-leader-first-assignment-public-event.md` | AFK | First **Assignment** create path |
-| 3 | `03-unavailability-blocks-assign.md` | AFK | **Unavailability** blocks assign |
-| 4 | `04-cross-ministry-double-booking-rejected.md` | AFK | Cross-**Ministry** overlap rejected |
+| 1 | `done/01-read-path-event-detail.md` | Done | Read **Event** through API + Router |
+| 2 | `done/02-leader-first-assignment-public-event.md` | Done | First **Assignment** create path |
+| 3 | `done/03-unavailability-blocks-assign.md` | Done | **Unavailability** blocks assign |
+| 4 | `done/04-cross-ministry-double-booking-rejected.md` | Done | Cross-**Ministry** overlap rejected |
 | 5 | `05-membership-deactivate-void-future-assignments.md` | **HITL** | Membership voiding (**manual review**) |
 | 6 | `06-volunteer-release-assignment-optional-unavailability.md` | AFK | **Volunteer** release + optional offer |
 | 7 | `07-supabase-auth-identity-mapping.md` | **HITL** | **Supabase** auth wiring |

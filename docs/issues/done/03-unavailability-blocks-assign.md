@@ -23,4 +23,4 @@ Keep this slice focused: do not also implement cross-**Ministry** overlap logic 
 
 ## Blocked by
 
-`docs/issues/02-leader-first-assignment-public-event.md`
+`docs/issues/done/02-leader-first-assignment-public-event.md`

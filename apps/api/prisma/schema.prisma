@@ -12,6 +12,11 @@ enum EventKind {
   PRIVATE
 }
 
+enum MembershipStatus {
+  PENDING
+  ACTIVE
+}
+
 model Church {
   id              String     @id @default(cuid())
   name            String
@@ -21,11 +26,15 @@ model Church {
 }
 
 model Ministry {
-  id       String  @id @default(cuid())
-  churchId String
-  church   Church  @relation(fields: [churchId], references: [id], onDelete: Cascade)
-  name     String
-  events   Event[]
+  id           String                 @id @default(cuid())
+  churchId     String
+  church       Church                 @relation(fields: [churchId], references: [id], onDelete: Cascade)
+  name         String
+  events       Event[]
+  roles        MinistryRole[]
+  memberships MinistryMembership[]
+  assignments Assignment[]
+  unavailabilities Unavailability[]
 }
 
 model Event {
@@ -38,6 +47,67 @@ model Event {
   church      Church    @relation(fields: [churchId], references: [id], onDelete: Cascade)
   ministryId  String?
   ministry    Ministry? @relation(fields: [ministryId], references: [id], onDelete: SetNull)
+  assignments Assignment[]
 
   @@index([churchId])
+}
+
+model Volunteer {
+  id               String               @id @default(cuid())
+  displayName      String
+  memberships      MinistryMembership[]
+  assignments      Assignment[]
+  unavailabilities Unavailability[]
+}
+
+model MinistryMembership {
+  id          String           @id @default(cuid())
+  volunteerId String
+  ministryId  String
+  volunteer   Volunteer        @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  ministry    Ministry         @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+  status      MembershipStatus
+
+  @@unique([volunteerId, ministryId])
+  @@index([ministryId])
+}
+
+model MinistryRole {
+  id          String       @id @default(cuid())
+  ministryId  String
+  ministry    Ministry     @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+  name        String
+  retired     Boolean      @default(false)
+  assignments Assignment[]
+
+  @@index([ministryId])
+}
+
+model Assignment {
+  id          String       @id @default(cuid())
+  eventId     String
+  ministryId  String
+  volunteerId String
+  roleId      String
+  startsAtUtc DateTime     @db.Timestamptz
+  endsAtUtc   DateTime     @db.Timestamptz
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ministry    Ministry     @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+  volunteer   Volunteer    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  role        MinistryRole @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@index([eventId])
+  @@index([volunteerId, ministryId])
+}
+
+model Unavailability {
+  id          String    @id @default(cuid())
+  volunteerId String
+  ministryId  String
+  startsAtUtc DateTime  @db.Timestamptz
+  endsAtUtc   DateTime  @db.Timestamptz
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  ministry    Ministry  @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+
+  @@index([volunteerId, ministryId])
 }

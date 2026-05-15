@@ -24,4 +24,4 @@ End-to-end behavior must include: Prisma persistence, Nest mutation endpoint tha
 
 ## Blocked by
 
-`docs/issues/01-read-path-event-detail.md`
+`docs/issues/done/01-read-path-event-detail.md`

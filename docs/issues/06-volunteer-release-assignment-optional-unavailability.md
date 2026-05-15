@@ -21,4 +21,4 @@ Implement **Volunteer**-initiated **release**/**decline** of an **Assignment**, 
 
 ## Blocked by
 
-`docs/issues/02-leader-first-assignment-public-event.md`
+`docs/issues/done/02-leader-first-assignment-public-event.md`
