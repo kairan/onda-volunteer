@@ -7,6 +7,7 @@
   "languageEn": "English",
   "openMenu": "Abrir menu",
   "closeMenu": "Fechar menu",
+  "organizationLoading": "Carregando igrejas…",
   "churchLabel": "Igreja",
   "campusLabel": "Campus",
   "timezoneCue": "Fuso: {{short}}",
