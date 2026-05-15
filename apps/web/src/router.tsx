@@ -11,6 +11,12 @@ import { AuthPanel } from './AuthPanel';
 import { buildProtectedHeaders } from './apiAuthHeaders';
 import type { EventDetailPayload } from './eventDetailPayload';
 import { DesignFoundationPreview } from './routes/designFoundationPreview';
+import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
+import { DashboardPage } from './routes/dashboard';
+import { PlaceholderPage } from './routes/placeholderPage';
+import { RouteErrorPanel } from './shell/RouteErrorPanel';
+import { AppShell } from './shell/AppShell';
+import { shellPage } from './shell/shellPage';
 
 function defaultAssignmentWindow(payload: EventDetailPayload): {
   startsAtUtc: string;
@@ -66,8 +72,14 @@ const rootRoute = createRootRoute({
   ),
 });
 
-const indexRoute = createRoute({
+const legacyLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
+  id: 'legacy',
+  component: () => <Outlet />,
+});
+
+const indexRoute = createRoute({
+  getParentRoute: () => legacyLayoutRoute,
   path: '/',
   component: function Home() {
     const id = import.meta.env.VITE_DEMO_EVENT_ID ?? 'seed-event-public';
@@ -89,10 +101,15 @@ const indexRoute = createRoute({
   },
 });
 
-const eventRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/events/$eventId',
-  loader: async ({ params }): Promise<EventDetailPayload> => {
+export type EventDetailLoader = (ctx: {
+  params: { eventId: string };
+}) => Promise<EventDetailPayload>;
+
+async function defaultEventLoader({
+  params,
+}: {
+  params: { eventId: string };
+}): Promise<EventDetailPayload> {
     const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
     let res: Response;
     try {
@@ -108,9 +125,19 @@ const eventRoute = createRoute({
     if (!res.ok) {
       throw new Error('Unable to load event');
     }
-    return res.json() as Promise<EventDetailPayload>;
-  },
-  component: function EventDetail() {
+  return res.json() as Promise<EventDetailPayload>;
+}
+
+export type BuildRouteTreeOptions = {
+  eventLoader?: EventDetailLoader;
+};
+
+function createEventRoute(eventLoader: EventDetailLoader) {
+  const eventRoute = createRoute({
+    getParentRoute: () => legacyLayoutRoute,
+    path: '/events/$eventId',
+    loader: ({ params }) => eventLoader({ params }),
+    component: function EventDetail() {
     const data = eventRoute.useLoaderData();
     const { eventId } = eventRoute.useParams();
     const router = useRouter();
@@ -497,10 +524,51 @@ const eventRoute = createRoute({
         </p>
       </article>
     );
-  },
-});
+    },
+  });
+  return eventRoute;
+}
 
-const routeTree = rootRoute.addChildren([indexRoute, eventRoute]);
+function shellErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  return (
+    <AppShell>
+      <RouteErrorPanel message={error.message} onRetry={reset} />
+    </AppShell>
+  );
+}
+
+const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
+  createRoute({
+    getParentRoute: () => rootRoute,
+    path: item.path,
+    component: shellPage(() =>
+      item.placeholder ? (
+        <PlaceholderPage namespace={item.namespace} />
+      ) : (
+        <DashboardPage />
+      ),
+    ),
+    errorComponent: shellErrorComponent,
+  }),
+);
+
+export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
+  const eventRoute = createEventRoute(
+    options.eventLoader ?? defaultEventLoader,
+  );
+  return rootRoute.addChildren([
+    legacyLayoutRoute.addChildren([indexRoute, eventRoute]),
+    ...shellRoutes,
+  ]);
+}
+
+const routeTree = buildRouteTree();
 
 export const router = createRouter({ routeTree });
 

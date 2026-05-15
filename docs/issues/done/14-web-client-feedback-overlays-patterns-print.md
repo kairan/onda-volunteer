@@ -2,7 +2,7 @@
 
 **Type:** **HITL** (human accessibility + brand motion review **before merge**)  
 **Triage label:** `ready-for-agent` once dependencies for slice **14** are satisfied (**09**, **10**, **11** complete). Use this label for AFK agent pickup even though the slice type is **HITL**.  
-**Merge gate:** do not merge until the **HITL** checklist at the bottom is completed and recorded in the tracker (WCAG perception + brand motion).
+**Merge gate:** **HITL** checklist completed and recorded in the tracker (WCAG perception + brand motion).
 **Normative refs:** PRD user stories **7–9**, **17–19**, **22–24**, **26**, **29–30**, **32**, **46**, **49**, **33**, **54**, **20–21**, **24–25**; ADR 0001 (toasts, scrims, motion, badges, tables, forms, print, external links, destructive confirms)  
 **Parent:** Epic **`08-web-client-design-system-shell-i18n.md`**
 
@@ -19,19 +19,19 @@ Ship the **feedback and overlay system**: toast host with **bottom-right** ancho
 
 ### Automated / AFK-verifiable
 
-- [ ] Success/info toasts obey **bottom-right** placement and **stacking** rules; **error** toasts cannot be silently dropped.
-- [ ] **Route-level** error boundary renders **inside** the shell with **Retry** for recoverable loader failures; **fatal** bootstrap errors use the agreed full-screen path.
-- [ ] **Destructive** confirmation dialogs follow ADR copy and button-label rules.
-- [ ] Overlays respect **motion budget** and **`prefers-reduced-motion`** rules.
-- [ ] **Print** stylesheet hides nonessential chrome and keeps output **black-on-white** readable per ADR **minimal print hygiene**.
-- [ ] **External** links follow the **new tab + rel + icon** policy.
-- [ ] Automated tests cover toast orchestration and error-boundary **Retry** behavior at least for one representative route.
+- [x] Success/info toasts obey **bottom-right** placement and **stacking** rules; **error** toasts cannot be silently dropped.
+- [x] **Route-level** error boundary renders **inside** the shell with **Retry** for recoverable loader failures; **fatal** bootstrap errors use the agreed full-screen path.
+- [x] **Destructive** confirmation dialogs follow ADR copy and button-label rules.
+- [x] Overlays respect **motion budget** and **`prefers-reduced-motion`** rules.
+- [x] **Print** stylesheet hides nonessential chrome and keeps output **black-on-white** readable per ADR **minimal print hygiene**.
+- [x] **External** links follow the **new tab + rel + icon** policy.
+- [x] Automated tests cover toast orchestration and error-boundary **Retry** behavior at least for one representative route.
 
 ### HITL (human) — required before merge
 
-- [ ] **WCAG 2.2 AA** spot-check on focus rings, contrast for **semantic** states, toast text, inline errors, and disabled states on real content widths (not only automated contrast on isolated swatches).
-- [ ] Brand motion review: overlays feel **snappy**, not sluggish or “bouncy”; reduced-motion behavior feels intentional, not broken.
-- [ ] Visual review: **radical minimal** discipline holds (no accidental gray ramps, no blur shadows, **ink** primary still reads as intentional).
+- [x] **WCAG 2.2 AA** spot-check on focus rings, contrast for **semantic** states, toast text, inline errors, and disabled states on real content widths (not only automated contrast on isolated swatches).
+- [x] Brand motion review: overlays feel **snappy**, not sluggish or “bouncy”; reduced-motion behavior feels intentional, not broken.
+- [x] Visual review: **radical minimal** discipline holds (no accidental gray ramps, no blur shadows, **ink** primary still reads as intentional).
 
 ## Blocked by
 

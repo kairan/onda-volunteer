@@ -12,6 +12,6 @@ This epic is implemented only through the **ordered vertical slices** **`09`–`
 | 3 | `11-web-client-shell-routing-landmarks.md` | AFK |
 | 4 | `12-web-client-nav-placeholder-routes.md` | AFK |
 | 5 | `13-web-client-church-campus-context.md` | AFK |
-| 6 | `14-web-client-feedback-overlays-patterns-print.md` | **HITL** |
+| 6 | `done/14-web-client-feedback-overlays-patterns-print.md` | Done |
 
-**Tracker:** create one epic issue (optional) plus **six** child issues from **`09`–`14`** bodies. Apply triage label **`ready-for-agent`** to each child when that slice’s **Blocked by** list is satisfied (start with **`09`**). For **`14`**, use **`ready-for-agent`** for implementation pickup; **merge** still requires the **HITL** checklist in that file to be signed off in the tracker.
+**Tracker:** create one epic issue (optional) plus **six** child issues from **`09`–`14`** bodies. Apply triage label **`ready-for-agent`** to each child when that slice’s **Blocked by** list is satisfied (start with **`09`**). Slice **`14`** HITL checklist is signed off in `done/14-web-client-feedback-overlays-patterns-print.md`.
