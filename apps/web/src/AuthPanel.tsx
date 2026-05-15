@@ -4,6 +4,10 @@ import { getSupabaseClient } from './supabaseClient';
 
 type AuthPanelProps = {
   variant?: 'legacy' | 'gate';
+  /** When variant is gate, set false to omit the title block (e.g. profile-not-linked page). */
+  gateShowChrome?: boolean;
+  /** After successful OTP verify — e.g. refresh app auth state. */
+  onSignedIn?: () => void | Promise<void>;
 };
 
 function formatAuthError(message: string): string {
@@ -13,7 +17,11 @@ function formatAuthError(message: string): string {
   return message;
 }
 
-export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
+export function AuthPanel({
+  variant = 'legacy',
+  gateShowChrome = true,
+  onSignedIn,
+}: AuthPanelProps) {
   const { t } = useTranslation('shell');
   const supabase = getSupabaseClient();
   const [email, setEmail] = useState('');
@@ -93,6 +101,8 @@ export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
       setError(formatAuthError(err.message));
       return;
     }
+    await supabase.auth.getSession();
+    await onSignedIn?.();
     setMessage('Signed in. Protected API calls will use your access token.');
     setStep('email');
     setOtp('');
@@ -163,7 +173,7 @@ export function AuthPanel({ variant = 'legacy' }: AuthPanelProps) {
         fontSize: 14,
       }}
     >
-      {variant === 'gate' ? (
+      {variant === 'gate' && gateShowChrome ? (
         <>
           <h1
             className="font-display text-xl font-bold uppercase tracking-tight"

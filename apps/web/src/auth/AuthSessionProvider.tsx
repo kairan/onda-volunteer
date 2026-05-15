@@ -69,8 +69,12 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
+    const sessionUser = sessionData.session.user;
+    const { data: userData } = await supabase.auth.getUser();
+
+    const user = userData?.user ?? sessionUser;
+
+    if (!user?.id) {
       setState({ status: 'unauthenticated', reason: 'signed-out' });
       return;
     }
@@ -85,6 +89,17 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       if (err instanceof ApiRequestError && err.code === 'PROFILE_NOT_LINKED') {
         setState({ status: 'profile-not-linked' });
+        return;
+      }
+      if (
+        err instanceof ApiRequestError &&
+        (err.code === 'AUTH_INVALID' || err.code === 'AUTH_MISCONFIGURED')
+      ) {
+        setState({
+          status: 'error',
+          message:
+            'O backend não aceitou o token JWT. Copie o JWT Secret do Supabase (Settings → API) para SUPABASE_JWT_SECRET em apps/api/.env e reinicie o servidor da API. A sessão no navegador não foi encerrada — você não precisa pedir novo código só por isso.',
+        });
         return;
       }
       setState({

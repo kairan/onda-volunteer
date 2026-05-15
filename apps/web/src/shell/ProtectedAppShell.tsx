@@ -25,7 +25,7 @@ export function ProtectedAppShell({ children }: { children: ReactNode }) {
             {t('supabaseNotConfigured')}
           </p>
         ) : (
-          <AuthPanel variant="gate" />
+          <AuthPanel variant="gate" onSignedIn={() => void auth.refresh()} />
         )}
       </AuthGateLayout>
     );
@@ -38,7 +38,11 @@ export function ProtectedAppShell({ children }: { children: ReactNode }) {
           {t('profileNotLinkedTitle')}
         </h1>
         <p className="text-sm text-foreground/80">{t('profileNotLinkedBody')}</p>
-        <AuthPanel />
+        <AuthPanel
+          variant="gate"
+          gateShowChrome={false}
+          onSignedIn={() => void auth.refresh()}
+        />
       </AuthGateLayout>
     );
   }

@@ -1,5 +1,5 @@
-import { apiErrorCode, apiErrorFromResponse, parseApiErrorBody } from './apiError';
-import { getAccessToken, signOut } from './supabaseClient';
+import { getAccessToken } from './supabaseClient';
+import { apiErrorFromResponse } from './apiError';
 
 export type ProtectedScope = {
   leaderMinistryId?: string;
@@ -68,17 +68,6 @@ export async function fetchWithProtectedHeaders(
     devHeadersAllowed() &&
     Boolean(scope.volunteerId || scope.leaderMinistryId) &&
     Boolean(headers.Authorization);
-
-  if (res.status === 401 && headers.Authorization) {
-    try {
-      const body = parseApiErrorBody(await res.clone().text());
-      if (apiErrorCode(body) === 'AUTH_INVALID') {
-        await signOut();
-      }
-    } catch {
-      // Keep the session when the 401 body cannot be read.
-    }
-  }
 
   if (canRetryWithDev) {
     const devHeaders = await buildProtectedHeaders(scope, {

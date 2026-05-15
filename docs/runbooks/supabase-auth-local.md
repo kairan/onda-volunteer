@@ -89,12 +89,13 @@ Then every protected call **requires** a valid Bearer token.
 | Symptom | Fix |
 |--------|-----|
 | Yellow “Supabase not configured” on web | Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, restart Vite |
-| `AUTH_MISCONFIGURED` / `AUTH_INVALID` | `SUPABASE_JWT_SECRET` must match the **same** Supabase project as the web anon key; sign out or clear site localStorage for a stale session |
+| `AUTH_MISCONFIGURED` / `AUTH_INVALID` | `SUPABASE_JWT_SECRET` must match **JWT Secret** under Project Settings → API for the **same** project as `VITE_SUPABASE_ANON_KEY`. Fix the `.env`, restart API, then Retry on the shell error screen (no new OTP). |
 | `PROFILE_NOT_LINKED` on shell | Enable `AUTH_AUTO_LINK_SEED_VOLUNTEER_ID`, re-seed so demo volunteer has no `authSubjectId`, or run `pnpm link:volunteer-auth -- <sub>` |
 | `LEADER_NOT_AUTHORIZED` | Seed creates leadership for demo volunteer; re-run `pnpm --filter @onda/api prisma:seed` |
 | No email received | Check spam; confirm Email provider enabled; free tier rate limits apply |
 | `email rate limit exceeded` | Supabase free tier caps auth emails/hour; wait ~1h or use **dev bypass** below without sending more OTPs |
-| Session lost after reload | Ensure `SUPABASE_JWT_SECRET` matches your project; a wrong secret used to trigger sign-out on API 401 — fixed in app, but verify env and restart API |
+| Volta para o login logo após OTP / “perdeu sessão” | Quase sempre **`SUPABASE_JWT_SECRET` diferente** do JWT Secret do projeto → a API responde `AUTH_INVALID`. O app **não** apaga mais a sessão do Supabase por isso; alinhe o segredo, reinicie `pnpm dev:api` e use **Tentar de novo** na tela de erro (sem novo e-mail). |
+| `getUser` falha offline | A sessão continua no navegador (`getSession`); o estado de login usa o utilizador da sessão local. |
 
 ### Dev bypass when email limit is hit
 
