@@ -1,0 +1,21 @@
+{
+  "skipToMain": "Skip to main content",
+  "help": "Help",
+  "account": "Account",
+  "language": "Language",
+  "languagePt": "Português (Brasil)",
+  "languageEn": "English",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
+  "churchLabel": "Church",
+  "campusLabel": "Campus",
+  "timezoneCue": "TZ: {{short}}",
+  "timezoneDetails": "IANA timezone: {{iana}}",
+  "nav": {
+    "dashboard": "Dashboard",
+    "scheduling": "Schedule",
+    "ministries": "Ministries",
+    "volunteers": "Volunteers",
+    "timeAway": "Time away"
+  }
+}

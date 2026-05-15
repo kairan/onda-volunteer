@@ -1,0 +1,21 @@
+{
+  "skipToMain": "Ir para o conteúdo principal",
+  "help": "Ajuda",
+  "account": "Conta",
+  "language": "Idioma",
+  "languagePt": "Português (Brasil)",
+  "languageEn": "English",
+  "openMenu": "Abrir menu",
+  "closeMenu": "Fechar menu",
+  "churchLabel": "Igreja",
+  "campusLabel": "Campus",
+  "timezoneCue": "Fuso: {{short}}",
+  "timezoneDetails": "Fuso horário IANA: {{iana}}",
+  "nav": {
+    "dashboard": "Painel",
+    "scheduling": "Agenda",
+    "ministries": "Ministérios",
+    "volunteers": "Voluntários",
+    "timeAway": "Tempo livre"
+  }
+}

@@ -16,14 +16,10 @@ Completed slices are kept under **`done/`** for history. Work remaining issues *
 | 7 | `done/07-supabase-auth-identity-mapping.md` | Done | **Supabase** auth + **Identity** mapping |
 | 8 | `08-web-client-design-system-shell-i18n.md` | Epic | Web client epic — implement via **`09`–`14`** only |
 | 9 | `done/09-web-client-design-foundation.md` | Done | Tailwind + shadcn + tokens + fonts + icon facade |
-| 10 | `10-web-client-i18n-controller.md` | AFK | **`react-i18next`**, namespaces, **`pt-BR`/`en`**, switcher |
-| 11 | `11-web-client-shell-routing-landmarks.md` | AFK | Shell layout, skip link, **`/dashboard`**, preserve **`/`** + **events** |
-| 12 | `12-web-client-nav-placeholder-routes.md` | AFK | Nav manifest + placeholder routes + empty states |
-| 13 | `13-web-client-church-campus-context.md` | AFK | **Church**/**Campus** switchers + timezone cue |
-| 14 | `14-web-client-feedback-overlays-patterns-print.md` | **HITL** | Toasts, errors, overlays, patterns, print (**human sign-off**) |
-
-**HITL notes**
-
-- **14 — Web polish & a11y:** triage with **`ready-for-agent`** when **09–11** are done so an agent can implement; **merge** still needs recorded **human** review (**WCAG 2.2 AA** perception + brand motion), even if automated checks pass.
+| 10 | `done/10-web-client-i18n-controller.md` | Done | **`react-i18next`**, namespaces, **`pt-BR`/`en`**, switcher |
+| 11 | `done/11-web-client-shell-routing-landmarks.md` | Done | Shell layout, skip link, **`/dashboard`**, preserve **`/`** + **events** |
+| 12 | `done/12-web-client-nav-placeholder-routes.md` | Done | Nav manifest + placeholder routes + empty states |
+| 13 | `done/13-web-client-church-campus-context.md` | Done | **Church**/**Campus** switchers + timezone cue |
+| 14 | `done/14-web-client-feedback-overlays-patterns-print.md` | Done | Toasts, errors, overlays, patterns, print (HITL signed off) |
 
 When you create tickets in your tracker, paste each issue body and apply **`ready-for-agent`** when that issue’s **Blocked by** dependencies are cleared (see each slice file).
