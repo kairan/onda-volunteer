@@ -10,6 +10,7 @@ import { useMemo, useState } from 'react';
 import { AuthPanel } from './AuthPanel';
 import { buildProtectedHeaders } from './apiAuthHeaders';
 import type { EventDetailPayload } from './eventDetailPayload';
+import { DesignFoundationPreview } from './routes/designFoundationPreview';
 
 function defaultAssignmentWindow(payload: EventDetailPayload): {
   startsAtUtc: string;
@@ -58,7 +59,7 @@ async function errorMessageFromResponse(res: Response): Promise<string> {
 
 const rootRoute = createRootRoute({
   component: () => (
-    <div style={{ fontFamily: 'system-ui', padding: '1.5rem', maxWidth: 640 }}>
+    <div className="mx-auto min-h-screen max-w-2xl p-6">
       <AuthPanel />
       <Outlet />
     </div>
@@ -77,11 +78,12 @@ const indexRoute = createRoute({
           <Link
             to="/events/$eventId"
             params={{ eventId: id }}
-            style={{ color: '#1a56db' }}
+            className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             View demo event
           </Link>
         </p>
+        <DesignFoundationPreview />
       </main>
     );
   },

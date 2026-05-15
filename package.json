@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
-    "test": "pnpm --filter @onda/api test",
+    "test": "pnpm --filter @onda/api test && pnpm --filter @onda/web test",
     "dev:api": "pnpm --filter @onda/api dev",
     "dev:web": "pnpm --filter @onda/web dev",
     "link:volunteer-auth": "pnpm --filter @onda/api link:volunteer-auth"

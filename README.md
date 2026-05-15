@@ -45,9 +45,9 @@ pnpm dev:web
 
 Open `http://localhost:5173/`, follow **View demo event**, or browse directly to `http://localhost:5173/events/seed-event-public`.
 
-## Tests (API contract)
+## Tests
 
-Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases.
+Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web tests cover the design token contract and foundation primitives (Vitest).
 
 ```bash
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=public"
