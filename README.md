@@ -27,6 +27,10 @@ cd apps/api && pnpm exec prisma generate && pnpm exec prisma migrate deploy && p
 
 The seed creates demo church `seed-church-demo` and public event `seed-event-public` (used by the web `.env.example`).
 
+## Supabase Auth (optional)
+
+For email sign-in and JWT-protected API calls, create a free [Supabase](https://supabase.com) project and follow **[docs/runbooks/supabase-auth-local.md](docs/runbooks/supabase-auth-local.md)**. The web app shows a sign-in panel when `VITE_SUPABASE_*` is set; link your user to the demo volunteer with `pnpm link:volunteer-auth -- <uuid>`.
+
 ## Run API and web
 
 Two terminals:

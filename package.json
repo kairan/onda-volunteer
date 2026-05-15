@@ -5,7 +5,8 @@
     "build": "pnpm -r run build",
     "test": "pnpm --filter @onda/api test",
     "dev:api": "pnpm --filter @onda/api dev",
-    "dev:web": "pnpm --filter @onda/web dev"
+    "dev:web": "pnpm --filter @onda/web dev",
+    "link:volunteer-auth": "pnpm --filter @onda/api link:volunteer-auth"
   },
   "packageManager": "pnpm@11.1.2"
 }

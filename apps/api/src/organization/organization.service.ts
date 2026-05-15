@@ -1,38 +1,32 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
+import { IdentityService } from '../identity/identity.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class OrganizationService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly identity: IdentityService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async deactivateMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;
+    authorizationHeader: string | undefined;
     leaderMinistryIdHeader: string | undefined;
   }) {
-    if (!input.leaderMinistryIdHeader?.trim()) {
-      throw new ForbiddenException({
-        code: 'LEADER_MINISTRY_REQUIRED',
-        message:
-          'Missing X-Leader-Ministry-Id header (non-production dev gate for ministry-scoped leader actions).',
-      });
-    }
-    if (input.leaderMinistryIdHeader !== input.ministryId) {
-      throw new ForbiddenException({
-        code: 'LEADER_MINISTRY_MISMATCH',
-        message: 'Leader ministry scope does not match this membership ministry.',
-      });
-    }
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {

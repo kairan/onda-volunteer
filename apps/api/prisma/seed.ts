@@ -33,12 +33,29 @@ async function main() {
     },
   });
 
+  const demoAuthSubjectId = '00000000-0000-0000-0000-000000000001';
+
   await prisma.volunteer.upsert({
     where: { id: 'seed-volunteer-demo' },
-    update: {},
+    update: { authSubjectId: demoAuthSubjectId },
     create: {
       id: 'seed-volunteer-demo',
       displayName: 'Demo Volunteer',
+      authSubjectId: demoAuthSubjectId,
+    },
+  });
+
+  await prisma.ministryLeader.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: 'seed-ministry-demo',
+      },
+    },
+    update: {},
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-demo',
     },
   });
 
