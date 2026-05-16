@@ -9,14 +9,16 @@ const globalsCss = readFileSync(
 );
 
 describe('theme CSS variable contract', () => {
-  it('defines ADR semantic variables for light-first theming', () => {
+  it('defines ADR semantic variables for the brand layer', () => {
     for (const name of REQUIRED_THEME_CSS_VARIABLES) {
       expect(globalsCss, `missing ${name}`).toContain(`${name}:`);
     }
   });
 
-  it('locks ink primary and warm destructive anchors in :root', () => {
-    expect(globalsCss).toMatch(/--primary:\s*0\s+0%\s+0%/);
+  it('locks gold primary and warm destructive anchors in :root', () => {
+    expect(globalsCss).toMatch(/--primary:\s*45\s+100%\s+50%/);
+    expect(globalsCss).toMatch(/--brand:\s*45\s+100%\s+50%/);
     expect(globalsCss).toMatch(/--destructive:\s*14\s+90%\s+48%/);
+    expect(globalsCss).toMatch(/--radius:\s*0px/);
   });
 });

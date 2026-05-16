@@ -1,4 +1,19 @@
 {
+  "eyebrow": "Comando voluntário",
   "title": "Painel",
-  "body": "Visão geral da sua participação em breve."
+  "body": "A visão geral da sua participação aparecerá aqui com os próximos sinais de agenda e ministério.",
+  "stats": {
+    "ministries": {
+      "label": "Ministérios",
+      "value": "Pronto"
+    },
+    "schedule": {
+      "label": "Agenda",
+      "value": "Próxima"
+    },
+    "timeAway": {
+      "label": "Tempo livre",
+      "value": "Livre"
+    }
+  }
 }

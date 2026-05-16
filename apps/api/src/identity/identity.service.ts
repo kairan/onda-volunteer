@@ -53,7 +53,7 @@ export class IdentityService {
     options: { attemptAutoLink: boolean },
   ): Promise<Volunteer> {
     if (input.authorizationHeader?.startsWith('Bearer ')) {
-      const { sub } = this.jwtVerifier.verifyBearerToken(
+      const { sub } = await this.jwtVerifier.verifyBearerToken(
         input.authorizationHeader,
       );
       let volunteer = await this.prisma.volunteer.findUnique({

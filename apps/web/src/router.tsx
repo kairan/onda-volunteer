@@ -9,6 +9,7 @@ import {
 import { useMemo, useState } from 'react';
 import { AuthPanel } from './AuthPanel';
 import { buildProtectedHeaders } from './apiAuthHeaders';
+import { Button } from './components/ui/button';
 import type { EventDetailPayload } from './eventDetailPayload';
 import { DesignFoundationPreview } from './routes/designFoundationPreview';
 import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
@@ -84,17 +85,29 @@ const indexRoute = createRoute({
   component: function Home() {
     const id = import.meta.env.VITE_DEMO_EVENT_ID ?? 'seed-event-public';
     return (
-      <main>
-        <h1>Volunteer roster</h1>
-        <p>
-          <Link
-            to="/events/$eventId"
-            params={{ eventId: id }}
-            className="font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            View demo event
-          </Link>
-        </p>
+      <main className="flex min-h-[80vh] flex-col justify-center gap-8">
+        <section className="border border-border bg-background p-6">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+            Onda Dura Church
+          </p>
+          <h1 className="max-w-2xl font-display text-6xl font-bold uppercase leading-[0.95] tracking-tight sm:text-7xl">
+            Volunteer roster
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground">
+            A disciplined workspace for church teams to coordinate volunteers,
+            ministries, and service schedules with clarity.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild>
+              <Link to="/dashboard">Open dashboard</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/events/$eventId" params={{ eventId: id }}>
+                View demo event
+              </Link>
+            </Button>
+          </div>
+        </section>
         <DesignFoundationPreview />
       </main>
     );

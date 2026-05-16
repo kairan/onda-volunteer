@@ -10,12 +10,16 @@ export function PlaceholderPage({
 }) {
   const { t } = useTranslation(namespace);
   return (
-    <section className="flex max-w-prose flex-col gap-3">
-      <Icon icon={LayoutTemplate} size={28} aria-hidden />
-      <h1 className="font-display text-2xl font-bold uppercase tracking-tight">
+    <section className="flex max-w-2xl flex-col gap-4 border border-border bg-surface p-6">
+      <div className="flex size-12 items-center justify-center border border-border text-primary">
+        <Icon icon={LayoutTemplate} size={28} aria-hidden />
+      </div>
+      <h1 className="font-display text-5xl font-bold uppercase leading-none tracking-tight">
         {t('title')}
       </h1>
-      <p className="text-sm leading-relaxed">{t('body')}</p>
+      <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+        {t('body')}
+      </p>
     </section>
   );
 }

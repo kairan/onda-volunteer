@@ -3,11 +3,12 @@ import { describe, expect, it } from 'vitest';
 import { Button } from './ui/button';
 
 describe('Button (design foundation)', () => {
-  it('renders default primary action with ink semantic classes', () => {
+  it('renders default primary action with gold semantic classes', () => {
     render(<Button>Confirmar</Button>);
     const button = screen.getByRole('button', { name: 'Confirmar' });
     expect(button.className).toContain('bg-primary');
     expect(button.className).toContain('text-primary-foreground');
+    expect(button.className).toContain('uppercase');
   });
 
   it('renders destructive actions with warm destructive semantic classes', () => {

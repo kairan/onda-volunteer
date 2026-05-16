@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted; visual-direction details superseded by ADR 0002.
 
 ## Context
 

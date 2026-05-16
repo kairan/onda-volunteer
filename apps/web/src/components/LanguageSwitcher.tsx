@@ -16,20 +16,22 @@ export function LanguageSwitcher() {
   return (
     <fieldset className="border-0 p-0">
       <legend className="sr-only">{t('language')}</legend>
-      <div className="flex flex-col gap-1 text-sm">
-        <label className="flex cursor-pointer items-center gap-2">
+      <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+        <label className="flex cursor-pointer items-center gap-2 hover:text-foreground">
           <input
             type="radio"
             name="ui-locale"
+            className="accent-primary"
             checked={current === 'pt-BR'}
             onChange={() => void select('pt-BR')}
           />
           {t('languagePt')}
         </label>
-        <label className="flex cursor-pointer items-center gap-2">
+        <label className="flex cursor-pointer items-center gap-2 hover:text-foreground">
           <input
             type="radio"
             name="ui-locale"
+            className="accent-primary"
             checked={current === 'en'}
             onChange={() => void select('en')}
           />

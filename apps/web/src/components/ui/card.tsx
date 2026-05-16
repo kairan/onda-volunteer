@@ -8,7 +8,7 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-[var(--radius)] border border-border bg-background text-foreground',
+        'rounded-[var(--radius)] border border-border bg-surface text-surface-foreground',
         className,
       )}
       {...props}
@@ -21,7 +21,7 @@ export function CardHeader({
   ...props
 }: React.ComponentProps<'div'>) {
   return (
-    <div className={cn('flex flex-col gap-1.5 p-6', className)} {...props} />
+    <div className={cn('flex flex-col gap-2 p-6', className)} {...props} />
   );
 }
 
@@ -32,7 +32,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        'font-display text-lg font-bold uppercase tracking-tight',
+        'font-display text-xl font-bold uppercase leading-none tracking-tight',
         className,
       )}
       {...props}
