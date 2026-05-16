@@ -27,11 +27,11 @@ export function OrganizationContextControls({
   const shortTz = shortTimezoneLabel(timezone);
 
   return (
-    <div className="space-y-2 px-3 pb-3">
-      <label className="block text-xs font-medium">
+    <div className="flex flex-col gap-2 px-4 pb-3">
+      <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
         {t('churchLabel')}
         <select
-          className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm"
+          className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm normal-case tracking-normal text-foreground"
           value={activeChurch?.id}
           aria-label={t('churchLabel')}
           onChange={(event) => onChurchChange(event.target.value)}
@@ -45,10 +45,10 @@ export function OrganizationContextControls({
       </label>
 
       {campuses.length > 1 ? (
-        <label className="block text-xs font-medium">
+        <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           {t('campusLabel')}
           <select
-            className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm"
+            className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm normal-case tracking-normal text-foreground"
             value={activeCampus?.id}
             aria-label={t('campusLabel')}
             onChange={(event) => onCampusChange(event.target.value)}
@@ -61,12 +61,12 @@ export function OrganizationContextControls({
           </select>
         </label>
       ) : campuses.length === 1 ? (
-        <p className="text-xs text-foreground/80">
+        <p className="text-xs text-muted-foreground">
           {t('campusLabel')}: {campuses[0].name}
         </p>
       ) : null}
 
-      <p className="text-xs" title={t('timezoneDetails', { iana: timezone })}>
+      <p className="text-xs text-muted-foreground" title={t('timezoneDetails', { iana: timezone })}>
         {t('timezoneCue', { short: shortTz })}
       </p>
     </div>

@@ -43,23 +43,23 @@ export function AppShell({ children }: { children?: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
       >
         {t('shell:skipToMain')}
       </a>
 
       <div className="flex min-h-screen">
         <aside
-          className="hidden w-[260px] shrink-0 flex-col border-r border-border md:flex"
+          className="hidden w-[260px] shrink-0 flex-col border-r border-border bg-background md:flex"
           aria-label={t('shell:openMenu')}
         >
           <ShellBrand />
           {loading ? (
-            <p className="px-3 pb-3 text-xs text-foreground/70">
+            <p className="px-4 pb-3 text-xs uppercase tracking-[0.16em] text-muted-foreground">
               {t('shell:organizationLoading')}
             </p>
           ) : error ? (
-            <p className="px-3 pb-3 text-xs text-destructive" role="alert">
+            <p className="px-4 pb-3 text-xs text-destructive" role="alert">
               {error}
             </p>
           ) : churches.length > 0 && activeChurchId ? (
@@ -71,7 +71,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
               onCampusChange={onCampusChange}
             />
           ) : null}
-          <nav className="flex flex-1 flex-col gap-1 px-3 py-4" aria-label="Primary">
+          <nav className="flex flex-1 flex-col gap-2 px-3 py-4" aria-label="Primary">
             {PRIMARY_NAV_MANIFEST.map((item) => (
               <ShellNavLink
                 key={item.id}
@@ -80,8 +80,11 @@ export function AppShell({ children }: { children?: ReactNode }) {
               />
             ))}
           </nav>
-          <footer className="mt-auto space-y-3 border-t border-border px-4 py-4">
-            <ExternalLink href="https://example.com/help" className="text-sm">
+          <footer className="mt-auto flex flex-col gap-3 border-t border-border px-4 py-4">
+            <ExternalLink
+              href="https://example.com/help"
+              className="text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
+            >
               {t('shell:help')}
             </ExternalLink>
             <LanguageSwitcher />
@@ -92,7 +95,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
           <header className="sticky top-0 z-40 flex items-center gap-2 border-b border-border bg-background px-3 py-2 md:hidden">
             <button
               type="button"
-              className={CHROME_ICON_HIT}
+              className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav-sheet"
               onClick={() => setMobileNavOpen((open) => !open)}
@@ -104,7 +107,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
             <div className="ml-auto flex items-center gap-1">
               <button
                 type="button"
-                className={CHROME_ICON_HIT}
+                className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
                 aria-expanded={accountOpen}
                 aria-controls="mobile-account-panel"
                 onClick={() => setAccountOpen((open) => !open)}
@@ -132,7 +135,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
                   <ShellBrand />
                   <button
                     type="button"
-                    className={CHROME_ICON_HIT}
+                    className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
                     onClick={() => setMobileNavOpen(false)}
                   >
                     <span className="sr-only">{t('shell:closeMenu')}</span>
@@ -154,9 +157,12 @@ export function AppShell({ children }: { children?: ReactNode }) {
           {accountOpen ? (
             <div
               id="mobile-account-panel"
-              className="border-b border-border px-4 py-3 md:hidden"
+              className="border-b border-border bg-surface px-4 py-3 md:hidden"
             >
-              <ExternalLink href="https://example.com/help" className="mb-3 text-sm">
+              <ExternalLink
+                href="https://example.com/help"
+                className="mb-3 text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
+              >
                 {t('shell:help')}
               </ExternalLink>
               <LanguageSwitcher />
@@ -175,10 +181,13 @@ export function AppShell({ children }: { children?: ReactNode }) {
 function ShellBrand({ compact }: { compact?: boolean }) {
   const { t } = useTranslation('common');
   return (
-    <div className={cn('px-3 py-4', compact && 'px-0 py-0')}>
-      <p className="font-display text-lg font-bold uppercase tracking-tight">
+    <div className={cn('px-4 py-5', compact && 'px-0 py-0')}>
+      <p className="font-display text-xl font-bold uppercase leading-none tracking-tight">
         {compact ? t('appName') : t('appNameFull')}
       </p>
+      {!compact ? (
+        <div className="mt-3 h-1 w-12 bg-primary" aria-hidden />
+      ) : null}
     </div>
   );
 }

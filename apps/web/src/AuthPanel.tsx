@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from './components/ui/button';
 import { getSupabaseClient } from './supabaseClient';
 
 type AuthPanelProps = {
@@ -51,14 +52,7 @@ export function AuthPanel({
   if (!supabase) {
     return (
       <aside
-        style={{
-          marginBottom: 24,
-          padding: 16,
-          border: '1px solid #fde68a',
-          borderRadius: 8,
-          background: '#fffbeb',
-          fontSize: 14,
-        }}
+        className="mb-6 border border-border bg-surface p-4 text-sm text-surface-foreground"
       >
         <strong>Supabase not configured.</strong> Copy{' '}
         <code>apps/web/.env.example</code> → <code>apps/web/.env</code> and set{' '}
@@ -117,104 +111,87 @@ export function AuthPanel({
   if (userId) {
     return (
       <aside
-        style={{
-          marginBottom: variant === 'legacy' ? 24 : 0,
-          padding: 16,
-          border: '1px solid #bbf7d0',
-          borderRadius: 8,
-          background: '#f0fdf4',
-          fontSize: 14,
-        }}
+        className={variant === 'legacy'
+          ? 'mb-6 border border-border bg-surface p-4 text-sm text-surface-foreground'
+          : 'border border-border bg-surface p-4 text-sm text-surface-foreground'}
       >
-        <p style={{ margin: '0 0 8px' }}>
+        <p className="mb-2">
           <strong>Signed in</strong> as {emailDisplay ?? 'user'}
         </p>
         {variant === 'legacy' ? (
           <>
-            <p style={{ margin: '0 0 8px', wordBreak: 'break-all' }}>
+            <p className="mb-2 break-all">
               Auth subject (<code>sub</code>): <code>{userId}</code>
             </p>
-            <p style={{ margin: '0 0 12px', color: '#166534' }}>
+            <p className="mb-3 text-muted-foreground">
               Link the demo volunteer once (from repo root, with Postgres running):
             </p>
             <pre
-              style={{
-                margin: '0 0 12px',
-                padding: 12,
-                background: '#fff',
-                borderRadius: 6,
-                fontSize: 12,
-                overflow: 'auto',
-              }}
+              className="mb-3 overflow-auto border border-border bg-background p-3 text-xs"
             >
               {`pnpm link:volunteer-auth ${userId}`}
             </pre>
           </>
         ) : null}
-        <button
+        <Button
           type="button"
           onClick={() => void signOut()}
-          style={{ padding: '6px 12px', cursor: 'pointer' }}
+          size="sm"
         >
           Sign out
-        </button>
+        </Button>
       </aside>
     );
   }
 
   return (
     <aside
-      style={{
-        marginBottom: variant === 'legacy' ? 24 : 0,
-        padding: 16,
-        border: '1px solid #e5e7eb',
-        borderRadius: 8,
-        background: '#f9fafb',
-        fontSize: 14,
-      }}
+      className={variant === 'legacy'
+        ? 'mb-6 border border-border bg-surface p-4 text-sm text-surface-foreground'
+        : 'border border-border bg-surface p-5 text-sm text-surface-foreground'}
     >
       {variant === 'gate' && gateShowChrome ? (
         <>
           <h1
-            className="font-display text-xl font-bold uppercase tracking-tight"
-            style={{ margin: '0 0 8px' }}
+            className="mb-2 font-display text-5xl font-bold uppercase leading-none tracking-tight"
           >
             {t('signInTitle')}
           </h1>
-          <p style={{ margin: '0 0 12px', color: '#555' }}>{t('signInPrompt')}</p>
+          <p className="mb-4 text-muted-foreground">{t('signInPrompt')}</p>
         </>
       ) : (
         <>
-          <h2 style={{ margin: '0 0 8px', fontSize: 16 }}>Sign in (Supabase)</h2>
-          <p style={{ margin: '0 0 12px', color: '#555' }}>
+          <h2 className="mb-2 font-display text-2xl font-bold uppercase leading-none tracking-tight">
+            Sign in (Supabase)
+          </h2>
+          <p className="mb-4 text-muted-foreground">
             Email one-time code. After sign-in, link your auth subject to the seeded
             demo volunteer (command shown above).
           </p>
         </>
       )}
       {step === 'email' ? (
-        <form onSubmit={(e) => void sendOtp(e)}>
-          <label style={{ display: 'block' }}>
+        <form className="flex flex-col gap-3" onSubmit={(e) => void sendOtp(e)}>
+          <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Email
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={{ display: 'block', width: '100%', marginTop: 4 }}
+              className="mt-1 block w-full border border-border bg-background px-3 py-2 text-sm normal-case tracking-normal text-foreground"
             />
           </label>
-          <button
+          <Button
             type="submit"
             disabled={busy}
-            style={{ marginTop: 12, padding: '8px 14px', cursor: busy ? 'wait' : 'pointer' }}
           >
             {busy ? 'Sending…' : 'Send code'}
-          </button>
+          </Button>
         </form>
       ) : (
-        <form onSubmit={(e) => void verifyOtp(e)}>
-          <label style={{ display: 'block' }}>
+        <form className="flex flex-col gap-3" onSubmit={(e) => void verifyOtp(e)}>
+          <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             Code from email
             <input
               type="text"
@@ -223,36 +200,35 @@ export function AuthPanel({
               required
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              style={{ display: 'block', width: '100%', marginTop: 4 }}
+              className="mt-1 block w-full border border-border bg-background px-3 py-2 text-sm normal-case tracking-normal text-foreground"
             />
           </label>
-          <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
-            <button
+          <div className="flex flex-wrap gap-2">
+            <Button
               type="submit"
               disabled={busy}
-              style={{ padding: '8px 14px', cursor: busy ? 'wait' : 'pointer' }}
             >
               {busy ? 'Verifying…' : 'Verify code'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
               onClick={() => {
                 setStep('email');
                 setOtp('');
                 setMessage(null);
               }}
-              style={{ padding: '8px 14px', cursor: 'pointer' }}
             >
               Use another email
-            </button>
+            </Button>
           </div>
         </form>
       )}
       {message ? (
-        <p style={{ marginTop: 12, marginBottom: 0, color: '#166534' }}>{message}</p>
+        <p className="mt-3 text-sm text-muted-foreground">{message}</p>
       ) : null}
       {error ? (
-        <p role="alert" style={{ marginTop: 12, marginBottom: 0, color: '#991b1b' }}>
+        <p role="alert" className="mt-3 text-sm text-destructive">
           {error}
         </p>
       ) : null}

@@ -1,4 +1,19 @@
 {
+  "eyebrow": "Volunteer command",
   "title": "Dashboard",
-  "body": "Your participation overview will appear here."
+  "body": "Your participation overview will appear here with the next scheduling and ministry signals.",
+  "stats": {
+    "ministries": {
+      "label": "Ministries",
+      "value": "Ready"
+    },
+    "schedule": {
+      "label": "Schedule",
+      "value": "Next"
+    },
+    "timeAway": {
+      "label": "Time away",
+      "value": "Clear"
+    }
+  }
 }
