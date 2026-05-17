@@ -1,4 +1,14 @@
 {
   "title": "Schedule",
-  "body": "Events and rosters will appear here."
+  "body": "Explore events and serving opportunities for your church.",
+  "emptyState": "No upcoming events found for this church.",
+  "loading": "Loading events...",
+  "createTitle": "Create Event",
+  "kindLabel": "Kind",
+  "titleLabel": "Title",
+  "startsAtLabel": "Starts at",
+  "endsAtLabel": "Ends at",
+  "ministryLabel": "Ministry",
+  "submit": "Create Event",
+  "successToast": "Event created successfully"
 }

@@ -1,4 +1,16 @@
 {
   "title": "Time away",
-  "body": "Record when you cannot serve for a ministry."
+  "body": "Record when you cannot serve for a ministry.",
+  "upcoming": "Upcoming unavailability",
+  "createTitle": "Record unavailability",
+  "ministryLabel": "Ministry",
+  "startsAtLabel": "Starts at",
+  "endsAtLabel": "Ends at",
+  "submit": "Record unavailability",
+  "saving": "Saving...",
+  "emptyState": "No upcoming unavailability recorded.",
+  "successToast": "Unavailability recorded successfully",
+  "successBulkToast": "Unavailability recorded across {{count}} ministries",
+  "noMinistries": "You must be a member of at least one ministry to record unavailability.",
+  "mirrorLabel": "Mirror across all my ministries in this church"
 }

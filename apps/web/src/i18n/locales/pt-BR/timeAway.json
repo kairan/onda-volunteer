@@ -1,4 +1,16 @@
 {
   "title": "Tempo livre",
-  "body": "Registre quando você não pode servir em um ministério."
+  "body": "Registre quando você não pode servir em um ministério.",
+  "upcoming": "Indisponibilidades futuras",
+  "createTitle": "Registrar indisponibilidade",
+  "ministryLabel": "Ministério",
+  "startsAtLabel": "Início",
+  "endsAtLabel": "Término",
+  "submit": "Registrar indisponibilidade",
+  "saving": "Salvando...",
+  "emptyState": "Nenhuma indisponibilidade futura registrada.",
+  "successToast": "Indisponibilidade registrada com sucesso",
+  "successBulkToast": "Indisponibilidade registrada em {{count}} ministérios",
+  "noMinistries": "Você deve ser membro de pelo menos um ministério para registrar indisponibilidade.",
+  "mirrorLabel": "Replicar em todos os meus ministérios nesta igreja"
 }

@@ -19,14 +19,14 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/scheduling',
     labelKey: 'shell:nav.scheduling',
     namespace: 'scheduling',
-    placeholder: true,
+    placeholder: false,
   },
   {
     id: 'ministries',
     path: '/ministries',
     labelKey: 'shell:nav.ministries',
     namespace: 'ministries',
-    placeholder: true,
+    placeholder: false,
   },
   {
     id: 'volunteers',
@@ -40,6 +40,6 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/time-away',
     labelKey: 'shell:nav.timeAway',
     namespace: 'timeAway',
-    placeholder: true,
+    placeholder: false,
   },
 ];

@@ -3,8 +3,11 @@ import {
   Controller,
   Get,
   Headers,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { SchedulingService } from '../scheduling/scheduling.service';
 import { EventsService } from './events.service';
@@ -24,9 +27,57 @@ export class EventsController {
     private readonly scheduling: SchedulingService,
   ) {}
 
+  @Post()
+  createEvent(
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerId: string | undefined,
+    @Body()
+    body: {
+      kind: 'PUBLIC' | 'PRIVATE';
+      title: string;
+      startsAtUtc: string;
+      endsAtUtc: string;
+      churchId: string;
+      ministryId?: string;
+    },
+  ) {
+    return this.events.createEvent({
+      ...body,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerId,
+    });
+  }
+
+  @Get()
+  getEvents(
+    @Query('churchId') churchId: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerId: string | undefined,
+  ) {
+    return this.events.getEvents({
+      churchId,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerId,
+    });
+  }
+
   @Get(':id')
   getDetail(@Param('id') id: string) {
     return this.events.getEventDetail(id);
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  cancelEvent(
+    @Param('id') eventId: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerId: string | undefined,
+  ) {
+    return this.events.cancelEvent({
+      eventId,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerId,
+    });
   }
 
   @Post(':id/assignments')

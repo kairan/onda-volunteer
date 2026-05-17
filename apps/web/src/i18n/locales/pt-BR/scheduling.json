@@ -1,4 +1,14 @@
 {
   "title": "Agenda",
-  "body": "Eventos e escalas aparecerão aqui."
+  "body": "Explore eventos e oportunidades de servir em sua igreja.",
+  "emptyState": "Nenhum evento futuro encontrado para esta igreja.",
+  "loading": "Carregando eventos...",
+  "createTitle": "Criar Evento",
+  "kindLabel": "Tipo",
+  "titleLabel": "Título",
+  "startsAtLabel": "Início",
+  "endsAtLabel": "Término",
+  "ministryLabel": "Ministério",
+  "submit": "Criar Evento",
+  "successToast": "Evento criado com sucesso"
 }

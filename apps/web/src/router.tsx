@@ -14,6 +14,10 @@ import type { EventDetailPayload } from './eventDetailPayload';
 import { DesignFoundationPreview } from './routes/designFoundationPreview';
 import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
 import { DashboardPage } from './routes/dashboard';
+import { SchedulingPage } from './routes/scheduling';
+import { EventDetailPage } from './routes/eventDetail';
+import { TimeAwayPage } from './routes/time-away';
+import { MinistriesPage } from './routes/ministries';
 import { PlaceholderPage } from './routes/placeholderPage';
 import { RouteErrorPanel } from './shell/RouteErrorPanel';
 import { ProtectedAppShell } from './shell/ProtectedAppShell';
@@ -560,16 +564,33 @@ const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
     path: item.path,
-    component: shellPage(() =>
-      item.placeholder ? (
-        <PlaceholderPage namespace={item.namespace} />
-      ) : (
-        <DashboardPage />
-      ),
-    ),
+    component: shellPage(() => {
+      if (item.placeholder) {
+        return <PlaceholderPage namespace={item.namespace} />;
+      }
+      switch (item.id) {
+        case 'dashboard':
+          return <DashboardPage />;
+        case 'scheduling':
+          return <SchedulingPage />;
+        case 'timeAway':
+          return <TimeAwayPage />;
+        case 'ministries':
+          return <MinistriesPage />;
+        default:
+          return <PlaceholderPage namespace={item.namespace} />;
+      }
+    }),
     errorComponent: shellErrorComponent,
   }),
 );
+
+const eventDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/scheduling/events/$eventId',
+  component: shellPage(() => <EventDetailPage />),
+  errorComponent: shellErrorComponent,
+});
 
 export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
   const eventRoute = createEventRoute(
@@ -578,6 +599,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute, eventRoute]),
     ...shellRoutes,
+    eventDetailRoute,
   ]);
 }
 

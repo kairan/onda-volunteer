@@ -8,6 +8,7 @@ export type EventDetailPayload = {
     id: string;
     kind: 'PUBLIC' | 'PRIVATE';
     title: string;
+    voidedAtUtc: string | null;
     window: {
       startsAtUtc: string;
       endsAtUtc: string;
