@@ -6,6 +6,7 @@ export type AuthSessionState =
       status: 'authenticated';
       volunteerId: string;
       displayName: string;
+      uiLocale: string | null;
     }
   | { status: 'profile-not-linked' }
   | { status: 'error'; message: string };

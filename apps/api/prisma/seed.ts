@@ -101,6 +101,33 @@ async function main() {
     },
   });
 
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-admin' },
+    update: {
+      displayName: 'Kairan Moraes',
+      authSubjectId: '4c544b4d-4e3f-48b4-858a-f450f16998e9',
+    },
+    create: {
+      id: 'seed-volunteer-admin',
+      displayName: 'Kairan Moraes',
+      authSubjectId: '4c544b4d-4e3f-48b4-858a-f450f16998e9',
+    },
+  });
+
+  await prisma.adminAccreditation.upsert({
+    where: {
+      volunteerId_churchId: {
+        volunteerId: 'seed-volunteer-admin',
+        churchId: churchCentral.id,
+      },
+    },
+    update: {},
+    create: {
+      volunteerId: 'seed-volunteer-admin',
+      churchId: churchCentral.id,
+    },
+  });
+
   await prisma.ministryLeader.upsert({
     where: {
       volunteerId_ministryId: {

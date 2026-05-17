@@ -1,16 +1,27 @@
 import { useTranslation } from 'react-i18next';
 import { changeLocale } from '@/i18n/controller';
 import type { SupportedLocale } from '@/i18n/localePersistence';
+import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { updateIdentityMe } from '@/identity/updateIdentityMe';
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation('shell');
+  const session = useAuthSession();
   const current = i18n.language === 'en' ? 'en' : 'pt-BR';
 
   async function select(locale: SupportedLocale) {
     if (locale === current) {
       return;
     }
-    await changeLocale(locale);
+
+    const onSave =
+      session.status === 'authenticated'
+        ? async (l: SupportedLocale) => {
+            await updateIdentityMe({ uiLocale: l });
+          }
+        : undefined;
+
+    await changeLocale(locale, undefined, onSave);
   }
 
   return (

@@ -11,6 +11,8 @@ import { ApiRequestError } from '@/apiError';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { getSupabaseClient } from '@/supabaseClient';
 import { isAccessTokenUsable } from '@/sessionToken';
+import { initI18n } from '@/i18n/controller';
+import type { SupportedLocale } from '@/i18n/localePersistence';
 import {
   type AuthSessionState,
   demoVolunteerId,
@@ -93,10 +95,14 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
 
     try {
       const me = await fetchIdentityMe({ bearerAccessToken: accessToken });
+      if (me.volunteer.uiLocale) {
+        void initI18n(undefined, me.volunteer.uiLocale as SupportedLocale);
+      }
       setState({
         status: 'authenticated',
         volunteerId: me.volunteer.id,
         displayName: me.volunteer.displayName,
+        uiLocale: me.volunteer.uiLocale,
       });
     } catch (err) {
       if (err instanceof ApiRequestError && err.code === 'PROFILE_NOT_LINKED') {
