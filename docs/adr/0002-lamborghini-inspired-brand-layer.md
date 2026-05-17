@@ -1,5 +1,11 @@
 # ADR 0002: Lamborghini-inspired brand layer
 
+## Status
+
+Superseded by ADR 0003 (HOPE design system).
+
+---
+
 Onda will adopt the downloaded Lamborghini-inspired design as a brand layer, not as a literal clone of Lamborghini's site or as a wholesale replacement for operational product usability. Public entry, authentication, global shell chrome, page headers, empty states, and dashboard hero moments should carry the darker, sharper, more cinematic direction; dense scheduling forms, tables, validation, and roster workflows should remain calm, readable, accessible, and productivity-oriented.
 
 The brand layer uses absolute black and white as the dominant field, introduces gold as the primary brand CTA/accent, sharpens default geometry toward zero-radius, and pushes Archivo Narrow harder for uppercase display moments while keeping Inter for UI, body text, navigation, forms, tables, and long `pt-BR` strings. Existing semantic colors remain reserved for focus, destructive, success, warning, and validation states; cyan/link-blue from the reference design are not general decorative accents. Protected desktop navigation keeps the sidebar model, restyled toward the darker brand system, while public and mobile surfaces may use the floating/hamburger pattern. The direction should feel disciplined, cinematic, confident, and service-oriented rather than aggressive, intimidating, or luxury-exclusive.
