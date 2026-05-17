@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+import i18n, { type InitOptions } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import {
   type LocalePersistence,
@@ -22,41 +22,44 @@ export function getLocalePersistence(): LocalePersistence {
 }
 
 export function missingKeyDevMarker(
-  lngs: readonly string[],
-  ns: string,
   key: string,
 ): string {
   if (import.meta.env.DEV) {
-    return `[missing:${lngs.join(',')}/${ns}:${key}]`;
+    return `[missing:${key}]`;
   }
   return key;
 }
 
 export async function initI18n(
   persistence: LocalePersistence = getLocalePersistence(),
+  serverLocale?: SupportedLocale | null,
 ): Promise<typeof i18n> {
-  if (initPromise) {
+  if (initPromise && !serverLocale) {
     return initPromise;
   }
 
-  const initialLocale = resolveInitialLocale(persistence);
+  const initialLocale = serverLocale || resolveInitialLocale(persistence);
 
-  initPromise = i18n
-    .use(initReactI18next)
-    .init({
-      resources: i18nResources,
-      lng: initialLocale,
-      fallbackLng: {
-        'pt-BR': ['en'],
-        default: ['en'],
-      },
-      ns: [...CORE_NAMESPACES],
-      defaultNS: 'common',
-      interpolation: { escapeValue: false },
-      returnEmptyString: false,
-      parseMissingKeyHandler: missingKeyDevMarker,
-    })
-    .then(() => i18n);
+  const initOptions: InitOptions = {
+    resources: i18nResources,
+    lng: initialLocale,
+    fallbackLng: {
+      'pt-BR': ['en'],
+      default: ['en'],
+    },
+    ns: [...CORE_NAMESPACES],
+    defaultNS: 'common',
+    interpolation: { escapeValue: false },
+    returnEmptyString: false,
+    parseMissingKeyHandler: missingKeyDevMarker,
+  };
+
+  if (initPromise) {
+    await i18n.changeLanguage(initialLocale);
+    return i18n;
+  }
+
+  initPromise = i18n.use(initReactI18next).init(initOptions).then(() => i18n);
 
   return initPromise;
 }
@@ -64,9 +67,13 @@ export async function initI18n(
 export async function changeLocale(
   locale: SupportedLocale,
   persistence: LocalePersistence = getLocalePersistence(),
+  onSave?: (locale: SupportedLocale) => Promise<void>,
 ): Promise<void> {
   await initI18n(persistence);
   persistence.save(locale);
+  if (onSave) {
+    await onSave(locale);
+  }
   await i18n.changeLanguage(locale);
 }
 

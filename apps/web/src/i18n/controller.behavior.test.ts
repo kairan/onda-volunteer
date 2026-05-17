@@ -20,7 +20,6 @@ function memoryStorage() {
 
 afterEach(() => {
   resetI18nForTests();
-  void i18n.off();
 });
 
 describe('i18n controller', () => {
@@ -53,8 +52,8 @@ describe('i18n controller', () => {
   });
 
   it('marks catastrophic missing keys in development diagnostics', () => {
-    expect(missingKeyDevMarker(['pt-BR'], 'shell', 'unknown.key')).toBe(
-      '[missing:pt-BR/shell:unknown.key]',
+    expect(missingKeyDevMarker('unknown.key')).toBe(
+      '[missing:unknown.key]',
     );
   });
 });

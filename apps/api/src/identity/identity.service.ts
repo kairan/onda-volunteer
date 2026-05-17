@@ -33,9 +33,26 @@ export class IdentityService {
       volunteer: {
         id: volunteer.id,
         displayName: volunteer.displayName,
+        uiLocale: volunteer.uiLocale,
       },
       authSubjectId: volunteer.authSubjectId,
     };
+  }
+
+  async updateMe(
+    input: {
+      authorizationHeader: string | undefined;
+      devVolunteerIdHeader: string | undefined;
+    },
+    data: { uiLocale?: string },
+  ) {
+    const volunteer = await this.requireVolunteer(input);
+    return this.prisma.volunteer.update({
+      where: { id: volunteer.id },
+      data: {
+        uiLocale: data.uiLocale,
+      },
+    });
   }
 
   async requireVolunteer(input: {
