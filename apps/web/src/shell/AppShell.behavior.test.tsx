@@ -45,6 +45,29 @@ describe('App shell routing', () => {
     );
   });
 
+  it('renders HOPE shell chrome without losing routed navigation', async () => {
+    await initI18n();
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    expect(primaryNav.closest('aside')?.className).toContain('border-r-2');
+
+    const brand = screen.getAllByText('ON/DA')[0].parentElement;
+    expect(brand?.className).toContain('border-2');
+    expect(brand?.className).toContain('shadow-[4px_4px_0_0_hsl(var(--border))]');
+
+    const activeDashboardLink = within(primaryNav).getByRole('link', {
+      name: 'Painel',
+    });
+    expect(activeDashboardLink.className).toContain('bg-primary');
+    expect(activeDashboardLink.className).toContain('shadow-[4px_4px_0_0_hsl(var(--border))]');
+    expect(activeDashboardLink.className).toContain('normal-case');
+  });
+
   it('keeps legacy / home outside the shell chrome', async () => {
     await initI18n();
     const { routeTree } = buildTestRouteTree();

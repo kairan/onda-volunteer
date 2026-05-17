@@ -43,14 +43,14 @@ export function AppShell({ children }: { children?: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:border-2 focus:border-border focus:bg-primary focus:px-3 focus:py-2 focus:font-semibold focus:text-primary-foreground focus:shadow-[4px_4px_0_0_hsl(var(--border))]"
       >
         {t('shell:skipToMain')}
       </a>
 
       <div className="flex min-h-screen">
         <aside
-          className="hidden w-[260px] shrink-0 flex-col border-r border-border bg-background md:flex"
+          className="hidden w-[260px] shrink-0 flex-col border-r-2 border-border bg-surface md:flex"
           aria-label={t('shell:openMenu')}
         >
           <ShellBrand />
@@ -71,7 +71,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
               onCampusChange={onCampusChange}
             />
           ) : null}
-          <nav className="flex flex-1 flex-col gap-2 px-3 py-4" aria-label="Primary">
+          <nav className="flex flex-1 flex-col gap-3 px-3 py-4" aria-label="Primary">
             {PRIMARY_NAV_MANIFEST.map((item) => (
               <ShellNavLink
                 key={item.id}
@@ -80,7 +80,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
               />
             ))}
           </nav>
-          <footer className="mt-auto flex flex-col gap-3 border-t border-border px-4 py-4">
+          <footer className="mt-auto flex flex-col gap-3 border-t-2 border-border px-4 py-4">
             <ExternalLink
               href="https://example.com/help"
               className="text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
@@ -92,10 +92,10 @@ export function AppShell({ children }: { children?: ReactNode }) {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-40 flex items-center gap-2 border-b border-border bg-background px-3 py-2 md:hidden">
+          <header className="sticky top-0 z-40 flex items-center gap-2 border-b-2 border-border bg-surface px-3 py-2 md:hidden">
             <button
               type="button"
-              className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
+              className={cn(CHROME_ICON_HIT, 'border-2 border-border bg-surface text-foreground shadow-[3px_3px_0_0_hsl(var(--border))] hover:bg-primary')}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav-sheet"
               onClick={() => setMobileNavOpen((open) => !open)}
@@ -107,7 +107,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
             <div className="ml-auto flex items-center gap-1">
               <button
                 type="button"
-                className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
+                className={cn(CHROME_ICON_HIT, 'border-2 border-border bg-surface text-foreground shadow-[3px_3px_0_0_hsl(var(--border))] hover:bg-primary')}
                 aria-expanded={accountOpen}
                 aria-controls="mobile-account-panel"
                 onClick={() => setAccountOpen((open) => !open)}
@@ -128,14 +128,14 @@ export function AppShell({ children }: { children?: ReactNode }) {
               onClick={() => setMobileNavOpen(false)}
             >
               <nav
-                className="h-full w-[min(280px,85vw)] border-r border-border bg-background p-4"
+                className="h-full w-[min(280px,85vw)] border-r-2 border-border bg-surface p-4"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="mb-4 flex items-center justify-between">
                   <ShellBrand />
                   <button
                     type="button"
-                    className={cn(CHROME_ICON_HIT, 'text-foreground hover:text-primary')}
+                    className={cn(CHROME_ICON_HIT, 'border-2 border-border bg-surface text-foreground shadow-[3px_3px_0_0_hsl(var(--border))] hover:bg-primary')}
                     onClick={() => setMobileNavOpen(false)}
                   >
                     <span className="sr-only">{t('shell:closeMenu')}</span>
@@ -157,7 +157,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
           {accountOpen ? (
             <div
               id="mobile-account-panel"
-              className="border-b border-border bg-surface px-4 py-3 md:hidden"
+              className="border-b-2 border-border bg-surface px-4 py-3 md:hidden"
             >
               <ExternalLink
                 href="https://example.com/help"
@@ -179,15 +179,16 @@ export function AppShell({ children }: { children?: ReactNode }) {
 }
 
 function ShellBrand({ compact }: { compact?: boolean }) {
-  const { t } = useTranslation('common');
   return (
-    <div className={cn('px-4 py-5', compact && 'px-0 py-0')}>
-      <p className="font-display text-xl font-bold uppercase leading-none tracking-tight">
-        {compact ? t('appName') : t('appNameFull')}
+    <div
+      className={cn(
+        'm-4 inline-block border-2 border-border bg-primary px-3 py-2 shadow-[4px_4px_0_0_hsl(var(--border))]',
+        compact && 'm-0',
+      )}
+    >
+      <p className="font-display text-xl font-extrabold uppercase leading-none tracking-tight">
+        ON/DA
       </p>
-      {!compact ? (
-        <div className="mt-3 h-1 w-12 bg-primary" aria-hidden />
-      ) : null}
     </div>
   );
 }
@@ -202,8 +203,19 @@ function ShellNavLink({
   onNavigate?: () => void;
 }) {
   return (
-    <Button variant="ghost" className="w-full justify-start" asChild>
-      <Link to={to} onClick={onNavigate}>
+    <Button
+      variant="ghost"
+      className="w-full justify-start font-medium normal-case tracking-normal"
+      asChild
+    >
+      <Link
+        to={to}
+        activeProps={{
+          className:
+            'bg-primary text-primary-foreground shadow-[4px_4px_0_0_hsl(var(--border))]',
+        }}
+        onClick={onNavigate}
+      >
         {label}
       </Link>
     </Button>

@@ -1,5 +1,7 @@
 # PRD: Web client design system, app shell, and i18n (Onda Dura)
 
+> Supersession note: the shell, routing, i18n, accessibility, and product-structure decisions in this PRD remain useful historical context. The visual direction and font choices are superseded by ADR 0003 and `DESIGN_SYSTEM.md`; do not use this PRD as the current visual reference.
+
 ## Problem Statement
 
 The web client today is a thin **React (Vite)** demo with ad-hoc styling, no shared design language, and no operational **app shell** for multi-**Church** work. Stakeholders need a **bold, high-contrast, movement-oriented** interface that matches the **Onda Dura Church** product brand while staying faithful to domain language (**Church**, **Campus**, **Ministry**, **Volunteer**, **Scheduling**, **Unavailability**, **Time away** navigation label, and **Onda** as product brand). The experience must default to **Brazilian Portuguese** while supporting **English**, meet **WCAG 2.2 Level AA**, and lay down tokens and components so future scheduling screens do not reinvent visuals or copy patterns.

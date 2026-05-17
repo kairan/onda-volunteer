@@ -1,4 +1,4 @@
-/** Semantic CSS variable names (ADR 0002). Values live in `src/styles/globals.css`. */
+/** Semantic CSS variable names (ADR 0003). Values live in `src/styles/globals.css`. */
 export const REQUIRED_THEME_CSS_VARIABLES = [
   '--background',
   '--foreground',
@@ -14,4 +14,9 @@ export const REQUIRED_THEME_CSS_VARIABLES = [
   '--border',
   '--ring',
   '--radius',
+  '--border-weight',
+  '--shadow-offset-sm',
+  '--shadow-offset-md',
+  '--transition-fast',
+  '--transition-base',
 ] as const;
