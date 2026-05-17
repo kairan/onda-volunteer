@@ -208,4 +208,31 @@ export class IdentityService {
         : 'Provide Authorization Bearer token.',
     });
   }
+
+  async assertAdminCanActOnChurch(input: {
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+    churchId: string;
+  }): Promise<void> {
+    const volunteer = await this.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+    });
+
+    const accreditation = await this.prisma.adminAccreditation.findUnique({
+      where: {
+        volunteerId_churchId: {
+          volunteerId: volunteer.id,
+          churchId: input.churchId,
+        },
+      },
+    });
+
+    if (!accreditation) {
+      throw new ForbiddenException({
+        code: 'ADMIN_NOT_AUTHORIZED',
+        message: 'Authenticated volunteer is not an Admin accredited for this Church.',
+      });
+    }
+  }
 }

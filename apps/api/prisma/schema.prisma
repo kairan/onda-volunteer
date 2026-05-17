@@ -57,6 +57,7 @@ model Event {
   title       String
   startsAtUtc DateTime  @db.Timestamptz
   endsAtUtc   DateTime  @db.Timestamptz
+  voidedAtUtc DateTime? @db.Timestamptz
   churchId    String
   church      Church    @relation(fields: [churchId], references: [id], onDelete: Cascade)
   ministryId  String?

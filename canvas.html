@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onda Volunteer - Completed Slices</title>
+    <style>
+        :root {
+            --primary: #facc15;
+            --background: #ffffff;
+            --foreground: #09090b;
+            --muted: #f4f4f5;
+            --border: #e4e4e7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.5em;
+            border-bottom: 4px solid var(--foreground);
+            padding-bottom: 10px;
+        }
+
+        .summary {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #555;
+            max-width: 800px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            border: 2px solid var(--border);
+            padding: 20px;
+            background: var(--background);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--foreground);
+            transform: translateY(-4px);
+            box-shadow: 6px 6px 0 0 var(--border);
+        }
+
+        .card:hover .badge {
+            background-color: var(--primary);
+            color: var(--foreground);
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: var(--muted);
+            padding: 4px 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .card ul {
+            margin: 10px 0 0 0;
+            padding-left: 20px;
+            font-size: 0.85rem;
+            color: #444;
+        }
+
+        .card li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Onda Volunteer Project</h1>
+    <div class="summary">
+        A comprehensive summary of all implemented vertical slices (tracer bullets) and features to build the volunteer management platform.
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <span class="badge">Slice 1–7</span>
+            <h2>Platform Tracer Bullets + Auth</h2>
+            <p>Initial API foundation, schema, test harness, and JWT-based Supabase authentication cycle.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 8–14</span>
+            <h2>Web Shell Epic</h2>
+            <p>Initial web client structure, routing with TanStack Router, layout context, i18n plumbing, and shell navigation placeholders.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 15</span>
+            <h2>Organization Context Reads</h2>
+            <p>API endpoint to fetch accessible Churches, Campuses, and Ministries for the logged-in Volunteer.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 16</span>
+            <h2>Identity Persisted UI Locale</h2>
+            <p>Persisting the language switcher preference to the user's Identity profile automatically upon change.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 17</span>
+            <h2>Dashboard Upcoming Assignments</h2>
+            <p>Dashboard presentation of assigned shifts matching the active Church, including a live API feed.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 18</span>
+            <h2>Time Away List + Create</h2>
+            <p>Volunteer capability to view their upcoming unavailabilities and submit new blockers for their ministries.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 19</span>
+            <h2>Bulk Mirror Unavailability</h2>
+            <p>Expanded Time Away logic to let a volunteer mirror unavailability periods across all their active ministries simultaneously.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 20</span>
+            <h2>Scheduling Event List</h2>
+            <p>Church-scoped schedule index, merging PUBLIC events with accessible PRIVATE events based on ministry memberships.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 21</span>
+            <h2>Event Roster Read</h2>
+            <p>Deep-dive view for a specific Event, rendering all active assignments grouped by Ministry, Role, and Time.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 22</span>
+            <h2>Event Roster Assign & Release</h2>
+            <p>Interactive capability to let Leaders assign active members to roles, and let Volunteers (or Leaders) release those assignments.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 23</span>
+            <h2>Leader Unavailability Writes</h2>
+            <p>Extended authorization permitting a Ministry Leader to record unavailability on behalf of their team members.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 24 & 25</span>
+            <h2>Event Creation</h2>
+            <p>Enabling Church Admins to schedule PUBLIC events, and Ministry Leaders to schedule PRIVATE rehearsal/prep events.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 26</span>
+            <h2>Pending Membership UX</h2>
+            <p>Surfacing a dashboard warning for volunteers who have "PENDING" ministry memberships waiting for approval.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 27</span>
+            <h2>Role Catalog</h2>
+            <p>Ministry Leader UI to manage their roster roles (adding new titles, renaming inline, and retiring old roles).</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 28</span>
+            <h2>Event Cancellation</h2>
+            <p>Admin feature to instantly cancel an Event, visually striking it out and cascading a void to all related assignments.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 29</span>
+            <h2>Personal-Local Time Toggle</h2>
+            <p>A non-destructive global toggle allowing users to render schedule instants in their device's local timezone alongside the primary Church framing.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 30</span>
+            <h2>Auth Gate + Provisioning</h2>
+            <p>The full sign-in cycle that automatically creates or links a Volunteer record to a Supabase authentication token.</p>
+        </div>
+
+        <div class="card">
+            <span class="badge">Slice 31–33</span>
+            <h2>HOPE Design System Migration</h2>
+            <p>Full-scale UI overhaul pivoting from the "Lamborghini" prototype to the brutalist "HOPE" visual system with sharp corners and heavy borders.</p>
+        </div>
+    </div>
+</body>
+</html>

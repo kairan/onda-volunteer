@@ -128,6 +128,36 @@ async function main() {
     },
   });
 
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-admin',
+        ministryId: 'seed-ministry-demo',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-admin',
+      ministryId: 'seed-ministry-demo',
+      status: 'ACTIVE',
+    },
+  });
+
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-admin',
+        ministryId: 'seed-ministry-band',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-admin',
+      ministryId: 'seed-ministry-band',
+      status: 'ACTIVE',
+    },
+  });
+
   await prisma.ministryLeader.upsert({
     where: {
       volunteerId_ministryId: {
@@ -231,6 +261,75 @@ async function main() {
       startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
       endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
       churchId: churchCentral.id,
+    },
+  });
+
+  await prisma.event.upsert({
+    where: { id: 'seed-event-public-2' },
+    update: { churchId: churchCentral.id },
+    create: {
+      id: 'seed-event-public-2',
+      kind: 'PUBLIC',
+      title: 'Youth Night',
+      startsAtUtc: new Date('2026-06-10T22:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-10T23:30:00.000Z'),
+      churchId: churchCentral.id,
+    },
+  });
+
+  await prisma.event.upsert({
+    where: { id: 'seed-event-private' },
+    update: { churchId: churchCentral.id, ministryId: ministryBand.id },
+    create: {
+      id: 'seed-event-private',
+      kind: 'PRIVATE',
+      title: 'Band Rehearsal',
+      startsAtUtc: new Date('2026-06-06T22:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-06T23:00:00.000Z'),
+      churchId: churchCentral.id,
+      ministryId: ministryBand.id,
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: 'seed-assignment-1' },
+    update: {},
+    create: {
+      id: 'seed-assignment-1',
+      eventId: 'seed-event-public',
+      ministryId: 'seed-ministry-demo',
+      volunteerId: 'seed-volunteer-admin',
+      roleId: 'seed-role-greeter',
+      startsAtUtc: new Date('2026-06-07T14:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: 'seed-assignment-2' },
+    update: {},
+    create: {
+      id: 'seed-assignment-2',
+      eventId: 'seed-event-private',
+      ministryId: 'seed-ministry-band',
+      volunteerId: 'seed-volunteer-demo',
+      roleId: 'seed-role-keys',
+      startsAtUtc: new Date('2026-06-06T22:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-06T23:00:00.000Z'),
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: 'seed-assignment-3' },
+    update: {},
+    create: {
+      id: 'seed-assignment-3',
+      eventId: 'seed-event-public-2',
+      ministryId: 'seed-ministry-demo',
+      volunteerId: 'seed-volunteer-demo',
+      roleId: 'seed-role-greeter',
+      startsAtUtc: new Date('2026-06-10T21:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-10T23:30:00.000Z'),
     },
   });
 }

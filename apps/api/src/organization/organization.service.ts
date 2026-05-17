@@ -197,4 +197,86 @@ export class OrganizationService {
       status: 'INACTIVE' as const,
     };
   }
+
+  async getMinistryMembers(input: {
+    ministryId: string;
+    authorizationHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    return this.prisma.ministryMembership.findMany({
+      where: { ministryId: input.ministryId },
+      include: {
+        volunteer: {
+          select: { id: true, displayName: true },
+        },
+      },
+      orderBy: { volunteer: { displayName: 'asc' } },
+    });
+  }
+
+  async getMinistryRoles(input: {
+    ministryId: string;
+    authorizationHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    return this.prisma.ministryRole.findMany({
+      where: { ministryId: input.ministryId, retired: false },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async createMinistryRole(input: {
+    ministryId: string;
+    name: string;
+    authorizationHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    return this.prisma.ministryRole.create({
+      data: {
+        ministryId: input.ministryId,
+        name: input.name,
+      },
+    });
+  }
+
+  async updateMinistryRole(input: {
+    ministryId: string;
+    roleId: string;
+    name?: string;
+    retired?: boolean;
+    authorizationHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    return this.prisma.ministryRole.update({
+      where: { id: input.roleId },
+      data: {
+        name: input.name,
+        retired: input.retired,
+      },
+    });
+  }
 }
