@@ -29,9 +29,6 @@ Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cle
 | 27 | `27-role-catalog-maintain-retire.md` | [#10](https://github.com/kairan/onda-volunteer/issues/10) | HITL | **Role** catalog + **Retire** |
 | 28 | `28-admin-cancels-event-voids-assignments.md` | [#18](https://github.com/kairan/onda-volunteer/issues/18) | HITL | Cancel **Event** → void **Assignments** |
 | 29 | `29-personal-local-time-presentation.md` | [#19](https://github.com/kairan/onda-volunteer/issues/19) | AFK | Personal-local time toggle |
-| 31 | `31-hope-token-foundation-font-swap.md` | [#27](https://github.com/kairan/onda-volunteer/issues/27) | AFK | HOPE token foundation + font swap |
-| 32 | `32-hope-component-shell-restyle.md` | [#28](https://github.com/kairan/onda-volunteer/issues/28) | AFK | HOPE component and shell restyle |
-| 33 | `33-doc-cleanup-archive-lamborghini.md` | [#29](https://github.com/kairan/onda-volunteer/issues/29) | AFK | Doc cleanup — archive Lamborghini refs |
 
 ## Completed (`done/`)
 
@@ -39,3 +36,4 @@ Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cle
 |------:|------|---------|
 | 1–7 | `done/01` … `done/07` | Platform tracer bullets + auth |
 | 8–14 | `done/08` … `done/14` | Web shell epic (**09**–**14**) |
+| 31–33 | `done/31` … `done/33` | HOPE design system migration |

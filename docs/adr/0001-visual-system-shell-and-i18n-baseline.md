@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted; visual-direction details superseded by ADR 0002.
+Accepted for shell, i18n, accessibility, and structural decisions. Visual-direction details were first superseded by ADR 0002 and are now superseded by ADR 0003 (HOPE design system); use `DESIGN_SYSTEM.md` as the current visual reference.
 
 ## Context
 
@@ -35,6 +35,8 @@ We need a stable baseline that is expensive to reverse later: **design tokens**,
 
 ### Typography, imagery, and motion
 
+> Current visual direction note: display typography details in this section are historical. ADR 0003 replaces Archivo Narrow with Montserrat for the HOPE brand layer.
+
 - **Display:** **Archivo Narrow** (self-hosted), extra-bold caps hierarchy with tight tracking where the brief calls for display treatment.
 - **UI/body:** **Inter** (self-hosted), lighter weights for body copy with generous line-height.
 - **Imagery:** documentary-style photography in **selective product moments** only; **grayscale default** with **color by exception** when justified.
@@ -47,6 +49,8 @@ We need a stable baseline that is expensive to reverse later: **design tokens**,
 - **Row hover / selection (locked, hybrid):** use a subtle **black-alpha background wash** on hover; use a stronger selected state plus a **`#000000` left rail** (about **2px**) for selection (avoid decorative zebra striping and avoid new hues for selection).
 
 ### Display typography policy
+
+> Current visual direction note: ADR 0003 keeps the display-surface scope discipline but swaps the display family to Montserrat.
 
 - **All-caps Archivo Narrow (locked scope):** use extra-bold all-caps with tight tracking for **display surfaces only**—page titles, hero treatments, and major section titles; **primary navigation labels**, **table headers**, and **form labels** use **Inter** with normal casing for **pt-BR** readability and long **Organization** names.
 

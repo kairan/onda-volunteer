@@ -86,10 +86,10 @@ importers:
 
   apps/web:
     dependencies:
-      '@fontsource/archivo-narrow':
+      '@fontsource/inter':
         specifier: ^5.2.8
         version: 5.2.8
-      '@fontsource/inter':
+      '@fontsource/montserrat':
         specifier: ^5.2.8
         version: 5.2.8
       '@radix-ui/react-slot':
@@ -601,11 +601,11 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@fontsource/archivo-narrow@5.2.8':
-    resolution: {integrity: sha512-uPyBqAuVP5V0k6tmMLEMf8yx5ytqctJ7nozydFwUtyV6seXw1AFikzvQUkd/WAy++fd+sYag2nKuqmaKS2cIzw==}
-
   '@fontsource/inter@5.2.8':
     resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
+
+  '@fontsource/montserrat@5.2.8':
+    resolution: {integrity: sha512-xTjLxSbSfCycDB0pwmNsfNvdfWPaDaRQ2LC6yt/ZI7SdvXG52zHnzNYC/09mzuAuWNJyShkteutfCoDgym56hQ==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -4264,9 +4264,9 @@ snapshots:
     optionalDependencies:
       '@noble/hashes': 1.8.0
 
-  '@fontsource/archivo-narrow@5.2.8': {}
-
   '@fontsource/inter@5.2.8': {}
+
+  '@fontsource/montserrat@5.2.8': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:

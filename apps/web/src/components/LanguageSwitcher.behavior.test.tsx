@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 import i18n from 'i18next';
 import { I18nProvider } from '@/i18n/I18nProvider';
+import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import {
   initI18n,
   resetI18nForTests,
@@ -33,7 +34,9 @@ describe('LanguageSwitcher', () => {
 
     render(
       <I18nProvider>
-        <LanguageSwitcher />
+        <AuthSessionTestProvider state={{ status: 'unauthenticated', reason: 'signed-out' }}>
+          <LanguageSwitcher />
+        </AuthSessionTestProvider>
       </I18nProvider>,
     );
 
