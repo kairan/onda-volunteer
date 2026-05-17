@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import type { Church } from '@/organization/types';
 import { shortTimezoneLabel } from '@/organization/timezoneCue';
+import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 
 type Props = {
   churches: Church[];
@@ -18,6 +19,8 @@ export function OrganizationContextControls({
   onCampusChange,
 }: Props) {
   const { t } = useTranslation('shell');
+  const { useLocalTime, setUseLocalTime } = useLocalTimeContext();
+  
   const activeChurch =
     churches.find((church) => church.id === activeChurchId) ?? churches[0];
   const campuses = activeChurch?.campuses ?? [];
@@ -66,9 +69,20 @@ export function OrganizationContextControls({
         </p>
       ) : null}
 
-      <p className="text-xs text-muted-foreground" title={t('timezoneDetails', { iana: timezone })}>
-        {t('timezoneCue', { short: shortTz })}
-      </p>
+      <div className="flex flex-col gap-1 mt-1">
+        <p className="text-xs text-muted-foreground" title={t('timezoneDetails', { iana: timezone })}>
+          {t('timezoneCue', { short: shortTz })}
+        </p>
+        <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer mt-1">
+          <input
+            type="checkbox"
+            className="size-3 accent-primary"
+            checked={useLocalTime}
+            onChange={(e) => setUseLocalTime(e.target.checked)}
+          />
+          Show my local time
+        </label>
+      </div>
     </div>
   );
 }

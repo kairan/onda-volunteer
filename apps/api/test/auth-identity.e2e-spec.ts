@@ -4,10 +4,22 @@ import * as path from 'node:path';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
+
+jest.mock('../src/identity/supabase-jwt-verifier', () => ({
+  SupabaseJwtVerifier: jest.fn().mockImplementation(() => ({
+    verifyBearerToken: jest.fn().mockImplementation(async (authHeader: string) => {
+      const token = authHeader.replace('Bearer ', '');
+      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+      return { sub: payload.sub };
+    }),
+  })),
+}));
+
 import { AppModule } from '../src/app.module';
 import { CLOCK } from '../src/common/clock';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { signTestAccessToken } from './support/sign-test-access-token';
+import { SupabaseJwtVerifier } from '../src/identity/supabase-jwt-verifier';
 
 const FIXED_NOW = new Date('2026-05-15T12:00:00.000Z');
 

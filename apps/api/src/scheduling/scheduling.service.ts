@@ -48,7 +48,31 @@ export type CreateUnavailabilityInput = {
   volunteerId: string;
   authorizationHeader: string | undefined;
   volunteerIdHeader: string | undefined;
+  leaderMinistryIdHeader: string | undefined;
   ministryId: string;
+  startsAtUtc: string;
+  endsAtUtc: string;
+};
+
+export type GetVolunteerAssignmentsInput = {
+  volunteerId: string;
+  churchId?: string;
+  authorizationHeader: string | undefined;
+  volunteerIdHeader: string | undefined;
+};
+
+export type GetVolunteerUnavailabilityInput = {
+  volunteerId: string;
+  churchId?: string;
+  authorizationHeader: string | undefined;
+  volunteerIdHeader: string | undefined;
+};
+
+export type CreateBulkUnavailabilityInput = {
+  volunteerId: string;
+  authorizationHeader: string | undefined;
+  volunteerIdHeader: string | undefined;
+  ministryIds: string[];
   startsAtUtc: string;
   endsAtUtc: string;
 };
@@ -60,6 +84,137 @@ export class SchedulingService {
     private readonly identity: IdentityService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
+
+  async createBulkUnavailability(input: CreateBulkUnavailabilityInput) {
+    const volunteer = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
+    if (volunteer.id !== input.volunteerId) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_MISMATCH',
+        message: 'Authenticated identity does not match this request.',
+      });
+    }
+
+    const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
+    const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
+    if (!(u0 < u1)) {
+      throw new BadRequestException({
+        code: 'INVALID_UNAVAILABILITY_WINDOW',
+        message:
+          'Unavailability window must have startsAtUtc strictly before endsAtUtc.',
+      });
+    }
+
+    const memberships = await this.prisma.ministryMembership.findMany({
+      where: {
+        volunteerId: input.volunteerId,
+        ministryId: { in: input.ministryIds },
+        status: 'ACTIVE',
+      },
+    });
+
+    if (memberships.length !== input.ministryIds.length) {
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_REQUIRED',
+        message:
+          'Volunteer must have Active ministry membership for all requested ministries.',
+      });
+    }
+
+    const result = await this.prisma.unavailability.createMany({
+      data: input.ministryIds.map((ministryId) => ({
+        volunteerId: input.volunteerId,
+        ministryId,
+        startsAtUtc: u0,
+        endsAtUtc: u1,
+      })),
+    });
+
+    return {
+      count: result.count,
+    };
+  }
+
+  async getVolunteerUnavailability(input: GetVolunteerUnavailabilityInput) {
+    const caller = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
+
+    if (caller.id !== input.volunteerId) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_MISMATCH',
+        message: 'You may only view your own unavailability.',
+      });
+    }
+
+    const now = this.clock.now();
+
+    return this.prisma.unavailability.findMany({
+      where: {
+        volunteerId: input.volunteerId,
+        endsAtUtc: { gt: now },
+        ...(input.churchId ? { ministry: { churchId: input.churchId } } : {}),
+      },
+      include: {
+        ministry: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        startsAtUtc: 'asc',
+      },
+    });
+  }
+
+  async getVolunteerAssignments(input: GetVolunteerAssignmentsInput) {
+    const caller = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
+
+    if (caller.id !== input.volunteerId) {
+      throw new ForbiddenException({
+        code: 'VOLUNTEER_MISMATCH',
+        message: 'You may only view your own assignments.',
+      });
+    }
+
+    const now = this.clock.now();
+
+    return this.prisma.assignment.findMany({
+      where: {
+        volunteerId: input.volunteerId,
+        voidedAtUtc: null,
+        endsAtUtc: { gt: now },
+        ...(input.churchId ? { event: { churchId: input.churchId } } : {}),
+      },
+      include: {
+        event: {
+          select: {
+            id: true,
+            title: true,
+            startsAtUtc: true,
+            endsAtUtc: true,
+          },
+        },
+        role: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        startsAtUtc: 'asc',
+      },
+    });
+  }
 
   async createAssignment(input: CreateAssignmentInput) {
     await this.identity.assertLeaderCanActOnMinistry({
@@ -246,14 +401,17 @@ export class SchedulingService {
   }
 
   async createUnavailability(input: CreateUnavailabilityInput) {
-    const volunteer = await this.identity.requireVolunteer({
+    const caller = await this.identity.requireVolunteer({
       authorizationHeader: input.authorizationHeader,
       devVolunteerIdHeader: input.volunteerIdHeader,
     });
-    if (volunteer.id !== input.volunteerId) {
-      throw new ForbiddenException({
-        code: 'VOLUNTEER_MISMATCH',
-        message: 'Authenticated identity does not match this request.',
+
+    if (caller.id !== input.volunteerId) {
+      // If not acting on self, must be a leader of the target ministry
+      await this.identity.assertLeaderCanActOnMinistry({
+        authorizationHeader: input.authorizationHeader,
+        devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+        ministryId: input.ministryId,
       });
     }
 

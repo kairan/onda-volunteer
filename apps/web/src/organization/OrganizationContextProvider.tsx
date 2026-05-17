@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from 'react';
 import { fetchOrganizationContext } from './fetchOrganizationContext';
 import type { Church } from './types';
 
@@ -6,7 +6,26 @@ function firstCampusId(church: Church | undefined): string | null {
   return church?.campuses[0]?.id ?? null;
 }
 
-export function useOrganizationContext(options: {
+type OrganizationContextValue = {
+  churches: Church[];
+  loading: boolean;
+  error: string | null;
+  activeChurchId: string | null;
+  activeCampusId: string | null;
+  activeChurch: Church | null;
+  activeCampus: { id: string; name: string; timezone: string } | null;
+  onChurchChange: (churchId: string) => void;
+  onCampusChange: (campusId: string) => void;
+};
+
+const OrganizationContext = createContext<OrganizationContextValue | null>(null);
+
+export function OrganizationContextProvider({
+  children,
+  enabled,
+  devVolunteerId,
+}: {
+  children: ReactNode;
   enabled: boolean;
   devVolunteerId?: string;
 }) {
@@ -17,7 +36,7 @@ export function useOrganizationContext(options: {
   const [activeCampusId, setActiveCampusId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!options.enabled) {
+    if (!enabled) {
       return;
     }
 
@@ -28,9 +47,7 @@ export function useOrganizationContext(options: {
       setError(null);
       try {
         const payload = await fetchOrganizationContext(
-          options.devVolunteerId
-            ? { volunteerId: options.devVolunteerId }
-            : undefined,
+          devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
         );
         if (cancelled) {
           return;
@@ -58,7 +75,7 @@ export function useOrganizationContext(options: {
     return () => {
       cancelled = true;
     };
-  }, [options.enabled, options.devVolunteerId]);
+  }, [enabled, devVolunteerId]);
 
   function handleChurchChange(churchId: string) {
     setActiveChurchId(churchId);
@@ -66,13 +83,39 @@ export function useOrganizationContext(options: {
     setActiveCampusId(firstCampusId(church));
   }
 
-  return {
+  const activeChurch = useMemo(() => 
+    churches.find(c => c.id === activeChurchId) ?? null,
+    [churches, activeChurchId]
+  );
+
+  const activeCampus = useMemo(() => 
+    activeChurch?.campuses.find(c => c.id === activeCampusId) ?? null,
+    [activeChurch, activeCampusId]
+  );
+
+  const value = useMemo(() => ({
     churches,
     loading,
     error,
     activeChurchId,
     activeCampusId,
+    activeChurch,
+    activeCampus,
     onChurchChange: handleChurchChange,
     onCampusChange: setActiveCampusId,
-  };
+  }), [churches, loading, error, activeChurchId, activeCampusId, activeChurch, activeCampus]);
+
+  return (
+    <OrganizationContext.Provider value={value}>
+      {children}
+    </OrganizationContext.Provider>
+  );
+}
+
+export function useOrganization() {
+  const ctx = useContext(OrganizationContext);
+  if (!ctx) {
+    throw new Error('useOrganization must be used within OrganizationContextProvider');
+  }
+  return ctx;
 }

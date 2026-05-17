@@ -2,6 +2,9 @@
   "eyebrow": "Comando voluntário",
   "title": "Painel",
   "body": "A visão geral da sua participação aparecerá aqui com os próximos sinais de agenda e ministério.",
+  "upcomingAssignments": "Próximas escalas",
+  "emptyState": "Sem escalas futuras. Confira a agenda para oportunidades em aberto.",
+  "loading": "Carregando escalas...",
   "stats": {
     "ministries": {
       "label": "Ministérios",
