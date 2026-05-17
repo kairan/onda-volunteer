@@ -5,12 +5,14 @@ export function DashboardPage() {
   return (
     <section className="flex flex-col gap-6">
       <div className="border-2 border-border bg-surface p-6 shadow-[8px_8px_0_0_hsl(var(--border))]">
-        <p className="mb-3 inline-block border-2 border-border bg-background px-2 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-foreground">
-          {t('eyebrow')}
-        </p>
-        <h1 className="inline-block max-w-3xl border-2 border-border bg-primary px-3 py-2 font-display text-6xl font-extrabold uppercase leading-[0.95] tracking-tight">
-          {t('title')}
-        </h1>
+        <div className="flex flex-col items-start gap-3">
+          <p className="inline-block border-2 border-border bg-background px-2 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-foreground">
+            {t('eyebrow')}
+          </p>
+          <h1 className="inline-block max-w-3xl border-2 border-border bg-primary px-3 py-2 font-display text-6xl font-extrabold uppercase leading-[0.95] tracking-tight">
+            {t('title')}
+          </h1>
+        </div>
         <p className="mt-5 max-w-prose text-sm leading-relaxed text-muted-foreground">
           {t('body')}
         </p>

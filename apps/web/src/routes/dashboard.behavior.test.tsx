@@ -18,7 +18,13 @@ describe('DashboardPage', () => {
     expect(heading.className).toContain('bg-primary');
     expect(heading.className).toContain('border-2');
 
-    const hero = heading.closest('div');
+    const eyebrow = screen.getByText('Comando voluntário');
+    const titleGroup = eyebrow.parentElement;
+    expect(titleGroup?.contains(heading)).toBe(true);
+    expect(titleGroup?.className).toContain('flex-col');
+    expect(titleGroup?.className).toContain('items-start');
+
+    const hero = titleGroup?.parentElement;
     expect(hero?.className).toContain('border-2');
     expect(hero?.className).toContain('bg-surface');
     expect(hero?.className).toContain('shadow-[8px_8px_0_0_hsl(var(--border))]');
