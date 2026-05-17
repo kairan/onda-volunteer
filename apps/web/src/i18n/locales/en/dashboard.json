@@ -2,6 +2,9 @@
   "eyebrow": "Volunteer command",
   "title": "Dashboard",
   "body": "Your participation overview will appear here with the next scheduling and ministry signals.",
+  "upcomingAssignments": "Upcoming assignments",
+  "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
+  "loading": "Loading assignments...",
   "stats": {
     "ministries": {
       "label": "Ministries",

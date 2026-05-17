@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { demoVolunteerId } from '@/auth/authSession';
-import { useOrganizationContext } from '@/organization/useOrganizationContext';
+import { OrganizationContextProvider, useOrganization } from '@/organization/OrganizationContextProvider';
 import { OrganizationContextControls } from './OrganizationContextControls';
 import { useTranslation } from 'react-i18next';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -14,18 +14,35 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { PRIMARY_NAV_MANIFEST } from '@/navigation/manifest';
 
+import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
+
 const CHROME_ICON_HIT =
   'inline-flex size-11 min-h-11 min-w-11 items-center justify-center';
 
 export function AppShell({ children }: { children?: ReactNode }) {
-  const { t } = useTranslation(['shell', 'common']);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   const auth = useAuthSession();
   const orgReady =
     auth.status === 'authenticated' || auth.status === 'dev-bypass';
   const devVolunteerIdForOrg =
     auth.status === 'dev-bypass' ? auth.volunteerId : demoVolunteerId();
+
+  return (
+    <OrganizationContextProvider
+      enabled={orgReady}
+      devVolunteerId={devVolunteerIdForOrg}
+    >
+      <LocalTimeProvider>
+        <AppShellContent>{children}</AppShellContent>
+      </LocalTimeProvider>
+    </OrganizationContextProvider>
+  );
+}
+
+function AppShellContent({ children }: { children?: ReactNode }) {
+  const { t } = useTranslation(['shell', 'common']);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
   const {
     churches,
     loading,
@@ -34,10 +51,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
     activeCampusId,
     onChurchChange,
     onCampusChange,
-  } = useOrganizationContext({
-    enabled: orgReady,
-    devVolunteerId: devVolunteerIdForOrg,
-  });
+  } = useOrganization();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
