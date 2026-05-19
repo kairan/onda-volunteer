@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { IdentityService } from '../identity/identity.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -77,12 +81,74 @@ function churchFraming(
   };
 }
 
+type ChurchEventAccess = {
+  isAdmin: boolean;
+  accessibleMinistryIds: string[];
+};
+
 @Injectable()
 export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly identity: IdentityService,
   ) {}
+
+  private async churchEventAccess(
+    volunteerId: string,
+    churchId: string,
+  ): Promise<ChurchEventAccess> {
+    const [memberships, leaderships, accreditations] = await Promise.all([
+      this.prisma.ministryMembership.findMany({
+        where: {
+          volunteerId,
+          ministry: { churchId },
+        },
+        select: { ministryId: true },
+      }),
+      this.prisma.ministryLeader.findMany({
+        where: {
+          volunteerId,
+          ministry: { churchId },
+        },
+        select: { ministryId: true },
+      }),
+      this.prisma.adminAccreditation.findMany({
+        where: {
+          volunteerId,
+          churchId,
+        },
+      }),
+    ]);
+
+    return {
+      isAdmin: accreditations.length > 0,
+      accessibleMinistryIds: [
+        ...new Set([
+          ...memberships.map((row) => row.ministryId),
+          ...leaderships.map((row) => row.ministryId),
+        ]),
+      ],
+    };
+  }
+
+  private canViewEvent(
+    event: { kind: 'PUBLIC' | 'PRIVATE'; ministryId: string | null },
+    access: ChurchEventAccess,
+  ): boolean {
+    if (event.kind === 'PUBLIC') {
+      return true;
+    }
+    if (access.isAdmin) {
+      return true;
+    }
+    if (
+      event.ministryId &&
+      access.accessibleMinistryIds.includes(event.ministryId)
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   async listEvents(input: {
     churchId: string | undefined;
@@ -101,36 +167,7 @@ export class EventsService {
       });
     }
 
-    const [memberships, leaderships, accreditations] = await Promise.all([
-      this.prisma.ministryMembership.findMany({
-        where: {
-          volunteerId: volunteer.id,
-          ministry: { churchId: input.churchId },
-        },
-        select: { ministryId: true },
-      }),
-      this.prisma.ministryLeader.findMany({
-        where: {
-          volunteerId: volunteer.id,
-          ministry: { churchId: input.churchId },
-        },
-        select: { ministryId: true },
-      }),
-      this.prisma.adminAccreditation.findMany({
-        where: {
-          volunteerId: volunteer.id,
-          churchId: input.churchId,
-        },
-      }),
-    ]);
-
-    const isAdmin = accreditations.length > 0;
-    const accessibleMinistryIds = [
-      ...new Set([
-        ...memberships.map((row) => row.ministryId),
-        ...leaderships.map((row) => row.ministryId),
-      ]),
-    ];
+    const access = await this.churchEventAccess(volunteer.id, input.churchId);
 
     const visibilityOr: Array<
       | { kind: 'PUBLIC' }
@@ -138,12 +175,12 @@ export class EventsService {
       | { kind: 'PRIVATE'; ministryId: { in: string[] } }
     > = [{ kind: 'PUBLIC' }];
 
-    if (isAdmin) {
+    if (access.isAdmin) {
       visibilityOr.push({ kind: 'PRIVATE' });
-    } else if (accessibleMinistryIds.length > 0) {
+    } else if (access.accessibleMinistryIds.length > 0) {
       visibilityOr.push({
         kind: 'PRIVATE',
-        ministryId: { in: accessibleMinistryIds },
+        ministryId: { in: access.accessibleMinistryIds },
       });
     }
 
@@ -174,9 +211,18 @@ export class EventsService {
     }));
   }
 
-  async getEventDetail(id: string): Promise<EventDetailResponse> {
+  async getEventDetail(input: {
+    id: string;
+    authorizationHeader: string | undefined;
+    volunteerIdHeader: string | undefined;
+  }): Promise<EventDetailResponse> {
+    const volunteer = await this.identity.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.volunteerIdHeader,
+    });
+
     const row = await this.prisma.event.findUnique({
-      where: { id },
+      where: { id: input.id },
       include: {
         church: true,
         ministry: true,
@@ -193,6 +239,11 @@ export class EventsService {
     });
 
     if (!row) {
+      throw new NotFoundException();
+    }
+
+    const access = await this.churchEventAccess(volunteer.id, row.churchId);
+    if (!this.canViewEvent(row, access)) {
       throw new NotFoundException();
     }
 

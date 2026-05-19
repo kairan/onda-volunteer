@@ -39,8 +39,16 @@ export class EventsController {
   }
 
   @Get(':id')
-  getDetail(@Param('id') id: string) {
-    return this.events.getEventDetail(id);
+  getDetail(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    return this.events.getEventDetail({
+      id,
+      authorizationHeader: authorization,
+      volunteerIdHeader,
+    });
   }
 
   @Post(':id/assignments')

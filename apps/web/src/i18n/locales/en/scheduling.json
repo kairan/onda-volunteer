@@ -1,4 +1,12 @@
 {
+  "eyebrow": "Scheduling",
   "title": "Schedule",
-  "body": "Events and rosters will appear here."
+  "body": "Browse church events you can see based on public and ministry visibility.",
+  "listHeading": "Events",
+  "loading": "Loading events...",
+  "emptyState": "No events to show for this church yet.",
+  "visibility": {
+    "public": "Public",
+    "private": "Private"
+  }
 }

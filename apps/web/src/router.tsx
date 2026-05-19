@@ -9,12 +9,15 @@ import {
 import { useMemo, useState } from "react";
 import { AuthPanel } from "./AuthPanel";
 import { buildProtectedHeaders } from "./apiAuthHeaders";
+import { demoVolunteerId } from "./auth/authSession";
+import { fetchEventDetail } from "./events/fetchEventDetail";
 import { Button } from "./components/ui/button";
 import type { EventDetailPayload } from "./eventDetailPayload";
 import { DesignFoundationPreview } from "./routes/designFoundationPreview";
 import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
 import { PlaceholderPage } from "./routes/placeholderPage";
+import { SchedulingPage } from "./routes/scheduling";
 import { TimeAwayPage } from "./routes/timeAway";
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
@@ -125,21 +128,23 @@ async function defaultEventLoader({
   params: { eventId: string };
 }): Promise<EventDetailPayload> {
   const base = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-  let res: Response;
   try {
-    res = await fetch(`${base}/events/${params.eventId}`);
-  } catch {
-    throw new Error(
-      `Cannot reach the API at ${base}. Start Postgres (docker compose up -d), then run pnpm dev:api in another terminal.`,
-    );
+    return await fetchEventDetail({
+      eventId: params.eventId,
+      volunteerId: demoVolunteerId(),
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unable to load event";
+    if (message.toLowerCase().includes("not found")) {
+      throw new Error("Event not found");
+    }
+    if (message.includes("fetch")) {
+      throw new Error(
+        `Cannot reach the API at ${base}. Start Postgres (docker compose up -d), then run pnpm dev:api in another terminal.`,
+      );
+    }
+    throw new Error(message);
   }
-  if (res.status === 404) {
-    throw new Error("Event not found");
-  }
-  if (!res.ok) {
-    throw new Error("Unable to load event");
-  }
-  return res.json() as Promise<EventDetailPayload>;
 }
 
 export type BuildRouteTreeOptions = {
@@ -591,6 +596,9 @@ const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
     component: shellPage(() => {
       if (item.id === "dashboard") {
         return <DashboardPage />;
+      }
+      if (item.id === "scheduling") {
+        return <SchedulingPage />;
       }
       if (item.id === "timeAway") {
         return <TimeAwayPage />;
