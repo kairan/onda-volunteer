@@ -40,6 +40,6 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/time-away',
     labelKey: 'shell:nav.timeAway',
     namespace: 'timeAway',
-    placeholder: true,
+    placeholder: false,
   },
 ];

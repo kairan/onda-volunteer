@@ -8,7 +8,7 @@ import { fetchVolunteerAssignments, type VolunteerAssignment } from '@/identity/
 export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
   const auth = useAuthSession();
-  const { activeChurch, activeCampus, churches } = useOrganization();
+  const { activeChurch, activeCampus } = useOrganization();
   const { formatWithLocal } = useLocalTimeContext();
   
   const [assignments, setAssignments] = useState<VolunteerAssignment[]>([]);
@@ -16,9 +16,8 @@ export function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
 
   const pendingMinistries = useMemo(() => {
-    const church = churches.find(c => c.id === activeChurch?.id);
-    return church?.ministries?.filter(m => (m as any).membershipStatus === 'PENDING') ?? [];
-  }, [activeChurch, churches]);
+    return activeChurch?.ministries?.filter((m) => m.membershipStatus === 'PENDING') ?? [];
+  }, [activeChurch]);
 
   const volunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'

@@ -136,7 +136,7 @@ describe('GET /organization/context (e2e)', () => {
               timezone: 'America/Sao_Paulo',
             },
           ],
-          ministries: [{ id: ministryAlpha.id, name: 'Greeters' }],
+          ministries: [{ id: ministryAlpha.id, name: 'Greeters', membershipStatus: 'ACTIVE' }],
         },
         {
           id: churchBeta.id,
@@ -149,7 +149,7 @@ describe('GET /organization/context (e2e)', () => {
               timezone: 'America/Manaus',
             },
           ],
-          ministries: [{ id: ministryBeta.id, name: 'Band' }],
+          ministries: [{ id: ministryBeta.id, name: 'Band', membershipStatus: 'ACTIVE' }],
         },
       ],
     });
