@@ -7,6 +7,7 @@ export type Campus = {
 export type MinistrySummary = {
   id: string;
   name: string;
+  membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
 };
 
 export type Church = {

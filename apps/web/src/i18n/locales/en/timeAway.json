@@ -1,4 +1,25 @@
 {
   "title": "Time away",
-  "body": "Record when you cannot serve for a ministry."
+  "body": "Record when you cannot serve for a ministry.",
+  "eyebrow": "Availability",
+  "listHeading": "Your unavailability",
+  "loading": "Loading unavailability...",
+  "emptyState": "No upcoming unavailability recorded for this church.",
+  "createHeading": "Add unavailability",
+  "form": {
+    "ministry": "Ministry",
+    "startsAt": "Starts",
+    "endsAt": "Ends",
+    "submit": "Save unavailability",
+    "submitting": "Saving..."
+  },
+  "success": "Unavailability saved.",
+  "pendingNotice": "You have Pending membership in {{ministries}}. You cannot be rostered until Active, but you can still record unavailability for calendar truth.",
+  "errors": {
+    "ministryRequired": "Select a ministry.",
+    "startsAtRequired": "Enter a start time.",
+    "endsAtRequired": "Enter an end time.",
+    "invalidWindow": "End time must be after start time.",
+    "summary": "Fix the highlighted fields and try again."
+  }
 }

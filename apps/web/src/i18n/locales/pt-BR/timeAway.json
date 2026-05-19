@@ -1,4 +1,25 @@
 {
   "title": "Tempo livre",
-  "body": "Registre quando você não pode servir em um ministério."
+  "body": "Registre quando você não pode servir em um ministério.",
+  "eyebrow": "Disponibilidade",
+  "listHeading": "Suas indisponibilidades",
+  "loading": "Carregando indisponibilidades...",
+  "emptyState": "Nenhuma indisponibilidade futura registrada para esta igreja.",
+  "createHeading": "Adicionar indisponibilidade",
+  "form": {
+    "ministry": "Ministério",
+    "startsAt": "Início",
+    "endsAt": "Fim",
+    "submit": "Salvar indisponibilidade",
+    "submitting": "Salvando..."
+  },
+  "success": "Indisponibilidade salva.",
+  "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
+  "errors": {
+    "ministryRequired": "Selecione um ministério.",
+    "startsAtRequired": "Informe o horário de início.",
+    "endsAtRequired": "Informe o horário de fim.",
+    "invalidWindow": "O fim deve ser depois do início.",
+    "summary": "Corrija os campos destacados e tente novamente."
+  }
 }

@@ -56,12 +56,18 @@ export class OrganizationService {
       }),
     ]);
 
+    type MinistryEntry = {
+      id: string;
+      name: string;
+      membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
+    };
+
     type ChurchAccumulator = {
       id: string;
       name: string;
       defaultTimezone: string;
       campuses: Map<string, { id: string; name: string; timezone: string }>;
-      ministries: Map<string, { id: string; name: string }>;
+      ministries: Map<string, MinistryEntry>;
     };
 
     const churches = new Map<string, ChurchAccumulator>();
@@ -96,13 +102,25 @@ export class OrganizationService {
     const addMinistry = (
       entry: ChurchAccumulator,
       ministry: { id: string; name: string },
+      membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE',
     ) => {
-      entry.ministries.set(ministry.id, { id: ministry.id, name: ministry.name });
+      const existing = entry.ministries.get(ministry.id);
+      if (existing) {
+        if (membershipStatus) {
+          existing.membershipStatus = membershipStatus;
+        }
+        return;
+      }
+      entry.ministries.set(ministry.id, {
+        id: ministry.id,
+        name: ministry.name,
+        membershipStatus,
+      });
     };
 
     for (const membership of memberships) {
       const entry = ensureChurch(membership.ministry.church);
-      addMinistry(entry, membership.ministry);
+      addMinistry(entry, membership.ministry, membership.status);
     }
 
     for (const leadership of leaderships) {
