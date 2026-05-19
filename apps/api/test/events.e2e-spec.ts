@@ -47,9 +47,31 @@ describe('GET /events/:id (e2e)', () => {
     await app.close();
   });
 
+  it('responds 401 when fetching event detail without authentication', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Auth Church', defaultTimezone: 'UTC' },
+    });
+    const event = await prisma.event.create({
+      data: {
+        kind: 'PUBLIC',
+        title: 'Service',
+        startsAtUtc: new Date('2026-03-01T18:00:00.000Z'),
+        endsAtUtc: new Date('2026-03-01T19:30:00.000Z'),
+        churchId: church.id,
+      },
+    });
+
+    await request(app.getHttpServer()).get(`/events/${event.id}`).expect(401);
+  });
+
   it('responds 404 when no event exists for the id', async () => {
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Lookup Volunteer' },
+    });
+
     await request(app.getHttpServer())
       .get('/events/does-not-exist-evt')
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(404);
   });
 
@@ -59,6 +81,9 @@ describe('GET /events/:id (e2e)', () => {
         name: 'Test Church',
         defaultTimezone: 'America/New_York',
       },
+    });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Public Viewer' },
     });
     const event = await prisma.event.create({
       data: {
@@ -72,6 +97,7 @@ describe('GET /events/:id (e2e)', () => {
 
     const res = await request(app.getHttpServer())
       .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
 
     expect(res.body).toEqual({
@@ -112,6 +138,16 @@ describe('GET /events/:id (e2e)', () => {
         churchId: church.id,
       },
     });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Band Member' },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: volunteer.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
     const event = await prisma.event.create({
       data: {
         kind: 'PRIVATE',
@@ -125,6 +161,7 @@ describe('GET /events/:id (e2e)', () => {
 
     const res = await request(app.getHttpServer())
       .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
 
     expect(res.body.ministry).toEqual({
@@ -136,6 +173,33 @@ describe('GET /events/:id (e2e)', () => {
     expect(res.body.event.framing.churchDefaultTimezone).toBe(
       'America/Los_Angeles',
     );
+  });
+
+  it('responds 404 for a private event when the volunteer lacks ministry access', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Private Church', defaultTimezone: 'UTC' },
+    });
+    const band = await prisma.ministry.create({
+      data: { name: 'Band', churchId: church.id },
+    });
+    const outsider = await prisma.volunteer.create({
+      data: { displayName: 'Outsider' },
+    });
+    const event = await prisma.event.create({
+      data: {
+        kind: 'PRIVATE',
+        title: 'Closed Rehearsal',
+        startsAtUtc: new Date('2026-05-01T18:00:00.000Z'),
+        endsAtUtc: new Date('2026-05-01T20:00:00.000Z'),
+        churchId: church.id,
+        ministryId: band.id,
+      },
+    });
+
+    await request(app.getHttpServer())
+      .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', outsider.id)
+      .expect(404);
   });
 });
 
@@ -237,6 +301,7 @@ describe('POST /events/:id/assignments (e2e)', () => {
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
 
     expect(detail.body.assignments).toHaveLength(1);

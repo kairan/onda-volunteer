@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { SchedulingService } from '../scheduling/scheduling.service';
 import { EventsService } from './events.service';
@@ -24,9 +25,30 @@ export class EventsController {
     private readonly scheduling: SchedulingService,
   ) {}
 
+  @Get()
+  listEvents(
+    @Query('churchId') churchId: string | undefined,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    return this.events.listEvents({
+      churchId,
+      authorizationHeader: authorization,
+      volunteerIdHeader,
+    });
+  }
+
   @Get(':id')
-  getDetail(@Param('id') id: string) {
-    return this.events.getEventDetail(id);
+  getDetail(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    return this.events.getEventDetail({
+      id,
+      authorizationHeader: authorization,
+      volunteerIdHeader,
+    });
   }
 
   @Post(':id/assignments')

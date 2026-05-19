@@ -19,7 +19,7 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/scheduling',
     labelKey: 'shell:nav.scheduling',
     namespace: 'scheduling',
-    placeholder: true,
+    placeholder: false,
   },
   {
     id: 'ministries',

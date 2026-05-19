@@ -1,4 +1,12 @@
 {
+  "eyebrow": "Agenda",
   "title": "Agenda",
-  "body": "Eventos e escalas aparecerão aqui."
+  "body": "Veja os eventos da igreja conforme a visibilidade pública e dos seus ministérios.",
+  "listHeading": "Eventos",
+  "loading": "Carregando eventos...",
+  "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "visibility": {
+    "public": "Público",
+    "private": "Privado"
+  }
 }
