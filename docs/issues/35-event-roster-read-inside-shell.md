@@ -25,7 +25,7 @@ Update **`/scheduling`** so each **Event** row navigates to this shell route (sl
 - [ ] Unauthorized viewers cannot read rosters outside their visibility scope.
 - [ ] Roster loading, empty, and route-error states render inside the app shell (ADR route-level **Retry**).
 - [ ] **`/scheduling`** list rows link to **`/scheduling/events/$eventId`**, not legacy **`/events/$eventId`**.
-- [ ] Automated tests cover authorized and unauthorized roster read paths.
+- [ ] Automated tests cover authorized and unauthorized roster read paths (API e2e and/or Playwright — extend `apps/web/e2e/` per slice **53**).
 
 ### Architecture hygiene (fold #7 — web API seam)
 
@@ -38,6 +38,10 @@ Update **`/scheduling`** so each **Event** row navigates to this shell route (sl
 - Assign / release mutations (slice **36**).
 - Removing legacy **`/events/$eventId`** entirely (tech-debt **52**).
 - **`OrganizationContextProvider`** volunteer-id threading cleanup unless required for roster load to work.
+
+## Testing notes
+
+- Playwright foundation: slice **53** (`53-web-playwright-browser-e2e.md`). Add `e2e/scheduling-event-roster.integration.spec.ts` (or similar) when this slice ships shell roster read.
 
 ## Blocked by
 

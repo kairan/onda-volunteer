@@ -15,7 +15,7 @@ Run a focused accessibility and visual-polish pass after the core **Scheduling**
 
 ## Acceptance criteria
 
-- [ ] Core **Scheduling** and **Time away** surfaces pass keyboard-only smoke testing.
+- [ ] Core **Scheduling** and **Time away** surfaces pass keyboard-only smoke testing (add Playwright specs under `apps/web/e2e/` — slice **53**).
 - [ ] Focus states remain visible and meet WCAG 2.2 AA expectations on HOPE surfaces.
 - [ ] Reduced-motion behavior is respected for overlays, hover, and loading states.
 - [ ] Loading skeletons and dense tables follow the HOPE visual contract without regressing readability.

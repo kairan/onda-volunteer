@@ -23,6 +23,7 @@ Wire shell-native write flows on **`/scheduling/events/$eventId`** for **Leader*
 - [ ] Release flow offers matching **Unavailability** without forcing creation.
 - [ ] Successful writes refetch authoritative roster data before showing success feedback.
 - [ ] Domain errors render near the relevant roster form or row.
+- [ ] Playwright covers at least one assign happy path and one release + optional **Unavailability** offer path (`apps/web/e2e/` — slice **53**).
 
 ### Architecture hygiene (fold #7 — web API seam)
 

@@ -22,7 +22,7 @@ After shell roster read/write (**35**, **36**) are proven:
 - [ ] Shell roster assign/release only on **`/scheduling/events/$eventId`**.
 - [ ] PRD story **42** amended or superseded in an ADR noting legacy retirement date.
 - [ ] Runbook (`docs/runbooks/supabase-auth-local.md`) updated to point agents at shell routes.
-- [ ] Behavior tests cover scheduling → shell detail navigation.
+- [ ] Behavior tests cover scheduling → shell detail navigation (Vitest and Playwright — update `apps/web/e2e/demo-event.integration.spec.ts` to shell routes per slice **53**).
 
 ## When to schedule
 

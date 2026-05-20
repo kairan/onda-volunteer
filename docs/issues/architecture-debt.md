@@ -33,10 +33,14 @@ Product vertical slices live in `docs/issues/` and on GitHub. This document inde
 3. Parallel product work: **38–39**, **40–45** (no architecture blockers).
 4. After **47**: file or schedule **48–52** if maintenance cost warrants.
 
+## Browser e2e (slice 53)
+
+Playwright in `apps/web/e2e` complements API Jest e2e and Vitest unit tests. Foundation is **in progress** — see `53-web-playwright-browser-e2e.md`. Product slices **35**, **36**, **47**, and **52** should add or extend Playwright specs as they ship UI flows (shell roster read/write, WCAG keyboard smoke, legacy route retirement).
+
 ## PRD constraints (do not re-litigate in slice work)
 
-- **Web PRD story 42:** legacy `/` and `/events/$eventId` remain until an explicit follow-up (**52**).
-- **Platform PRD:** tracer-bullet **e2e** is the default test seam; unit extraction (**48**) is optional hardening.
+- **Web PRD story 42:** legacy `/` and `/events/$eventId` remain until an explicit follow-up (**52**). Playwright integration tests currently cover this legacy path until **52** migrates assertions to `/scheduling/events/$eventId`.
+- **Platform PRD:** tracer-bullet **e2e** is the default test seam; API Jest e2e + Playwright browser e2e + unit extraction (**48**) are complementary.
 
 ## Slice ID vs GitHub issue number
 

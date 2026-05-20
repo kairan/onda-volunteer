@@ -14,6 +14,7 @@ Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cle
 
 | Slice | Spec | GH | Type | Status | Summary |
 |------:|------|----|------|--------|---------|
+| 53 | `53-web-playwright-browser-e2e.md` | [#60](https://github.com/kairan/onda-volunteer/issues/60) | Platform | **In progress** | Playwright browser e2e foundation + CI |
 | 35 | `35-event-roster-read-inside-shell.md` | [#37](https://github.com/kairan/onda-volunteer/issues/37) | AFK | **Next** | **Event** roster read inside shell |
 | 36 | `36-event-roster-writes-assign-release-unavailability-offer.md` | [#38](https://github.com/kairan/onda-volunteer/issues/38) | AFK | Blocked on 35 | Roster assign + release + optional **Unavailability** offer |
 | 38 | `38-time-away-bulk-mirror-ministries.md` | [#40](https://github.com/kairan/onda-volunteer/issues/40) | AFK | Open | Bulk mirror **Unavailability** |
@@ -26,6 +27,12 @@ Apply label **`ready-for-agent`** on GitHub when that slice’s blockers are cle
 | 45 | `45-admin-delegates-leaders-across-churches.md` | [#47](https://github.com/kairan/onda-volunteer/issues/47) | HITL | Open | **Admin** delegates **Leaders** |
 | 46 | `46-personal-local-time-i18n-closeout.md` | [#48](https://github.com/kairan/onda-volunteer/issues/48) | AFK | Open | Personal-local time + i18n closeout |
 | 47 | `47-hope-polish-wcag-release-gate.md` | [#49](https://github.com/kairan/onda-volunteer/issues/49) | HITL | Open | HOPE polish + WCAG release gate |
+
+## Test infrastructure (slice 53)
+
+| Slice | Spec | Summary |
+|------:|------|---------|
+| 53 | `53-web-playwright-browser-e2e.md` | Playwright browser e2e in `apps/web/e2e`, API-backed integration tests, GitHub Actions |
 
 ## Architecture tech debt (slices 48–52)
 
