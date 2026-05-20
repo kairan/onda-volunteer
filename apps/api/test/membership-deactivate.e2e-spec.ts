@@ -105,6 +105,7 @@ describe('POST /ministries/:ministryId/memberships/:volunteerId/deactivate (e2e)
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${futureEvent.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
     expect(detail.body.assignments).toHaveLength(0);
 
@@ -171,6 +172,7 @@ describe('POST /ministries/:ministryId/memberships/:volunteerId/deactivate (e2e)
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${endedEvent.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
     expect(detail.body.assignments).toHaveLength(1);
     expect(detail.body.assignments[0].id).toBe(assignment.id);
@@ -228,6 +230,7 @@ describe('POST /ministries/:ministryId/memberships/:volunteerId/deactivate (e2e)
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${inProgressEvent.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
     expect(detail.body.assignments).toHaveLength(0);
   });
