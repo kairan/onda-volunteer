@@ -105,6 +105,7 @@ describe('POST /assignments/:id/release (e2e)', () => {
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
     expect(detail.body.assignments).toHaveLength(0);
   });

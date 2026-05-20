@@ -31,7 +31,15 @@ export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=p
 pnpm test
 ```
 
-API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web tests (Vitest) cover design tokens and UI primitives. Both require PostgreSQL to be running.
+API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
+
+```bash
+pnpm --filter @onda/web exec playwright install chromium   # once per machine
+pnpm test:e2e:web                                          # smoke + API integration (CI parity)
+pnpm --filter @onda/web test:e2e                           # smoke only (Vite, no API)
+```
+
+Backlog spec: `docs/issues/60-web-playwright-browser-e2e.md`.
 
 ### Gotchas
 
