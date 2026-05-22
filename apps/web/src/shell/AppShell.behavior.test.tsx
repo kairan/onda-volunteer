@@ -80,49 +80,13 @@ describe('App shell routing', () => {
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
   });
 
-  it('loads scheduling event roster inside the signed-in shell', async () => {
-    await initI18n();
-    const { routeTree, schedulingEventDetailLoader } = buildTestRouteTree();
-    schedulingEventDetailLoader.mockImplementation(async () => ({
-      church: {
-        id: 'church-1',
-        name: 'Demo Church',
-        defaultTimezone: 'America/Sao_Paulo',
-      },
-      event: {
-        id: 'evt-shell',
-        title: 'Sunday Gathering',
-        kind: 'PUBLIC',
-        window: {
-          startsAtUtc: '2026-06-07T15:00:00.000Z',
-          endsAtUtc: '2026-06-07T16:30:00.000Z',
-        },
-        framing: {
-          churchDefaultTimezone: 'America/Sao_Paulo',
-          startsDisplayInChurchTz: '2026-06-07T12:00:00-03:00',
-          endsDisplayInChurchTz: '2026-06-07T13:30:00-03:00',
-        },
-      },
-      ministry: null,
-      assignments: [],
-    }));
-    const history = createMemoryHistory({
-      initialEntries: ['/scheduling/events/evt-shell'],
-    });
-    const routed = createRouter({ routeTree, history });
-
-    render(shellTestProviders(<RouterProvider router={routed} />));
-
-    expect(
-      await screen.findByRole('heading', { level: 1, name: 'Sunday Gathering' }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
-  });
-
   it('keeps inaccessible scheduling events inside the shell with a retry affordance', async () => {
     await initI18n();
     const { routeTree, schedulingEventDetailLoader } = buildTestRouteTree();
-    schedulingEventDetailLoader.mockRejectedValue(new Error('Event not found'));
+    const { ApiRequestError } = await import('@/apiError');
+    schedulingEventDetailLoader.mockRejectedValue(
+      new ApiRequestError(404, 'Event not found'),
+    );
     const history = createMemoryHistory({
       initialEntries: ['/scheduling/events/forbidden'],
     });

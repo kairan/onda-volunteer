@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AuthPanel } from "./AuthPanel";
+import { shellRouteErrorMessage } from "./apiError";
 import { buildProtectedHeaders } from "./apiAuthHeaders";
 import { demoVolunteerId } from "./auth/authSession";
 import { fetchEventDetail } from "./events/fetchEventDetail";
@@ -594,7 +595,7 @@ function shellErrorComponent({
 }) {
   return (
     <ProtectedAppShell>
-      <RouteErrorPanel message={error.message} onRetry={reset} />
+      <RouteErrorPanel message={shellRouteErrorMessage(error)} onRetry={reset} />
     </ProtectedAppShell>
   );
 }

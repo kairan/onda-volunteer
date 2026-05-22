@@ -26,3 +26,18 @@ export function devAuthBypassAllowed(
 export function demoVolunteerId(): string | undefined {
   return import.meta.env.VITE_DEMO_VOLUNTEER_ID?.trim() || undefined;
 }
+
+let activeVolunteerId: string | undefined;
+
+export function syncAuthVolunteerId(state: AuthSessionState): void {
+  if (state.status === 'authenticated' || state.status === 'dev-bypass') {
+    activeVolunteerId = state.volunteerId;
+    return;
+  }
+  activeVolunteerId = undefined;
+}
+
+/** Volunteer id for API calls from route loaders (matches signed-in / dev-bypass session). */
+export function volunteerIdForProtectedRequests(): string | undefined {
+  return activeVolunteerId ?? demoVolunteerId();
+}

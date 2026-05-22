@@ -48,3 +48,21 @@ export async function apiErrorFromResponse(res: Response): Promise<ApiRequestErr
     apiErrorCode(body),
   );
 }
+
+export function shellRouteErrorMessage(error: Error): string {
+  if (error instanceof ApiRequestError) {
+    if (error.status === 404) {
+      return 'Event not found';
+    }
+    return error.message;
+  }
+  const message = error.message;
+  if (message.toLowerCase().includes('not found')) {
+    return 'Event not found';
+  }
+  if (message.includes('fetch')) {
+    const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+    return `Cannot reach the API at ${base}. Start Postgres (docker compose up -d), then run pnpm dev:api in another terminal.`;
+  }
+  return message;
+}

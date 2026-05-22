@@ -95,16 +95,16 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             <table className="w-full min-w-[640px] border-collapse text-left text-sm">
               <thead>
                 <tr className="border-b-2 border-border bg-surface-2">
-                  <th className="px-4 py-3 font-semibold normal-case tracking-normal">
+                  <th scope="col" className="px-4 py-3 font-semibold normal-case tracking-normal">
                     {t('detail.columns.ministry')}
                   </th>
-                  <th className="px-4 py-3 font-semibold normal-case tracking-normal">
+                  <th scope="col" className="px-4 py-3 font-semibold normal-case tracking-normal">
                     {t('detail.columns.volunteer')}
                   </th>
-                  <th className="px-4 py-3 font-semibold normal-case tracking-normal">
+                  <th scope="col" className="px-4 py-3 font-semibold normal-case tracking-normal">
                     {t('detail.columns.role')}
                   </th>
-                  <th className="px-4 py-3 font-semibold normal-case tracking-normal">
+                  <th scope="col" className="px-4 py-3 font-semibold normal-case tracking-normal">
                     {t('detail.columns.interval')}
                   </th>
                 </tr>
@@ -128,7 +128,6 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                         selected &&
                           'border-l-2 border-l-foreground bg-foreground/5 hover:bg-foreground/5',
                       )}
-                      aria-selected={selected}
                     >
                       <td className="px-4 py-3 font-medium">{assignment.ministry.name}</td>
                       <td className="px-4 py-3">{assignment.volunteer.displayName}</td>
