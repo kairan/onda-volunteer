@@ -8,5 +8,19 @@
   "visibility": {
     "public": "Público",
     "private": "Privado"
+  },
+  "detail": {
+    "loading": "Carregando escala do evento...",
+    "timezoneLabel": "Fuso da igreja {{tz}}",
+    "utcWindow": "UTC {{start}} → {{end}}",
+    "rosterHeading": "Escala",
+    "backToList": "← Voltar aos eventos",
+    "emptyRoster": "Nenhuma designação ativa nesta escala ainda.",
+    "columns": {
+      "ministry": "Ministério",
+      "volunteer": "Voluntário",
+      "role": "Função",
+      "interval": "Intervalo"
+    }
   }
 }

@@ -8,9 +8,11 @@ import {
 } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AuthPanel } from "./AuthPanel";
+import { shellRouteErrorMessage } from "./apiError";
 import { buildProtectedHeaders } from "./apiAuthHeaders";
 import { demoVolunteerId } from "./auth/authSession";
 import { fetchEventDetail } from "./events/fetchEventDetail";
+import { loadSchedulingEventDetail } from "./events/loadSchedulingEventDetail";
 import { Button } from "./components/ui/button";
 import type { EventDetailPayload } from "./eventDetailPayload";
 import { DesignFoundationPreview } from "./routes/designFoundationPreview";
@@ -18,6 +20,10 @@ import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
 import { PlaceholderPage } from "./routes/placeholderPage";
 import { SchedulingPage } from "./routes/scheduling";
+import {
+  SchedulingEventDetailPending,
+  SchedulingEventDetailView,
+} from "./routes/schedulingEventDetail";
 import { TimeAwayPage } from "./routes/timeAway";
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
@@ -147,8 +153,13 @@ async function defaultEventLoader({
   }
 }
 
+export type SchedulingEventDetailLoader = (ctx: {
+  params: { eventId: string };
+}) => Promise<EventDetailPayload>;
+
 export type BuildRouteTreeOptions = {
   eventLoader?: EventDetailLoader;
+  schedulingEventDetailLoader?: SchedulingEventDetailLoader;
 };
 
 function createEventRoute(eventLoader: EventDetailLoader) {
@@ -584,9 +595,26 @@ function shellErrorComponent({
 }) {
   return (
     <ProtectedAppShell>
-      <RouteErrorPanel message={error.message} onRetry={reset} />
+      <RouteErrorPanel message={shellRouteErrorMessage(error)} onRetry={reset} />
     </ProtectedAppShell>
   );
+}
+
+function createSchedulingEventDetailRoute(
+  schedulingEventDetailLoader: SchedulingEventDetailLoader,
+) {
+  const schedulingEventDetailRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/scheduling/events/$eventId",
+    loader: ({ params }) => schedulingEventDetailLoader({ params }),
+    pendingComponent: shellPage(SchedulingEventDetailPending),
+    component: shellPage(function SchedulingEventDetailShellPage() {
+      const data = schedulingEventDetailRoute.useLoaderData();
+      return <SchedulingEventDetailView data={data} />;
+    }),
+    errorComponent: shellErrorComponent,
+  });
+  return schedulingEventDetailRoute;
 }
 
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
@@ -612,12 +640,24 @@ const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   }),
 );
 
+async function defaultSchedulingEventDetailLoader({
+  params,
+}: {
+  params: { eventId: string };
+}): Promise<EventDetailPayload> {
+  return loadSchedulingEventDetail({ eventId: params.eventId });
+}
+
 export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
   const eventRoute = createEventRoute(
     options.eventLoader ?? defaultEventLoader,
   );
+  const schedulingEventDetailRoute = createSchedulingEventDetailRoute(
+    options.schedulingEventDetailLoader ?? defaultSchedulingEventDetailLoader,
+  );
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute, eventRoute]),
+    schedulingEventDetailRoute,
     ...shellRoutes,
   ]);
 }

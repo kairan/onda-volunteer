@@ -111,7 +111,7 @@ export function SchedulingPage() {
             {events.map((event) => (
               <li key={event.id}>
                 <Link
-                  to="/events/$eventId"
+                  to="/scheduling/events/$eventId"
                   params={{ eventId: event.id }}
                   className="group relative flex flex-col gap-2 border-2 border-border bg-surface p-4 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_hsl(var(--border))]"
                 >

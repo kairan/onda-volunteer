@@ -17,6 +17,7 @@ import {
   type AuthSessionState,
   demoVolunteerId,
   devAuthBypassAllowed,
+  syncAuthVolunteerId,
 } from './authSession';
 
 type AuthSessionContextValue = AuthSessionState & {
@@ -33,6 +34,7 @@ export function AuthSessionTestProvider({
   children: ReactNode;
   state: AuthSessionState;
 }) {
+  syncAuthVolunteerId(state);
   const value = useMemo<AuthSessionContextValue>(
     () => ({
       ...state,
@@ -127,6 +129,10 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
       });
     }
   }, []);
+
+  useEffect(() => {
+    syncAuthVolunteerId(state);
+  }, [state]);
 
   useEffect(() => {
     let cancelled = false;

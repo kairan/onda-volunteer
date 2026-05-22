@@ -122,7 +122,7 @@ describe('SchedulingPage', () => {
 
     expect(screen.getByText('Band Rehearsal').closest('a')).toHaveAttribute(
       'href',
-      '/events/evt-private',
+      '/scheduling/events/evt-private',
     );
     expect(screen.getByText('Público')).toBeInTheDocument();
     expect(screen.getByText('Privado')).toBeInTheDocument();

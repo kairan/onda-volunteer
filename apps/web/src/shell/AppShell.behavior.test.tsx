@@ -80,6 +80,25 @@ describe('App shell routing', () => {
     expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
   });
 
+  it('keeps inaccessible scheduling events inside the shell with a retry affordance', async () => {
+    await initI18n();
+    const { routeTree, schedulingEventDetailLoader } = buildTestRouteTree();
+    const { ApiRequestError } = await import('@/apiError');
+    schedulingEventDetailLoader.mockRejectedValue(
+      new ApiRequestError(404, 'Event not found'),
+    );
+    const history = createMemoryHistory({
+      initialEntries: ['/scheduling/events/forbidden'],
+    });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Event not found');
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
+  });
+
   it('still mounts the event detail route', async () => {
     await initI18n();
     const { routeTree, eventLoader } = buildTestRouteTree();

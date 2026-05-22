@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { devAuthBypassAllowed } from './authSession';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  devAuthBypassAllowed,
+  syncAuthVolunteerId,
+  volunteerIdForProtectedRequests,
+} from './authSession';
 
 describe('devAuthBypassAllowed', () => {
   it('is false when dev headers are disabled', () => {
@@ -18,5 +22,29 @@ describe('devAuthBypassAllowed', () => {
         VITE_DEMO_VOLUNTEER_ID: 'seed-volunteer-demo',
       }),
     ).toBe(true);
+  });
+});
+
+describe('volunteerIdForProtectedRequests', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_DEMO_VOLUNTEER_ID', 'seed-volunteer-demo');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    syncAuthVolunteerId({ status: 'loading' });
+  });
+
+  it('uses the signed-in volunteer from auth state', () => {
+    syncAuthVolunteerId({
+      status: 'dev-bypass',
+      volunteerId: 'vol-session',
+    });
+    expect(volunteerIdForProtectedRequests()).toBe('vol-session');
+  });
+
+  it('falls back to demo volunteer when auth has no volunteer', () => {
+    syncAuthVolunteerId({ status: 'unauthenticated', reason: 'signed-out' });
+    expect(volunteerIdForProtectedRequests()).toBe('seed-volunteer-demo');
   });
 });
