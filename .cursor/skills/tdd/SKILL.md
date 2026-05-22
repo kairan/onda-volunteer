@@ -1,21 +1,51 @@
 ---
 name: tdd
-description: Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions "red-green-refactor", wants integration tests, or asks for test-first development.
+description: Test-driven development (red-green-refactor). Requires behavior tests through public interfaces; forbids echo tests that only restate fixtures or mocks. Use when building features or fixes with TDD, red-green-refactor, integration tests, or test-first development.
 ---
 
 # Test-Driven Development
 
 ## Philosophy
 
-**Core principle**: Tests should verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't.
+**Core principles** (both are mandatory; a test must satisfy both):
 
-**Good tests** are integration-style: they exercise real code paths through public APIs. They describe _what_ the system does, not _how_ it does it. A good test reads like a specification - "user can checkout with valid cart" tells you exactly what capability exists. These tests survive refactors because they don't care about internal structure.
+1. **Behavior through public interfaces** — Tests exercise what callers and users observe (HTTP, routes, CLI, exported APIs). Not private methods, internal modules, or "did we call X."
 
-**Bad tests** are coupled to implementation. They mock internal collaborators, test private methods, or verify through external means (like querying a database directly instead of using the interface). The warning sign: your test breaks when you refactor, but behavior hasn't changed. If you rename an internal function and tests fail, those tests were testing implementation, not behavior.
+2. **No restatement** — Do not add tests which simply restate the implementation. They provide zero confidence: they pass when you wire props to DOM or return fixture input unchanged, fail on refactors that preserve behavior, and never prove the system actually works.
 
-See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
+**Good tests** satisfy both: integration-style, specification-shaped ("authorized viewer reaches shell roster"), and survive refactors.
 
-## Anti-Pattern: Horizontal Slices
+**Bad tests** violate one or both: coupled to internals, or echoing supplied data. The warning sign for (1): your test breaks when you refactor, but behavior has not changed. The warning sign for (2): the test would still pass if the implementation were `return input` or `{...props}`.
+
+See [tests.md](tests.md) for examples (including [restatement echo tests](tests.md#restatement-echo-tests)) and [mocking.md](mocking.md) for mocking guidelines.
+
+## Anti-pattern: Restatement (echo) tests
+
+An **echo test** checks that code **returns or renders what the test just supplied** — usually via mocks, fixtures, or shallow renders. It does not prove a capability.
+
+**Litmus questions** (if any answer is yes, delete or rewrite the test):
+
+- Would this test still pass if the implementation were `return input` / `{...props}`?
+- Is the assertion only "this string from my fixture appears on screen"?
+- Am I testing CSS class names, column labels, or i18n keys I chose in the test?
+- Does a mock define the entire outcome, and the test only verify the mock was passed through?
+
+**Common echoes** (rewrite or move up a layer):
+
+| Echo | Better |
+|------|--------|
+| Render `<View data={fixture} />`, assert `fixture.title` visible | Route/API test: real loader + one observable outcome |
+| `mockLoader.mockResolvedValue({ assignments: [{ name: 'Sam' }] })`, assert `Sam` | Integration: seeded API + user sees assignment |
+| Assert empty-state copy when `assignments: []` in fixture | E2E with real empty API response, or omit (trivial branch) |
+| `expect(loader).toHaveBeenCalledWith({ params })` | User-visible result of that navigation (URL, heading) |
+
+**Where each layer earns its place:**
+
+- **Unit**: routing contracts, pure domain rules, error mapping with wrong input → wrong user message.
+- **Integration / e2e**: authorization, visibility, cross-module paths — use real stack or realistic boundaries.
+- **Component-only**: only when the component encodes non-trivial logic (formatting, selection rules). If it is mostly layout, do not unit-test it.
+
+## Anti-pattern: Horizontal slices
 
 **DO NOT write all tests first, then all implementation.** This is "horizontal slicing" - treating RED as "write all tests" and GREEN as "write all code."
 
@@ -53,13 +83,15 @@ Before writing any code:
 - [ ] Identify opportunities for [deep modules](deep-modules.md) (small interface, deep implementation)
 - [ ] Design interfaces for [testability](interface-design.md)
 - [ ] List the behaviors to test (not implementation steps)
+- [ ] Each planned test answers: "What user/caller capability fails if we remove the feature?"
+- [ ] No planned test only asserts fixture/mock data round-trips
 - [ ] Get user approval on the plan
 
 Ask: "What should the public interface look like? Which behaviors are most important to test?"
 
 **You can't test everything.** Confirm with the user exactly which behaviors matter most. Focus testing effort on critical paths and complex logic, not every possible edge case.
 
-### 2. Tracer Bullet
+### 2. Tracer bullet
 
 Write ONE test that confirms ONE thing about the system:
 
@@ -70,7 +102,9 @@ GREEN: Write minimal code to pass → test passes
 
 This is your tracer bullet - proves the path works end-to-end.
 
-### 3. Incremental Loop
+Before GREEN: name the capability in one sentence. If the test name is "renders X" and X only exists in the fixture, rewrite. Prefer the narrowest layer that still uses a real boundary (route > isolated component).
+
+### 3. Incremental loop
 
 For each remaining behavior:
 
@@ -85,6 +119,7 @@ Rules:
 - Only enough code to pass current test
 - Don't anticipate future tests
 - Keep tests focused on observable behavior
+- Apply the [echo litmus](#anti-pattern-restatement-echo-tests) before committing each test
 
 ### 4. Refactor
 
@@ -94,16 +129,19 @@ After all tests pass, look for [refactor candidates](refactoring.md):
 - [ ] Deepen modules (move complexity behind simple interfaces)
 - [ ] Apply SOLID principles where natural
 - [ ] Consider what new code reveals about existing code
+- [ ] Delete or upgrade any echo tests introduced while chasing GREEN
 - [ ] Run tests after each refactor step
 
 **Never refactor while RED.** Get to GREEN first.
 
-## Checklist Per Cycle
+## Checklist per cycle
 
 ```
 [ ] Test describes behavior, not implementation
 [ ] Test uses public interface only
 [ ] Test would survive internal refactor
+[ ] Test would fail if behavior broke in a way users care about (not merely renamed)
+[ ] Test is not an echo of fixture/mock input
 [ ] Code is minimal for this test
 [ ] No speculative features added
 ```

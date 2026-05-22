@@ -8,5 +8,19 @@
   "visibility": {
     "public": "Public",
     "private": "Private"
+  },
+  "detail": {
+    "loading": "Loading event roster...",
+    "timezoneLabel": "Church timezone {{tz}}",
+    "utcWindow": "UTC {{start}} → {{end}}",
+    "rosterHeading": "Roster",
+    "backToList": "← Back to events",
+    "emptyRoster": "No active assignments on this roster yet.",
+    "columns": {
+      "ministry": "Ministry",
+      "volunteer": "Volunteer",
+      "role": "Role",
+      "interval": "Interval"
+    }
   }
 }
