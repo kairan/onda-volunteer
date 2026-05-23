@@ -14,8 +14,21 @@
     "submitting": "Saving..."
   },
   "success": "Unavailability saved.",
+  "mirrorHeading": "Mirror across ministries",
+  "mirrorBody": "Apply the same dates to separate unavailability records—one per ministry you select. This does not create a church-wide absence.",
+  "mirrorScope": "These ministries will receive mirrored unavailability:",
+  "mirrorNoMinistries": "You need membership in at least two ministries in this church to mirror dates.",
+  "mirrorForm": {
+    "startsAt": "Mirror starts",
+    "endsAt": "Mirror ends",
+    "submit": "Mirror to ministries",
+    "submitting": "Mirroring..."
+  },
+  "mirrorSuccess": "{{count}} unavailability records created.",
+  "mirrorPartial": "{{created}} created. These ministries could not be updated: {{failed}}.",
   "pendingNotice": "You have Pending membership in {{ministries}}. You cannot be rostered until Active, but you can still record unavailability for calendar truth.",
   "errors": {
+    "mirrorMinistriesRequired": "Select at least one ministry to mirror.",
     "ministryRequired": "Select a ministry.",
     "startsAtRequired": "Enter a start time.",
     "endsAtRequired": "Enter an end time.",

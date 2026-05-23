@@ -14,8 +14,21 @@
     "submitting": "Salvando..."
   },
   "success": "Indisponibilidade salva.",
+  "mirrorHeading": "Espelhar entre ministérios",
+  "mirrorBody": "Aplique as mesmas datas em registros separados de indisponibilidade—um por ministério selecionado. Isso não cria uma ausência para toda a igreja.",
+  "mirrorScope": "Estes ministérios receberão indisponibilidade espelhada:",
+  "mirrorNoMinistries": "É preciso ter vínculo em pelo menos dois ministérios nesta igreja para espelhar datas.",
+  "mirrorForm": {
+    "startsAt": "Início do espelhamento",
+    "endsAt": "Fim do espelhamento",
+    "submit": "Espelhar em ministérios",
+    "submitting": "Espelhando..."
+  },
+  "mirrorSuccess": "{{count}} indisponibilidades criadas.",
+  "mirrorPartial": "{{created}} criada(s). Estes ministérios não puderam ser atualizados: {{failed}}.",
   "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
   "errors": {
+    "mirrorMinistriesRequired": "Selecione pelo menos um ministério para espelhar.",
     "ministryRequired": "Selecione um ministério.",
     "startsAtRequired": "Informe o horário de início.",
     "endsAtRequired": "Informe o horário de fim.",

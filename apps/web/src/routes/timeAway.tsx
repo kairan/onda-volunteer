@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { createBulkVolunteerUnavailability } from '@/identity/createBulkVolunteerUnavailability';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
 import {
   fetchVolunteerUnavailability,
@@ -13,6 +14,13 @@ import { Button } from '@/components/ui/button';
 
 type FieldErrors = {
   ministryId?: string;
+  startsAt?: string;
+  endsAt?: string;
+  summary?: string;
+};
+
+type MirrorFieldErrors = {
+  ministryIds?: string;
   startsAt?: string;
   endsAt?: string;
   summary?: string;
@@ -48,12 +56,31 @@ export function TimeAwayPage() {
   const [submitting, setSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const [mirrorMinistryIds, setMirrorMinistryIds] = useState<string[]>([]);
+  const [mirrorStartsAt, setMirrorStartsAt] = useState('');
+  const [mirrorEndsAt, setMirrorEndsAt] = useState('');
+  const [mirrorFieldErrors, setMirrorFieldErrors] = useState<MirrorFieldErrors>({});
+  const [mirrorSubmitting, setMirrorSubmitting] = useState(false);
+  const [mirrorStatusMessage, setMirrorStatusMessage] = useState<string | null>(null);
+  const [mirrorFailureMessage, setMirrorFailureMessage] = useState<string | null>(null);
+
   const volunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
       ? auth.volunteerId
       : null;
 
-  const ministries = activeChurch?.ministries ?? [];
+  const ministries = useMemo(
+    () => activeChurch?.ministries ?? [],
+    [activeChurch?.ministries],
+  );
+  const mirrorEligibleMinistries = useMemo(
+    () => ministries.filter((ministry) => ministry.membershipStatus !== 'INACTIVE'),
+    [ministries],
+  );
+
+  useEffect(() => {
+    setMirrorMinistryIds(mirrorEligibleMinistries.map((ministry) => ministry.id));
+  }, [mirrorEligibleMinistries]);
 
   const loadRows = useCallback(async (options?: { silent?: boolean }) => {
     if (!volunteerId || !activeChurch) return;
@@ -125,6 +152,115 @@ export function TimeAwayPage() {
     }
     return next;
   }
+
+  function validateMirrorForm(): MirrorFieldErrors {
+    const next: MirrorFieldErrors = {};
+    if (mirrorMinistryIds.length === 0) {
+      next.ministryIds = t('errors.mirrorMinistriesRequired');
+    }
+    if (!mirrorStartsAt) {
+      next.startsAt = t('errors.startsAtRequired');
+    }
+    if (!mirrorEndsAt) {
+      next.endsAt = t('errors.endsAtRequired');
+    }
+    if (mirrorStartsAt && mirrorEndsAt) {
+      const start = new Date(datetimeLocalToUtcIso(mirrorStartsAt)).getTime();
+      const end = new Date(datetimeLocalToUtcIso(mirrorEndsAt)).getTime();
+      if (!(start < end)) {
+        next.endsAt = t('errors.invalidWindow');
+      }
+    }
+    return next;
+  }
+
+  const selectedMirrorMinistryNames = useMemo(
+    () =>
+      mirrorEligibleMinistries
+        .filter((ministry) => mirrorMinistryIds.includes(ministry.id))
+        .map((ministry) => ministry.name)
+        .sort((a, b) => a.localeCompare(b)),
+    [mirrorEligibleMinistries, mirrorMinistryIds],
+  );
+
+  function toggleMirrorMinistry(ministryId: string, checked: boolean) {
+    setMirrorMinistryIds((current) => {
+      if (checked) {
+        return current.includes(ministryId) ? current : [...current, ministryId];
+      }
+      return current.filter((id) => id !== ministryId);
+    });
+  }
+
+  async function handleMirrorSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!volunteerId) return;
+
+    setMirrorStatusMessage(null);
+    setMirrorFailureMessage(null);
+    const nextErrors = validateMirrorForm();
+    const fieldKeys = ['ministryIds', 'startsAt', 'endsAt'] as const;
+    const errorCount = fieldKeys.filter((key) => nextErrors[key]).length;
+    if (errorCount > 1) {
+      nextErrors.summary = t('errors.summary');
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setMirrorFieldErrors(nextErrors);
+      return;
+    }
+
+    setMirrorFieldErrors({});
+    setMirrorSubmitting(true);
+    try {
+      const result = await createBulkVolunteerUnavailability({
+        volunteerId,
+        ministryIds: mirrorMinistryIds,
+        startsAtUtc: datetimeLocalToUtcIso(mirrorStartsAt),
+        endsAtUtc: datetimeLocalToUtcIso(mirrorEndsAt),
+      });
+
+      if (result.createdCount > 0) {
+        setMirrorStatusMessage(t('mirrorSuccess', { count: result.createdCount }));
+        setMirrorStartsAt('');
+        setMirrorEndsAt('');
+        await loadRows({ silent: true });
+      }
+
+      if (result.failed.length > 0) {
+        const failedNames = result.failed
+          .map((failure) => {
+            const ministry = ministries.find((entry) => entry.id === failure.ministryId);
+            return ministry?.name ?? failure.ministryId;
+          })
+          .join(', ');
+        setMirrorFailureMessage(
+          t('mirrorPartial', {
+            created: t('mirrorSuccess', { count: result.createdCount }),
+            failed: failedNames,
+          }),
+        );
+      }
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        const apiErrors: MirrorFieldErrors = { summary: err.message };
+        if (err.code === 'INVALID_UNAVAILABILITY_WINDOW') {
+          apiErrors.endsAt = err.message;
+          delete apiErrors.summary;
+        }
+        if (Object.keys(apiErrors).length > 1 || apiErrors.summary) {
+          apiErrors.summary = apiErrors.summary ?? t('errors.summary');
+        }
+        setMirrorFieldErrors(apiErrors);
+      } else {
+        setMirrorFieldErrors({
+          summary: err instanceof Error ? err.message : t('errors.summary'),
+        });
+      }
+    } finally {
+      setMirrorSubmitting(false);
+    }
+  }
+
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -292,6 +428,128 @@ export function TimeAwayPage() {
           {submitting ? t('form.submitting') : t('form.submit')}
         </Button>
       </form>
+
+
+      <form
+        className="flex flex-col gap-4 border-2 border-border bg-surface p-6"
+        onSubmit={(event) => void handleMirrorSubmit(event)}
+        noValidate
+        role="group"
+        aria-labelledby="time-away-mirror-heading"
+      >
+        <h2
+          id="time-away-mirror-heading"
+          className="font-display text-2xl font-bold uppercase tracking-tight"
+        >
+          {t('mirrorHeading')}
+        </h2>
+        <p className="max-w-prose text-sm leading-relaxed text-muted-foreground">
+          {t('mirrorBody')}
+        </p>
+
+        {mirrorEligibleMinistries.length < 2 ? (
+          <p className="text-sm text-muted-foreground">{t('mirrorNoMinistries')}</p>
+        ) : (
+          <>
+            {mirrorFieldErrors.summary ? (
+              <p
+                role="alert"
+                className="border-2 border-destructive bg-surface p-3 text-sm text-destructive"
+              >
+                {mirrorFieldErrors.summary}
+              </p>
+            ) : null}
+
+            {mirrorStatusMessage ? (
+              <p
+                role="status"
+                aria-label={mirrorStatusMessage}
+                className="border-2 border-primary bg-primary/10 p-3 text-sm"
+              >
+                {mirrorStatusMessage}
+              </p>
+            ) : null}
+
+            {mirrorFailureMessage ? (
+              <p
+                role="alert"
+                className="border-2 border-destructive bg-surface p-3 text-sm text-destructive"
+              >
+                {mirrorFailureMessage}
+              </p>
+            ) : null}
+
+            <fieldset className="flex flex-col gap-2 border-0 p-0">
+              <legend className="text-sm font-semibold uppercase tracking-wide">
+                {t('mirrorScope')}
+              </legend>
+              {mirrorFieldErrors.ministryIds ? (
+                <span className="text-destructive">{mirrorFieldErrors.ministryIds}</span>
+              ) : null}
+              <ul className="flex flex-col gap-2">
+                {mirrorEligibleMinistries.map((ministry) => (
+                  <li key={ministry.id}>
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={mirrorMinistryIds.includes(ministry.id)}
+                        onChange={(event) =>
+                          toggleMirrorMinistry(ministry.id, event.target.checked)
+                        }
+                      />
+                      <span>{ministry.name}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              {selectedMirrorMinistryNames.length > 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  {selectedMirrorMinistryNames.join(', ')}
+                </p>
+              ) : null}
+            </fieldset>
+
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="font-semibold uppercase tracking-wide">
+                {t('mirrorForm.startsAt')}
+              </span>
+              <input
+                type="datetime-local"
+                className="border-2 border-border bg-background px-3 py-2"
+                value={mirrorStartsAt}
+                aria-label={t('mirrorForm.startsAt')}
+                aria-invalid={Boolean(mirrorFieldErrors.startsAt)}
+                onChange={(event) => setMirrorStartsAt(event.target.value)}
+              />
+              {mirrorFieldErrors.startsAt ? (
+                <span className="text-destructive">{mirrorFieldErrors.startsAt}</span>
+              ) : null}
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm">
+              <span className="font-semibold uppercase tracking-wide">
+                {t('mirrorForm.endsAt')}
+              </span>
+              <input
+                type="datetime-local"
+                className="border-2 border-border bg-background px-3 py-2"
+                value={mirrorEndsAt}
+                aria-label={t('mirrorForm.endsAt')}
+                aria-invalid={Boolean(mirrorFieldErrors.endsAt)}
+                onChange={(event) => setMirrorEndsAt(event.target.value)}
+              />
+              {mirrorFieldErrors.endsAt ? (
+                <span className="text-destructive">{mirrorFieldErrors.endsAt}</span>
+              ) : null}
+            </label>
+
+            <Button type="submit" disabled={mirrorSubmitting}>
+              {mirrorSubmitting ? t('mirrorForm.submitting') : t('mirrorForm.submit')}
+            </Button>
+          </>
+        )}
+      </form>
+
 
       <div className="flex flex-col gap-4">
         <h2 className="font-display text-2xl font-bold uppercase tracking-tight">

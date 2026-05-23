@@ -9,10 +9,12 @@ import { OrganizationContextProvider } from '@/organization/OrganizationContextP
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import * as fetchUnavailability from '@/identity/fetchVolunteerUnavailability';
 import * as createUnavailability from '@/identity/createVolunteerUnavailability';
+import * as createBulkUnavailability from '@/identity/createBulkVolunteerUnavailability';
 import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
 
 vi.mock('@/identity/fetchVolunteerUnavailability');
 vi.mock('@/identity/createVolunteerUnavailability');
+vi.mock('@/identity/createBulkVolunteerUnavailability');
 vi.mock('@/organization/fetchOrganizationContext');
 
 afterEach(() => {
@@ -168,6 +170,124 @@ describe('TimeAwayPage', () => {
     });
     expect(screen.getByRole('status')).toHaveTextContent(/Ativo/i);
     expect(screen.getByRole('combobox', { name: 'Ministério' })).toBeInTheDocument();
+  });
+
+
+  it('mirrors unavailability across selected ministries and confirms how many were created', async () => {
+    await initI18n();
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
+      churches: [
+        {
+          id: mockChurchId,
+          name: 'Test Church',
+          defaultTimezone: 'UTC',
+          campuses: [],
+          ministries: [
+            { id: 'min-1', name: 'Greeters', membershipStatus: 'ACTIVE' },
+            { id: 'min-2', name: 'Band', membershipStatus: 'ACTIVE' },
+          ],
+        },
+      ],
+    } as any);
+    vi.mocked(fetchUnavailability.fetchVolunteerUnavailability).mockResolvedValue([]);
+    vi.mocked(createBulkUnavailability.createBulkVolunteerUnavailability).mockResolvedValue({
+      createdCount: 2,
+      created: [
+        { id: 'u1', ministryId: 'min-1' },
+        { id: 'u2', ministryId: 'min-2' },
+      ],
+      failed: [],
+    });
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authState}>
+            <OrganizationContextProvider enabled={true}>
+              <TimeAwayPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('group', { name: /espelhar/i })).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText('Início do espelhamento'), '2026-06-05T09:00');
+    await user.type(screen.getByLabelText('Fim do espelhamento'), '2026-06-05T17:00');
+    await user.click(screen.getByRole('button', { name: /espelhar em ministérios/i }));
+
+    await waitFor(() => {
+      expect(createBulkUnavailability.createBulkVolunteerUnavailability).toHaveBeenCalledWith({
+        volunteerId: mockVolunteerId,
+        ministryIds: ['min-1', 'min-2'],
+        startsAtUtc: '2026-06-05T09:00:00.000Z',
+        endsAtUtc: '2026-06-05T17:00:00.000Z',
+      });
+    });
+
+    expect(
+      await screen.findByRole('status', { name: /2 indisponibilidades criadas/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('reports ministries that failed to mirror without discarding successful rows', async () => {
+    await initI18n();
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
+      churches: [
+        {
+          id: mockChurchId,
+          name: 'Test Church',
+          defaultTimezone: 'UTC',
+          campuses: [],
+          ministries: [
+            { id: 'min-1', name: 'Greeters', membershipStatus: 'ACTIVE' },
+            { id: 'min-2', name: 'Band', membershipStatus: 'ACTIVE' },
+          ],
+        },
+      ],
+    } as any);
+    vi.mocked(fetchUnavailability.fetchVolunteerUnavailability).mockResolvedValue([]);
+    vi.mocked(createBulkUnavailability.createBulkVolunteerUnavailability).mockResolvedValue({
+      createdCount: 1,
+      created: [{ id: 'u1', ministryId: 'min-1' }],
+      failed: [
+        {
+          ministryId: 'min-2',
+          code: 'MEMBERSHIP_REQUIRED',
+          message: 'No membership',
+        },
+      ],
+    });
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authState}>
+            <OrganizationContextProvider enabled={true}>
+              <TimeAwayPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('group', { name: /espelhar/i })).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByLabelText('Início do espelhamento'), '2026-06-06T09:00');
+    await user.type(screen.getByLabelText('Fim do espelhamento'), '2026-06-06T17:00');
+    await user.click(screen.getByRole('button', { name: /espelhar em ministérios/i }));
+
+    expect(
+      await screen.findByRole('status', { name: /1 indisponibilidades criadas/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('Band');
   });
 
   it('shows field-level validation errors without a top summary for single-field failures', async () => {

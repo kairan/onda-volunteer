@@ -107,33 +107,57 @@ export class SchedulingService {
       });
     }
 
+    const uniqueMinistryIds = [...new Set(input.ministryIds)];
     const memberships = await this.prisma.ministryMembership.findMany({
       where: {
         volunteerId: input.volunteerId,
-        ministryId: { in: input.ministryIds },
-        status: 'ACTIVE',
+        ministryId: { in: uniqueMinistryIds },
       },
     });
+    const membershipByMinistryId = new Map(
+      memberships.map((membership) => [membership.ministryId, membership]),
+    );
 
-    if (memberships.length !== input.ministryIds.length) {
-      throw new BadRequestException({
-        code: 'MEMBERSHIP_REQUIRED',
-        message:
-          'Volunteer must have Active ministry membership for all requested ministries.',
+    const created: Array<{ id: string; ministryId: string }> = [];
+    const failed: Array<{ ministryId: string; code: string; message: string }> =
+      [];
+
+    for (const ministryId of uniqueMinistryIds) {
+      const membership = membershipByMinistryId.get(ministryId);
+      if (!membership) {
+        failed.push({
+          ministryId,
+          code: 'MEMBERSHIP_REQUIRED',
+          message:
+            'Volunteer must have ministry membership before recording unavailability.',
+        });
+        continue;
+      }
+      if (membership.status === 'INACTIVE') {
+        failed.push({
+          ministryId,
+          code: 'MEMBERSHIP_NOT_ACTIVE',
+          message:
+            'Volunteer must have Active or Pending ministry membership before recording unavailability.',
+        });
+        continue;
+      }
+
+      const row = await this.prisma.unavailability.create({
+        data: {
+          volunteerId: input.volunteerId,
+          ministryId,
+          startsAtUtc: u0,
+          endsAtUtc: u1,
+        },
       });
+      created.push({ id: row.id, ministryId: row.ministryId });
     }
 
-    const result = await this.prisma.unavailability.createMany({
-      data: input.ministryIds.map((ministryId) => ({
-        volunteerId: input.volunteerId,
-        ministryId,
-        startsAtUtc: u0,
-        endsAtUtc: u1,
-      })),
-    });
-
     return {
-      count: result.count,
+      createdCount: created.length,
+      created,
+      failed,
     };
   }
 
