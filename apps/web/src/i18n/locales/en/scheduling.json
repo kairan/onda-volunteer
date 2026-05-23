@@ -22,8 +22,11 @@
       "role": "Role",
       "interval": "Interval"
     },
-    "assignHeading": "Assign Volunteer",
+    "assignHeading": "Assign (demo)",
+    "assignDemoHelp": "Uses seeded volunteer, ministry, and role from your .env. Default window avoids the seeded morning unavailability block.",
     "createAssignment": "Create assignment",
+    "assignSuccess": "Assignment created.",
+    "releaseSuccess": "Assignment released.",
     "saving": "Saving...",
     "release": "Release",
     "unavailabilityOffer": {

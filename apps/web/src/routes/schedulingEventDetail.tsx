@@ -8,6 +8,7 @@ import { createAssignment } from '@/events/createAssignment';
 import { releaseAssignment } from '@/events/releaseAssignment';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
 import { Button } from '@/components/ui/button';
+import { useToasts } from '@/feedback/ToastHost';
 import { cn } from '@/lib/utils';
 
 export function SchedulingEventDetailPending() {
@@ -38,6 +39,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const { t, i18n } = useTranslation('scheduling');
   const { formatWithLocal } = useLocalTimeContext();
   const router = useRouter();
+  const toasts = useToasts();
   const auth = useAuthSession();
 
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(
@@ -57,7 +59,9 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [endsAtUtc, setEndsAtUtc] = useState(initialWindow.endsAtUtc);
 
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [assignError, setAssignError] = useState<string | null>(null);
+  const [releaseError, setReleaseError] = useState<string | null>(null);
+  const [offerError, setOfferError] = useState<string | null>(null);
 
   const [releasedOffer, setReleasedOffer] = useState<{
     ministryId: string;
@@ -92,11 +96,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const formatEventWindow = () =>
     formatInterval(data.event.window.startsAtUtc, data.event.window.endsAtUtc);
 
+  function pushSuccessToast(message: string) {
+    toasts.push({ id: crypto.randomUUID(), kind: 'success', message });
+  }
+
   async function handleAssignSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!demoMinistry || !demoVolunteer || !demoRole) return;
     setBusy(true);
-    setError(null);
+    setAssignError(null);
     try {
       await createAssignment({
         eventId: data.event.id,
@@ -107,8 +115,11 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
         endsAtUtc,
       });
       await router.invalidate();
+      pushSuccessToast(t('detail.assignSuccess'));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create assignment');
+      setAssignError(
+        err instanceof Error ? err.message : 'Failed to create assignment',
+      );
     } finally {
       setBusy(false);
     }
@@ -117,7 +128,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   async function handleRelease(assignmentId: string) {
     if (!volunteerId) return;
     setBusy(true);
-    setError(null);
+    setReleaseError(null);
     setReleasedOffer(null);
     setOfferDone(false);
     try {
@@ -131,8 +142,11 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
         endsAtUtc: res.window.endsAtUtc,
       });
       await router.invalidate();
+      pushSuccessToast(t('detail.releaseSuccess'));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to release assignment');
+      setReleaseError(
+        err instanceof Error ? err.message : 'Failed to release assignment',
+      );
     } finally {
       setBusy(false);
     }
@@ -141,7 +155,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   async function handleConfirmOffer() {
     if (!volunteerId || !releasedOffer) return;
     setOfferBusy(true);
-    setError(null);
+    setOfferError(null);
     try {
       await createVolunteerUnavailability({
         volunteerId,
@@ -152,7 +166,9 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       setOfferDone(true);
       setReleasedOffer(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to record unavailability');
+      setOfferError(
+        err instanceof Error ? err.message : 'Failed to record unavailability',
+      );
     } finally {
       setOfferBusy(false);
     }
@@ -217,23 +233,26 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
               onClick={() => {
                 setReleasedOffer(null);
                 setOfferDone(false);
+                setOfferError(null);
               }}
             >
               {t('detail.unavailabilityOffer.dismiss')}
             </Button>
           </div>
+          {offerError ? (
+            <p
+              role="alert"
+              className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+            >
+              {offerError}
+            </p>
+          ) : null}
         </section>
       ) : null}
 
       {offerDone ? (
         <p role="status" className="border-2 border-primary bg-primary/10 p-3 text-sm text-primary font-semibold">
           {t('detail.unavailabilityOffer.success')}
-        </p>
-      ) : null}
-
-      {error ? (
-        <p role="alert" className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold">
-          {error}
         </p>
       ) : null}
 
@@ -249,6 +268,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             {t('detail.backToList')}
           </Link>
         </div>
+
+        {releaseError ? (
+          <p
+            role="alert"
+            className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+          >
+            {releaseError}
+          </p>
+        ) : null}
 
         {data.assignments.length === 0 ? (
           <div className="flex flex-col items-center justify-center border-2 border-border bg-surface p-12 text-center text-muted-foreground">
@@ -342,10 +370,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           className="flex flex-col gap-4 border-2 border-border bg-surface p-6 shadow-[8px_8px_0_0_hsl(var(--border))]"
           onSubmit={(e) => void handleAssignSubmit(e)}
           noValidate
+          aria-labelledby="assign-demo-heading"
         >
-          <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
+          <h2
+            id="assign-demo-heading"
+            className="font-display text-2xl font-bold uppercase tracking-tight"
+          >
             {t('detail.assignHeading')}
           </h2>
+          <p className="text-sm text-muted-foreground">{t('detail.assignDemoHelp')}</p>
 
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
@@ -356,7 +389,10 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                 id="startsAtUtc"
                 className="border-2 border-border bg-background px-3 py-2 font-mono text-sm"
                 value={startsAtUtc}
-                onChange={(e) => setStartsAtUtc(e.target.value)}
+                onChange={(e) => {
+                  setStartsAtUtc(e.target.value);
+                  setAssignError(null);
+                }}
                 disabled={busy}
               />
             </div>
@@ -369,7 +405,10 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                 id="endsAtUtc"
                 className="border-2 border-border bg-background px-3 py-2 font-mono text-sm"
                 value={endsAtUtc}
-                onChange={(e) => setEndsAtUtc(e.target.value)}
+                onChange={(e) => {
+                  setEndsAtUtc(e.target.value);
+                  setAssignError(null);
+                }}
                 disabled={busy}
               />
             </div>
@@ -377,6 +416,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             <Button type="submit" disabled={busy} className="self-start mt-2">
               {busy ? t('detail.saving') : t('detail.createAssignment')}
             </Button>
+
+            {assignError ? (
+              <p
+                role="alert"
+                className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+              >
+                {assignError}
+              </p>
+            ) : null}
           </div>
         </form>
       ) : null}

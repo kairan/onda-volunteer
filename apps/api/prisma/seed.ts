@@ -209,9 +209,20 @@ async function main() {
     },
   });
 
+  await prisma.unavailability.deleteMany({
+    where: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-demo',
+      id: { not: 'seed-unavailability-morning' },
+    },
+  });
+
   await prisma.unavailability.upsert({
     where: { id: 'seed-unavailability-morning' },
-    update: {},
+    update: {
+      startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
+    },
     create: {
       id: 'seed-unavailability-morning',
       volunteerId: 'seed-volunteer-demo',
@@ -236,7 +247,15 @@ async function main() {
 
   await prisma.assignment.upsert({
     where: { id: 'seed-assignment-public-greeter' },
-    update: {},
+    update: {
+      voidedAtUtc: null,
+      eventId: 'seed-event-public',
+      ministryId: 'seed-ministry-demo',
+      volunteerId: 'seed-volunteer-demo',
+      roleId: 'seed-role-greeter',
+      startsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
+    },
     create: {
       id: 'seed-assignment-public-greeter',
       eventId: 'seed-event-public',
