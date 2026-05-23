@@ -1,7 +1,9 @@
 # 38 — Event roster writes: assign, release, optional Unavailability offer
 
+**Status:** Shipped  
+**GitHub:** [#38](https://github.com/kairan/onda-volunteer/issues/38) (closed)
+
 **Type:** AFK  
-**Label when unblocked:** `ready-for-agent`  
 **Normative refs:** `docs/prd/volunteer-management-platform.md` (stories **7–8**, **13**, **16**, **27**, **#28–29**); `docs/prd/web-client-design-system-shell-i18n.md` (stories **19**, **25**); `CONTEXT.md`  
 **Architecture:** fold candidate **#7** — see `docs/issues/architecture-debt.md`
 

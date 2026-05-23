@@ -6,7 +6,7 @@ HOPE design system migration: `docs/prd/hope-design-system-migration.md`
 Domain glossary: `CONTEXT.md`  
 Architecture tech debt index: `architecture-debt.md`
 
-Completed slices are kept under **`done/`** for history. Active specs live in this directory; **the numeric prefix on each filename equals the GitHub issue number** (e.g. `37-event-roster-read-inside-shell.md` → [#37](https://github.com/kairan/onda-volunteer/issues/37)). Historical specs under `done/legacy-*` keep the old tracer-bullet slice id in the filename only.
+Completed slices are kept under **`done/`** for history. Active specs live in this directory; **the numeric prefix on each filename equals the GitHub issue number** (e.g. `40-time-away-bulk-mirror-ministries.md` → [#40](https://github.com/kairan/onda-volunteer/issues/40)). Historical specs under `done/legacy-*` keep the old tracer-bullet slice id in the filename only.
 
 Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cleared.
 
@@ -14,10 +14,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 | Issue | Spec | Type | Status | Summary |
 |------:|------|------|--------|---------|
-| [#60](https://github.com/kairan/onda-volunteer/issues/60) | `60-web-playwright-browser-e2e.md` | Platform | **In progress** | Playwright browser e2e foundation + CI |
-| [#37](https://github.com/kairan/onda-volunteer/issues/37) | `37-event-roster-read-inside-shell.md` | AFK | **Next** | **Event** roster read inside shell |
-| [#38](https://github.com/kairan/onda-volunteer/issues/38) | `38-event-roster-writes-assign-release-unavailability-offer.md` | AFK | Blocked on #37 | Roster assign + release + optional **Unavailability** offer |
-| [#40](https://github.com/kairan/onda-volunteer/issues/40) | `40-time-away-bulk-mirror-ministries.md` | AFK | Open | Bulk mirror **Unavailability** |
+| [#40](https://github.com/kairan/onda-volunteer/issues/40) | `40-time-away-bulk-mirror-ministries.md` | AFK | **Next** (`ready-for-agent`) | Bulk mirror **Unavailability** |
 | [#41](https://github.com/kairan/onda-volunteer/issues/41) | `41-leader-manages-volunteer-unavailability.md` | AFK | Open | **Leader** **Unavailability** writes |
 | [#42](https://github.com/kairan/onda-volunteer/issues/42) | `42-admin-creates-public-event.md` | HITL | Open | **Admin** **Public event** create |
 | [#43](https://github.com/kairan/onda-volunteer/issues/43) | `43-leader-creates-rosters-private-event.md` | HITL | Open | **Leader** **Private event** create + roster |
@@ -28,28 +25,25 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 | [#48](https://github.com/kairan/onda-volunteer/issues/48) | `48-personal-local-time-i18n-closeout.md` | AFK | Open | Personal-local time + i18n closeout |
 | [#49](https://github.com/kairan/onda-volunteer/issues/49) | `49-hope-polish-wcag-release-gate.md` | HITL | Open | HOPE polish + WCAG release gate |
 
-## Test infrastructure ([#60](https://github.com/kairan/onda-volunteer/issues/60))
-
-| Issue | Spec | Summary |
-|------:|------|---------|
-| #60 | `60-web-playwright-browser-e2e.md` | Playwright browser e2e in `apps/web/e2e`, API-backed integration tests, GitHub Actions |
-
 ## Architecture tech debt ([#54](https://github.com/kairan/onda-volunteer/issues/54)–[#58](https://github.com/kairan/onda-volunteer/issues/58))
 
 Not product features. Specs in this directory; tracked on GitHub with label **`tech-debt`**. See `architecture-debt.md`.
 
 | Issue | Spec | Summary | Schedule |
 |------:|------|---------|----------|
-| [#54](https://github.com/kairan/onda-volunteer/issues/54) | `54-api-scheduling-invariants-module.md` | Pure **Scheduling** rules + unit tests | After #38 |
+| [#54](https://github.com/kairan/onda-volunteer/issues/54) | `54-api-scheduling-invariants-module.md` | Pure **Scheduling** rules + unit tests | After #38 (shipped) |
 | [#55](https://github.com/kairan/onda-volunteer/issues/55) | `55-api-request-scoped-auth-context.md` | Nest request-scoped auth | After #49 |
 | [#56](https://github.com/kairan/onda-volunteer/issues/56) | `56-api-church-stewardship-access-module.md` | Consolidate church access queries | With #42–#45 or post-#49 |
-| [#57](https://github.com/kairan/onda-volunteer/issues/57) | `57-api-assignment-route-under-scheduling.md` | Move assign POST to **Scheduling** | After #38 |
-| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `58-web-retire-legacy-event-routes.md` | Retire `/events/$eventId` (PRD-gated) | After #37 + #38 |
+| [#57](https://github.com/kairan/onda-volunteer/issues/57) | `57-api-assignment-route-under-scheduling.md` | Move assign POST to **Scheduling** | After #38 (shipped) |
+| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `58-web-retire-legacy-event-routes.md` | Retire `/events/$eventId` (PRD-gated) | After #37 + #38 (shipped) |
 
 ## Recently shipped (`done/`)
 
 | Issue | Spec |
 |------:|------|
+| [#60](https://github.com/kairan/onda-volunteer/issues/60) | `done/60-web-playwright-browser-e2e.md` |
+| [#38](https://github.com/kairan/onda-volunteer/issues/38) | `done/38-event-roster-writes-assign-release-unavailability-offer.md` |
+| [#37](https://github.com/kairan/onda-volunteer/issues/37) | `done/37-event-roster-read-inside-shell.md` |
 | [#36](https://github.com/kairan/onda-volunteer/issues/36) | `done/36-scheduling-hub-event-list-visibility.md` |
 | [#39](https://github.com/kairan/onda-volunteer/issues/39) | `done/39-time-away-self-service-unavailability.md` |
 
