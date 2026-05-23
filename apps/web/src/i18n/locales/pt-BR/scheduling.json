@@ -21,6 +21,20 @@
       "volunteer": "Voluntário",
       "role": "Função",
       "interval": "Intervalo"
+    },
+    "assignHeading": "Designar (demo)",
+    "assignDemoHelp": "Usa voluntário, ministério e função definidos no .env. A janela padrão evita o bloco de indisponibilidade da manhã no seed.",
+    "createAssignment": "Criar designação",
+    "assignSuccess": "Designação criada.",
+    "releaseSuccess": "Designação liberada.",
+    "saving": "Salvando...",
+    "release": "Liberar",
+    "unavailabilityOffer": {
+      "heading": "Marcar indisponibilidade para este ministério?",
+      "body": "Opcional: registrar indisponibilidade para o mesmo intervalo UTC que você acabou de liberar ({{start}} → {{end}}). Nada será salvo até que você confirme.",
+      "confirm": "Sim, marcar indisponível",
+      "dismiss": "Não, obrigado",
+      "success": "Indisponibilidade registrada para este ministério e intervalo de tempo."
     }
   }
 }
