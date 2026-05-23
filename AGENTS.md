@@ -39,7 +39,7 @@ pnpm test:e2e:web                                          # smoke + API integra
 pnpm --filter @onda/web test:e2e                           # smoke only (Vite, no API)
 ```
 
-Backlog spec: `docs/issues/60-web-playwright-browser-e2e.md`.
+Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
 
 ### Gotchas
 

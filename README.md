@@ -47,7 +47,7 @@ Open `http://localhost:5173/`, follow **View demo event**, or browse directly to
 
 ## Tests
 
-Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web unit tests cover the design token contract and foundation primitives (Vitest). Browser e2e uses Playwright in `apps/web/e2e` (see `docs/issues/60-web-playwright-browser-e2e.md`).
+Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web unit tests cover the design token contract and foundation primitives (Vitest). Browser e2e uses Playwright in `apps/web/e2e` (see `docs/issues/done/60-web-playwright-browser-e2e.md`).
 
 ```bash
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=public"

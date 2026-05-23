@@ -22,7 +22,7 @@ Add a guided action that creates separate **Unavailability** records across the 
 
 ## Blocked by
 
-- issue **#43** — Time away self-service: list/create Unavailability (GitHub **#39**)
+- Issue **#39** — Time away self-service: list/create **Unavailability** (shipped)
 
 ## Tracker
 

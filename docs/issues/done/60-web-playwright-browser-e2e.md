@@ -1,7 +1,9 @@
 # 60 — Web: Playwright browser e2e foundation
 
+**Status:** Shipped  
+**GitHub:** [#60](https://github.com/kairan/onda-volunteer/issues/60) (closed)
+
 **Type:** Platform / test infrastructure  
-**Label:** `testing`, `ready-for-agent`  
 **Normative refs:** `docs/prd/volunteer-management-platform.md` (automated tests in-scope); `docs/prd/web-client-design-system-shell-i18n.md` (optional Playwright smoke); `AGENTS.md`
 
 ## Parent
@@ -19,7 +21,7 @@ Establish Playwright in `apps/web` as the canonical **browser e2e** runner, wire
 
 ## Acceptance criteria
 
-### Foundation (started)
+### Foundation
 
 - [x] `@playwright/test` in `apps/web` with `playwright.config.ts` (Vite `webServer`, dev-header env, English locale fixture).
 - [x] Smoke specs: home landing + dashboard navigation (`e2e/home.smoke.spec.ts`).
@@ -28,19 +30,21 @@ Establish Playwright in `apps/web` as the canonical **browser e2e** runner, wire
 - [x] CI workflow `.github/workflows/e2e-web.yml` (Postgres service + Playwright Chromium).
 - [x] Root scripts: `pnpm test:e2e:web`, `pnpm --filter @onda/web test:e2e:integration`.
 
-### Product slices (next — fold into vertical work)
+### Product slices (shipped with #37 / #38)
 
-- [ ] **#37** — Shell roster read at `/scheduling/events/$eventId` + Playwright authorized/unauthorized paths.
-- [ ] **#38** — Assign / release / **Unavailability** offer flows in browser (happy path + one domain error).
+- [x] **#37** — Shell roster read at `/scheduling/events/$eventId` + Playwright authorized/unauthorized paths (`e2e/scheduling-event-roster.integration.spec.ts`).
+- [x] **#38** — Assign / release / **Unavailability** offer flows in browser (happy path + domain error).
+
+### Deferred to other issues
+
 - [ ] **#58** — After legacy retirement, Playwright targets shell routes only (no `/events/$eventId`).
 - [ ] **#49** — Keyboard-only smoke for **Scheduling** and **Time away** (WCAG release gate).
 
 ### Conventions
 
-- [ ] Tag `@smoke` for UI-only; `@integration` when Postgres seed + API required.
-- [ ] Prefer `getByRole` / accessible names; set `onda.ui.locale` via `e2e/fixtures.ts` (default `en` for stable copy).
-- [ ] Do not assert Tailwind class strings; assert landmarks, headings, and error/empty states.
-- [ ] Agent skill: `playwright-best-practices` (installed globally).
+- [x] Tag `@smoke` for UI-only; `@integration` when Postgres seed + API required (in `test.describe` names).
+- [x] Prefer `getByRole` / accessible names; set `onda.ui.locale` via `e2e/fixtures.ts` (default `en` for stable copy).
+- [x] Do not assert Tailwind class strings; assert landmarks, headings, and error/empty states.
 
 ## How to run
 
@@ -52,10 +56,6 @@ pnpm --filter @onda/web test:e2e
 # full browser e2e (API + seed + Vite — same as CI):
 pnpm test:e2e:web
 ```
-
-## Blocked by
-
-- Nothing for foundation. Product flows depend on issues **#37** / **#38** shipping.
 
 ## Out of scope
 
@@ -69,7 +69,7 @@ GitHub: [#60](https://github.com/kairan/onda-volunteer/issues/60)
 
 ## Related
 
-- Issue **#37** — [Event roster read in shell](https://github.com/kairan/onda-volunteer/issues/37)
-- Issue **#38** — [Event roster writes](https://github.com/kairan/onda-volunteer/issues/38)
+- Issue **#37** — [Event roster read in shell](https://github.com/kairan/onda-volunteer/issues/37) (closed)
+- Issue **#38** — [Event roster writes](https://github.com/kairan/onda-volunteer/issues/38) (closed)
 - Issue **#58** — [Retire legacy event routes](https://github.com/kairan/onda-volunteer/issues/58)
 - Issue **#49** — [HOPE polish / WCAG gate](https://github.com/kairan/onda-volunteer/issues/49)

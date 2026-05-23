@@ -1,7 +1,9 @@
 # 37 — Event roster read inside the shell
 
+**Status:** Shipped  
+**GitHub:** [#37](https://github.com/kairan/onda-volunteer/issues/37) (closed)
+
 **Type:** AFK  
-**Label when unblocked:** `ready-for-agent`  
 **Normative refs:** `docs/prd/volunteer-management-platform.md` (stories **13**, **16**, **#10–19**); `docs/prd/web-client-design-system-shell-i18n.md` (stories **9–12**); `CONTEXT.md`  
 **Architecture:** fold candidate **#7** — see `docs/issues/architecture-debt.md`
 
@@ -41,7 +43,7 @@ Update **`/scheduling`** so each **Event** row navigates to this shell route (is
 
 ## Testing notes
 
-- Playwright foundation: slice **60** (`60-web-playwright-browser-e2e.md`). Add `e2e/scheduling-event-roster.integration.spec.ts` (or similar) when this slice ships shell roster read.
+- Playwright: `e2e/scheduling-event-roster.integration.spec.ts` (shipped with slice **60** — `done/60-web-playwright-browser-e2e.md`).
 
 ## Blocked by
 
