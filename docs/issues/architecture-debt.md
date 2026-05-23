@@ -16,7 +16,7 @@ Product vertical slices live in `docs/issues/` and on GitHub. This document inde
 | [#37](https://github.com/kairan/onda-volunteer/issues/37) — Event roster read in shell | Shipped |
 | [#38](https://github.com/kairan/onda-volunteer/issues/38) — Event roster writes | Shipped |
 | [#60](https://github.com/kairan/onda-volunteer/issues/60) — Playwright browser e2e | Shipped |
-| [#40](https://github.com/kairan/onda-volunteer/issues/40) — Bulk mirror time away | **Next** (`ready-for-agent`) |
+| [#40](https://github.com/kairan/onda-volunteer/issues/40) — Bulk mirror time away | Shipped |
 
 ## Candidate map
 

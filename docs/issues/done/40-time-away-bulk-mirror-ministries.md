@@ -1,7 +1,9 @@
 # 40 — Bulk mirror Time away across Ministries
 
+**Status:** Shipped  
+**GitHub:** [#40](https://github.com/kairan/onda-volunteer/issues/40)
+
 **Type:** AFK  
-**Label when unblocked:** `ready-for-agent`  
 **Normative refs:** `docs/prd/volunteer-management-platform.md` (stories **6**, **9–11**); `CONTEXT.md`
 
 ## Parent
