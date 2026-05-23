@@ -22,7 +22,7 @@ Let a **Leader** create, edit, or remove **Unavailability** for **Volunteers** i
 
 ## Blocked by
 
-- issue **#43** — Time away self-service: list/create Unavailability (GitHub **#39**)
+- Issue **#39** — Time away self-service: list/create **Unavailability** (shipped)
 
 ## Tracker
 

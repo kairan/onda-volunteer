@@ -23,10 +23,10 @@ Run a focused accessibility and visual-polish pass after the core **Scheduling**
 
 ## Blocked by
 
-- issue **#36** — Scheduling hub: Church-scoped Event list + read visibility (GitHub **#36**)
-- issue **#37** — Event roster read inside the shell (GitHub **#37**)
-- issue **#38** — Event roster writes: assign, release, optional Unavailability offer (GitHub **#38**)
-- issue **#43** — Time away self-service: list/create Unavailability (GitHub **#39**)
+- Issue **#36** — Scheduling hub: Church-scoped **Event** list + read visibility (shipped)
+- Issue **#37** — Event roster read inside the shell (shipped)
+- Issue **#38** — Event roster writes: assign, release, optional **Unavailability** offer (shipped)
+- Issue **#39** — Time away self-service: list/create **Unavailability** (shipped)
 
 ## Tracker
 
