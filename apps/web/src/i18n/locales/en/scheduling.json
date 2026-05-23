@@ -21,6 +21,17 @@
       "volunteer": "Volunteer",
       "role": "Role",
       "interval": "Interval"
+    },
+    "assignHeading": "Assign Volunteer",
+    "createAssignment": "Create assignment",
+    "saving": "Saving...",
+    "release": "Release",
+    "unavailabilityOffer": {
+      "heading": "Mark unavailable for this ministry?",
+      "body": "Optional: record unavailability for the same UTC window you just released ({{start}} → {{end}}). Nothing is saved until you confirm.",
+      "confirm": "Yes, mark unavailable",
+      "dismiss": "No thanks",
+      "success": "Unavailability recorded for this ministry and time window."
     }
   }
 }
