@@ -22,18 +22,18 @@ Update **`/scheduling`** so each **Event** row navigates to this shell route (is
 
 ### Product
 
-- [ ] Shell route **`/scheduling/events/$eventId`** renders **Event** metadata and roster rows for an authorized viewer.
-- [ ] **Assignments** display **Ministry**, **Volunteer**, **Role**, and explicit interval information.
-- [ ] Unauthorized viewers cannot read rosters outside their visibility scope.
-- [ ] Roster loading, empty, and route-error states render inside the app shell (ADR route-level **Retry**).
-- [ ] **`/scheduling`** list rows link to **`/scheduling/events/$eventId`**, not legacy **`/events/$eventId`**.
-- [ ] Automated tests cover authorized and unauthorized roster read paths (API e2e and/or Playwright — extend `apps/web/e2e/` per slice **60**).
+- [x] Shell route **`/scheduling/events/$eventId`** renders **Event** metadata and roster rows for an authorized viewer.
+- [x] **Assignments** display **Ministry**, **Volunteer**, **Role**, and explicit interval information.
+- [x] Unauthorized viewers cannot read rosters outside their visibility scope.
+- [x] Roster loading, empty, and route-error states render inside the app shell (ADR route-level **Retry**).
+- [x] **`/scheduling`** list rows link to **`/scheduling/events/$eventId`**, not legacy **`/events/$eventId`**.
+- [x] Automated tests cover authorized and unauthorized roster read paths (API e2e and/or Playwright — extend `apps/web/e2e/` per slice **60**).
 
 ### Architecture hygiene (fold #7 — web API seam)
 
-- [ ] Event detail loader uses a dedicated **`fetch*`** module (same pattern as `fetchEvents` / `fetchEventDetail`), not inline `fetch` in the route module.
-- [ ] Loader and route errors use **`apiErrorFromResponse`** / **`ApiRequestError`** (or shell **`RouteErrorPanel`**), not a duplicate string-only error parser.
-- [ ] Legacy **`/events/$eventId`** may remain for PRD story **42**, but is not the target from **`/scheduling`**.
+- [x] Event detail loader uses a dedicated **`fetch*`** module (same pattern as `fetchEvents` / `fetchEventDetail`), not inline `fetch` in the route module.
+- [x] Loader and route errors use **`apiErrorFromResponse`** / **`ApiRequestError`** (or shell **`RouteErrorPanel`**), not a duplicate string-only error parser.
+- [x] Legacy **`/events/$eventId`** may remain for PRD story **42**, but is not the target from **`/scheduling`**.
 
 ### Out of scope
 

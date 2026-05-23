@@ -20,18 +20,18 @@ Wire shell-native write flows on **`/scheduling/events/$eventId`** for **Leader*
 
 ### Product
 
-- [ ] Authorized **Leaders** can create **Assignments** from the shell roster page.
-- [ ] **Volunteers** can release their own **Assignments** from the shell roster page.
-- [ ] Release flow offers matching **Unavailability** without forcing creation.
-- [ ] Successful writes refetch authoritative roster data before showing success feedback.
-- [ ] Domain errors render near the relevant roster form or row.
-- [ ] Playwright covers at least one assign happy path and one release + optional **Unavailability** offer path (`apps/web/e2e/` — slice **60**).
+- [x] Authorized **Leaders** can create **Assignments** from the shell roster page.
+- [x] **Volunteers** can release their own **Assignments** from the shell roster page.
+- [x] Release flow offers matching **Unavailability** without forcing creation.
+- [x] Successful writes refetch authoritative roster data before showing success feedback.
+- [x] Domain errors render near the relevant roster form or row.
+- [x] Playwright covers at least one assign happy path and one release + optional **Unavailability** offer path (`apps/web/e2e/` — slice **60**).
 
 ### Architecture hygiene (fold #7 — web API seam)
 
-- [ ] All roster mutations live in **`fetch*` / `create*`** modules under `apps/web/src/` (e.g. events or scheduling area), not inline in `router.tsx`.
-- [ ] Mutations use **`apiErrorFromResponse`**; remove or stop extending duplicate **`errorMessageFromResponse`** in `router.tsx` for roster flows.
-- [ ] No new inline `fetch` blocks in `router.tsx` for assign, release, or post-release **Unavailability** offer.
+- [x] All roster mutations live in **`fetch*` / `create*`** modules under `apps/web/src/` (e.g. events or scheduling area), not inline in `router.tsx`.
+- [x] Mutations use **`apiErrorFromResponse`**; remove or stop extending duplicate **`errorMessageFromResponse`** in `router.tsx` for roster flows.
+- [x] No new inline `fetch` blocks in `router.tsx` for assign, release, or post-release **Unavailability** offer.
 
 ### Out of scope
 
@@ -40,7 +40,7 @@ Wire shell-native write flows on **`/scheduling/events/$eventId`** for **Leader*
 
 ## Blocked by
 
-- Issue **#37** — Event roster read inside the shell
+- Issue **#37** — Event roster read inside the shell (shipped)
 
 ## Tracker
 
