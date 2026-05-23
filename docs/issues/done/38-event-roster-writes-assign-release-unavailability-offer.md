@@ -42,6 +42,7 @@ Wire shell-native write flows on **`/scheduling/events/$eventId`** for **Leader*
 
 - Issue **#37** — Event roster read inside the shell (shipped)
 
+
 ## Tracker
 
 GitHub: https://github.com/kairan/onda-volunteer/issues/38
