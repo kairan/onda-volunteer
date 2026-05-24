@@ -57,7 +57,7 @@ jobs:
       CI: true
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/onda?schema=public
       AUTH_ALLOW_DEV_HEADERS: "true"
-      SUPABASE_JWT_SECRET: ci-placeholder
+      SUPABASE_JWT_SECRET: playwright-ci-placeholder
 
     steps:
       - uses: actions/checkout@v4
