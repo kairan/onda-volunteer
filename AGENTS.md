@@ -12,6 +12,16 @@ Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web`) for church volunteer
 
 Standard scripts are in the root `package.json`: `dev:api`, `dev:web`, `test`, `build`.
 
+### GitHub CLI (cloud agents)
+
+Boot runs `.cursor/scripts/cloud-install.sh` from `environment.json` (`pnpm install`, then `gh auth login` when configured).
+
+1. Create a fine-grained GitHub PAT with **Pull requests** and **Issues** read/write on this repo.
+2. Add it in [Cloud Agents → Secrets](https://cursor.com/dashboard/cloud-agents) as `GH_TOKEN`.
+3. Start a **new** cloud agent run after adding or rotating the secret.
+
+`GH_TOKEN` is injected into the agent environment. For tools that expect `GITHUB_TOKEN`, run `export GITHUB_TOKEN="$GH_TOKEN"` in the shell (or add a second secret with that name).
+
 ### Starting services
 
 1. Start Docker daemon: `sudo dockerd &>/tmp/dockerd.log &` (wait ~3 s).
