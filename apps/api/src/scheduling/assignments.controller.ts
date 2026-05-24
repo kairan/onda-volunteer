@@ -8,7 +8,9 @@ import {
   Param,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { SchedulingService } from './scheduling.service';
 
 type CreateUnavailabilityBody = {
@@ -52,8 +54,8 @@ export class AssignmentsController {
   }
 
   @Post('volunteers/:volunteerId/unavailability/bulk')
-  @HttpCode(HttpStatus.CREATED)
-  createBulkUnavailability(
+  async createBulkUnavailability(
+    @Res({ passthrough: true }) res: Response,
     @Param('volunteerId') volunteerId: string,
     @Headers('authorization') authorization: string | undefined,
     @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
@@ -64,7 +66,7 @@ export class AssignmentsController {
       endsAtUtc: string;
     },
   ) {
-    return this.scheduling.createBulkUnavailability({
+    const result = await this.scheduling.createBulkUnavailability({
       volunteerId,
       authorizationHeader: authorization,
       volunteerIdHeader,
@@ -72,6 +74,10 @@ export class AssignmentsController {
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
     });
+    res.status(
+      result.createdCount > 0 ? HttpStatus.CREATED : HttpStatus.OK,
+    );
+    return result;
   }
 
   @Post('assignments/:assignmentId/release')

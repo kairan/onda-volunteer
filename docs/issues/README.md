@@ -14,8 +14,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 | Issue | Spec | Type | Status | Summary |
 |------:|------|------|--------|---------|
-| [#40](https://github.com/kairan/onda-volunteer/issues/40) | `40-time-away-bulk-mirror-ministries.md` | AFK | **Next** (`ready-for-agent`) | Bulk mirror **Unavailability** |
-| [#41](https://github.com/kairan/onda-volunteer/issues/41) | `41-leader-manages-volunteer-unavailability.md` | AFK | Open | **Leader** **Unavailability** writes |
+| [#41](https://github.com/kairan/onda-volunteer/issues/41) | `41-leader-manages-volunteer-unavailability.md` | AFK | **Next** (`ready-for-agent`) | **Leader** **Unavailability** writes |
 | [#42](https://github.com/kairan/onda-volunteer/issues/42) | `42-admin-creates-public-event.md` | HITL | Open | **Admin** **Public event** create |
 | [#43](https://github.com/kairan/onda-volunteer/issues/43) | `43-leader-creates-rosters-private-event.md` | HITL | Open | **Leader** **Private event** create + roster |
 | [#44](https://github.com/kairan/onda-volunteer/issues/44) | `44-role-catalog-maintain-rename-retire.md` | HITL | Open | **Role** catalog maintain/rename/**Retire** |

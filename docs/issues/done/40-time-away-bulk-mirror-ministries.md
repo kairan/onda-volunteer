@@ -1,7 +1,9 @@
 # 40 — Bulk mirror Time away across Ministries
 
+**Status:** Shipped  
+**GitHub:** [#40](https://github.com/kairan/onda-volunteer/issues/40)
+
 **Type:** AFK  
-**Label when unblocked:** `ready-for-agent`  
 **Normative refs:** `docs/prd/volunteer-management-platform.md` (stories **6**, **9–11**); `CONTEXT.md`
 
 ## Parent
@@ -14,11 +16,11 @@ Add a guided action that creates separate **Unavailability** records across the 
 
 ## Acceptance criteria
 
-- [ ] **Volunteer** can select a date range and mirror it across eligible **Ministries**.
-- [ ] The system stores one **Unavailability** record per **Ministry**, not a **Church**-wide record.
-- [ ] The flow explains which **Ministries** will receive mirrored **Unavailability** before submission.
-- [ ] Partial failures or ineligible **Ministries** are reported without implying successful rows failed.
-- [ ] Automated tests cover successful multi-**Ministry** creation and at least one validation failure.
+- [x] **Volunteer** can select a date range and mirror it across eligible **Ministries**.
+- [x] The system stores one **Unavailability** record per **Ministry**, not a **Church**-wide record.
+- [x] The flow explains which **Ministries** will receive mirrored **Unavailability** before submission.
+- [x] Partial failures or ineligible **Ministries** are reported without implying successful rows failed.
+- [x] Automated tests cover successful multi-**Ministry** creation and at least one validation failure.
 
 ## Blocked by
 
