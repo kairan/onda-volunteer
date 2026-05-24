@@ -143,15 +143,23 @@ export class SchedulingService {
         continue;
       }
 
-      const row = await this.prisma.unavailability.create({
-        data: {
-          volunteerId: input.volunteerId,
+      try {
+        const row = await this.prisma.unavailability.create({
+          data: {
+            volunteerId: input.volunteerId,
+            ministryId,
+            startsAtUtc: u0,
+            endsAtUtc: u1,
+          },
+        });
+        created.push({ id: row.id, ministryId: row.ministryId });
+      } catch {
+        failed.push({
           ministryId,
-          startsAtUtc: u0,
-          endsAtUtc: u1,
-        },
-      });
-      created.push({ id: row.id, ministryId: row.ministryId });
+          code: 'CREATE_FAILED',
+          message: 'Could not record unavailability for this ministry.',
+        });
+      }
     }
 
     return {

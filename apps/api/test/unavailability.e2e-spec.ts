@@ -250,6 +250,101 @@ describe('Volunteer unavailability (e2e)', () => {
     expect(rows[0].ministryId).toBe(eligible.id);
   });
 
+  it('bulk mirror returns 200 when every ministry is ineligible', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'All Failed Bulk Church', defaultTimezone: 'UTC' },
+    });
+    const ineligibleA = await prisma.ministry.create({
+      data: { name: 'Outsiders A', churchId: church.id },
+    });
+    const ineligibleB = await prisma.ministry.create({
+      data: { name: 'Outsiders B', churchId: church.id },
+    });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'All Failed Bulk Volunteer' },
+    });
+
+    const res = await request(app.getHttpServer())
+      .post(`/volunteers/${volunteer.id}/unavailability/bulk`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({
+        ministryIds: [ineligibleA.id, ineligibleB.id],
+        startsAtUtc: '2026-06-12T09:00:00.000Z',
+        endsAtUtc: '2026-06-12T17:00:00.000Z',
+      })
+      .expect(200);
+
+    expect(res.body).toMatchObject({
+      createdCount: 0,
+      created: [],
+      failed: expect.arrayContaining([
+        expect.objectContaining({
+          ministryId: ineligibleA.id,
+          code: 'MEMBERSHIP_REQUIRED',
+        }),
+        expect.objectContaining({
+          ministryId: ineligibleB.id,
+          code: 'MEMBERSHIP_REQUIRED',
+        }),
+      ]),
+    });
+
+    const rows = await prisma.unavailability.findMany({
+      where: { volunteerId: volunteer.id },
+    });
+    expect(rows).toHaveLength(0);
+  });
+
+  it('bulk mirror reports inactive membership without creating a row', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Inactive Bulk Church', defaultTimezone: 'UTC' },
+    });
+    const active = await prisma.ministry.create({
+      data: { name: 'Greeters', churchId: church.id },
+    });
+    const inactive = await prisma.ministry.create({
+      data: { name: 'Alumni', churchId: church.id },
+    });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Inactive Bulk Volunteer' },
+    });
+    await prisma.ministryMembership.createMany({
+      data: [
+        {
+          volunteerId: volunteer.id,
+          ministryId: active.id,
+          status: 'ACTIVE',
+        },
+        {
+          volunteerId: volunteer.id,
+          ministryId: inactive.id,
+          status: 'INACTIVE',
+        },
+      ],
+    });
+
+    const res = await request(app.getHttpServer())
+      .post(`/volunteers/${volunteer.id}/unavailability/bulk`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({
+        ministryIds: [active.id, inactive.id],
+        startsAtUtc: '2026-06-13T09:00:00.000Z',
+        endsAtUtc: '2026-06-13T17:00:00.000Z',
+      })
+      .expect(201);
+
+    expect(res.body).toMatchObject({
+      createdCount: 1,
+      created: [expect.objectContaining({ ministryId: active.id })],
+      failed: [
+        expect.objectContaining({
+          ministryId: inactive.id,
+          code: 'MEMBERSHIP_NOT_ACTIVE',
+        }),
+      ],
+    });
+  });
+
   it('returns Pending membership status in organization context ministries', async () => {
     const church = await prisma.church.create({
       data: { name: 'Pending Context Church', defaultTimezone: 'UTC' },

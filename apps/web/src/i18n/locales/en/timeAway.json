@@ -25,7 +25,8 @@
     "submitting": "Mirroring..."
   },
   "mirrorSuccess": "{{count}} unavailability records created.",
-  "mirrorPartial": "{{created}} created. These ministries could not be updated: {{failed}}.",
+  "mirrorPartial": "{{count}} unavailability records created. These ministries could not be updated: {{failed}}.",
+  "mirrorAllFailed": "These ministries could not be updated: {{failed}}.",
   "pendingNotice": "You have Pending membership in {{ministries}}. You cannot be rostered until Active, but you can still record unavailability for calendar truth.",
   "errors": {
     "mirrorMinistriesRequired": "Select at least one ministry to mirror.",

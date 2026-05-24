@@ -287,7 +287,10 @@ describe('TimeAwayPage', () => {
     expect(
       await screen.findByRole('status', { name: /1 indisponibilidades criadas/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('alert')).toHaveTextContent('Band');
+    const alert = screen.getByRole('alert');
+    expect(alert).toHaveTextContent('Band');
+    expect(alert.textContent).toMatch(/1 indisponibilidades criadas/i);
+    expect(alert.textContent).not.toMatch(/criadas\. criada/i);
   });
 
   it('shows field-level validation errors without a top summary for single-field failures', async () => {

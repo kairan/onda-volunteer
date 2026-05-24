@@ -25,7 +25,8 @@
     "submitting": "Espelhando..."
   },
   "mirrorSuccess": "{{count}} indisponibilidades criadas.",
-  "mirrorPartial": "{{created}} criada(s). Estes ministérios não puderam ser atualizados: {{failed}}.",
+  "mirrorPartial": "{{count}} indisponibilidades criadas. Estes ministérios não puderam ser atualizados: {{failed}}.",
+  "mirrorAllFailed": "Estes ministérios não puderam ser atualizados: {{failed}}.",
   "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
   "errors": {
     "mirrorMinistriesRequired": "Selecione pelo menos um ministério para espelhar.",

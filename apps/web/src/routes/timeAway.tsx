@@ -234,10 +234,9 @@ export function TimeAwayPage() {
           })
           .join(', ');
         setMirrorFailureMessage(
-          t('mirrorPartial', {
-            created: t('mirrorSuccess', { count: result.createdCount }),
-            failed: failedNames,
-          }),
+          result.createdCount > 0
+            ? t('mirrorPartial', { count: result.createdCount, failed: failedNames })
+            : t('mirrorAllFailed', { failed: failedNames }),
         );
       }
     } catch (err) {
