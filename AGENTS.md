@@ -12,6 +12,15 @@ Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web`) for church volunteer
 
 Standard scripts are in the root `package.json`: `dev:api`, `dev:web`, `test`, `build`.
 
+### CI (GitHub Actions)
+
+PRs and pushes to `main` run:
+
+- **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — parallel `build` (`pnpm build`) and `test` (`pnpm test` with Postgres 16).
+- **Web Playwright e2e** ([`.github/workflows/e2e-web.yml`](.github/workflows/e2e-web.yml)) — browser e2e with Postgres + API.
+
+After the first green run on `main`, enable required status checks per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md). Deferred lint/coverage: `docs/issues/61-ci-lint-and-coverage.md`.
+
 ### GitHub CLI (cloud agents)
 
 Boot runs `.cursor/scripts/cloud-install.sh` from `environment.json` (`pnpm install`, then `gh auth login` when configured).
@@ -53,7 +62,7 @@ Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
 
 ### Gotchas
 
-- No ESLint config exists. Use `tsc --noEmit` for type checking. The web app has some pre-existing TS strict errors that don't affect runtime or tests.
+- No ESLint config exists. API: `pnpm --filter @onda/api typecheck`. Web: `tsc --noEmit` in `apps/web` when fixing strict debt — pre-existing errors don't affect runtime or tests.
 - The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00-16:00 UTC on 2026-06-07. Assignment creation in that window will be rejected by design.
 - `pnpm-workspace.yaml` has `allowBuilds` entries that prevent interactive build prompts during install.
 - Prisma warns about deprecated `package.json#prisma` config — this is expected and harmless.
