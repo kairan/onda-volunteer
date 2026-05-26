@@ -10,6 +10,7 @@ import { Inject } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
 import { IdentityService } from '../identity/identity.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { intervalsOverlapHalfOpen } from './scheduling-rules';
 
 export type CreateAssignmentInput = {
   eventId: string;
@@ -31,11 +32,6 @@ function parseInstant(label: string, iso: string): Date {
     });
   }
   return d;
-}
-
-/** Half-open overlap on UTC instants: [a0,a1) overlaps [b0,b1) iff a0 < b1 && b0 < a1 */
-function halfOpenIntervalsOverlap(a0: Date, a1: Date, b0: Date, b1: Date): boolean {
-  return a0 < b1 && b0 < a1;
 }
 
 export type ReleaseAssignmentInput = {
@@ -431,7 +427,7 @@ export class SchedulingService {
       },
     });
     for (const u of blocks) {
-      if (halfOpenIntervalsOverlap(a0, a1, u.startsAtUtc, u.endsAtUtc)) {
+      if (intervalsOverlapHalfOpen(a0, a1, u.startsAtUtc, u.endsAtUtc)) {
         throw new HttpException(
           {
             statusCode: HttpStatus.CONFLICT,
@@ -452,7 +448,7 @@ export class SchedulingService {
       },
     });
     for (const ex of otherMinistryAssignments) {
-      if (halfOpenIntervalsOverlap(a0, a1, ex.startsAtUtc, ex.endsAtUtc)) {
+      if (intervalsOverlapHalfOpen(a0, a1, ex.startsAtUtc, ex.endsAtUtc)) {
         throw new HttpException(
           {
             statusCode: HttpStatus.CONFLICT,
