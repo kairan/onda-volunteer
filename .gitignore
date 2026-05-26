@@ -8,3 +8,8 @@ dist
 playwright-report/
 test-results/
 blob-report/
+
+# TLC agent-skills installer (Cursor skill is tracked under .cursor/skills/)
+.claude/
+.windsurf/
+.agents/.skill-lock.json.backup
