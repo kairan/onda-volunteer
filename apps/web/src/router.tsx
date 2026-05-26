@@ -20,6 +20,7 @@ import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
 import { PlaceholderPage } from "./routes/placeholderPage";
 import { MinistriesPage } from "./routes/ministries";
+import { MinistryLeadersPage } from "./routes/ministryLeaders";
 import { VolunteersPage } from "./routes/volunteers";
 import { SchedulingPage } from "./routes/scheduling";
 import {
@@ -643,6 +644,13 @@ const schedulingCreatePrivateEventRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+const ministryLeadersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ministry-leaders",
+  component: shellPage(() => <MinistryLeadersPage />),
+  errorComponent: shellErrorComponent,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -693,6 +701,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreateEventRoute,
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
+    ministryLeadersRoute,
     ...shellRoutes,
   ]);
 }
