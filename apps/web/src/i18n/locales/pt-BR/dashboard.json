@@ -5,6 +5,10 @@
   "upcomingAssignments": "Próximas escalas",
   "emptyState": "Sem escalas futuras. Confira a agenda para oportunidades em aberto.",
   "loading": "Carregando escalas...",
+  "errors": {
+    "loadFailed": "Não foi possível carregar as escalas."
+  },
+  "pendingMemberships": "Você tem vínculos pendentes em: {{names}}. Poderá servir quando forem ativados.",
   "stats": {
     "ministries": {
       "label": "Ministérios",

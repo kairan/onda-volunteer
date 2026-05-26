@@ -9,13 +9,14 @@ export type MinistrySummary = {
   name: string;
   membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
   isLeader?: boolean;
+  isChurchAdmin?: boolean;
 };
 
 export type Church = {
   id: string;
   name: string;
   defaultTimezone: string;
-  isAdminAccredited: boolean;
+  isAccreditedAdmin: boolean;
   campuses: Campus[];
   ministries: MinistrySummary[];
 };

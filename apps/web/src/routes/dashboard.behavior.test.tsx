@@ -30,7 +30,7 @@ describe('DashboardPage', () => {
         id: mockChurchId,
         name: 'Test Church',
         defaultTimezone: 'UTC',
-        isAdminAccredited: false,
+        isAccreditedAdmin: false,
         campuses: [],
       },
     ],

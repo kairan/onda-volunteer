@@ -61,13 +61,14 @@ export class OrganizationService {
       name: string;
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
       isLeader?: boolean;
+      isChurchAdmin?: boolean;
     };
 
     type ChurchAccumulator = {
       id: string;
       name: string;
       defaultTimezone: string;
-      isAdminAccredited: boolean;
+      isAccreditedAdmin: boolean;
       campuses: Map<string, { id: string; name: string; timezone: string }>;
       ministries: Map<string, MinistryEntry>;
     };
@@ -86,7 +87,7 @@ export class OrganizationService {
           id: church.id,
           name: church.name,
           defaultTimezone: church.defaultTimezone,
-          isAdminAccredited: false,
+          isAccreditedAdmin: false,
           campuses: new Map(),
           ministries: new Map(),
         };
@@ -107,6 +108,7 @@ export class OrganizationService {
       ministry: { id: string; name: string },
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE',
       isLeader = false,
+      isChurchAdmin = false,
     ) => {
       const existing = entry.ministries.get(ministry.id);
       if (existing) {
@@ -116,6 +118,9 @@ export class OrganizationService {
         if (isLeader) {
           existing.isLeader = true;
         }
+        if (isChurchAdmin) {
+          existing.isChurchAdmin = true;
+        }
         return;
       }
       entry.ministries.set(ministry.id, {
@@ -123,6 +128,7 @@ export class OrganizationService {
         name: ministry.name,
         membershipStatus,
         ...(isLeader ? { isLeader: true } : {}),
+        ...(isChurchAdmin ? { isChurchAdmin: true } : {}),
       });
     };
 
@@ -138,9 +144,9 @@ export class OrganizationService {
 
     for (const accreditation of accreditations) {
       const entry = ensureChurch(accreditation.church);
-      entry.isAdminAccredited = true;
+      entry.isAccreditedAdmin = true;
       for (const ministry of accreditation.church.ministries) {
-        addMinistry(entry, ministry, undefined, true);
+        addMinistry(entry, ministry, undefined, false, true);
       }
     }
 
@@ -151,7 +157,7 @@ export class OrganizationService {
           id: church.id,
           name: church.name,
           defaultTimezone: church.defaultTimezone,
-          isAdminAccredited: church.isAdminAccredited,
+          isAccreditedAdmin: church.isAccreditedAdmin,
           campuses: [...church.campuses.values()].sort((a, b) =>
             a.name.localeCompare(b.name),
           ),
@@ -159,6 +165,125 @@ export class OrganizationService {
             a.name.localeCompare(b.name),
           ),
         })),
+    };
+  }
+
+  private async ministryChurchId(ministryId: string): Promise<string> {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: ministryId },
+      select: { churchId: true },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+    return ministry.churchId;
+  }
+
+  async addMinistryMembership(input: {
+    ministryId: string;
+    volunteerId: string;
+    status: 'PENDING' | 'ACTIVE';
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const churchId = await this.ministryChurchId(input.ministryId);
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId,
+    });
+
+    const volunteer = await this.prisma.volunteer.findUnique({
+      where: { id: input.volunteerId },
+    });
+    if (!volunteer) {
+      throw new NotFoundException({
+        code: 'VOLUNTEER_NOT_FOUND',
+        message: 'Volunteer not found.',
+      });
+    }
+
+    const existing = await this.prisma.ministryMembership.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+    });
+    if (existing) {
+      if (existing.status === 'INACTIVE') {
+        const row = await this.prisma.ministryMembership.update({
+          where: { id: existing.id },
+          data: { status: input.status },
+        });
+        return {
+          volunteerId: row.volunteerId,
+          ministryId: row.ministryId,
+          status: row.status,
+        };
+      }
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_EXISTS',
+        message: 'Volunteer already has membership for this ministry.',
+      });
+    }
+
+    const row = await this.prisma.ministryMembership.create({
+      data: {
+        volunteerId: input.volunteerId,
+        ministryId: input.ministryId,
+        status: input.status,
+      },
+    });
+
+    return {
+      volunteerId: row.volunteerId,
+      ministryId: row.ministryId,
+      status: row.status,
+    };
+  }
+
+  async activateMinistryMembership(input: {
+    ministryId: string;
+    volunteerId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const churchId = await this.ministryChurchId(input.ministryId);
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId,
+    });
+
+    const membership = await this.prisma.ministryMembership.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+    });
+    if (!membership) {
+      throw new NotFoundException();
+    }
+    if (membership.status !== 'PENDING') {
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_NOT_PENDING',
+        message: 'Only Pending ministry membership can be activated.',
+      });
+    }
+
+    const row = await this.prisma.ministryMembership.update({
+      where: { id: membership.id },
+      data: { status: 'ACTIVE' },
+    });
+
+    return {
+      volunteerId: row.volunteerId,
+      ministryId: row.ministryId,
+      status: row.status,
     };
   }
 
@@ -176,7 +301,7 @@ export class OrganizationService {
     const memberships = await this.prisma.ministryMembership.findMany({
       where: {
         ministryId: input.ministryId,
-        status: { in: ['ACTIVE', 'PENDING'] },
+        status: { in: ['ACTIVE', 'PENDING', 'INACTIVE'] },
       },
       include: {
         volunteer: {
