@@ -5,6 +5,7 @@ import ministriesEn from './locales/en/ministries.json';
 import schedulingEn from './locales/en/scheduling.json';
 import shellEn from './locales/en/shell.json';
 import timeAwayEn from './locales/en/timeAway.json';
+import leaderTimeAwayEn from './locales/en/leaderTimeAway.json';
 import volunteersEn from './locales/en/volunteers.json';
 import commonPt from './locales/pt-BR/common.json';
 import dashboardPt from './locales/pt-BR/dashboard.json';
@@ -12,6 +13,7 @@ import ministriesPt from './locales/pt-BR/ministries.json';
 import schedulingPt from './locales/pt-BR/scheduling.json';
 import shellPt from './locales/pt-BR/shell.json';
 import timeAwayPt from './locales/pt-BR/timeAway.json';
+import leaderTimeAwayPt from './locales/pt-BR/leaderTimeAway.json';
 import volunteersPt from './locales/pt-BR/volunteers.json';
 
 export const i18nResources: Resource = {
@@ -23,6 +25,7 @@ export const i18nResources: Resource = {
     ministries: ministriesPt,
     volunteers: volunteersPt,
     timeAway: timeAwayPt,
+    leaderTimeAway: leaderTimeAwayPt,
   },
   en: {
     common: commonEn,
@@ -32,6 +35,7 @@ export const i18nResources: Resource = {
     ministries: ministriesEn,
     volunteers: volunteersEn,
     timeAway: timeAwayEn,
+    leaderTimeAway: leaderTimeAwayEn,
   },
 };
 
@@ -41,4 +45,5 @@ export const ROUTE_NAMESPACES = [
   'ministries',
   'volunteers',
   'timeAway',
+  'leaderTimeAway',
 ] as const;
