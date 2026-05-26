@@ -179,6 +179,40 @@ describe('Leader volunteer unavailability (e2e)', () => {
     expect(res.body[0].ministry.id).toBe(ledMinistry.id);
   });
 
+  it('scopes leader GET to the ministry header when the leader stewards multiple ministries', async () => {
+    const { church, ledMinistry, otherMinistry, leader, member } =
+      await seedLedMinistryFixture();
+    await prisma.ministryLeader.create({
+      data: { volunteerId: leader.id, ministryId: otherMinistry.id },
+    });
+    await prisma.unavailability.createMany({
+      data: [
+        {
+          volunteerId: member.id,
+          ministryId: ledMinistry.id,
+          startsAtUtc: new Date('2026-06-03T10:00:00.000Z'),
+          endsAtUtc: new Date('2026-06-03T12:00:00.000Z'),
+        },
+        {
+          volunteerId: member.id,
+          ministryId: otherMinistry.id,
+          startsAtUtc: new Date('2026-06-04T10:00:00.000Z'),
+          endsAtUtc: new Date('2026-06-04T12:00:00.000Z'),
+        },
+      ],
+    });
+
+    const res = await request(app.getHttpServer())
+      .get(`/volunteers/${member.id}/unavailability`)
+      .query({ churchId: church.id })
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ledMinistry.id)
+      .expect(200);
+
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].ministry.id).toBe(ledMinistry.id);
+  });
+
   it('updates and deletes unavailability within a led ministry', async () => {
     const { ledMinistry, leader, member } = await seedLedMinistryFixture();
     const row = await prisma.unavailability.create({
@@ -240,5 +274,36 @@ describe('Leader volunteer unavailability (e2e)', () => {
       .expect(403);
 
     expect(res.body.code).toBe('LEADER_MINISTRY_MISMATCH');
+  });
+
+  it('lists ministry memberships for a leader', async () => {
+    const { ledMinistry, leader, member } = await seedLedMinistryFixture();
+
+    const res = await request(app.getHttpServer())
+      .get(`/ministries/${ledMinistry.id}/memberships`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ledMinistry.id)
+      .expect(200);
+
+    expect(res.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          volunteerId: member.id,
+          displayName: 'Sam Member',
+          status: 'ACTIVE',
+        }),
+      ]),
+    );
+  });
+
+  it('rejects listing ministry memberships without leader dev headers', async () => {
+    const { ledMinistry, member } = await seedLedMinistryFixture();
+
+    const res = await request(app.getHttpServer())
+      .get(`/ministries/${ledMinistry.id}/memberships`)
+      .set('X-Volunteer-Id', member.id)
+      .expect(401);
+
+    expect(res.body.code).toBe('AUTH_REQUIRED');
   });
 });

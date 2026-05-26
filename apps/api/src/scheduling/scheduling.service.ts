@@ -263,13 +263,14 @@ export class SchedulingService {
       });
     }
 
-    if (input.leaderMinistryIdHeader?.trim()) {
+    const scopedLeaderMinistryId = input.leaderMinistryIdHeader?.trim();
+    if (scopedLeaderMinistryId) {
       await this.identity.assertLeaderCanActOnMinistry({
         authorizationHeader: input.authorizationHeader,
         devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-        ministryId: input.leaderMinistryIdHeader,
+        ministryId: scopedLeaderMinistryId,
       });
-      if (!stewardedMinistryIds.includes(input.leaderMinistryIdHeader)) {
+      if (!stewardedMinistryIds.includes(scopedLeaderMinistryId)) {
         throw new ForbiddenException({
           code: 'LEADER_NOT_AUTHORIZED',
           message:
@@ -278,10 +279,14 @@ export class SchedulingService {
       }
     }
 
+    const ministryIdsForQuery = scopedLeaderMinistryId
+      ? [scopedLeaderMinistryId]
+      : stewardedMinistryIds;
+
     return this.prisma.unavailability.findMany({
       where: {
         ...baseWhere,
-        ministryId: { in: stewardedMinistryIds },
+        ministryId: { in: ministryIdsForQuery },
       },
       include: {
         ministry: {
