@@ -1,10 +1,14 @@
 import {
   ForbiddenException,
+  Inject,
   Injectable,
   UnauthorizedException,
+  forwardRef,
 } from '@nestjs/common';
 import type { Volunteer } from '@prisma/client';
+import { StewardshipService } from '../organization/stewardship.service';
 import { PrismaService } from '../prisma/prisma.service';
+import type { AuthHeaders } from './authenticated-request-context';
 import { SupabaseJwtVerifier } from './supabase-jwt-verifier';
 
 function devHeadersAllowed(): boolean {
@@ -20,13 +24,12 @@ export class IdentityService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtVerifier: SupabaseJwtVerifier,
+    @Inject(forwardRef(() => StewardshipService))
+    private readonly stewardship: StewardshipService,
   ) {}
 
-  async getMe(input: {
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
-  }) {
-    const volunteer = await this.resolveVolunteer(input, {
+  async getMe(auth: AuthHeaders) {
+    const volunteer = await this.requireVolunteer(auth, {
       attemptAutoLink: true,
     });
     return {
@@ -39,14 +42,8 @@ export class IdentityService {
     };
   }
 
-  async updateMe(
-    input: {
-      authorizationHeader: string | undefined;
-      devVolunteerIdHeader: string | undefined;
-    },
-    data: { uiLocale?: string },
-  ) {
-    const volunteer = await this.requireVolunteer(input);
+  async updateMe(auth: AuthHeaders, data: { uiLocale?: string }) {
+    const volunteer = await this.requireVolunteer(auth);
     return this.prisma.volunteer.update({
       where: { id: volunteer.id },
       data: {
@@ -55,24 +52,32 @@ export class IdentityService {
     });
   }
 
-  async requireVolunteer(input: {
+  async requireVolunteer(
+    auth: AuthHeaders,
+    options: { attemptAutoLink?: boolean } = {},
+  ): Promise<Volunteer> {
+    return this.resolveVolunteer(auth, {
+      attemptAutoLink: options.attemptAutoLink ?? false,
+    });
+  }
+
+  /** @deprecated Use AuthenticatedRequestContext at controller/service boundaries. */
+  async requireVolunteerFromLegacyHeaders(input: {
     authorizationHeader: string | undefined;
     devVolunteerIdHeader: string | undefined;
   }): Promise<Volunteer> {
-    return this.resolveVolunteer(input, { attemptAutoLink: false });
+    return this.requireVolunteer({
+      authorization: input.authorizationHeader,
+      volunteerId: input.devVolunteerIdHeader,
+    });
   }
 
   private async resolveVolunteer(
-    input: {
-      authorizationHeader: string | undefined;
-      devVolunteerIdHeader: string | undefined;
-    },
+    auth: AuthHeaders,
     options: { attemptAutoLink: boolean },
   ): Promise<Volunteer> {
-    if (input.authorizationHeader?.startsWith('Bearer ')) {
-      const { sub } = await this.jwtVerifier.verifyBearerToken(
-        input.authorizationHeader,
-      );
+    if (auth.authorization?.startsWith('Bearer ')) {
+      const { sub } = await this.jwtVerifier.verifyBearerToken(auth.authorization);
       let volunteer = await this.prisma.volunteer.findUnique({
         where: { authSubjectId: sub },
       });
@@ -89,9 +94,9 @@ export class IdentityService {
       return volunteer;
     }
 
-    if (devHeadersAllowed() && input.devVolunteerIdHeader?.trim()) {
+    if (devHeadersAllowed() && auth.volunteerId?.trim()) {
       const volunteer = await this.prisma.volunteer.findUnique({
-        where: { id: input.devVolunteerIdHeader.trim() },
+        where: { id: auth.volunteerId.trim() },
       });
       if (!volunteer) {
         throw new ForbiddenException({
@@ -137,103 +142,17 @@ export class IdentityService {
     });
   }
 
-  async assertAdminAccreditedForChurch(input: {
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
-    churchId: string;
-  }): Promise<Volunteer> {
-    const volunteer = await this.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-    });
-
-    const accreditation = await this.prisma.adminAccreditation.findUnique({
-      where: {
-        volunteerId_churchId: {
-          volunteerId: volunteer.id,
-          churchId: input.churchId,
-        },
-      },
-    });
-    if (!accreditation) {
-      throw new ForbiddenException({
-        code: 'ADMIN_NOT_ACCREDITED',
-        message:
-          'Authenticated volunteer is not an Admin accredited for this Church.',
-      });
-    }
-    return volunteer;
+  async assertAdminAccreditedForChurch(
+    auth: AuthHeaders,
+    churchId: string,
+  ): Promise<Volunteer> {
+    return this.stewardship.assertAdminAccreditedForChurch(auth, churchId);
   }
 
-  async assertLeaderCanActOnMinistry(input: {
-    authorizationHeader: string | undefined;
-    devLeaderMinistryIdHeader: string | undefined;
-    ministryId: string;
-  }): Promise<void> {
-    if (input.authorizationHeader?.startsWith('Bearer ')) {
-      const volunteer = await this.requireVolunteer({
-        authorizationHeader: input.authorizationHeader,
-        devVolunteerIdHeader: undefined,
-      });
-
-      const leadership = await this.prisma.ministryLeader.findUnique({
-        where: {
-          volunteerId_ministryId: {
-            volunteerId: volunteer.id,
-            ministryId: input.ministryId,
-          },
-        },
-      });
-      if (leadership) {
-        return;
-      }
-
-      const ministry = await this.prisma.ministry.findUnique({
-        where: { id: input.ministryId },
-        select: { churchId: true },
-      });
-      if (!ministry) {
-        throw new ForbiddenException({
-          code: 'MINISTRY_NOT_FOUND',
-          message: 'Ministry not found.',
-        });
-      }
-
-      const accreditation = await this.prisma.adminAccreditation.findUnique({
-        where: {
-          volunteerId_churchId: {
-            volunteerId: volunteer.id,
-            churchId: ministry.churchId,
-          },
-        },
-      });
-      if (accreditation) {
-        return;
-      }
-
-      throw new ForbiddenException({
-        code: 'LEADER_NOT_AUTHORIZED',
-        message:
-          'Authenticated volunteer is not a Leader for this Ministry and is not an Admin accredited for its Church.',
-      });
-    }
-
-    if (devHeadersAllowed() && input.devLeaderMinistryIdHeader?.trim()) {
-      if (input.devLeaderMinistryIdHeader !== input.ministryId) {
-        throw new ForbiddenException({
-          code: 'LEADER_MINISTRY_MISMATCH',
-          message:
-            'Leader ministry scope does not match this action ministry.',
-        });
-      }
-      return;
-    }
-
-    throw new UnauthorizedException({
-      code: 'AUTH_REQUIRED',
-      message: devHeadersAllowed()
-        ? 'Provide Authorization Bearer token or X-Leader-Ministry-Id (dev only).'
-        : 'Provide Authorization Bearer token.',
-    });
+  async assertLeaderCanActOnMinistry(
+    auth: AuthHeaders,
+    ministryId: string,
+  ): Promise<void> {
+    return this.stewardship.assertLeaderCanActOnMinistry(auth, ministryId);
   }
 }

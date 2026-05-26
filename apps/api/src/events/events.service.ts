@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
 import { DateTime } from 'luxon';
-import { IdentityService } from '../identity/identity.service';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { StewardshipService } from '../organization/stewardship.service';
 
 export type EventDetailResponse = {
   church: {
@@ -84,75 +85,13 @@ function churchFraming(
   };
 }
 
-type ChurchEventAccess = {
-  isAdmin: boolean;
-  accessibleMinistryIds: string[];
-};
-
 @Injectable()
 export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly identity: IdentityService,
+    private readonly stewardship: StewardshipService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
-
-  private async churchEventAccess(
-    volunteerId: string,
-    churchId: string,
-  ): Promise<ChurchEventAccess> {
-    const [memberships, leaderships, accreditations] = await Promise.all([
-      this.prisma.ministryMembership.findMany({
-        where: {
-          volunteerId,
-          ministry: { churchId },
-        },
-        select: { ministryId: true },
-      }),
-      this.prisma.ministryLeader.findMany({
-        where: {
-          volunteerId,
-          ministry: { churchId },
-        },
-        select: { ministryId: true },
-      }),
-      this.prisma.adminAccreditation.findMany({
-        where: {
-          volunteerId,
-          churchId,
-        },
-      }),
-    ]);
-
-    return {
-      isAdmin: accreditations.length > 0,
-      accessibleMinistryIds: [
-        ...new Set([
-          ...memberships.map((row) => row.ministryId),
-          ...leaderships.map((row) => row.ministryId),
-        ]),
-      ],
-    };
-  }
-
-  private canViewEvent(
-    event: { kind: 'PUBLIC' | 'PRIVATE'; ministryId: string | null },
-    access: ChurchEventAccess,
-  ): boolean {
-    if (event.kind === 'PUBLIC') {
-      return true;
-    }
-    if (access.isAdmin) {
-      return true;
-    }
-    if (
-      event.ministryId &&
-      access.accessibleMinistryIds.includes(event.ministryId)
-    ) {
-      return true;
-    }
-    return false;
-  }
 
   private parseInstant(label: string, iso: string): Date {
     const d = new Date(iso);
@@ -189,14 +128,9 @@ export class EventsService {
     title: string;
     startsAtUtc: string;
     endsAtUtc: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId: input.churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(input.churchId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
       input.title,
@@ -234,15 +168,9 @@ export class EventsService {
     title: string;
     startsAtUtc: string;
     endsAtUtc: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
       input.title,
@@ -299,13 +227,9 @@ export class EventsService {
 
   async listEvents(input: {
     churchId: string | undefined;
-    authorizationHeader: string | undefined;
-    volunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    const volunteer = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const volunteer = await input.auth.requireVolunteer();
 
     if (!input.churchId) {
       throw new BadRequestException({
@@ -314,7 +238,10 @@ export class EventsService {
       });
     }
 
-    const access = await this.churchEventAccess(volunteer.id, input.churchId);
+    const stewardship = await this.stewardship.getChurchStewardship(
+      volunteer.id,
+      input.churchId,
+    );
 
     const visibilityOr: Array<
       | { kind: 'PUBLIC' }
@@ -322,12 +249,12 @@ export class EventsService {
       | { kind: 'PRIVATE'; ministryId: { in: string[] } }
     > = [{ kind: 'PUBLIC' }];
 
-    if (access.isAdmin) {
+    if (stewardship.isAccreditedAdmin) {
       visibilityOr.push({ kind: 'PRIVATE' });
-    } else if (access.accessibleMinistryIds.length > 0) {
+    } else if (stewardship.accessibleMinistryIds.length > 0) {
       visibilityOr.push({
         kind: 'PRIVATE',
-        ministryId: { in: access.accessibleMinistryIds },
+        ministryId: { in: stewardship.accessibleMinistryIds },
       });
     }
 
@@ -361,13 +288,9 @@ export class EventsService {
 
   async getEventDetail(input: {
     id: string;
-    authorizationHeader: string | undefined;
-    volunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }): Promise<EventDetailResponse> {
-    const volunteer = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const volunteer = await input.auth.requireVolunteer();
 
     const row = await this.prisma.event.findUnique({
       where: { id: input.id },
@@ -390,8 +313,11 @@ export class EventsService {
       throw new NotFoundException();
     }
 
-    const access = await this.churchEventAccess(volunteer.id, row.churchId);
-    if (!this.canViewEvent(row, access)) {
+    const stewardship = await this.stewardship.getChurchStewardship(
+      volunteer.id,
+      row.churchId,
+    );
+    if (!this.stewardship.canViewEvent(row, stewardship)) {
       throw new NotFoundException();
     }
 
@@ -436,8 +362,7 @@ export class EventsService {
 
   async cancelEvent(input: {
     eventId: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const event = await this.prisma.event.findUnique({
       where: { id: input.eventId },
@@ -452,11 +377,7 @@ export class EventsService {
       });
     }
 
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId: event.churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(event.churchId);
 
     const now = this.clock.now();
 

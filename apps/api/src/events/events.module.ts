@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { SchedulingModule } from '../scheduling/scheduling.module';
+import { StewardshipModule } from '../organization/stewardship.module';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
 
 @Module({
-  imports: [SchedulingModule],
+  imports: [StewardshipModule],
   controllers: [EventsController],
   providers: [EventsService],
 })

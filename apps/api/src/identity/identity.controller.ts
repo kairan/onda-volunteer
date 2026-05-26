@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Headers, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Patch } from '@nestjs/common';
+import { AuthContext } from './auth-context.decorator';
+import type { AuthenticatedRequestContext } from './authenticated-request-context';
 import { IdentityService } from './identity.service';
 
 @Controller('identity')
@@ -6,28 +8,15 @@ export class IdentityController {
   constructor(private readonly identity: IdentityService) {}
 
   @Get('me')
-  getMe(
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerId: string | undefined,
-  ) {
-    return this.identity.getMe({
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerId,
-    });
+  getMe(@AuthContext() auth: AuthenticatedRequestContext) {
+    return this.identity.getMe(auth.headers);
   }
 
   @Patch('me')
   updateMe(
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
     @Body() body: { uiLocale?: string },
   ) {
-    return this.identity.updateMe(
-      {
-        authorizationHeader: authorization,
-        devVolunteerIdHeader: volunteerId,
-      },
-      body,
-    );
+    return this.identity.updateMe(auth.headers, body);
   }
 }

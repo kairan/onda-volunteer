@@ -13,5 +13,12 @@
   },
   "transformIgnorePatterns": [
     "node_modules/(?!(jose|jwks-rsa)/)"
-  ]
+  ],
+  "collectCoverageFrom": [
+    "../src/**/*.ts",
+    "!../src/**/*.module.ts",
+    "!../src/main.ts"
+  ],
+  "coverageDirectory": "../coverage",
+  "coverageReporters": ["text", "lcov"]
 }

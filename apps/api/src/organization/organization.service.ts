@@ -5,56 +5,22 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
-import { IdentityService } from '../identity/identity.service';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { StewardshipService } from './stewardship.service';
 
 @Injectable()
 export class OrganizationService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly identity: IdentityService,
+    private readonly stewardship: StewardshipService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
-  async getAccessibleOrganizationContext(input: {
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
-  }) {
-    const volunteer = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-    });
-
-    const [memberships, leaderships, accreditations] = await Promise.all([
-      this.prisma.ministryMembership.findMany({
-        where: { volunteerId: volunteer.id },
-        include: {
-          ministry: {
-            include: {
-              church: { include: { campuses: true } },
-            },
-          },
-        },
-      }),
-      this.prisma.ministryLeader.findMany({
-        where: { volunteerId: volunteer.id },
-        include: {
-          ministry: {
-            include: {
-              church: { include: { campuses: true } },
-            },
-          },
-        },
-      }),
-      this.prisma.adminAccreditation.findMany({
-        where: { volunteerId: volunteer.id },
-        include: {
-          church: {
-            include: { campuses: true, ministries: true },
-          },
-        },
-      }),
-    ]);
+  async getAccessibleOrganizationContext(auth: AuthenticatedRequestContext) {
+    const volunteer = await auth.requireVolunteer();
+    const [memberships, leaderships, accreditations] =
+      await this.stewardship.loadOrganizationRelations(volunteer.id);
 
     type MinistryEntry = {
       id: string;
@@ -183,15 +149,10 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     status: 'PENDING' | 'ACTIVE';
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(churchId);
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },
@@ -247,15 +208,10 @@ export class OrganizationService {
   async activateMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(churchId);
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {
@@ -289,14 +245,9 @@ export class OrganizationService {
 
   async listMinistryMemberships(input: {
     ministryId: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const memberships = await this.prisma.ministryMembership.findMany({
       where: {
@@ -325,8 +276,7 @@ export class OrganizationService {
 
   async listMinistryLeaders(input: {
     ministryId: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -335,11 +285,7 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId: ministry.churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
 
     const rows = await this.prisma.ministryLeader.findMany({
       where: { ministryId: input.ministryId },
@@ -356,8 +302,7 @@ export class OrganizationService {
   async grantMinistryLeader(input: {
     ministryId: string;
     volunteerId: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -365,11 +310,7 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId: ministry.churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },
@@ -404,8 +345,7 @@ export class OrganizationService {
   async revokeMinistryLeader(input: {
     ministryId: string;
     volunteerId: string;
-    authorizationHeader: string | undefined;
-    devVolunteerIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -413,11 +353,7 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await this.identity.assertAdminAccreditedForChurch({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.devVolunteerIdHeader,
-      churchId: ministry.churchId,
-    });
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
 
     await this.prisma.ministryLeader.deleteMany({
       where: {
@@ -435,14 +371,9 @@ export class OrganizationService {
   async deactivateMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {

@@ -3,11 +3,18 @@
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
+    "lint": "eslint .",
     "test": "pnpm --filter @onda/api test && pnpm --filter @onda/web test",
+    "test:coverage": "pnpm --filter @onda/api test:coverage && pnpm --filter @onda/web test:coverage",
     "test:e2e:web": "PLAYWRIGHT_WITH_API=true pnpm --filter @onda/web test:e2e",
     "dev:api": "pnpm --filter @onda/api dev",
     "dev:web": "pnpm --filter @onda/web dev",
     "link:volunteer-auth": "pnpm --filter @onda/api link:volunteer-auth"
   },
-  "packageManager": "pnpm@11.1.2"
+  "packageManager": "pnpm@11.1.2",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "typescript-eslint": "^8.48.0"
+  }
 }

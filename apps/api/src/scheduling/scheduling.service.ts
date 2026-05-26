@@ -8,13 +8,12 @@ import {
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
-import { IdentityService } from '../identity/identity.service';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 
 export type CreateAssignmentInput = {
   eventId: string;
-  authorizationHeader: string | undefined;
-  leaderMinistryIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
   volunteerId: string;
   ministryId: string;
   roleId: string;
@@ -40,15 +39,12 @@ function halfOpenIntervalsOverlap(a0: Date, a1: Date, b0: Date, b1: Date): boole
 
 export type ReleaseAssignmentInput = {
   assignmentId: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
 };
 
 export type CreateUnavailabilityInput = {
   volunteerId: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
-  leaderMinistryIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
   ministryId: string;
   startsAtUtc: string;
   endsAtUtc: string;
@@ -57,38 +53,30 @@ export type CreateUnavailabilityInput = {
 export type GetVolunteerAssignmentsInput = {
   volunteerId: string;
   churchId?: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
 };
 
 export type GetVolunteerUnavailabilityInput = {
   volunteerId: string;
   churchId?: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
-  leaderMinistryIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
 };
 
 export type UpdateUnavailabilityInput = {
   unavailabilityId: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
-  leaderMinistryIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
   startsAtUtc: string;
   endsAtUtc: string;
 };
 
 export type DeleteUnavailabilityInput = {
   unavailabilityId: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
-  leaderMinistryIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
 };
 
 export type CreateBulkUnavailabilityInput = {
   volunteerId: string;
-  authorizationHeader: string | undefined;
-  volunteerIdHeader: string | undefined;
+  auth: AuthenticatedRequestContext;
   ministryIds: string[];
   startsAtUtc: string;
   endsAtUtc: string;
@@ -98,15 +86,11 @@ export type CreateBulkUnavailabilityInput = {
 export class SchedulingService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly identity: IdentityService,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async createBulkUnavailability(input: CreateBulkUnavailabilityInput) {
-    const volunteer = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const volunteer = await input.auth.requireVolunteer();
     if (volunteer.id !== input.volunteerId) {
       throw new ForbiddenException({
         code: 'VOLUNTEER_MISMATCH',
@@ -222,10 +206,7 @@ export class SchedulingService {
   }
 
   async getVolunteerUnavailability(input: GetVolunteerUnavailabilityInput) {
-    const caller = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const caller = await input.auth.requireVolunteer();
 
     const now = this.clock.now();
     const baseWhere = {
@@ -263,13 +244,9 @@ export class SchedulingService {
       });
     }
 
-    const scopedLeaderMinistryId = input.leaderMinistryIdHeader?.trim();
+    const scopedLeaderMinistryId = input.auth.headers.leaderMinistryId?.trim();
     if (scopedLeaderMinistryId) {
-      await this.identity.assertLeaderCanActOnMinistry({
-        authorizationHeader: input.authorizationHeader,
-        devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-        ministryId: scopedLeaderMinistryId,
-      });
+      await input.auth.assertLeaderCanActOnMinistry(scopedLeaderMinistryId);
       if (!stewardedMinistryIds.includes(scopedLeaderMinistryId)) {
         throw new ForbiddenException({
           code: 'LEADER_NOT_AUTHORIZED',
@@ -303,10 +280,7 @@ export class SchedulingService {
   }
 
   async getVolunteerAssignments(input: GetVolunteerAssignmentsInput) {
-    const caller = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const caller = await input.auth.requireVolunteer();
 
     if (caller.id !== input.volunteerId) {
       throw new ForbiddenException({
@@ -347,11 +321,7 @@ export class SchedulingService {
   }
 
   async createAssignment(input: CreateAssignmentInput) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const event = await this.prisma.event.findUnique({
       where: { id: input.eventId },
@@ -496,10 +466,7 @@ export class SchedulingService {
   }
 
   async releaseAssignment(input: ReleaseAssignmentInput) {
-    const volunteer = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const volunteer = await input.auth.requireVolunteer();
 
     const assignment = await this.prisma.assignment.findUnique({
       where: { id: input.assignmentId },
@@ -538,18 +505,10 @@ export class SchedulingService {
   }
 
   async createUnavailability(input: CreateUnavailabilityInput) {
-    const caller = await this.identity.requireVolunteer({
-      authorizationHeader: input.authorizationHeader,
-      devVolunteerIdHeader: input.volunteerIdHeader,
-    });
+    const caller = await input.auth.requireVolunteer();
 
     if (caller.id !== input.volunteerId) {
-      // If not acting on self, must be a leader of the target ministry
-      await this.identity.assertLeaderCanActOnMinistry({
-        authorizationHeader: input.authorizationHeader,
-        devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-        ministryId: input.ministryId,
-      });
+      await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
     }
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
@@ -605,11 +564,7 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: row.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
@@ -647,11 +602,7 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: row.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
 
     await this.prisma.unavailability.delete({
       where: { id: row.id },

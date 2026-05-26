@@ -3,23 +3,15 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
   Post,
   Query,
 } from '@nestjs/common';
-import { SchedulingService } from '../scheduling/scheduling.service';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
 import { EventsService } from './events.service';
-
-type CreateAssignmentBody = {
-  volunteerId: string;
-  ministryId: string;
-  roleId: string;
-  startsAtUtc: string;
-  endsAtUtc: string;
-};
 
 type CreateEventBody =
   | {
@@ -39,17 +31,12 @@ type CreateEventBody =
 
 @Controller('events')
 export class EventsController {
-  constructor(
-    private readonly events: EventsService,
-    private readonly scheduling: SchedulingService,
-  ) {}
+  constructor(private readonly events: EventsService) {}
 
   @Post()
   createEvent(
     @Body() body: CreateEventBody,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     if (body.kind === 'PUBLIC') {
       if (!body.churchId) {
@@ -63,8 +50,7 @@ export class EventsController {
         title: body.title,
         startsAtUtc: body.startsAtUtc,
         endsAtUtc: body.endsAtUtc,
-        authorizationHeader: authorization,
-        devVolunteerIdHeader: volunteerIdHeader,
+        auth,
       });
     }
 
@@ -80,9 +66,7 @@ export class EventsController {
         title: body.title,
         startsAtUtc: body.startsAtUtc,
         endsAtUtc: body.endsAtUtc,
-        authorizationHeader: authorization,
-        devVolunteerIdHeader: volunteerIdHeader,
-        leaderMinistryIdHeader: leaderMinistryId,
+        auth,
       });
     }
 
@@ -95,59 +79,25 @@ export class EventsController {
   @Get()
   listEvents(
     @Query('churchId') churchId: string | undefined,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.events.listEvents({
-      churchId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-    });
+    return this.events.listEvents({ churchId, auth });
   }
 
   @Get(':id')
   getDetail(
     @Param('id') id: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.events.getEventDetail({
-      id,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-    });
+    return this.events.getEventDetail({ id, auth });
   }
 
   @Post(':id/cancel')
   @HttpCode(HttpStatus.OK)
   cancelEvent(
     @Param('id') id: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.events.cancelEvent({
-      eventId: id,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
-    });
-  }
-
-  @Post(':id/assignments')
-  createAssignment(
-    @Param('id') eventId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
-    @Body() body: CreateAssignmentBody,
-  ) {
-    return this.scheduling.createAssignment({
-      eventId,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
-      volunteerId: body.volunteerId,
-      ministryId: body.ministryId,
-      roleId: body.roleId,
-      startsAtUtc: body.startsAtUtc,
-      endsAtUtc: body.endsAtUtc,
-    });
+    return this.events.cancelEvent({ eventId: id, auth });
   }
 }
