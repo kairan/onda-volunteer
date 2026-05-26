@@ -13,6 +13,10 @@ import { updateVolunteerUnavailability } from '@/identity/updateVolunteerUnavail
 import { fetchMinistryMemberships } from '@/organization/fetchMinistryMemberships';
 import type { MinistryMembershipRow } from '@/organization/fetchMinistryMemberships';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
+import {
+  datetimeLocalToUtcIso,
+  utcIsoToDatetimeLocal,
+} from '@/settings/datetimeLocalUtc';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 import { Button } from '@/components/ui/button';
 
@@ -24,18 +28,11 @@ type FieldErrors = {
   summary?: string;
 };
 
-function datetimeLocalToUtcIso(value: string): string {
-  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
-    return `${value}:00.000Z`;
-  }
-  return new Date(value).toISOString();
-}
-
 export function LeaderVolunteerTimeAwayPage() {
   const { t, i18n } = useTranslation('leaderTimeAway');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { formatWithLocal } = useLocalTimeContext();
+  const { formatWithLocal, useLocalTime } = useLocalTimeContext();
 
   const actingVolunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
@@ -131,10 +128,18 @@ export function LeaderVolunteerTimeAwayPage() {
     void loadRows();
   }, [loadRows]);
 
-  const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
+  const churchTimezone =
+    activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
+  const formTimeZone = useMemo(
+    () =>
+      useLocalTime
+        ? Intl.DateTimeFormat().resolvedOptions().timeZone
+        : churchTimezone,
+    [useLocalTime, churchTimezone],
+  );
 
   const formatDateTime = (iso: string) =>
-    formatWithLocal(iso, timezone, i18n.language, {
+    formatWithLocal(iso, churchTimezone, i18n.language, {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -157,8 +162,8 @@ export function LeaderVolunteerTimeAwayPage() {
       next.endsAt = t('errors.endsAtRequired');
     }
     if (startsAt && endsAt) {
-      const start = new Date(datetimeLocalToUtcIso(startsAt)).getTime();
-      const end = new Date(datetimeLocalToUtcIso(endsAt)).getTime();
+      const start = new Date(datetimeLocalToUtcIso(startsAt, formTimeZone)).getTime();
+      const end = new Date(datetimeLocalToUtcIso(endsAt, formTimeZone)).getTime();
       if (!(start < end)) {
         next.endsAt = t('errors.invalidWindow');
       }
@@ -168,8 +173,8 @@ export function LeaderVolunteerTimeAwayPage() {
 
   function beginEdit(row: VolunteerUnavailability) {
     setEditingId(row.id);
-    setStartsAt(row.startsAtUtc.slice(0, 16));
-    setEndsAt(row.endsAtUtc.slice(0, 16));
+    setStartsAt(utcIsoToDatetimeLocal(row.startsAtUtc, formTimeZone));
+    setEndsAt(utcIsoToDatetimeLocal(row.endsAtUtc, formTimeZone));
     setStatusMessage(null);
     setFieldErrors({});
   }
@@ -201,8 +206,8 @@ export function LeaderVolunteerTimeAwayPage() {
     setSubmitting(true);
     try {
       const window = {
-        startsAtUtc: datetimeLocalToUtcIso(startsAt),
-        endsAtUtc: datetimeLocalToUtcIso(endsAt),
+        startsAtUtc: datetimeLocalToUtcIso(startsAt, formTimeZone),
+        endsAtUtc: datetimeLocalToUtcIso(endsAt, formTimeZone),
       };
       if (editingId) {
         await updateVolunteerUnavailability({
