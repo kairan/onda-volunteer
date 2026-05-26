@@ -95,8 +95,8 @@ test.describe('scheduling event roster @integration', () => {
     // 7. Verify the Assign Form is visible (since demo credentials are set in E2E environment)
     const assignForm = page.getByRole('form', { name: 'Assign (demo)' });
     await expect(assignForm).toBeVisible();
-    const startInput = assignForm.getByLabel('startsAtUtc');
-    const endInput = assignForm.getByLabel('endsAtUtc');
+    const startInput = assignForm.getByLabel(/starts \(utc iso\)/i);
+    const endInput = assignForm.getByLabel(/ends \(utc iso\)/i);
     await expect(startInput).toBeVisible();
     await expect(endInput).toBeVisible();
 

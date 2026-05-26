@@ -5,6 +5,9 @@
   "listHeading": "Events",
   "loading": "Loading events...",
   "emptyState": "No events to show for this church yet.",
+  "errors": {
+    "loadFailed": "Could not load events."
+  },
   "visibility": {
     "public": "Public",
     "private": "Private"
@@ -24,6 +27,14 @@
     },
     "assignHeading": "Assign (demo)",
     "assignDemoHelp": "Uses seeded volunteer, ministry, and role from your .env. Default window avoids the seeded morning unavailability block.",
+    "startsAtUtcLabel": "Starts (UTC ISO)",
+    "endsAtUtcLabel": "Ends (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
+      "assignFailed": "Could not create assignment.",
+      "releaseFailed": "Could not release assignment.",
+      "unavailabilityFailed": "Could not record unavailability."
+    },
     "createAssignment": "Create assignment",
     "assignSuccess": "Assignment created.",
     "releaseSuccess": "Assignment released.",

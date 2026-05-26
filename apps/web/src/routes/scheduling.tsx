@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
+import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { fetchEvents, type EventListItem } from '@/events/fetchEvents';
 
 export function SchedulingPage() {
   const { t, i18n } = useTranslation('scheduling');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { formatWithLocal } = useLocalTimeContext();
+  const { buildDualInterval } = useLocalTimeContext();
   
   const [events, setEvents] = useState<EventListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ export function SchedulingPage() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load events');
+          setError(t('errors.loadFailed'));
         }
       } finally {
         if (!cancelled) {
@@ -56,15 +57,14 @@ export function SchedulingPage() {
 
   const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
 
-  const formatDateTime = (iso: string) => {
-    return formatWithLocal(iso, timezone, i18n.language, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const intervalOptions = {
+    weekday: 'short' as const,
+    month: 'short' as const,
+    day: 'numeric' as const,
+    hour: '2-digit' as const,
+    minute: '2-digit' as const,
   };
+  const endOptions = { hour: '2-digit' as const, minute: '2-digit' as const };
 
   return (
     <section className="flex flex-col gap-8">
@@ -131,8 +131,16 @@ export function SchedulingPage() {
                     {event.title}
                   </h3>
                   <p className="text-sm font-medium text-foreground">
-                    {formatDateTime(event.window.startsAtUtc)} →{' '}
-                    {formatDateTime(event.window.endsAtUtc)}
+                    <SchedulingTimeDisplay
+                      labels={buildDualInterval(
+                        event.window.startsAtUtc,
+                        event.window.endsAtUtc,
+                        timezone,
+                        i18n.language,
+                        intervalOptions,
+                        endOptions,
+                      )}
+                    />
                   </p>
                 </Link>
               </li>
