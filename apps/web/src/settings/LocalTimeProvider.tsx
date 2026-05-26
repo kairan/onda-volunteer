@@ -6,7 +6,6 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { SupportedLocale } from '@/i18n/localePersistence';
 import {
   buildDualTimeInterval,
   buildDualTimeLabels,
@@ -46,12 +45,7 @@ type LocalTimeContextValue = {
    * Viewer preference for form entry: church tz when off, browser tz when on.
    * List/detail surfaces should use {@link buildDualTime} instead.
    */
-  formatWithLocal: (
-    instantUtc: string,
-    churchTimezone: string,
-    locale: string,
-    options?: Intl.DateTimeFormatOptions,
-  ) => string;
+  formTimezone: (churchTimezone: string) => string;
 };
 
 const LocalTimeContext = createContext<LocalTimeContextValue | null>(null);
@@ -134,16 +128,9 @@ export function LocalTimeProvider({ children }: { children: ReactNode }) {
     [useLocalTime],
   );
 
-  const formatWithLocal = useCallback(
-    (
-      instantUtc: string,
-      churchTimezone: string,
-      locale: string,
-      options?: Intl.DateTimeFormatOptions,
-    ) => {
-      const timeZone = useLocalTime ? getBrowserTimezone() : churchTimezone;
-      return formatInstantInTimezone(instantUtc, timeZone, locale, options);
-    },
+  const formTimezone = useCallback(
+    (churchTimezone: string) =>
+      useLocalTime ? getBrowserTimezone() : churchTimezone,
     [useLocalTime],
   );
 
@@ -154,7 +141,7 @@ export function LocalTimeProvider({ children }: { children: ReactNode }) {
       formatChurchTime,
       buildDualTime,
       buildDualInterval,
-      formatWithLocal,
+      formTimezone,
     }),
     [
       useLocalTime,
@@ -162,7 +149,7 @@ export function LocalTimeProvider({ children }: { children: ReactNode }) {
       formatChurchTime,
       buildDualTime,
       buildDualInterval,
-      formatWithLocal,
+      formTimezone,
     ],
   );
 

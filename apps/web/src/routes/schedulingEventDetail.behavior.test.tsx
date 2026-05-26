@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
-import { initI18n } from '@/i18n/controller';
+import { changeLocale, initI18n } from '@/i18n/controller';
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { SchedulingEventDetailView } from './schedulingEventDetail';
 import type { EventDetailPayload } from '@/eventDetailPayload';
@@ -72,6 +72,27 @@ describe('SchedulingEventDetailView dual time', () => {
     );
 
     expect(screen.getAllByText(/Seu horário:/i).length).toBeGreaterThan(0);
+  });
+
+  it('shows English personal-local companion when locale is en', async () => {
+    vi.spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions').mockReturnValue({
+      ...new Intl.DateTimeFormat().resolvedOptions(),
+      timeZone: 'Europe/London',
+    });
+
+    await initI18n();
+    await changeLocale('en');
+    sessionStorage.setItem('onda.useLocalTime', 'true');
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <SchedulingEventDetailView data={payload} />
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    expect(screen.getAllByText(/Your time:/i).length).toBeGreaterThan(0);
   });
 
   it('hides personal-local line when toggle is off', async () => {

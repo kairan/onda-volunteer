@@ -33,7 +33,7 @@ export function LeaderVolunteerTimeAwayPage() {
   const { t, i18n } = useTranslation('leaderTimeAway');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { useLocalTime, buildDualInterval } = useLocalTimeContext();
+  const { buildDualInterval, formTimezone } = useLocalTimeContext();
 
   const actingVolunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
@@ -131,13 +131,7 @@ export function LeaderVolunteerTimeAwayPage() {
 
   const churchTimezone =
     activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
-  const formTimeZone = useMemo(
-    () =>
-      useLocalTime
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : churchTimezone,
-    [useLocalTime, churchTimezone],
-  );
+  const formTimeZone = formTimezone(churchTimezone);
 
   const listTimeOptions = {
     weekday: 'short' as const,

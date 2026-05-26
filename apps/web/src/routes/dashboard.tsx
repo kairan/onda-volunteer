@@ -10,7 +10,7 @@ export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { buildDualTime } = useLocalTimeContext();
+  const { buildDualInterval } = useLocalTimeContext();
   
   const [assignments, setAssignments] = useState<VolunteerAssignment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,10 +139,12 @@ export function DashboardPage() {
                   </h3>
                   <p className="text-sm font-medium text-foreground">
                     <SchedulingTimeDisplay
-                      labels={buildDualTime(
+                      labels={buildDualInterval(
                         a.startsAtUtc,
+                        a.endsAtUtc,
                         timezone,
                         i18n.language,
+                        dateTimeOptions,
                         dateTimeOptions,
                       )}
                     />
