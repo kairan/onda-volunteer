@@ -184,7 +184,9 @@ function AppShellContent({ children }: { children?: ReactNode }) {
           ) : null}
 
           <div className="mx-auto w-full max-w-[1280px] flex-1 px-4 py-6">
-            <main id="main">{children ?? <Outlet />}</main>
+            <main id="main" tabIndex={-1}>
+              {children ?? <Outlet />}
+            </main>
           </div>
         </div>
       </div>
