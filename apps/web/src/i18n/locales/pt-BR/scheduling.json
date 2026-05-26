@@ -71,6 +71,17 @@
     "releaseSuccess": "Designação liberada.",
     "saving": "Salvando...",
     "release": "Liberar",
+    "cancel": {
+      "action": "Cancelar evento",
+      "dialogTitle": "Cancelar este evento?",
+      "dialogBody": "Isso anula todas as designações desta ocorrência. O registro do evento é mantido para histórico.",
+      "confirm": "Sim, cancelar evento",
+      "cancelledLabel": "Este evento foi cancelado.",
+      "success": "Evento cancelado.",
+      "errors": {
+        "failed": "Não foi possível cancelar o evento."
+      }
+    },
     "unavailabilityOffer": {
       "heading": "Marcar indisponibilidade para este ministério?",
       "body": "Opcional: registrar indisponibilidade para o mesmo intervalo UTC que você acabou de liberar ({{start}} → {{end}}). Nada será salvo até que você confirme.",

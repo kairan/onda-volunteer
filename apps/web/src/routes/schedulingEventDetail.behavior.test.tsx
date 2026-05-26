@@ -21,6 +21,12 @@ vi.mock('@/feedback/ToastHost', () => ({
   useToasts: () => ({ push: vi.fn() }),
 }));
 
+vi.mock('@/organization/OrganizationContextProvider', () => ({
+  useOrganization: () => ({
+    activeChurch: { isAccreditedAdmin: false },
+  }),
+}));
+
 const payload: EventDetailPayload = {
   church: { name: 'Demo Church', defaultTimezone: 'America/New_York' },
   event: {
@@ -31,6 +37,7 @@ const payload: EventDetailPayload = {
       startsAtUtc: '2026-06-01T14:00:00.000Z',
       endsAtUtc: '2026-06-01T16:00:00.000Z',
     },
+    cancelledAtUtc: null,
   },
   ministry: null,
   assignments: [

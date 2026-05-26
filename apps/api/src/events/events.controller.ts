@@ -4,6 +4,8 @@ import {
   Controller,
   Get,
   Headers,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -113,6 +115,20 @@ export class EventsController {
       id,
       authorizationHeader: authorization,
       volunteerIdHeader,
+    });
+  }
+
+  @Post(':id/cancel')
+  @HttpCode(HttpStatus.OK)
+  cancelEvent(
+    @Param('id') id: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    return this.events.cancelEvent({
+      eventId: id,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerIdHeader,
     });
   }
 

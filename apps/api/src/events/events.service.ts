@@ -1,8 +1,10 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { CLOCK, type Clock } from '../common/clock';
 import { DateTime } from 'luxon';
 import { IdentityService } from '../identity/identity.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -26,6 +28,7 @@ export type EventDetailResponse = {
       startsDisplayInChurchTz: string;
       endsDisplayInChurchTz: string;
     };
+    cancelledAtUtc: string | null;
   };
   ministry: { id: string; name: string } | null;
   assignments: Array<{
@@ -91,6 +94,7 @@ export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly identity: IdentityService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   private async churchEventAccess(
@@ -330,6 +334,7 @@ export class EventsService {
     const rows = await this.prisma.event.findMany({
       where: {
         churchId: input.churchId,
+        cancelledAtUtc: null,
         OR: visibilityOr,
       },
       include: {
@@ -408,6 +413,7 @@ export class EventsService {
           endsAtUtc: row.endsAtUtc.toISOString(),
         },
         framing,
+        cancelledAtUtc: row.cancelledAtUtc?.toISOString() ?? null,
       },
       ministry: row.ministry
         ? { id: row.ministry.id, name: row.ministry.name }
@@ -425,6 +431,49 @@ export class EventsService {
           endsAtUtc: a.endsAtUtc.toISOString(),
         },
       })),
+    };
+  }
+
+  async cancelEvent(input: {
+    eventId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const event = await this.prisma.event.findUnique({
+      where: { id: input.eventId },
+    });
+    if (!event) {
+      throw new NotFoundException();
+    }
+    if (event.cancelledAtUtc) {
+      throw new BadRequestException({
+        code: 'EVENT_ALREADY_CANCELLED',
+        message: 'Event is already cancelled.',
+      });
+    }
+
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: event.churchId,
+    });
+
+    const now = this.clock.now();
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.event.update({
+        where: { id: event.id },
+        data: { cancelledAtUtc: now },
+      });
+      await tx.assignment.updateMany({
+        where: { eventId: event.id, voidedAtUtc: null },
+        data: { voidedAtUtc: now },
+      });
+    });
+
+    return {
+      eventId: event.id,
+      cancelledAtUtc: now.toISOString(),
     };
   }
 }
