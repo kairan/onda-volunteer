@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Res,
@@ -44,12 +46,48 @@ export class AssignmentsController {
     @Query('churchId') churchId: string | undefined,
     @Headers('authorization') authorization: string | undefined,
     @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
   ) {
     return this.scheduling.getVolunteerUnavailability({
       volunteerId,
       churchId,
       authorizationHeader: authorization,
       volunteerIdHeader,
+      leaderMinistryIdHeader: leaderMinistryId,
+    });
+  }
+
+  @Patch('unavailability/:unavailabilityId')
+  updateUnavailability(
+    @Param('unavailabilityId') unavailabilityId: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @Body() body: { startsAtUtc: string; endsAtUtc: string },
+  ) {
+    return this.scheduling.updateUnavailability({
+      unavailabilityId,
+      authorizationHeader: authorization,
+      volunteerIdHeader,
+      leaderMinistryIdHeader: leaderMinistryId,
+      startsAtUtc: body.startsAtUtc,
+      endsAtUtc: body.endsAtUtc,
+    });
+  }
+
+  @Delete('unavailability/:unavailabilityId')
+  @HttpCode(HttpStatus.OK)
+  deleteUnavailability(
+    @Param('unavailabilityId') unavailabilityId: string,
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+  ) {
+    return this.scheduling.deleteUnavailability({
+      unavailabilityId,
+      authorizationHeader: authorization,
+      volunteerIdHeader,
+      leaderMinistryIdHeader: leaderMinistryId,
     });
   }
 

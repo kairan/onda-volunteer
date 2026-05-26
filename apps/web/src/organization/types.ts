@@ -8,6 +8,7 @@ export type MinistrySummary = {
   id: string;
   name: string;
   membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
+  isLeader?: boolean;
 };
 
 export type Church = {

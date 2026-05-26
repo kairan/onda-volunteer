@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
@@ -72,6 +73,10 @@ export function TimeAwayPage() {
   const ministries = useMemo(
     () => activeChurch?.ministries ?? [],
     [activeChurch?.ministries],
+  );
+  const hasLedMinistries = useMemo(
+    () => ministries.some((ministry) => ministry.isLeader),
+    [ministries],
   );
   const mirrorEligibleMinistries = useMemo(
     () => ministries.filter((ministry) => ministry.membershipStatus !== 'INACTIVE'),
@@ -340,6 +345,14 @@ export function TimeAwayPage() {
         <p className="mt-5 max-w-prose text-sm leading-relaxed text-muted-foreground">
           {t('body')}
         </p>
+        {hasLedMinistries ? (
+          <Link
+            to="/leader/volunteer-time-away"
+            className="mt-4 inline-block text-sm font-semibold text-primary underline"
+          >
+            {t('leaderSupportLink')}
+          </Link>
+        ) : null}
       </div>
 
       <form

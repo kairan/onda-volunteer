@@ -60,6 +60,7 @@ export class OrganizationService {
       id: string;
       name: string;
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
+      isLeader?: boolean;
     };
 
     type ChurchAccumulator = {
@@ -103,11 +104,15 @@ export class OrganizationService {
       entry: ChurchAccumulator,
       ministry: { id: string; name: string },
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE',
+      isLeader = false,
     ) => {
       const existing = entry.ministries.get(ministry.id);
       if (existing) {
         if (membershipStatus) {
           existing.membershipStatus = membershipStatus;
+        }
+        if (isLeader) {
+          existing.isLeader = true;
         }
         return;
       }
@@ -115,6 +120,7 @@ export class OrganizationService {
         id: ministry.id,
         name: ministry.name,
         membershipStatus,
+        ...(isLeader ? { isLeader: true } : {}),
       });
     };
 
@@ -125,13 +131,13 @@ export class OrganizationService {
 
     for (const leadership of leaderships) {
       const entry = ensureChurch(leadership.ministry.church);
-      addMinistry(entry, leadership.ministry);
+      addMinistry(entry, leadership.ministry, undefined, true);
     }
 
     for (const accreditation of accreditations) {
       const entry = ensureChurch(accreditation.church);
       for (const ministry of accreditation.church.ministries) {
-        addMinistry(entry, ministry);
+        addMinistry(entry, ministry, undefined, true);
       }
     }
 
@@ -150,6 +156,42 @@ export class OrganizationService {
           ),
         })),
     };
+  }
+
+  async listMinistryMemberships(input: {
+    ministryId: string;
+    authorizationHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    const memberships = await this.prisma.ministryMembership.findMany({
+      where: {
+        ministryId: input.ministryId,
+        status: { in: ['ACTIVE', 'PENDING'] },
+      },
+      include: {
+        volunteer: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+      orderBy: {
+        volunteer: { displayName: 'asc' },
+      },
+    });
+
+    return memberships.map((row) => ({
+      volunteerId: row.volunteer.id,
+      displayName: row.volunteer.displayName,
+      status: row.status,
+    }));
   }
 
   async deactivateMinistryMembership(input: {
