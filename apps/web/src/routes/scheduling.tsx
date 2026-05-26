@@ -83,9 +83,17 @@ export function SchedulingPage() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
-          {t('listHeading')}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
+            {t('listHeading')}
+          </h2>
+          <Link
+            to="/scheduling/events/new"
+            className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
+          >
+            {t('create.link')}
+          </Link>
+        </div>
 
         {loading ? (
           <div className="flex flex-col gap-4">

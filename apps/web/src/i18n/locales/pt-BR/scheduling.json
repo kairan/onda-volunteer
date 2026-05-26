@@ -5,6 +5,22 @@
   "listHeading": "Eventos",
   "loading": "Carregando eventos...",
   "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "create": {
+    "link": "Criar evento público",
+    "title": "Novo evento público",
+    "timezoneHint": "Horários abaixo no fuso da igreja ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "titleLabel": "Título",
+    "startsLabel": "Início",
+    "endsLabel": "Fim",
+    "submit": "Criar evento",
+    "cancel": "Cancelar",
+    "signInRequired": "Entre para criar eventos.",
+    "notAdmin": "Credenciamento de administrador é necessário para criar eventos públicos.",
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "failed": "Não foi possível criar o evento."
+    }
+  },
   "visibility": {
     "public": "Público",
     "private": "Privado"

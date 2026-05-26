@@ -24,6 +24,7 @@ import {
   SchedulingEventDetailPending,
   SchedulingEventDetailView,
 } from "./routes/schedulingEventDetail";
+import { SchedulingCreateEventPage } from "./routes/schedulingCreateEvent";
 import { TimeAwayPage } from "./routes/timeAway";
 import { LeaderVolunteerTimeAwayPage } from "./routes/leaderVolunteerTimeAway";
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
@@ -625,6 +626,13 @@ const leaderVolunteerTimeAwayRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+const schedulingCreateEventRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/scheduling/events/new",
+  component: shellPage(() => <SchedulingCreateEventPage />),
+  errorComponent: shellErrorComponent,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -666,6 +674,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute, eventRoute]),
     schedulingEventDetailRoute,
+    schedulingCreateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ...shellRoutes,
   ]);

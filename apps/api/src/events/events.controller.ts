@@ -25,6 +25,29 @@ export class EventsController {
     private readonly scheduling: SchedulingService,
   ) {}
 
+  @Post()
+  createEvent(
+    @Body()
+    body: {
+      kind: 'PUBLIC';
+      churchId: string;
+      title: string;
+      startsAtUtc: string;
+      endsAtUtc: string;
+    },
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    return this.events.createPublicEvent({
+      churchId: body.churchId,
+      title: body.title,
+      startsAtUtc: body.startsAtUtc,
+      endsAtUtc: body.endsAtUtc,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerIdHeader,
+    });
+  }
+
   @Get()
   listEvents(
     @Query('churchId') churchId: string | undefined,
