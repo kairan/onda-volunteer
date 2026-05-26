@@ -1,6 +1,7 @@
 # 58 — Web: retire legacy **Event** demo routes (tech debt)
 
 **Type:** Tech debt (defer — PRD-gated)  
+**Status:** **Blocked** — awaiting PRD/ADR sign-off before implementation.  
 **Bounded context:** Web shell / routing  
 **Index:** `docs/issues/architecture-debt.md` (candidate **#6**)
 
@@ -29,7 +30,7 @@ After shell roster read/write (**35**, **36**) are proven:
 - **After** issues **#37** and **#38** shipped (and **#36** scheduling hub shipped).
 - Requires explicit product sign-off (contradicts current PRD until amended).
 
-## Blocked by
+## Prerequisites (met)
 
 - Issue **#37** — Event roster read in shell (shipped) — [#37](https://github.com/kairan/onda-volunteer/issues/37)
 - Issue **#38** — Event roster writes (shipped) — [#38](https://github.com/kairan/onda-volunteer/issues/38)

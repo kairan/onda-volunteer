@@ -39,10 +39,19 @@ export class AuthContextResolverService {
     return {
       headers,
       requireVolunteer,
-      assertAdminAccreditedForChurch: (churchId: string) =>
-        this.stewardship.assertAdminAccreditedForChurch(headers, churchId),
+      assertAdminAccreditedForChurch: async (churchId: string) => {
+        const volunteer = await requireVolunteer();
+        return this.stewardship.assertAdminAccreditedForVolunteer(
+          volunteer,
+          churchId,
+        );
+      },
       assertLeaderCanActOnMinistry: (ministryId: string) =>
-        this.stewardship.assertLeaderCanActOnMinistry(headers, ministryId),
+        this.stewardship.assertLeaderCanActOnMinistry(
+          headers,
+          ministryId,
+          requireVolunteer,
+        ),
     };
   }
 }

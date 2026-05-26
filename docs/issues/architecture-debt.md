@@ -30,7 +30,7 @@ Product vertical slices live in `docs/issues/` and on GitHub. This document inde
 | 3 | Request-scoped auth (API) | After #49 | `55-api-request-scoped-auth-context.md` | [#55](https://github.com/kairan/onda-volunteer/issues/55) |
 | 1 | Church stewardship access (API) | Defer until #42–#45 | `56-api-church-stewardship-access-module.md` | [#56](https://github.com/kairan/onda-volunteer/issues/56) |
 | 4 | **Assignment** route under **Scheduling** (API) | After #38 (shipped) | `57-api-assignment-route-under-scheduling.md` | [#57](https://github.com/kairan/onda-volunteer/issues/57) |
-| 6 | Retire legacy **Event** routes (Web) | Defer; contradicts PRD until amended | `58-web-retire-legacy-event-routes.md` | [#58](https://github.com/kairan/onda-volunteer/issues/58) |
+| 6 | Retire legacy **Event** routes (Web) | **Blocked** (PRD/ADR); contradicts PRD until amended | `58-web-retire-legacy-event-routes.md` | [#58](https://github.com/kairan/onda-volunteer/issues/58) |
 | 8 | CI ESLint + coverage reporting | After build/test CI is stable | `61-ci-lint-and-coverage.md` | (local spec) |
 
 ## Execution order (documentation only)

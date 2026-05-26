@@ -1,7 +1,5 @@
 import type { Volunteer } from '@prisma/client';
 
-export type AuthMode = 'bearer' | 'dev_volunteer' | 'dev_leader';
-
 export type AuthHeaders = {
   authorization?: string;
   volunteerId?: string;

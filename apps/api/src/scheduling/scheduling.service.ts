@@ -3,13 +3,19 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import {
+  bulkUnavailabilityMembershipFailure,
+  parseInstantOrThrow,
+  SCHEDULING_CONFLICT_GUARD_CODES,
+  validateAssignmentGuards,
+} from './scheduling-rules';
 
 export type CreateAssignmentInput = {
   eventId: string;
@@ -22,19 +28,34 @@ export type CreateAssignmentInput = {
 };
 
 function parseInstant(label: string, iso: string): Date {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) {
-    throw new BadRequestException({
-      code: 'INVALID_INSTANT',
-      message: `${label} must be a valid ISO-8601 instant`,
-    });
+  const parsed = parseInstantOrThrow(label, iso);
+  if ('error' in parsed) {
+    throw new BadRequestException(parsed.error);
   }
-  return d;
+  return parsed;
 }
 
-/** Half-open overlap on UTC instants: [a0,a1) overlaps [b0,b1) iff a0 < b1 && b0 < a1 */
-function halfOpenIntervalsOverlap(a0: Date, a1: Date, b0: Date, b1: Date): boolean {
-  return a0 < b1 && b0 < a1;
+function assertAssignmentGuards(
+  input: Parameters<typeof validateAssignmentGuards>[0],
+): void {
+  const result = validateAssignmentGuards(input);
+  if (result.ok) {
+    return;
+  }
+  if (SCHEDULING_CONFLICT_GUARD_CODES.has(result.code)) {
+    throw new HttpException(
+      {
+        statusCode: HttpStatus.CONFLICT,
+        code: result.code,
+        message: result.message,
+      },
+      HttpStatus.CONFLICT,
+    );
+  }
+  throw new BadRequestException({
+    code: result.code,
+    message: result.message,
+  });
 }
 
 export type ReleaseAssignmentInput = {
@@ -125,22 +146,12 @@ export class SchedulingService {
 
     for (const ministryId of uniqueMinistryIds) {
       const membership = membershipByMinistryId.get(ministryId);
-      if (!membership) {
-        failed.push({
-          ministryId,
-          code: 'MEMBERSHIP_REQUIRED',
-          message:
-            'Volunteer must have ministry membership before recording unavailability.',
-        });
-        continue;
-      }
-      if (membership.status === 'INACTIVE') {
-        failed.push({
-          ministryId,
-          code: 'MEMBERSHIP_NOT_ACTIVE',
-          message:
-            'Volunteer must have Active or Pending ministry membership before recording unavailability.',
-        });
+      const membershipFailure = bulkUnavailabilityMembershipFailure(
+        ministryId,
+        membership,
+      );
+      if (membershipFailure) {
+        failed.push(membershipFailure);
         continue;
       }
 
@@ -339,19 +350,6 @@ export class SchedulingService {
 
     const a0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const a1 = parseInstant('endsAtUtc', input.endsAtUtc);
-    if (!(a0 < a1)) {
-      throw new BadRequestException({
-        code: 'INVALID_ASSIGNMENT_WINDOW',
-        message: 'Assignment window must have startsAtUtc strictly before endsAtUtc.',
-      });
-    }
-
-    if (a0 < event.startsAtUtc || a1 > event.endsAtUtc) {
-      throw new BadRequestException({
-        code: 'ASSIGNMENT_OUTSIDE_EVENT',
-        message: 'Assignment interval must lie fully within the event UTC window.',
-      });
-    }
 
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -378,13 +376,6 @@ export class SchedulingService {
         },
       },
     });
-    if (!membership || membership.status !== 'ACTIVE') {
-      throw new BadRequestException({
-        code: 'MEMBERSHIP_NOT_ACTIVE',
-        message: 'Volunteer must have Active ministry membership for this ministry.',
-      });
-    }
-
     const role = await this.prisma.ministryRole.findUnique({
       where: { id: input.roleId },
     });
@@ -394,32 +385,12 @@ export class SchedulingService {
         message: 'Role must belong to the assignment ministry.',
       });
     }
-    if (role.retired) {
-      throw new BadRequestException({
-        code: 'ROLE_RETIRED',
-        message: 'Retired roles cannot be used for new assignments.',
-      });
-    }
-
     const blocks = await this.prisma.unavailability.findMany({
       where: {
         volunteerId: input.volunteerId,
         ministryId: input.ministryId,
       },
     });
-    for (const u of blocks) {
-      if (halfOpenIntervalsOverlap(a0, a1, u.startsAtUtc, u.endsAtUtc)) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.CONFLICT,
-            code: 'UNAVAILABILITY_BLOCKS_ASSIGN',
-            message:
-              'This volunteer is unavailable for this ministry during the selected time.',
-          },
-          HttpStatus.CONFLICT,
-        );
-      }
-    }
 
     const otherMinistryAssignments = await this.prisma.assignment.findMany({
       where: {
@@ -428,19 +399,17 @@ export class SchedulingService {
         voidedAtUtc: null,
       },
     });
-    for (const ex of otherMinistryAssignments) {
-      if (halfOpenIntervalsOverlap(a0, a1, ex.startsAtUtc, ex.endsAtUtc)) {
-        throw new HttpException(
-          {
-            statusCode: HttpStatus.CONFLICT,
-            code: 'CROSS_MINISTRY_DOUBLE_BOOKING',
-            message:
-              'This volunteer is already rostered in another ministry for an overlapping time (UTC half-open intervals).',
-          },
-          HttpStatus.CONFLICT,
-        );
-      }
-    }
+
+    assertAssignmentGuards({
+      eventStartsAtUtc: event.startsAtUtc,
+      eventEndsAtUtc: event.endsAtUtc,
+      assignmentStartsAtUtc: a0,
+      assignmentEndsAtUtc: a1,
+      membershipStatus: membership?.status ?? null,
+      roleRetired: role.retired,
+      unavailabilityBlocks: blocks,
+      crossMinistryConflictingAssignments: otherMinistryAssignments,
+    });
 
     const created = await this.prisma.assignment.create({
       data: {

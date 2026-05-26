@@ -89,7 +89,13 @@ export class StewardshipService {
       authorization: headers.authorization,
       volunteerId: headers.volunteerId,
     });
+    return this.assertAdminAccreditedForVolunteer(volunteer, churchId);
+  }
 
+  async assertAdminAccreditedForVolunteer(
+    volunteer: Volunteer,
+    churchId: string,
+  ): Promise<Volunteer> {
     const accreditation = await this.prisma.adminAccreditation.findUnique({
       where: {
         volunteerId_churchId: {
@@ -111,12 +117,15 @@ export class StewardshipService {
   async assertLeaderCanActOnMinistry(
     headers: AuthHeaders,
     ministryId: string,
+    requireVolunteer?: () => Promise<Volunteer>,
   ): Promise<void> {
     if (headers.authorization?.startsWith('Bearer ')) {
-      const volunteer = await this.identity.requireVolunteer({
-        authorization: headers.authorization,
-        volunteerId: undefined,
-      });
+      const volunteer = requireVolunteer
+        ? await requireVolunteer()
+        : await this.identity.requireVolunteer({
+            authorization: headers.authorization,
+            volunteerId: undefined,
+          });
 
       const leadership = await this.prisma.ministryLeader.findUnique({
         where: {
