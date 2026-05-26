@@ -180,6 +180,51 @@ export class EventsService {
     return { title: trimmed, startsAtUtc: start, endsAtUtc: end };
   }
 
+  async createPublicEvent(input: {
+    churchId: string;
+    title: string;
+    startsAtUtc: string;
+    endsAtUtc: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: input.churchId,
+    });
+
+    const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
+      input.title,
+      input.startsAtUtc,
+      input.endsAtUtc,
+    );
+
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+    });
+    if (!church) {
+      throw new NotFoundException({
+        code: 'CHURCH_NOT_FOUND',
+        message: 'Church not found.',
+      });
+    }
+
+    const row = await this.prisma.event.create({
+      data: {
+        kind: 'PUBLIC',
+        title,
+        startsAtUtc,
+        endsAtUtc,
+        churchId: input.churchId,
+        ministryId: null,
+      },
+      include: { church: true, ministry: true },
+    });
+
+    return this.toEventListItem(row);
+  }
+
   async createPrivateEvent(input: {
     ministryId: string;
     title: string;

@@ -5,6 +5,10 @@
   "upcomingAssignments": "Upcoming assignments",
   "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
   "loading": "Loading assignments...",
+  "errors": {
+    "loadFailed": "Could not load assignments."
+  },
+  "pendingMemberships": "You have pending memberships in: {{names}}. You will be able to serve once they are activated.",
   "stats": {
     "ministries": {
       "label": "Ministries",

@@ -5,6 +5,25 @@
   "listHeading": "Eventos",
   "loading": "Carregando eventos...",
   "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "errors": {
+    "loadFailed": "Não foi possível carregar os eventos."
+  },
+  "create": {
+    "link": "Criar evento público",
+    "title": "Novo evento público",
+    "timezoneHint": "Horários abaixo no fuso da igreja ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "titleLabel": "Título",
+    "startsLabel": "Início",
+    "endsLabel": "Fim",
+    "submit": "Criar evento",
+    "cancel": "Cancelar",
+    "signInRequired": "Entre para criar eventos.",
+    "notAdmin": "Credenciamento de administrador é necessário para criar eventos públicos.",
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "failed": "Não foi possível criar o evento."
+    }
+  },
   "createPrivate": {
     "link": "Novo evento privado",
     "title": "Novo evento privado do ministério",
@@ -39,6 +58,14 @@
     },
     "assignHeading": "Designar (demo)",
     "assignDemoHelp": "Usa voluntário, ministério e função definidos no .env. A janela padrão evita o bloco de indisponibilidade da manhã no seed.",
+    "startsAtUtcLabel": "Início (UTC ISO)",
+    "endsAtUtcLabel": "Fim (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "Este voluntário está indisponível para este ministério no horário selecionado.",
+      "assignFailed": "Não foi possível criar a designação.",
+      "releaseFailed": "Não foi possível liberar a designação.",
+      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
+    },
     "createAssignment": "Criar designação",
     "assignSuccess": "Designação criada.",
     "releaseSuccess": "Designação liberada.",
