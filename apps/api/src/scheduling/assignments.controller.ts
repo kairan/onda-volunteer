@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
@@ -13,7 +12,17 @@ import {
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
 import { SchedulingService } from './scheduling.service';
+
+type CreateAssignmentBody = {
+  volunteerId: string;
+  ministryId: string;
+  roleId: string;
+  startsAtUtc: string;
+  endsAtUtc: string;
+};
 
 type CreateUnavailabilityBody = {
   ministryId: string;
@@ -29,14 +38,30 @@ export class AssignmentsController {
   getVolunteerAssignments(
     @Param('volunteerId') volunteerId: string,
     @Query('churchId') churchId: string | undefined,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.scheduling.getVolunteerAssignments({
       volunteerId,
       churchId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
+      auth,
+    });
+  }
+
+  @Post('events/:eventId/assignments')
+  @HttpCode(HttpStatus.CREATED)
+  createAssignment(
+    @Param('eventId') eventId: string,
+    @Body() body: CreateAssignmentBody,
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    return this.scheduling.createAssignment({
+      eventId,
+      auth,
+      volunteerId: body.volunteerId,
+      ministryId: body.ministryId,
+      roleId: body.roleId,
+      startsAtUtc: body.startsAtUtc,
+      endsAtUtc: body.endsAtUtc,
     });
   }
 
@@ -44,32 +69,24 @@ export class AssignmentsController {
   getVolunteerUnavailability(
     @Param('volunteerId') volunteerId: string,
     @Query('churchId') churchId: string | undefined,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.scheduling.getVolunteerUnavailability({
       volunteerId,
       churchId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
     });
   }
 
   @Patch('unavailability/:unavailabilityId')
   updateUnavailability(
     @Param('unavailabilityId') unavailabilityId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
     @Body() body: { startsAtUtc: string; endsAtUtc: string },
   ) {
     return this.scheduling.updateUnavailability({
       unavailabilityId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
     });
@@ -79,15 +96,11 @@ export class AssignmentsController {
   @HttpCode(HttpStatus.OK)
   deleteUnavailability(
     @Param('unavailabilityId') unavailabilityId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.scheduling.deleteUnavailability({
       unavailabilityId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
     });
   }
 
@@ -95,8 +108,7 @@ export class AssignmentsController {
   async createBulkUnavailability(
     @Res({ passthrough: true }) res: Response,
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
     @Body()
     body: {
       ministryIds: string[];
@@ -106,8 +118,7 @@ export class AssignmentsController {
   ) {
     const result = await this.scheduling.createBulkUnavailability({
       volunteerId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
+      auth,
       ministryIds: body.ministryIds,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
@@ -122,13 +133,11 @@ export class AssignmentsController {
   @HttpCode(HttpStatus.OK)
   releaseAssignment(
     @Param('assignmentId') assignmentId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.scheduling.releaseAssignment({
       assignmentId,
-      authorizationHeader: authorization,
-      volunteerIdHeader: volunteerId,
+      auth,
     });
   }
 
@@ -136,16 +145,12 @@ export class AssignmentsController {
   @HttpCode(HttpStatus.CREATED)
   createUnavailability(
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
-    @Body() body: { ministryId: string; startsAtUtc: string; endsAtUtc: string },
+    @AuthContext() auth: AuthenticatedRequestContext,
+    @Body() body: CreateUnavailabilityBody,
   ) {
     return this.scheduling.createUnavailability({
       volunteerId,
-      authorizationHeader: authorization,
-      volunteerIdHeader,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
       ministryId: body.ministryId,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,

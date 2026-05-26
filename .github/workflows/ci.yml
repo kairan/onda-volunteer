@@ -33,6 +33,53 @@ jobs:
       - name: Build
         run: pnpm build
 
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+  typecheck-api:
+    name: typecheck-api
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck API
+        run: pnpm --filter @onda/api typecheck
+
   test:
     name: test
     runs-on: ubuntu-latest
@@ -80,3 +127,61 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: onda
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d onda"
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      CI: true
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/onda?schema=public
+      AUTH_ALLOW_DEV_HEADERS: "true"
+      SUPABASE_JWT_SECRET: playwright-ci-placeholder
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Apply database migrations
+        run: pnpm exec prisma migrate deploy
+        working-directory: apps/api
+
+      - name: Collect coverage
+        run: pnpm test:coverage
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: |
+            apps/api/coverage
+            apps/web/coverage
+          if-no-files-found: warn

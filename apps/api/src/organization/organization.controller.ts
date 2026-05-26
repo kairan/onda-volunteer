@@ -3,12 +3,13 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
   Post,
 } from '@nestjs/common';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
 import { OrganizationService } from './organization.service';
 
 type AddMembershipBody = {
@@ -44,27 +45,17 @@ export class OrganizationController {
   @Get(':ministryId/memberships')
   listMemberships(
     @Param('ministryId') ministryId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.organization.listMinistryMemberships({
-      ministryId,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
-    });
+    return this.organization.listMinistryMemberships({ ministryId, auth });
   }
 
   @Get(':ministryId/leaders')
   listLeaders(
     @Param('ministryId') ministryId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.organization.listMinistryLeaders({
-      ministryId,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
-    });
+    return this.organization.listMinistryLeaders({ ministryId, auth });
   }
 
   @Post(':ministryId/memberships')
@@ -72,16 +63,14 @@ export class OrganizationController {
   addMembership(
     @Param('ministryId') ministryId: string,
     @Body() body: AddMembershipBody,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     const parsed = parseAddMembershipBody(body);
     return this.organization.addMinistryMembership({
       ministryId,
       volunteerId: parsed.volunteerId,
       status: parsed.status,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
+      auth,
     });
   }
 
@@ -90,14 +79,12 @@ export class OrganizationController {
   grantLeader(
     @Param('ministryId') ministryId: string,
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.organization.grantMinistryLeader({
       ministryId,
       volunteerId,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
+      auth,
     });
   }
 
@@ -106,14 +93,12 @@ export class OrganizationController {
   revokeLeader(
     @Param('ministryId') ministryId: string,
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.organization.revokeMinistryLeader({
       ministryId,
       volunteerId,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
+      auth,
     });
   }
 
@@ -122,14 +107,12 @@ export class OrganizationController {
   activateMembership(
     @Param('ministryId') ministryId: string,
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.organization.activateMinistryMembership({
       ministryId,
       volunteerId,
-      authorizationHeader: authorization,
-      devVolunteerIdHeader: volunteerIdHeader,
+      auth,
     });
   }
 
@@ -138,14 +121,12 @@ export class OrganizationController {
   deactivateMembership(
     @Param('ministryId') ministryId: string,
     @Param('volunteerId') volunteerId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.organization.deactivateMinistryMembership({
       ministryId,
       volunteerId,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
     });
   }
 }

@@ -2,13 +2,14 @@ import {
   Body,
   Controller,
   Get,
-  Headers,
   HttpCode,
   HttpStatus,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
 import { RolesService } from './roles.service';
 
 @Controller('ministries/:ministryId/roles')
@@ -18,14 +19,9 @@ export class RolesController {
   @Get()
   list(
     @Param('ministryId') ministryId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.roles.listRoles({
-      ministryId,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
-    });
+    return this.roles.listRoles({ ministryId, auth });
   }
 
   @Post()
@@ -33,15 +29,9 @@ export class RolesController {
   create(
     @Param('ministryId') ministryId: string,
     @Body() body: { name: string },
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.roles.createRole({
-      ministryId,
-      name: body.name,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
-    });
+    return this.roles.createRole({ ministryId, name: body.name, auth });
   }
 
   @Patch(':roleId')
@@ -49,15 +39,13 @@ export class RolesController {
     @Param('ministryId') ministryId: string,
     @Param('roleId') roleId: string,
     @Body() body: { name: string },
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.roles.renameRole({
       ministryId,
       roleId,
       name: body.name,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
+      auth,
     });
   }
 
@@ -66,14 +54,8 @@ export class RolesController {
   retire(
     @Param('ministryId') ministryId: string,
     @Param('roleId') roleId: string,
-    @Headers('authorization') authorization: string | undefined,
-    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
-    return this.roles.retireRole({
-      ministryId,
-      roleId,
-      authorizationHeader: authorization,
-      leaderMinistryIdHeader: leaderMinistryId,
-    });
+    return this.roles.retireRole({ ministryId, roleId, auth });
   }
 }

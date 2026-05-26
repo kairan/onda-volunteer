@@ -6,9 +6,10 @@ import { OrganizationController } from './organization.controller';
 import { OrganizationService } from './organization.service';
 import { RolesController } from './roles.controller';
 import { RolesService } from './roles.service';
+import { StewardshipModule } from './stewardship.module';
 
 @Module({
-  imports: [PrismaModule, IdentityModule],
+  imports: [PrismaModule, IdentityModule, StewardshipModule],
   controllers: [
     OrganizationController,
     OrganizationContextController,

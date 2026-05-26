@@ -100,7 +100,8 @@ Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
 
 ### Gotchas
 
-- No ESLint config exists. API: `pnpm --filter @onda/api typecheck`. Web: `tsc --noEmit` in `apps/web` when fixing strict debt — pre-existing errors don't affect runtime or tests.
+- ESLint: `pnpm lint` (CI runs lint in report-only mode until baseline is clean). API: `pnpm --filter @onda/api typecheck`. Web: `tsc --noEmit` in `apps/web` when fixing strict debt — pre-existing errors don't affect runtime or tests.
+- API auth context contract: [`docs/runbooks/api-auth-context.md`](docs/runbooks/api-auth-context.md).
 - The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00-16:00 UTC on 2026-06-07. Assignment creation in that window will be rejected by design.
 - `pnpm-workspace.yaml` has `allowBuilds` entries that prevent interactive build prompts during install.
 - Prisma warns about deprecated `package.json#prisma` config — this is expected and harmless.

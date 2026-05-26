@@ -3,26 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IdentityService } from '../identity/identity.service';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class RolesService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly identity: IdentityService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async listRoles(input: {
     ministryId: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const roles = await this.prisma.ministryRole.findMany({
       where: { ministryId: input.ministryId },
@@ -39,14 +31,9 @@ export class RolesService {
   async createRole(input: {
     ministryId: string;
     name: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const name = input.name?.trim();
     if (!name) {
@@ -77,14 +64,9 @@ export class RolesService {
     ministryId: string;
     roleId: string;
     name: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const name = input.name?.trim();
     if (!name) {
@@ -126,14 +108,9 @@ export class RolesService {
   async retireRole(input: {
     ministryId: string;
     roleId: string;
-    authorizationHeader: string | undefined;
-    leaderMinistryIdHeader: string | undefined;
+    auth: AuthenticatedRequestContext;
   }) {
-    await this.identity.assertLeaderCanActOnMinistry({
-      authorizationHeader: input.authorizationHeader,
-      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
-      ministryId: input.ministryId,
-    });
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const role = await this.prisma.ministryRole.findUnique({
       where: { id: input.roleId },
