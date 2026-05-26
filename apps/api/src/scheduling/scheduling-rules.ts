@@ -32,12 +32,21 @@ export type AssignmentGuardInput = {
   membershipStatus: 'PENDING' | 'ACTIVE' | 'INACTIVE' | null;
   roleRetired: boolean;
   unavailabilityBlocks: Array<{ startsAtUtc: Date; endsAtUtc: Date }>;
-  conflictingAssignments: Array<{ startsAtUtc: Date; endsAtUtc: Date }>;
+  /** Overlapping assignments in ministries other than the target ministry. */
+  crossMinistryConflictingAssignments: Array<{
+    startsAtUtc: Date;
+    endsAtUtc: Date;
+  }>;
 };
 
 export type AssignmentGuardResult =
   | { ok: true }
   | { ok: false; code: string; message: string };
+
+export const SCHEDULING_CONFLICT_GUARD_CODES = new Set([
+  'UNAVAILABILITY_BLOCKS_ASSIGN',
+  'CROSS_MINISTRY_DOUBLE_BOOKING',
+]);
 
 export function validateAssignmentGuards(
   input: AssignmentGuardInput,
@@ -86,16 +95,43 @@ export function validateAssignmentGuards(
     }
   }
 
-  for (const other of input.conflictingAssignments) {
+  for (const other of input.crossMinistryConflictingAssignments) {
     if (intervalsOverlapHalfOpen(a0, a1, other.startsAtUtc, other.endsAtUtc)) {
       return {
         ok: false,
-        code: 'ASSIGNMENT_CONFLICT',
+        code: 'CROSS_MINISTRY_DOUBLE_BOOKING',
         message:
-          'This volunteer already has an overlapping assignment in this ministry.',
+          'This volunteer is already rostered in another ministry for an overlapping time (UTC half-open intervals).',
       };
     }
   }
 
   return { ok: true };
+}
+
+export type BulkUnavailabilityMembership =
+  | { status: 'PENDING' | 'ACTIVE' | 'INACTIVE' }
+  | undefined;
+
+export function bulkUnavailabilityMembershipFailure(
+  ministryId: string,
+  membership: BulkUnavailabilityMembership,
+): { ministryId: string; code: string; message: string } | null {
+  if (!membership) {
+    return {
+      ministryId,
+      code: 'MEMBERSHIP_REQUIRED',
+      message:
+        'Volunteer must have ministry membership before recording unavailability.',
+    };
+  }
+  if (membership.status === 'INACTIVE') {
+    return {
+      ministryId,
+      code: 'MEMBERSHIP_NOT_ACTIVE',
+      message:
+        'Volunteer must have Active or Pending ministry membership before recording unavailability.',
+    };
+  }
+  return null;
 }

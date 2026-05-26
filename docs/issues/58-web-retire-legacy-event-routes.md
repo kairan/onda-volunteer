@@ -1,7 +1,6 @@
 # 58 — Web: retire legacy **Event** demo routes (tech debt)
 
 **Type:** Tech debt (defer — PRD-gated)  
-**Status:** **Blocked** — awaiting PRD/ADR sign-off before implementation (agent run 2026-05-26).  
 **Bounded context:** Web shell / routing  
 **Index:** `docs/issues/architecture-debt.md` (candidate **#6**)
 
