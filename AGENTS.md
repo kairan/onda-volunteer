@@ -1,5 +1,45 @@
 # AGENTS.md
 
+## Spec-driven workflow (TLC)
+
+This repo uses **[tlc-spec-driven](.cursor/skills/tlc-spec-driven/SKILL.md)** as the default way to plan and ship work: **Specify → Design → Tasks → Execute** (phases auto-size by scope).
+
+Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven/ONDA.md)** before any TLC phase on this brownfield project — it maps TLC outputs to existing docs and avoids duplicate brownfield maps.
+
+### Documentation map
+
+| TLC / agent need | Use this repo source (do not duplicate) |
+|------------------|----------------------------------------|
+| Domain language, bounded contexts | [`CONTEXT.md`](CONTEXT.md) |
+| Architecture decisions | [`docs/adr/`](docs/adr/) |
+| Shipped / planned work, issue specs | [`docs/issues/`](docs/issues/) (`done/` for completed) |
+| Cloud agent runbook | This file (`AGENTS.md`) |
+| Feature specs, design, tasks (active work) | `.specs/features/<feature-slug>/` (`spec.md`, `design.md`, `tasks.md`, optional `context.md`) |
+| Vision, roadmap, session memory | `.specs/project/` (`PROJECT.md`, `ROADMAP.md`, `STATE.md`) |
+| Pause / resume between sessions | `.specs/HANDOFF.md` |
+
+**Brownfield rule:** Do **not** generate `.specs/codebase/*`. Stack, architecture, conventions, and testing are already documented in `CONTEXT.md`, `docs/adr/`, `AGENTS.md`, and the codebase. TLC “map codebase” means **read those sources**, then proceed to Specify.
+
+**Tracker rule:** GitHub Issues remain the execution queue for humans and cloud agents. After TLC **Tasks**, create or update issues from `tasks.md` (see skill routing below). Keep requirement IDs in specs aligned with issue numbers when both exist.
+
+### Skills routing
+
+Prefer **one primary playbook** per user request. Overlapping trigger words are disambiguated here:
+
+| User intent | Skill | Notes |
+|-------------|-------|-------|
+| Plan or build a feature end-to-end | **tlc-spec-driven** | Default for “design”, “spec”, “tasks”, “implement”, “validate”, greenfield/brownfield features |
+| Tiny change (≤3 files, obvious fix) | **tlc-spec-driven** (quick mode) | Skip formal design/tasks files when scope is small |
+| Write or change tests while implementing | **tdd** | Use **during TLC Execute**, not instead of TLC |
+| Stress-test a plan before Specify | **grill-me** / **grill-with-docs** | Optional pre-step; then run TLC Specify |
+| Architecture decomposition / deepening | **improve-codebase-architecture** | TLC defers here; not for routine feature delivery |
+| Publish TLC `tasks.md` to GitHub Issues | **to-issues** | **After** TLC Tasks; input = spec + tasks, not a parallel planner |
+| PRD-style doc to tracker (legacy) | **to-prd** | Prefer TLC Specify; use only when user explicitly asks for a PRD issue |
+| Issue state machine, triage labels, agent briefs | **triage** | Only when user mentions triage, issue workflow, or preparing an AFK brief |
+| Break ad-hoc plan into issues (no TLC spec yet) | **to-issues** | When there is no `.specs/features/…` spec to anchor from |
+
+When the user says **implement**, **design**, or **tasks** without naming another skill, use **tlc-spec-driven** and follow `ONDA.md`.
+
 ## Cursor Cloud specific instructions
 
 ### Overview

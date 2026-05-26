@@ -39,7 +39,7 @@
 
 ### 1. Review Design
 
-Read `.specs/[feature]/design.md` before creating tasks.
+Read `.specs/features/[feature]/design.md` before creating tasks.
 
 ### 1.5. Load Test Coverage Matrix
 
@@ -103,12 +103,12 @@ Before showing tasks to the user, run ALL three pre-approval checks. These are N
 
 ---
 
-## Template: `.specs/[feature]/tasks.md`
+## Template: `.specs/features/[feature]/tasks.md`
 
 ```markdown
 # [Feature] Tasks
 
-**Design**: `.specs/[feature]/design.md`
+**Design**: `.specs/features/[feature]/design.md`
 **Status**: Draft | Approved | In Progress | Done
 
 ---

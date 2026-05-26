@@ -39,7 +39,7 @@ Use **WHEN/THEN/SHALL** format - it's precise and testable:
 
 ---
 
-## Template: `.specs/[feature]/spec.md`
+## Template: `.specs/features/[feature]/spec.md`
 
 ```markdown
 # [Feature Name] Specification

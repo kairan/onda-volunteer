@@ -44,12 +44,12 @@ If the feature involves data, define models before implementation.
 
 ---
 
-## Template: `.specs/[feature]/design.md`
+## Template: `.specs/features/[feature]/design.md`
 
 ````markdown
 # [Feature] Design
 
-**Spec**: `.specs/[feature]/spec.md`
+**Spec**: `.specs/features/[feature]/spec.md`
 **Status**: Draft | Approved
 
 ---
