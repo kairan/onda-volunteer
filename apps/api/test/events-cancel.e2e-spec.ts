@@ -158,7 +158,7 @@ describe('POST /events/:id/cancel (e2e)', () => {
       .set('X-Volunteer-Id', admin.id)
       .expect(200);
 
-    expect(list.body.events).toEqual([]);
+    expect(list.body).toEqual([]);
 
     const detail = await request(app.getHttpServer())
       .get(`/events/${event.id}`)
