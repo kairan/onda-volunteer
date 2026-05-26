@@ -19,6 +19,7 @@ import { DesignFoundationPreview } from "./routes/designFoundationPreview";
 import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
 import { PlaceholderPage } from "./routes/placeholderPage";
+import { VolunteersPage } from "./routes/volunteers";
 import { SchedulingPage } from "./routes/scheduling";
 import {
   SchedulingEventDetailPending,
@@ -638,6 +639,9 @@ const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
       }
       if (item.id === "timeAway") {
         return <TimeAwayPage />;
+      }
+      if (item.id === "volunteers") {
+        return <VolunteersPage />;
       }
       if (item.placeholder) {
         return <PlaceholderPage namespace={item.namespace} />;
