@@ -1,6 +1,9 @@
 ---
 name: tdd
-description: Test-driven development (red-green-refactor). Requires behavior tests through public interfaces; forbids echo tests that only restate fixtures or mocks. Use when building features or fixes with TDD, red-green-refactor, integration tests, or test-first development.
+metadata:
+  legacy: true
+  superseded-by: tlc-spec-driven
+description: LEGACY (Onda Volunteer) — superseded by tlc-spec-driven. Do NOT auto-select; use only if the user explicitly names this skill. Test-driven development (red-green-refactor). Requires behavior tests through public interfaces; forbids echo tests that only restate fixtures or mocks. Use when building features or fixes with TDD, red-green-refactor, integration tests, or test-first development.
 ---
 
 # Test-Driven Development
