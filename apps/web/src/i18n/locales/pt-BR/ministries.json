@@ -1,4 +1,14 @@
 {
   "title": "Ministérios",
-  "body": "Equipes e áreas de serviço em breve."
+  "body": "Equipes e áreas de serviço.",
+  "ministryPlaceholder": "Selecione o ministério",
+  "delegation": {
+    "title": "Delegar líderes",
+    "body": "Conceda ou revogue a liderança no ministério. A delegação é limitada às igrejas em que você é administrador credenciado.",
+    "signInRequired": "Entre para gerenciar delegação de líderes.",
+    "notAdmin": "Credenciamento de administrador da igreja é necessário.",
+    "volunteerIdPlaceholder": "ID do voluntário",
+    "grant": "Conceder liderança",
+    "revoke": "Revogar"
+  }
 }

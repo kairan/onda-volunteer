@@ -194,6 +194,115 @@ export class OrganizationService {
     }));
   }
 
+  async listMinistryLeaders(input: {
+    ministryId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+      select: { churchId: true },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: ministry.churchId,
+    });
+
+    const rows = await this.prisma.ministryLeader.findMany({
+      where: { ministryId: input.ministryId },
+      include: { volunteer: { select: { id: true, displayName: true } } },
+      orderBy: { volunteer: { displayName: 'asc' } },
+    });
+
+    return rows.map((row) => ({
+      volunteerId: row.volunteer.id,
+      displayName: row.volunteer.displayName,
+    }));
+  }
+
+  async grantMinistryLeader(input: {
+    ministryId: string;
+    volunteerId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: ministry.churchId,
+    });
+
+    const volunteer = await this.prisma.volunteer.findUnique({
+      where: { id: input.volunteerId },
+    });
+    if (!volunteer) {
+      throw new NotFoundException({
+        code: 'VOLUNTEER_NOT_FOUND',
+        message: 'Volunteer not found.',
+      });
+    }
+
+    await this.prisma.ministryLeader.upsert({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+      create: {
+        volunteerId: input.volunteerId,
+        ministryId: input.ministryId,
+      },
+      update: {},
+    });
+
+    return {
+      volunteerId: input.volunteerId,
+      ministryId: input.ministryId,
+    };
+  }
+
+  async revokeMinistryLeader(input: {
+    ministryId: string;
+    volunteerId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: ministry.churchId,
+    });
+
+    await this.prisma.ministryLeader.deleteMany({
+      where: {
+        volunteerId: input.volunteerId,
+        ministryId: input.ministryId,
+      },
+    });
+
+    return {
+      volunteerId: input.volunteerId,
+      ministryId: input.ministryId,
+    };
+  }
+
   async deactivateMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;

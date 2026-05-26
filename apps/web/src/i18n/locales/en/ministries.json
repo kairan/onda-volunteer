@@ -1,4 +1,14 @@
 {
   "title": "Ministries",
-  "body": "Teams and serving areas coming soon."
+  "body": "Teams and serving areas.",
+  "ministryPlaceholder": "Select ministry",
+  "delegation": {
+    "title": "Delegate leaders",
+    "body": "Grant or revoke ministry-scoped leader stewardship. Delegation is limited to churches where you are an accredited admin.",
+    "signInRequired": "Sign in to manage leader delegation.",
+    "notAdmin": "Church admin accreditation is required.",
+    "volunteerIdPlaceholder": "Volunteer ID to grant",
+    "grant": "Grant leader",
+    "revoke": "Revoke"
+  }
 }
