@@ -30,9 +30,8 @@ export class EventsController {
   createEvent(
     @Body()
     body: {
-      kind: 'PUBLIC' | 'PRIVATE';
-      churchId?: string;
-      ministryId?: string;
+      kind: 'PRIVATE';
+      ministryId: string;
       title: string;
       startsAtUtc: string;
       endsAtUtc: string;
@@ -41,36 +40,26 @@ export class EventsController {
     @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
     @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
   ) {
-    if (body.kind === 'PRIVATE') {
-      if (!body.ministryId) {
-        throw new BadRequestException({
-          code: 'MINISTRY_ID_REQUIRED',
-          message: 'ministryId is required for private events.',
-        });
-      }
-      return this.events.createPrivateEvent({
-        ministryId: body.ministryId,
-        title: body.title,
-        startsAtUtc: body.startsAtUtc,
-        endsAtUtc: body.endsAtUtc,
-        authorizationHeader: authorization,
-        devVolunteerIdHeader: volunteerIdHeader,
-        leaderMinistryIdHeader: leaderMinistryId,
-      });
-    }
-    if (!body.churchId) {
+    if (body.kind !== 'PRIVATE') {
       throw new BadRequestException({
-        code: 'CHURCH_ID_REQUIRED',
-        message: 'churchId is required for public events.',
+        code: 'PRIVATE_EVENT_ONLY',
+        message: 'POST /events only supports PRIVATE events in this release.',
       });
     }
-    return this.events.createPublicEvent({
-      churchId: body.churchId,
+    if (!body.ministryId) {
+      throw new BadRequestException({
+        code: 'MINISTRY_ID_REQUIRED',
+        message: 'ministryId is required for private events.',
+      });
+    }
+    return this.events.createPrivateEvent({
+      ministryId: body.ministryId,
       title: body.title,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
       authorizationHeader: authorization,
       devVolunteerIdHeader: volunteerIdHeader,
+      leaderMinistryIdHeader: leaderMinistryId,
     });
   }
 
