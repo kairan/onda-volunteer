@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { fetchJsonWithProtectedHeaders, fetchWithProtectedHeaders } from '@/apiAuthHeaders';
@@ -17,40 +18,68 @@ export function MinistryLeadersPage() {
       ? auth.volunteerId
       : null;
 
+  const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
+
   const adminMinistries = useMemo(
-    () =>
-      activeChurch?.ministries.filter((m) => m.isLeader && !m.membershipStatus) ??
-      [],
-    [activeChurch?.ministries],
+    () => (isAccreditedAdmin ? (activeChurch?.ministries ?? []) : []),
+    [activeChurch?.ministries, isAccreditedAdmin],
   );
 
   const [ministryId, setMinistryId] = useState('');
   const [leaders, setLeaders] = useState<LeaderRow[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [volunteerId, setVolunteerId] = useState('');
   const [busy, setBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+  useEffect(() => {
+    if (adminMinistries.length === 1 && !ministryId) {
+      setMinistryId(adminMinistries[0].id);
+    }
+  }, [adminMinistries, ministryId]);
 
   const loadLeaders = useCallback(async () => {
     if (!ministryId || !actingVolunteerId) {
       setLeaders([]);
       return;
     }
-    const rows = await fetchJsonWithProtectedHeaders<LeaderRow[]>(
-      `${base}/ministries/${ministryId}/leaders`,
-      { volunteerId: actingVolunteerId },
-    );
-    setLeaders(rows);
-  }, [base, ministryId, actingVolunteerId]);
+    setLoading(true);
+    setError(null);
+    try {
+      const rows = await fetchJsonWithProtectedHeaders<LeaderRow[]>(
+        `${base}/ministries/${ministryId}/leaders`,
+        { volunteerId: actingVolunteerId },
+      );
+      setLeaders(rows);
+    } catch (err) {
+      const code = err instanceof ApiRequestError ? err.code : undefined;
+      setError(
+        code === 'ADMIN_NOT_ACCREDITED'
+          ? t('delegation.errors.notAccredited')
+          : err instanceof Error
+            ? err.message
+            : t('delegation.errors.loadFailed'),
+      );
+      setLeaders([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [base, ministryId, actingVolunteerId, t]);
 
   useEffect(() => {
-    void loadLeaders().catch(() => setLeaders([]));
+    void loadLeaders();
   }, [loadLeaders]);
 
   async function handleGrant(e: FormEvent) {
     e.preventDefault();
     if (!actingVolunteerId || !ministryId || !volunteerId.trim()) return;
     setBusy(true);
+    setActionError(null);
+    setSuccessMessage(null);
     try {
       await fetchWithProtectedHeaders(
         `${base}/ministries/${ministryId}/leaders/${volunteerId.trim()}`,
@@ -58,7 +87,17 @@ export function MinistryLeadersPage() {
         { method: 'POST' },
       );
       setVolunteerId('');
+      setSuccessMessage(t('delegation.messages.granted'));
       await loadLeaders();
+    } catch (err) {
+      const code = err instanceof ApiRequestError ? err.code : undefined;
+      setActionError(
+        code === 'ADMIN_NOT_ACCREDITED'
+          ? t('delegation.errors.notAccredited')
+          : err instanceof Error
+            ? err.message
+            : t('delegation.errors.actionFailed'),
+      );
     } finally {
       setBusy(false);
     }
@@ -67,13 +106,25 @@ export function MinistryLeadersPage() {
   async function handleRevoke(id: string) {
     if (!actingVolunteerId || !ministryId) return;
     setBusy(true);
+    setActionError(null);
+    setSuccessMessage(null);
     try {
       await fetchWithProtectedHeaders(
         `${base}/ministries/${ministryId}/leaders/${id}/revoke`,
         { volunteerId: actingVolunteerId },
         { method: 'POST' },
       );
+      setSuccessMessage(t('delegation.messages.revoked'));
       await loadLeaders();
+    } catch (err) {
+      const code = err instanceof ApiRequestError ? err.code : undefined;
+      setActionError(
+        code === 'ADMIN_NOT_ACCREDITED'
+          ? t('delegation.errors.notAccredited')
+          : err instanceof Error
+            ? err.message
+            : t('delegation.errors.actionFailed'),
+      );
     } finally {
       setBusy(false);
     }
@@ -83,7 +134,7 @@ export function MinistryLeadersPage() {
     return <p className="text-sm text-muted-foreground">{t('delegation.signInRequired')}</p>;
   }
 
-  if (adminMinistries.length === 0) {
+  if (!isAccreditedAdmin) {
     return <p className="text-sm text-muted-foreground">{t('delegation.notAdmin')}</p>;
   }
 
@@ -105,6 +156,12 @@ export function MinistryLeadersPage() {
         ))}
       </select>
 
+      {error ? (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+
       <form className="flex flex-wrap gap-2" onSubmit={(e) => void handleGrant(e)}>
         <input
           className="min-w-[12rem] flex-1 border-2 border-border px-3 py-2 font-mono text-sm"
@@ -118,30 +175,44 @@ export function MinistryLeadersPage() {
         </Button>
       </form>
 
-      <ul className="flex flex-col gap-2">
-        {leaders.map((row) => (
-          <li
-            key={row.volunteerId}
-            className="flex items-center justify-between border-2 border-border bg-surface p-3 text-sm"
-          >
-            <span>
-              {row.displayName}{' '}
-              <span className="font-mono text-xs text-muted-foreground">
-                ({row.volunteerId})
-              </span>
-            </span>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              disabled={busy}
-              onClick={() => void handleRevoke(row.volunteerId)}
+      {actionError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {actionError}
+        </p>
+      ) : null}
+
+      {successMessage ? (
+        <p className="text-sm text-muted-foreground">{successMessage}</p>
+      ) : null}
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">{t('delegation.loading')}</p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {leaders.map((row) => (
+            <li
+              key={row.volunteerId}
+              className="flex items-center justify-between border-2 border-border bg-surface p-3 text-sm"
             >
-              {t('delegation.revoke')}
-            </Button>
-          </li>
-        ))}
-      </ul>
+              <span>
+                {row.displayName}{' '}
+                <span className="font-mono text-xs text-muted-foreground">
+                  ({row.volunteerId})
+                </span>
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={busy}
+                onClick={() => void handleRevoke(row.volunteerId)}
+              >
+                {t('delegation.revoke')}
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

@@ -55,9 +55,10 @@ model Event {
   id          String    @id @default(cuid())
   kind        EventKind
   title       String
-  startsAtUtc DateTime  @db.Timestamptz
-  endsAtUtc   DateTime  @db.Timestamptz
-  churchId    String
+  startsAtUtc   DateTime  @db.Timestamptz
+  endsAtUtc     DateTime  @db.Timestamptz
+  cancelledAtUtc DateTime? @db.Timestamptz
+  churchId      String
   church      Church    @relation(fields: [churchId], references: [id], onDelete: Cascade)
   ministryId  String?
   ministry    Ministry? @relation(fields: [ministryId], references: [id], onDelete: SetNull)

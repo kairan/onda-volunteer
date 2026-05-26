@@ -17,6 +17,7 @@ export type EventDetailPayload = {
       startsDisplayInChurchTz: string;
       endsDisplayInChurchTz: string;
     };
+    cancelledAtUtc: string | null;
   };
   ministry: { id: string; name: string } | null;
   assignments: Array<{

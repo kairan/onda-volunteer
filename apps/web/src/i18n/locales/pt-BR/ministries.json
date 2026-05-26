@@ -9,6 +9,16 @@
     "notAdmin": "Credenciamento de administrador da igreja é necessário.",
     "volunteerIdPlaceholder": "ID do voluntário",
     "grant": "Conceder liderança",
-    "revoke": "Revogar"
+    "revoke": "Revogar",
+    "loading": "Carregando líderes…",
+    "messages": {
+      "granted": "Liderança concedida.",
+      "revoked": "Liderança revogada."
+    },
+    "errors": {
+      "loadFailed": "Não foi possível carregar os líderes.",
+      "actionFailed": "Ação falhou. Tente novamente.",
+      "notAccredited": "Você não está credenciado para esta igreja."
+    }
   }
 }

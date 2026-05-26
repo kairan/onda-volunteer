@@ -3,5 +3,11 @@
   "appNameFull": "Onda Dura Church",
   "retry": "Try again",
   "cancel": "Cancel",
-  "externalLink": "Opens in a new tab"
+  "externalLink": "Opens in a new tab",
+  "time": {
+    "personalLocal": "Your time: {{time}}"
+  },
+  "errors": {
+    "loadFailed": "Something went wrong loading data. Try again."
+  }
 }

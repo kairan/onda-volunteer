@@ -1,4 +1,36 @@
 {
   "title": "Volunteers",
-  "body": "Volunteer roster coming soon."
+  "body": "Manage ministry membership lifecycle for your accredited church. Add volunteers as Pending or Active, activate pending members, and deactivate active members (future assignments are voided automatically).",
+  "signInRequired": "Sign in to manage ministry memberships.",
+  "notAdmin": "You need church admin accreditation to manage memberships here.",
+  "ministryLabel": "Ministry",
+  "ministryPlaceholder": "Select a ministry",
+  "addHeading": "Add membership",
+  "addHelp": "Enter the volunteer profile ID (from identity or seed data).",
+  "volunteerIdLabel": "Volunteer ID",
+  "statusLabel": "Initial status",
+  "addSubmit": "Add to ministry",
+  "saving": "Saving…",
+  "rosterHeading": "Membership roster",
+  "loading": "Loading memberships…",
+  "emptyState": "No memberships for this ministry yet.",
+  "status": {
+    "pending": "Pending",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "actions": {
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "messages": {
+    "added": "Membership added.",
+    "activated": "Membership activated.",
+    "deactivated": "Membership deactivated."
+  },
+  "errors": {
+    "loadFailed": "Could not load memberships.",
+    "actionFailed": "Action failed. Try again.",
+    "notAccredited": "You are not accredited for this church."
+  }
 }

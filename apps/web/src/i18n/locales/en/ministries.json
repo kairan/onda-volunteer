@@ -9,6 +9,16 @@
     "notAdmin": "Church admin accreditation is required.",
     "volunteerIdPlaceholder": "Volunteer ID to grant",
     "grant": "Grant leader",
-    "revoke": "Revoke"
+    "revoke": "Revoke",
+    "loading": "Loading leaders…",
+    "messages": {
+      "granted": "Leader granted.",
+      "revoked": "Leader revoked."
+    },
+    "errors": {
+      "loadFailed": "Could not load leaders.",
+      "actionFailed": "Action failed. Try again.",
+      "notAccredited": "You are not accredited for this church."
+    }
   }
 }

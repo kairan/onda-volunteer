@@ -5,6 +5,40 @@
   "listHeading": "Events",
   "loading": "Loading events...",
   "emptyState": "No events to show for this church yet.",
+  "errors": {
+    "loadFailed": "Could not load events."
+  },
+  "create": {
+    "link": "Create public event",
+    "title": "New public event",
+    "timezoneHint": "Times below are in church timezone ({{tz}}) for {{church}}. Stored as UTC.",
+    "titleLabel": "Title",
+    "startsLabel": "Starts",
+    "endsLabel": "Ends",
+    "submit": "Create event",
+    "cancel": "Cancel",
+    "signInRequired": "Sign in to create events.",
+    "notAdmin": "Church admin accreditation is required to create public events.",
+    "errors": {
+      "notAccredited": "You are not accredited for this church.",
+      "failed": "Could not create event."
+    }
+  },
+  "createPrivate": {
+    "link": "New private event",
+    "title": "New private ministry event",
+    "ministryLabel": "Ministry",
+    "ministryPlaceholder": "Select ministry",
+    "titleLabel": "Title",
+    "startsLabel": "Starts",
+    "endsLabel": "Ends",
+    "submit": "Create private event",
+    "signInRequired": "Sign in to create private events.",
+    "notLeader": "You must lead a ministry to create private events.",
+    "errors": {
+      "failed": "Could not create private event."
+    }
+  },
   "visibility": {
     "public": "Public",
     "private": "Private"
@@ -24,11 +58,30 @@
     },
     "assignHeading": "Assign (demo)",
     "assignDemoHelp": "Uses seeded volunteer, ministry, and role from your .env. Default window avoids the seeded morning unavailability block.",
+    "startsAtUtcLabel": "Starts (UTC ISO)",
+    "endsAtUtcLabel": "Ends (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
+      "assignFailed": "Could not create assignment.",
+      "releaseFailed": "Could not release assignment.",
+      "unavailabilityFailed": "Could not record unavailability."
+    },
     "createAssignment": "Create assignment",
     "assignSuccess": "Assignment created.",
     "releaseSuccess": "Assignment released.",
     "saving": "Saving...",
     "release": "Release",
+    "cancel": {
+      "action": "Cancel event",
+      "dialogTitle": "Cancel this event?",
+      "dialogBody": "This voids all assignments for this occurrence. The event record is kept for history.",
+      "confirm": "Yes, cancel event",
+      "cancelledLabel": "This event was cancelled.",
+      "success": "Event cancelled.",
+      "errors": {
+        "failed": "Could not cancel event."
+      }
+    },
     "unavailabilityOffer": {
       "heading": "Mark unavailable for this ministry?",
       "body": "Optional: record unavailability for the same UTC window you just released ({{start}} → {{end}}). Nothing is saved until you confirm.",

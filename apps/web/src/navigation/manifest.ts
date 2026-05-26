@@ -33,7 +33,7 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/volunteers',
     labelKey: 'shell:nav.volunteers',
     namespace: 'volunteers',
-    placeholder: true,
+    placeholder: false,
   },
   {
     id: 'timeAway',

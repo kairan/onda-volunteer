@@ -18,6 +18,7 @@
   "campusLabel": "Campus",
   "timezoneCue": "Fuso: {{short}}",
   "timezoneDetails": "Fuso horário IANA: {{iana}}",
+  "showLocalTime": "Mostrar também meu horário local",
   "nav": {
     "dashboard": "Painel",
     "scheduling": "Agenda",
