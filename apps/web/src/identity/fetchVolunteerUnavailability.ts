@@ -13,6 +13,8 @@ export type VolunteerUnavailability = {
 export async function fetchVolunteerUnavailability(input: {
   volunteerId: string;
   churchId?: string;
+  leaderMinistryId?: string;
+  actingVolunteerId?: string;
 }): Promise<VolunteerUnavailability[]> {
   const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
   const url = new URL(`${base}/volunteers/${input.volunteerId}/unavailability`);
@@ -20,8 +22,12 @@ export async function fetchVolunteerUnavailability(input: {
     url.searchParams.set('churchId', input.churchId);
   }
 
+  const scopeVolunteerId = input.actingVolunteerId ?? input.volunteerId;
   return fetchJsonWithProtectedHeaders<VolunteerUnavailability[]>(
     url.toString(),
-    { volunteerId: input.volunteerId },
+    {
+      volunteerId: scopeVolunteerId,
+      leaderMinistryId: input.leaderMinistryId,
+    },
   );
 }

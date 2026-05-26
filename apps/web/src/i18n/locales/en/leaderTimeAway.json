@@ -1,0 +1,37 @@
+{
+  "eyebrow": "Leader support",
+  "title": "Volunteer time away",
+  "body": "Record or adjust unavailability on behalf of a volunteer in a ministry you lead. This is separate from a volunteer’s own Time away self-service.",
+  "selfServiceLink": "← Back to your own time away",
+  "ministry": "Ministry you lead",
+  "volunteer": "Volunteer",
+  "selectVolunteer": "Select a volunteer",
+  "listHeading": "Volunteer unavailability",
+  "loading": "Loading…",
+  "emptyState": "No upcoming unavailability for this volunteer in ministries you lead.",
+  "createHeading": "Add on behalf of volunteer",
+  "editHeading": "Edit unavailability",
+  "form": {
+    "startsAt": "Starts",
+    "endsAt": "Ends",
+    "submit": "Save for volunteer",
+    "submitting": "Saving…",
+    "cancelEdit": "Cancel edit"
+  },
+  "successCreate": "Unavailability saved for the volunteer.",
+  "successUpdate": "Unavailability updated.",
+  "successDelete": "Unavailability removed.",
+  "actions": {
+    "edit": "Edit",
+    "delete": "Remove",
+    "deleting": "Removing…"
+  },
+  "errors": {
+    "ministryRequired": "Select a ministry you lead.",
+    "volunteerRequired": "Select a volunteer.",
+    "startsAtRequired": "Enter a start time.",
+    "endsAtRequired": "Enter an end time.",
+    "invalidWindow": "End time must be after start time.",
+    "summary": "Fix the highlighted fields and try again."
+  }
+}

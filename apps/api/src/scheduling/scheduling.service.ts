@@ -66,6 +66,23 @@ export type GetVolunteerUnavailabilityInput = {
   churchId?: string;
   authorizationHeader: string | undefined;
   volunteerIdHeader: string | undefined;
+  leaderMinistryIdHeader: string | undefined;
+};
+
+export type UpdateUnavailabilityInput = {
+  unavailabilityId: string;
+  authorizationHeader: string | undefined;
+  volunteerIdHeader: string | undefined;
+  leaderMinistryIdHeader: string | undefined;
+  startsAtUtc: string;
+  endsAtUtc: string;
+};
+
+export type DeleteUnavailabilityInput = {
+  unavailabilityId: string;
+  authorizationHeader: string | undefined;
+  volunteerIdHeader: string | undefined;
+  leaderMinistryIdHeader: string | undefined;
 };
 
 export type CreateBulkUnavailabilityInput = {
@@ -169,26 +186,107 @@ export class SchedulingService {
     };
   }
 
+  private async ministryIdsCallerCanSteward(
+    callerVolunteerId: string,
+    churchId?: string,
+  ): Promise<string[]> {
+    const [leaderships, accreditations] = await Promise.all([
+      this.prisma.ministryLeader.findMany({
+        where: { volunteerId: callerVolunteerId },
+        include: { ministry: { select: { id: true, churchId: true } } },
+      }),
+      this.prisma.adminAccreditation.findMany({
+        where: { volunteerId: callerVolunteerId },
+        include: {
+          church: {
+            include: { ministries: { select: { id: true, churchId: true } } },
+          },
+        },
+      }),
+    ]);
+
+    const ministryIds = new Set<string>();
+    for (const leadership of leaderships) {
+      if (!churchId || leadership.ministry.churchId === churchId) {
+        ministryIds.add(leadership.ministry.id);
+      }
+    }
+    for (const accreditation of accreditations) {
+      for (const ministry of accreditation.church.ministries) {
+        if (!churchId || ministry.churchId === churchId) {
+          ministryIds.add(ministry.id);
+        }
+      }
+    }
+    return [...ministryIds];
+  }
+
   async getVolunteerUnavailability(input: GetVolunteerUnavailabilityInput) {
     const caller = await this.identity.requireVolunteer({
       authorizationHeader: input.authorizationHeader,
       devVolunteerIdHeader: input.volunteerIdHeader,
     });
 
-    if (caller.id !== input.volunteerId) {
-      throw new ForbiddenException({
-        code: 'VOLUNTEER_MISMATCH',
-        message: 'You may only view your own unavailability.',
+    const now = this.clock.now();
+    const baseWhere = {
+      volunteerId: input.volunteerId,
+      endsAtUtc: { gt: now },
+      ...(input.churchId ? { ministry: { churchId: input.churchId } } : {}),
+    };
+
+    if (caller.id === input.volunteerId) {
+      return this.prisma.unavailability.findMany({
+        where: baseWhere,
+        include: {
+          ministry: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          startsAtUtc: 'asc',
+        },
       });
     }
 
-    const now = this.clock.now();
+    const stewardedMinistryIds = await this.ministryIdsCallerCanSteward(
+      caller.id,
+      input.churchId,
+    );
+    if (stewardedMinistryIds.length === 0) {
+      throw new ForbiddenException({
+        code: 'LEADER_NOT_AUTHORIZED',
+        message:
+          'You may only view unavailability for volunteers in ministries you lead.',
+      });
+    }
+
+    const scopedLeaderMinistryId = input.leaderMinistryIdHeader?.trim();
+    if (scopedLeaderMinistryId) {
+      await this.identity.assertLeaderCanActOnMinistry({
+        authorizationHeader: input.authorizationHeader,
+        devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+        ministryId: scopedLeaderMinistryId,
+      });
+      if (!stewardedMinistryIds.includes(scopedLeaderMinistryId)) {
+        throw new ForbiddenException({
+          code: 'LEADER_NOT_AUTHORIZED',
+          message:
+            'You may only view unavailability for volunteers in ministries you lead.',
+        });
+      }
+    }
+
+    const ministryIdsForQuery = scopedLeaderMinistryId
+      ? [scopedLeaderMinistryId]
+      : stewardedMinistryIds;
 
     return this.prisma.unavailability.findMany({
       where: {
-        volunteerId: input.volunteerId,
-        endsAtUtc: { gt: now },
-        ...(input.churchId ? { ministry: { churchId: input.churchId } } : {}),
+        ...baseWhere,
+        ministryId: { in: ministryIdsForQuery },
       },
       include: {
         ministry: {
@@ -490,5 +588,68 @@ export class SchedulingService {
         endsAtUtc: created.endsAtUtc.toISOString(),
       },
     };
+  }
+
+  async updateUnavailability(input: UpdateUnavailabilityInput) {
+    const row = await this.prisma.unavailability.findUnique({
+      where: { id: input.unavailabilityId },
+    });
+    if (!row) {
+      throw new NotFoundException();
+    }
+
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: row.ministryId,
+    });
+
+    const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
+    const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
+    if (!(u0 < u1)) {
+      throw new BadRequestException({
+        code: 'INVALID_UNAVAILABILITY_WINDOW',
+        message:
+          'Unavailability window must have startsAtUtc strictly before endsAtUtc.',
+      });
+    }
+
+    const updated = await this.prisma.unavailability.update({
+      where: { id: row.id },
+      data: {
+        startsAtUtc: u0,
+        endsAtUtc: u1,
+      },
+    });
+
+    return {
+      id: updated.id,
+      ministryId: updated.ministryId,
+      window: {
+        startsAtUtc: updated.startsAtUtc.toISOString(),
+        endsAtUtc: updated.endsAtUtc.toISOString(),
+      },
+    };
+  }
+
+  async deleteUnavailability(input: DeleteUnavailabilityInput) {
+    const row = await this.prisma.unavailability.findUnique({
+      where: { id: input.unavailabilityId },
+    });
+    if (!row) {
+      throw new NotFoundException();
+    }
+
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: row.ministryId,
+    });
+
+    await this.prisma.unavailability.delete({
+      where: { id: row.id },
+    });
+
+    return { id: row.id };
   }
 }
