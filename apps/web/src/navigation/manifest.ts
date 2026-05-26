@@ -26,7 +26,7 @@ export const PRIMARY_NAV_MANIFEST: NavManifestItem[] = [
     path: '/ministries',
     labelKey: 'shell:nav.ministries',
     namespace: 'ministries',
-    placeholder: true,
+    placeholder: false,
   },
   {
     id: 'volunteers',
