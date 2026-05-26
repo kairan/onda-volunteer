@@ -61,6 +61,7 @@ describe('SchedulingPage', () => {
         id: mockChurchId,
         name: 'Test Church',
         defaultTimezone: 'America/New_York',
+        isAccreditedAdmin: false,
         campuses: [],
       },
     ],
@@ -131,6 +132,44 @@ describe('SchedulingPage', () => {
     expect(fetchEvents.fetchEvents).toHaveBeenCalledWith({
       volunteerId: mockVolunteerId,
       churchId: mockChurchId,
+    });
+    expect(
+      screen.queryByRole('link', { name: /criar evento público/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows create link for accredited admin', async () => {
+    await initI18n();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
+      churches: [
+        {
+          id: mockChurchId,
+          name: 'Test Church',
+          defaultTimezone: 'America/New_York',
+          isAccreditedAdmin: true,
+          campuses: [],
+          ministries: [],
+        },
+      ],
+    });
+    vi.mocked(fetchEvents.fetchEvents).mockResolvedValue([]);
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authState}>
+            <OrganizationContextProvider enabled={true}>
+              <SchedulingPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('link', { name: /criar evento público/i }),
+      ).toBeInTheDocument();
     });
   });
 

@@ -1,4 +1,36 @@
 {
   "title": "Voluntários",
-  "body": "Lista de voluntários em breve."
+  "body": "Gerencie o ciclo de vínculo no ministério da igreja em que você é administrador. Adicione voluntários como Pendente ou Ativo, ative pendentes e desative ativos (escalas futuras são anuladas automaticamente).",
+  "signInRequired": "Entre para gerenciar vínculos de ministério.",
+  "notAdmin": "É necessária credenciamento de administrador da igreja para gerenciar vínculos aqui.",
+  "ministryLabel": "Ministério",
+  "ministryPlaceholder": "Selecione um ministério",
+  "addHeading": "Adicionar vínculo",
+  "addHelp": "Informe o ID do perfil do voluntário (identidade ou dados de seed).",
+  "volunteerIdLabel": "ID do voluntário",
+  "statusLabel": "Status inicial",
+  "addSubmit": "Adicionar ao ministério",
+  "saving": "Salvando…",
+  "rosterHeading": "Lista de vínculos",
+  "loading": "Carregando vínculos…",
+  "emptyState": "Nenhum vínculo neste ministério ainda.",
+  "status": {
+    "pending": "Pendente",
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "actions": {
+    "activate": "Ativar",
+    "deactivate": "Desativar"
+  },
+  "messages": {
+    "added": "Vínculo adicionado.",
+    "activated": "Vínculo ativado.",
+    "deactivated": "Vínculo desativado."
+  },
+  "errors": {
+    "loadFailed": "Não foi possível carregar os vínculos.",
+    "actionFailed": "Ação falhou. Tente novamente.",
+    "notAccredited": "Você não está credenciado para esta igreja."
+  }
 }

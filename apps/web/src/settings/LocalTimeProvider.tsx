@@ -6,19 +6,46 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { SupportedLocale } from '@/i18n/localePersistence';
+import {
+  buildDualTimeInterval,
+  buildDualTimeLabels,
+  formatInstantInTimezone,
+  getBrowserTimezone,
+  type DualTimeLabels,
+} from './formatSchedulingTime';
 
 const STORAGE_KEY = 'onda.useLocalTime';
 
 type LocalTimeContextValue = {
   useLocalTime: boolean;
   setUseLocalTime: (value: boolean) => void;
-  formatWithLocal: (
+  /** Church/campus timezone (primary display; never replaced when local toggle is on). */
+  formatChurchTime: (
     instantUtc: string,
     churchTimezone: string,
     locale: string,
     options?: Intl.DateTimeFormatOptions,
   ) => string;
+  /** Dual labels: church framing plus optional personal-local companion. */
+  buildDualTime: (
+    instantUtc: string,
+    churchTimezone: string,
+    locale: string,
+    options?: Intl.DateTimeFormatOptions,
+  ) => DualTimeLabels;
+  buildDualInterval: (
+    startsAtUtc: string,
+    endsAtUtc: string,
+    churchTimezone: string,
+    locale: string,
+    startOptions?: Intl.DateTimeFormatOptions,
+    endOptions?: Intl.DateTimeFormatOptions,
+  ) => DualTimeLabels;
+  /**
+   * Viewer preference for form entry: church tz when off, browser tz when on.
+   * List/detail surfaces should use {@link buildDualTime} instead.
+   */
+  formTimezone: (churchTimezone: string) => string;
 };
 
 const LocalTimeContext = createContext<LocalTimeContextValue | null>(null);
@@ -47,27 +74,83 @@ export function LocalTimeProvider({ children }: { children: ReactNode }) {
     writeStoredPreference(value);
   }, []);
 
-  const formatWithLocal = useCallback(
+  const formatChurchTime = useCallback(
     (
       instantUtc: string,
       churchTimezone: string,
       locale: string,
       options?: Intl.DateTimeFormatOptions,
-    ) => {
-      const timeZone = useLocalTime
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : churchTimezone;
-      return new Intl.DateTimeFormat(locale as SupportedLocale, {
-        timeZone,
-        ...options,
-      }).format(new Date(instantUtc));
-    },
+    ) =>
+      formatInstantInTimezone(
+        instantUtc,
+        churchTimezone,
+        locale,
+        options,
+      ),
+    [],
+  );
+
+  const buildDualTime = useCallback(
+    (
+      instantUtc: string,
+      churchTimezone: string,
+      locale: string,
+      options?: Intl.DateTimeFormatOptions,
+    ) =>
+      buildDualTimeLabels(
+        instantUtc,
+        churchTimezone,
+        locale,
+        useLocalTime,
+        options,
+      ),
+    [useLocalTime],
+  );
+
+  const buildDualInterval = useCallback(
+    (
+      startsAtUtc: string,
+      endsAtUtc: string,
+      churchTimezone: string,
+      locale: string,
+      startOptions?: Intl.DateTimeFormatOptions,
+      endOptions?: Intl.DateTimeFormatOptions,
+    ) =>
+      buildDualTimeInterval(
+        startsAtUtc,
+        endsAtUtc,
+        churchTimezone,
+        locale,
+        useLocalTime,
+        startOptions,
+        endOptions,
+      ),
+    [useLocalTime],
+  );
+
+  const formTimezone = useCallback(
+    (churchTimezone: string) =>
+      useLocalTime ? getBrowserTimezone() : churchTimezone,
     [useLocalTime],
   );
 
   const value = useMemo(
-    () => ({ useLocalTime, setUseLocalTime, formatWithLocal }),
-    [useLocalTime, setUseLocalTime, formatWithLocal],
+    () => ({
+      useLocalTime,
+      setUseLocalTime,
+      formatChurchTime,
+      buildDualTime,
+      buildDualInterval,
+      formTimezone,
+    }),
+    [
+      useLocalTime,
+      setUseLocalTime,
+      formatChurchTime,
+      buildDualTime,
+      buildDualInterval,
+      formTimezone,
+    ],
   );
 
   return (

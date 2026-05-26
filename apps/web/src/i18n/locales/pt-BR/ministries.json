@@ -1,4 +1,38 @@
 {
   "title": "Ministérios",
-  "body": "Equipes e áreas de serviço em breve."
+  "body": "Mantenha o catálogo de funções dos ministérios que você lidera. Funções aposentadas permanecem no histórico, mas não podem ser usadas em novas designações.",
+  "signInRequired": "Entre para gerenciar funções do ministério.",
+  "notLeader": "É necessário liderar um ministério para gerenciar o catálogo de funções.",
+  "ministryLabel": "Ministério",
+  "ministryPlaceholder": "Selecione o ministério",
+  "newRolePlaceholder": "Nome da nova função",
+  "addRole": "Adicionar função",
+  "loading": "Carregando funções…",
+  "activeBadge": "Ativa",
+  "retiredBadge": "Aposentada",
+  "rename": "Renomear",
+  "retire": "Aposentar",
+  "saveRename": "Salvar",
+  "cancelRename": "Cancelar",
+  "errorGeneric": "Algo deu errado. Tente novamente.",
+  "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja.",
+  "delegation": {
+    "title": "Delegar líderes",
+    "body": "Conceda ou revogue a liderança no ministério. A delegação é limitada às igrejas em que você é administrador credenciado.",
+    "signInRequired": "Entre para gerenciar delegação de líderes.",
+    "notAdmin": "Credenciamento de administrador da igreja é necessário.",
+    "volunteerIdPlaceholder": "ID do voluntário",
+    "grant": "Conceder liderança",
+    "revoke": "Revogar",
+    "loading": "Carregando líderes…",
+    "messages": {
+      "granted": "Liderança concedida.",
+      "revoked": "Liderança revogada."
+    },
+    "errors": {
+      "loadFailed": "Não foi possível carregar os líderes.",
+      "actionFailed": "Ação falhou. Tente novamente.",
+      "notAccredited": "Você não está credenciado para esta igreja."
+    }
+  }
 }
