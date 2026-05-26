@@ -158,6 +158,114 @@ export class OrganizationService {
     };
   }
 
+  private async ministryChurchId(ministryId: string): Promise<string> {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: ministryId },
+      select: { churchId: true },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+    return ministry.churchId;
+  }
+
+  async addMinistryMembership(input: {
+    ministryId: string;
+    volunteerId: string;
+    status: 'PENDING' | 'ACTIVE';
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const churchId = await this.ministryChurchId(input.ministryId);
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId,
+    });
+
+    const volunteer = await this.prisma.volunteer.findUnique({
+      where: { id: input.volunteerId },
+    });
+    if (!volunteer) {
+      throw new NotFoundException({
+        code: 'VOLUNTEER_NOT_FOUND',
+        message: 'Volunteer not found.',
+      });
+    }
+
+    const existing = await this.prisma.ministryMembership.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+    });
+    if (existing) {
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_EXISTS',
+        message: 'Volunteer already has membership for this ministry.',
+      });
+    }
+
+    const row = await this.prisma.ministryMembership.create({
+      data: {
+        volunteerId: input.volunteerId,
+        ministryId: input.ministryId,
+        status: input.status,
+      },
+    });
+
+    return {
+      volunteerId: row.volunteerId,
+      ministryId: row.ministryId,
+      status: row.status,
+    };
+  }
+
+  async activateMinistryMembership(input: {
+    ministryId: string;
+    volunteerId: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    const churchId = await this.ministryChurchId(input.ministryId);
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId,
+    });
+
+    const membership = await this.prisma.ministryMembership.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: input.volunteerId,
+          ministryId: input.ministryId,
+        },
+      },
+    });
+    if (!membership) {
+      throw new NotFoundException();
+    }
+    if (membership.status !== 'PENDING') {
+      throw new BadRequestException({
+        code: 'MEMBERSHIP_NOT_PENDING',
+        message: 'Only Pending ministry membership can be activated.',
+      });
+    }
+
+    const row = await this.prisma.ministryMembership.update({
+      where: { id: membership.id },
+      data: { status: 'ACTIVE' },
+    });
+
+    return {
+      volunteerId: row.volunteerId,
+      ministryId: row.ministryId,
+      status: row.status,
+    };
+  }
+
   async listMinistryMemberships(input: {
     ministryId: string;
     authorizationHeader: string | undefined;
@@ -172,7 +280,7 @@ export class OrganizationService {
     const memberships = await this.prisma.ministryMembership.findMany({
       where: {
         ministryId: input.ministryId,
-        status: { in: ['ACTIVE', 'PENDING'] },
+        status: { in: ['ACTIVE', 'PENDING', 'INACTIVE'] },
       },
       include: {
         volunteer: {

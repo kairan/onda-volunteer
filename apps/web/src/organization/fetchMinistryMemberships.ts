@@ -3,7 +3,7 @@ import { fetchJsonWithProtectedHeaders } from '@/apiAuthHeaders';
 export type MinistryMembershipRow = {
   volunteerId: string;
   displayName: string;
-  status: 'PENDING' | 'ACTIVE';
+  status: 'PENDING' | 'ACTIVE' | 'INACTIVE';
 };
 
 export async function fetchMinistryMemberships(input: {
