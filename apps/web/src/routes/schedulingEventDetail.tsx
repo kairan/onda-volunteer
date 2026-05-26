@@ -51,9 +51,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       ? auth.volunteerId
       : null;
 
-  const isAdmin =
-    activeChurch?.ministries.some((m) => m.isLeader && !m.membershipStatus) ??
-    false;
+  const isAdminAccredited = activeChurch?.isAdminAccredited ?? false;
 
   const isCancelled = Boolean(data.event.cancelledAtUtc);
 
@@ -235,7 +233,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           <h1 className="font-display text-4xl font-extrabold uppercase leading-tight tracking-tight md:text-5xl">
             {data.event.title}
           </h1>
-          {isAdmin && !isCancelled ? (
+          {isAdminAccredited && !isCancelled ? (
             <Button
               type="button"
               variant="destructive"

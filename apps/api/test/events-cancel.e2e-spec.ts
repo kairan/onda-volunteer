@@ -41,6 +41,9 @@ describe('POST /events/:id/cancel (e2e)', () => {
     await prisma.assignment.deleteMany();
     await prisma.event.deleteMany();
     await prisma.adminAccreditation.deleteMany();
+    await prisma.ministryLeader.deleteMany();
+    await prisma.ministryMembership.deleteMany();
+    await prisma.ministryRole.deleteMany();
     await prisma.volunteer.deleteMany();
     await prisma.ministry.deleteMany();
     await prisma.church.deleteMany();
@@ -50,7 +53,7 @@ describe('POST /events/:id/cancel (e2e)', () => {
     await app.close();
   });
 
-  it('cancels event and voids assignments', async () => {
+  async function seedCancelFixture() {
     const church = await prisma.church.create({
       data: { name: 'Cancel Church', defaultTimezone: 'UTC' },
     });
@@ -62,6 +65,9 @@ describe('POST /events/:id/cancel (e2e)', () => {
     });
     const member = await prisma.volunteer.create({
       data: { displayName: 'Member' },
+    });
+    const outsider = await prisma.volunteer.create({
+      data: { displayName: 'Outsider' },
     });
     await prisma.adminAccreditation.create({
       data: { volunteerId: admin.id, churchId: church.id },
@@ -88,6 +94,11 @@ describe('POST /events/:id/cancel (e2e)', () => {
         endsAtUtc: new Date('2026-06-01T15:30:00.000Z'),
       },
     });
+    return { church, ministry, admin, member, outsider, role, event, assignment };
+  }
+
+  it('cancels event and voids assignments', async () => {
+    const { admin, event, assignment } = await seedCancelFixture();
 
     await request(app.getHttpServer())
       .post(`/events/${event.id}/cancel`)
@@ -100,5 +111,96 @@ describe('POST /events/:id/cancel (e2e)', () => {
     });
     expect(updatedEvent?.cancelledAtUtc).toEqual(FIXED_NOW);
     expect(updatedAssignment?.voidedAtUtc).toEqual(FIXED_NOW);
+  });
+
+  it('returns 403 ADMIN_NOT_ACCREDITED for volunteer without admin accreditation', async () => {
+    const { outsider, event } = await seedCancelFixture();
+
+    const res = await request(app.getHttpServer())
+      .post(`/events/${event.id}/cancel`)
+      .set('X-Volunteer-Id', outsider.id)
+      .expect(403);
+
+    expect(res.body).toMatchObject({
+      code: 'ADMIN_NOT_ACCREDITED',
+    });
+  });
+
+  it('returns 400 EVENT_ALREADY_CANCELLED on second cancel', async () => {
+    const { admin, event } = await seedCancelFixture();
+
+    await request(app.getHttpServer())
+      .post(`/events/${event.id}/cancel`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    const res = await request(app.getHttpServer())
+      .post(`/events/${event.id}/cancel`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(400);
+
+    expect(res.body).toMatchObject({
+      code: 'EVENT_ALREADY_CANCELLED',
+    });
+  });
+
+  it('omits cancelled events from list but keeps them on detail with cancelledAtUtc', async () => {
+    const { church, admin, event } = await seedCancelFixture();
+
+    await request(app.getHttpServer())
+      .post(`/events/${event.id}/cancel`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    const list = await request(app.getHttpServer())
+      .get('/events')
+      .query({ churchId: church.id })
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    expect(list.body.events).toEqual([]);
+
+    const detail = await request(app.getHttpServer())
+      .get(`/events/${event.id}`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    expect(detail.body.event.cancelledAtUtc).toBe(FIXED_NOW.toISOString());
+  });
+
+  it('rejects new assignments on a cancelled event with EVENT_CANCELLED', async () => {
+    const { ministry, admin, member, role, event } = await seedCancelFixture();
+
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
+    await prisma.ministryLeader.create({
+      data: { volunteerId: admin.id, ministryId: ministry.id },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/events/${event.id}/cancel`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    const res = await request(app.getHttpServer())
+      .post(`/events/${event.id}/assignments`)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        roleId: role.id,
+        startsAtUtc: '2026-06-01T14:30:00.000Z',
+        endsAtUtc: '2026-06-01T15:30:00.000Z',
+      })
+      .expect(400);
+
+    expect(res.body).toMatchObject({
+      code: 'EVENT_CANCELLED',
+    });
   });
 });

@@ -40,6 +40,7 @@ describe('TimeAwayPage', () => {
         id: mockChurchId,
         name: 'Test Church',
         defaultTimezone: 'UTC',
+        isAdminAccredited: false,
         campuses: [],
         ministries: [{ id: 'min-1', name: 'Greeters' }],
       },
@@ -143,6 +144,7 @@ describe('TimeAwayPage', () => {
           id: mockChurchId,
           name: 'Test Church',
           defaultTimezone: 'UTC',
+          isAdminAccredited: false,
           campuses: [],
           ministries: [
             { id: 'min-1', name: 'Greeters', membershipStatus: 'ACTIVE' },
@@ -182,6 +184,7 @@ describe('TimeAwayPage', () => {
           id: mockChurchId,
           name: 'Test Church',
           defaultTimezone: 'UTC',
+          isAdminAccredited: false,
           campuses: [],
           ministries: [
             { id: 'min-1', name: 'Greeters', membershipStatus: 'ACTIVE' },
@@ -243,6 +246,7 @@ describe('TimeAwayPage', () => {
           id: mockChurchId,
           name: 'Test Church',
           defaultTimezone: 'UTC',
+          isAdminAccredited: false,
           campuses: [],
           ministries: [
             { id: 'min-1', name: 'Greeters', membershipStatus: 'ACTIVE' },

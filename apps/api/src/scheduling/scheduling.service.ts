@@ -360,6 +360,12 @@ export class SchedulingService {
     if (!event) {
       throw new NotFoundException();
     }
+    if (event.cancelledAtUtc) {
+      throw new BadRequestException({
+        code: 'EVENT_CANCELLED',
+        message: 'Cannot create assignments on a cancelled event.',
+      });
+    }
     if (event.kind !== 'PUBLIC') {
       throw new BadRequestException({
         code: 'EVENT_NOT_PUBLIC',

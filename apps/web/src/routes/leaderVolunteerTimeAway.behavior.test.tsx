@@ -56,6 +56,7 @@ describe('LeaderVolunteerTimeAwayPage', () => {
         id: churchId,
         name: 'Test Church',
         defaultTimezone: 'UTC',
+        isAdminAccredited: false,
         campuses: [],
         ministries: [
           { id: ministryId, name: 'Greeters', isLeader: true },

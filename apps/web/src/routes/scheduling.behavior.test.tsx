@@ -61,6 +61,7 @@ describe('SchedulingPage', () => {
         id: mockChurchId,
         name: 'Test Church',
         defaultTimezone: 'America/New_York',
+        isAdminAccredited: false,
         campuses: [],
       },
     ],

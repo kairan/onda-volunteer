@@ -124,6 +124,7 @@ describe('GET /organization/context (e2e)', () => {
           id: churchAlpha.id,
           name: 'Alpha Church',
           defaultTimezone: 'America/Sao_Paulo',
+          isAdminAccredited: false,
           campuses: [
             {
               id: alphaCampusSede.id,
@@ -142,6 +143,7 @@ describe('GET /organization/context (e2e)', () => {
           id: churchBeta.id,
           name: 'Beta Church',
           defaultTimezone: 'America/Manaus',
+          isAdminAccredited: false,
           campuses: [
             {
               id: betaCampus.id,
@@ -153,5 +155,50 @@ describe('GET /organization/context (e2e)', () => {
         },
       ],
     });
+  });
+
+  it('sets isAdminAccredited when the volunteer has admin accreditation for a church', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Admin Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Team', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Church Admin' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: admin.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .get('/organization/context')
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    expect(res.body.churches).toEqual([
+      {
+        id: church.id,
+        name: 'Admin Church',
+        defaultTimezone: 'UTC',
+        isAdminAccredited: true,
+        campuses: [],
+        ministries: [
+          {
+            id: ministry.id,
+            name: 'Team',
+            membershipStatus: 'ACTIVE',
+            isLeader: true,
+          },
+        ],
+      },
+    ]);
   });
 });

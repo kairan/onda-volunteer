@@ -15,6 +15,7 @@ export type Church = {
   id: string;
   name: string;
   defaultTimezone: string;
+  isAdminAccredited: boolean;
   campuses: Campus[];
   ministries: MinistrySummary[];
 };
