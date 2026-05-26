@@ -5,6 +5,21 @@
   "listHeading": "Events",
   "loading": "Loading events...",
   "emptyState": "No events to show for this church yet.",
+  "createPrivate": {
+    "link": "New private event",
+    "title": "New private ministry event",
+    "ministryLabel": "Ministry",
+    "ministryPlaceholder": "Select ministry",
+    "titleLabel": "Title",
+    "startsLabel": "Starts",
+    "endsLabel": "Ends",
+    "submit": "Create private event",
+    "signInRequired": "Sign in to create private events.",
+    "notLeader": "You must lead a ministry to create private events.",
+    "errors": {
+      "failed": "Could not create private event."
+    }
+  },
   "visibility": {
     "public": "Public",
     "private": "Private"

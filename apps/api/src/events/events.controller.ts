@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -24,6 +25,54 @@ export class EventsController {
     private readonly events: EventsService,
     private readonly scheduling: SchedulingService,
   ) {}
+
+  @Post()
+  createEvent(
+    @Body()
+    body: {
+      kind: 'PUBLIC' | 'PRIVATE';
+      churchId?: string;
+      ministryId?: string;
+      title: string;
+      startsAtUtc: string;
+      endsAtUtc: string;
+    },
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+    @Headers('x-leader-ministry-id') leaderMinistryId: string | undefined,
+  ) {
+    if (body.kind === 'PRIVATE') {
+      if (!body.ministryId) {
+        throw new BadRequestException({
+          code: 'MINISTRY_ID_REQUIRED',
+          message: 'ministryId is required for private events.',
+        });
+      }
+      return this.events.createPrivateEvent({
+        ministryId: body.ministryId,
+        title: body.title,
+        startsAtUtc: body.startsAtUtc,
+        endsAtUtc: body.endsAtUtc,
+        authorizationHeader: authorization,
+        devVolunteerIdHeader: volunteerIdHeader,
+        leaderMinistryIdHeader: leaderMinistryId,
+      });
+    }
+    if (!body.churchId) {
+      throw new BadRequestException({
+        code: 'CHURCH_ID_REQUIRED',
+        message: 'churchId is required for public events.',
+      });
+    }
+    return this.events.createPublicEvent({
+      churchId: body.churchId,
+      title: body.title,
+      startsAtUtc: body.startsAtUtc,
+      endsAtUtc: body.endsAtUtc,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerIdHeader,
+    });
+  }
 
   @Get()
   listEvents(
