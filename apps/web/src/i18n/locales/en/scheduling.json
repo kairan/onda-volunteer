@@ -30,6 +30,7 @@
     "startsAtUtcLabel": "Starts (UTC ISO)",
     "endsAtUtcLabel": "Ends (UTC ISO)",
     "errors": {
+      "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
       "assignFailed": "Could not create assignment.",
       "releaseFailed": "Could not release assignment.",
       "unavailabilityFailed": "Could not record unavailability."

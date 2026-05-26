@@ -5,6 +5,7 @@ import type { EventDetailPayload } from '@/eventDetailPayload';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { ApiRequestError } from '@/apiError';
 import { createAssignment } from '@/events/createAssignment';
 import { releaseAssignment } from '@/events/releaseAssignment';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
@@ -119,7 +120,13 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       await router.invalidate();
       pushSuccessToast(t('detail.assignSuccess'));
     } catch (err) {
-      setAssignError(t('detail.errors.assignFailed'));
+      if (err instanceof ApiRequestError && err.code === 'UNAVAILABILITY_BLOCKS_ASSIGN') {
+        setAssignError(t('detail.errors.unavailabilityBlocksAssign'));
+      } else if (err instanceof ApiRequestError) {
+        setAssignError(err.message);
+      } else {
+        setAssignError(t('detail.errors.assignFailed'));
+      }
     } finally {
       setBusy(false);
     }
