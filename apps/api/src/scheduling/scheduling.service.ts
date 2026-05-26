@@ -360,13 +360,6 @@ export class SchedulingService {
     if (!event) {
       throw new NotFoundException();
     }
-    if (event.kind !== 'PUBLIC') {
-      throw new BadRequestException({
-        code: 'EVENT_NOT_PUBLIC',
-        message: 'Assignments in this slice are limited to public events.',
-      });
-    }
-
     const a0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const a1 = parseInstant('endsAtUtc', input.endsAtUtc);
     if (!(a0 < a1)) {
@@ -390,6 +383,13 @@ export class SchedulingService {
       throw new BadRequestException({
         code: 'MINISTRY_NOT_ON_EVENT_CHURCH',
         message: 'Ministry must belong to the same church as the event.',
+      });
+    }
+
+    if (event.kind === 'PRIVATE' && event.ministryId !== input.ministryId) {
+      throw new BadRequestException({
+        code: 'PRIVATE_EVENT_MINISTRY_MISMATCH',
+        message: 'Private event assignments must use the event ministry.',
       });
     }
 

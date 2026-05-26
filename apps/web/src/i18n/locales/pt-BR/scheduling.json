@@ -5,6 +5,9 @@
   "listHeading": "Eventos",
   "loading": "Carregando eventos...",
   "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "errors": {
+    "loadFailed": "Não foi possível carregar os eventos."
+  },
   "create": {
     "link": "Criar evento público",
     "title": "Novo evento público",
@@ -18,8 +21,22 @@
     "notAdmin": "Credenciamento de administrador é necessário para criar eventos públicos.",
     "errors": {
       "notAccredited": "Você não está credenciado para esta igreja.",
-      "failed": "Não foi possível criar o evento.",
-      "loadFailed": "Não foi possível carregar os eventos."
+      "failed": "Não foi possível criar o evento."
+    }
+  },
+  "createPrivate": {
+    "link": "Novo evento privado",
+    "title": "Novo evento privado do ministério",
+    "ministryLabel": "Ministério",
+    "ministryPlaceholder": "Selecione o ministério",
+    "titleLabel": "Título",
+    "startsLabel": "Início",
+    "endsLabel": "Fim",
+    "submit": "Criar evento privado",
+    "signInRequired": "Entre para criar eventos privados.",
+    "notLeader": "É necessário liderar um ministério para criar eventos privados.",
+    "errors": {
+      "failed": "Não foi possível criar o evento privado."
     }
   },
   "visibility": {

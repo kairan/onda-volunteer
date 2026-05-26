@@ -96,7 +96,7 @@ describe('POST /events public create (e2e)', () => {
       });
   });
 
-  it('rejects non-PUBLIC kind', async () => {
+  it('rejects PRIVATE without ministryId', async () => {
     const church = await prisma.church.create({
       data: { name: 'Kind Church', defaultTimezone: 'UTC' },
     });
@@ -119,7 +119,7 @@ describe('POST /events public create (e2e)', () => {
       })
       .expect(400)
       .expect(({ body }) => {
-        expect(body.code).toBe('INVALID_EVENT_KIND');
+        expect(body.code).toBe('MINISTRY_ID_REQUIRED');
       });
   });
 

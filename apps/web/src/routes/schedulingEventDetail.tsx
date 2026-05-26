@@ -53,8 +53,9 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const demoRole = import.meta.env.VITE_DEMO_ROLE_ID as string | undefined;
 
   const canAssign =
-    data.event.kind === 'PUBLIC' &&
-    Boolean(demoMinistry && demoVolunteer && demoRole);
+    Boolean(demoMinistry && demoVolunteer && demoRole) &&
+    (data.event.kind === 'PUBLIC' ||
+      (data.event.kind === 'PRIVATE' && data.ministry?.id === demoMinistry));
 
   const initialWindow = defaultAssignmentWindow(data);
   const [startsAtUtc, setStartsAtUtc] = useState(initialWindow.startsAtUtc);

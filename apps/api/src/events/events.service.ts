@@ -161,6 +161,25 @@ export class EventsService {
     return d;
   }
 
+  private validateEventWindow(title: string, startsAtUtc: string, endsAtUtc: string) {
+    const trimmed = title?.trim();
+    if (!trimmed) {
+      throw new BadRequestException({
+        code: 'TITLE_REQUIRED',
+        message: 'Event title is required.',
+      });
+    }
+    const start = this.parseInstant('startsAtUtc', startsAtUtc);
+    const end = this.parseInstant('endsAtUtc', endsAtUtc);
+    if (!(start < end)) {
+      throw new BadRequestException({
+        code: 'INVALID_EVENT_WINDOW',
+        message: 'Event window must have startsAtUtc strictly before endsAtUtc.',
+      });
+    }
+    return { title: trimmed, startsAtUtc: start, endsAtUtc: end };
+  }
+
   async createPublicEvent(input: {
     churchId: string;
     title: string;
@@ -175,22 +194,11 @@ export class EventsService {
       churchId: input.churchId,
     });
 
-    const title = input.title?.trim();
-    if (!title) {
-      throw new BadRequestException({
-        code: 'TITLE_REQUIRED',
-        message: 'Event title is required.',
-      });
-    }
-
-    const startsAtUtc = this.parseInstant('startsAtUtc', input.startsAtUtc);
-    const endsAtUtc = this.parseInstant('endsAtUtc', input.endsAtUtc);
-    if (!(startsAtUtc < endsAtUtc)) {
-      throw new BadRequestException({
-        code: 'INVALID_EVENT_WINDOW',
-        message: 'Event window must have startsAtUtc strictly before endsAtUtc.',
-      });
-    }
+    const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
+      input.title,
+      input.startsAtUtc,
+      input.endsAtUtc,
+    );
 
     const church = await this.prisma.church.findUnique({
       where: { id: input.churchId },
@@ -211,9 +219,65 @@ export class EventsService {
         churchId: input.churchId,
         ministryId: null,
       },
-      include: { church: true },
+      include: { church: true, ministry: true },
     });
 
+    return this.toEventListItem(row);
+  }
+
+  async createPrivateEvent(input: {
+    ministryId: string;
+    title: string;
+    startsAtUtc: string;
+    endsAtUtc: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+    leaderMinistryIdHeader: string | undefined;
+  }) {
+    await this.identity.assertLeaderCanActOnMinistry({
+      authorizationHeader: input.authorizationHeader,
+      devLeaderMinistryIdHeader: input.leaderMinistryIdHeader,
+      ministryId: input.ministryId,
+    });
+
+    const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
+      input.title,
+      input.startsAtUtc,
+      input.endsAtUtc,
+    );
+
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+      include: { church: true },
+    });
+    if (!ministry) {
+      throw new NotFoundException({ code: 'MINISTRY_NOT_FOUND', message: 'Ministry not found.' });
+    }
+
+    const row = await this.prisma.event.create({
+      data: {
+        kind: 'PRIVATE',
+        title,
+        startsAtUtc,
+        endsAtUtc,
+        churchId: ministry.churchId,
+        ministryId: ministry.id,
+      },
+      include: { church: true, ministry: true },
+    });
+
+    return this.toEventListItem(row);
+  }
+
+  private toEventListItem(row: {
+    id: string;
+    kind: 'PUBLIC' | 'PRIVATE';
+    title: string;
+    startsAtUtc: Date;
+    endsAtUtc: Date;
+    church: { defaultTimezone: string };
+    ministry: { id: string; name: string } | null;
+  }): EventListItem {
     return {
       id: row.id,
       kind: row.kind,
@@ -222,12 +286,10 @@ export class EventsService {
         startsAtUtc: row.startsAtUtc.toISOString(),
         endsAtUtc: row.endsAtUtc.toISOString(),
       },
-      framing: churchFraming(
-        row.startsAtUtc,
-        row.endsAtUtc,
-        row.church.defaultTimezone,
-      ),
-      ministry: null,
+      framing: churchFraming(row.startsAtUtc, row.endsAtUtc, row.church.defaultTimezone),
+      ministry: row.ministry
+        ? { id: row.ministry.id, name: row.ministry.name }
+        : null,
     };
   }
 

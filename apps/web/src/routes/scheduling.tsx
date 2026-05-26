@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
@@ -21,6 +21,11 @@ export function SchedulingPage() {
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
       ? auth.volunteerId
       : null;
+
+  const hasLedMinistries = useMemo(
+    () => activeChurch?.ministries.some((ministry) => ministry.isLeader) ?? false,
+    [activeChurch?.ministries],
+  );
 
   useEffect(() => {
     if (!volunteerId || !activeChurch) return;
@@ -88,14 +93,24 @@ export function SchedulingPage() {
           <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
             {t('listHeading')}
           </h2>
-          {isAccreditedAdmin ? (
-            <Link
-              to="/scheduling/events/new"
-              className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
-            >
-              {t('create.link')}
-            </Link>
-          ) : null}
+          <div className="flex flex-wrap gap-3">
+            {isAccreditedAdmin ? (
+              <Link
+                to="/scheduling/events/new"
+                className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
+              >
+                {t('create.link')}
+              </Link>
+            ) : null}
+            {hasLedMinistries ? (
+              <Link
+                to="/scheduling/events/new-private"
+                className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
+              >
+                {t('createPrivate.link')}
+              </Link>
+            ) : null}
+          </div>
         </div>
 
         {loading ? (
