@@ -29,6 +29,17 @@
     "releaseSuccess": "Assignment released.",
     "saving": "Saving...",
     "release": "Release",
+    "cancel": {
+      "action": "Cancel event",
+      "dialogTitle": "Cancel this event?",
+      "dialogBody": "This voids all assignments for this occurrence. The event record is kept for history.",
+      "confirm": "Yes, cancel event",
+      "cancelledLabel": "This event was cancelled.",
+      "success": "Event cancelled.",
+      "errors": {
+        "failed": "Could not cancel event."
+      }
+    },
     "unavailabilityOffer": {
       "heading": "Mark unavailable for this ministry?",
       "body": "Optional: record unavailability for the same UTC window you just released ({{start}} → {{end}}). Nothing is saved until you confirm.",

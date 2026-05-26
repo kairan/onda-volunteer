@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { useOrganization } from '@/organization/OrganizationContextProvider';
+import { cancelEvent } from '@/events/cancelEvent';
+import { DestructiveConfirmDialog } from '@/components/DestructiveConfirmDialog';
 import { createAssignment } from '@/events/createAssignment';
 import { releaseAssignment } from '@/events/releaseAssignment';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
@@ -41,6 +44,22 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const router = useRouter();
   const toasts = useToasts();
   const auth = useAuthSession();
+  const { activeChurch } = useOrganization();
+
+  const actingVolunteerId =
+    auth.status === 'authenticated' || auth.status === 'dev-bypass'
+      ? auth.volunteerId
+      : null;
+
+  const isAdmin =
+    activeChurch?.ministries.some((m) => m.isLeader && !m.membershipStatus) ??
+    false;
+
+  const isCancelled = Boolean(data.event.cancelledAtUtc);
+
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelBusy, setCancelBusy] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(
     null,
@@ -51,6 +70,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const demoRole = import.meta.env.VITE_DEMO_ROLE_ID as string | undefined;
 
   const canAssign =
+    !isCancelled &&
     data.event.kind === 'PUBLIC' &&
     Boolean(demoMinistry && demoVolunteer && demoRole);
 
@@ -98,6 +118,25 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
   function pushSuccessToast(message: string) {
     toasts.push({ id: crypto.randomUUID(), kind: 'success', message });
+  }
+
+  async function handleCancelConfirm() {
+    if (!actingVolunteerId) return;
+    setCancelBusy(true);
+    setCancelError(null);
+    try {
+      await cancelEvent({ eventId: data.event.id, actingVolunteerId });
+      setCancelOpen(false);
+      pushSuccessToast(t('detail.cancel.success'));
+      await router.invalidate();
+      await router.navigate({ to: '/scheduling' });
+    } catch (err) {
+      setCancelError(
+        err instanceof Error ? err.message : t('detail.cancel.errors.failed'),
+      );
+    } finally {
+      setCancelBusy(false);
+    }
   }
 
   async function handleAssignSubmit(e: React.FormEvent) {
@@ -192,9 +231,29 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             </p>
           ) : null}
         </div>
-        <h1 className="mt-3 font-display text-4xl font-extrabold uppercase leading-tight tracking-tight md:text-5xl">
-          {data.event.title}
-        </h1>
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <h1 className="font-display text-4xl font-extrabold uppercase leading-tight tracking-tight md:text-5xl">
+            {data.event.title}
+          </h1>
+          {isAdmin && !isCancelled ? (
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={() => setCancelOpen(true)}
+            >
+              {t('detail.cancel.action')}
+            </Button>
+          ) : null}
+        </div>
+        {isCancelled ? (
+          <p
+            role="status"
+            className="mt-3 border-2 border-destructive bg-destructive/10 px-3 py-2 text-sm font-semibold text-destructive"
+          >
+            {t('detail.cancel.cancelledLabel')}
+          </p>
+        ) : null}
         <p className="mt-3 text-sm font-medium text-foreground">{formatEventWindow()}</p>
         <p className="mt-2 text-xs text-muted-foreground">
           {t('detail.utcWindow', {
@@ -364,6 +423,25 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           </div>
         )}
       </div>
+
+      <DestructiveConfirmDialog
+        open={cancelOpen}
+        title={t('detail.cancel.dialogTitle')}
+        description={t('detail.cancel.dialogBody')}
+        confirmLabel={cancelBusy ? t('detail.saving') : t('detail.cancel.confirm')}
+        onConfirm={() => void handleCancelConfirm()}
+        onCancel={() => {
+          if (!cancelBusy) {
+            setCancelOpen(false);
+            setCancelError(null);
+          }
+        }}
+      />
+      {cancelError ? (
+        <p role="alert" className="text-sm text-destructive font-semibold">
+          {cancelError}
+        </p>
+      ) : null}
 
       {canAssign ? (
         <form
