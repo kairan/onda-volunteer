@@ -18,7 +18,8 @@
     "notAdmin": "Church admin accreditation is required to create public events.",
     "errors": {
       "notAccredited": "You are not accredited for this church.",
-      "failed": "Could not create event."
+      "failed": "Could not create event.",
+      "loadFailed": "Could not load events."
     }
   },
   "visibility": {
@@ -40,6 +41,14 @@
     },
     "assignHeading": "Assign (demo)",
     "assignDemoHelp": "Uses seeded volunteer, ministry, and role from your .env. Default window avoids the seeded morning unavailability block.",
+    "startsAtUtcLabel": "Starts (UTC ISO)",
+    "endsAtUtcLabel": "Ends (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
+      "assignFailed": "Could not create assignment.",
+      "releaseFailed": "Could not release assignment.",
+      "unavailabilityFailed": "Could not record unavailability."
+    },
     "createAssignment": "Create assignment",
     "assignSuccess": "Assignment created.",
     "releaseSuccess": "Assignment released.",

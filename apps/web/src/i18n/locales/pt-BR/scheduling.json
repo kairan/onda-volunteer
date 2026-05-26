@@ -18,7 +18,8 @@
     "notAdmin": "Credenciamento de administrador é necessário para criar eventos públicos.",
     "errors": {
       "notAccredited": "Você não está credenciado para esta igreja.",
-      "failed": "Não foi possível criar o evento."
+      "failed": "Não foi possível criar o evento.",
+      "loadFailed": "Não foi possível carregar os eventos."
     }
   },
   "visibility": {
@@ -40,6 +41,14 @@
     },
     "assignHeading": "Designar (demo)",
     "assignDemoHelp": "Usa voluntário, ministério e função definidos no .env. A janela padrão evita o bloco de indisponibilidade da manhã no seed.",
+    "startsAtUtcLabel": "Início (UTC ISO)",
+    "endsAtUtcLabel": "Fim (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "Este voluntário está indisponível para este ministério no horário selecionado.",
+      "assignFailed": "Não foi possível criar a designação.",
+      "releaseFailed": "Não foi possível liberar a designação.",
+      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
+    },
     "createAssignment": "Criar designação",
     "assignSuccess": "Designação criada.",
     "releaseSuccess": "Designação liberada.",
