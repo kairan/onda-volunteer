@@ -150,6 +150,87 @@ export class EventsService {
     return false;
   }
 
+  private parseInstant(label: string, iso: string): Date {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) {
+      throw new BadRequestException({
+        code: 'INVALID_INSTANT',
+        message: `${label} must be a valid ISO-8601 instant`,
+      });
+    }
+    return d;
+  }
+
+  async createPublicEvent(input: {
+    churchId: string;
+    title: string;
+    startsAtUtc: string;
+    endsAtUtc: string;
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+  }) {
+    await this.identity.assertAdminAccreditedForChurch({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+      churchId: input.churchId,
+    });
+
+    const title = input.title?.trim();
+    if (!title) {
+      throw new BadRequestException({
+        code: 'TITLE_REQUIRED',
+        message: 'Event title is required.',
+      });
+    }
+
+    const startsAtUtc = this.parseInstant('startsAtUtc', input.startsAtUtc);
+    const endsAtUtc = this.parseInstant('endsAtUtc', input.endsAtUtc);
+    if (!(startsAtUtc < endsAtUtc)) {
+      throw new BadRequestException({
+        code: 'INVALID_EVENT_WINDOW',
+        message: 'Event window must have startsAtUtc strictly before endsAtUtc.',
+      });
+    }
+
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+    });
+    if (!church) {
+      throw new NotFoundException({
+        code: 'CHURCH_NOT_FOUND',
+        message: 'Church not found.',
+      });
+    }
+
+    const row = await this.prisma.event.create({
+      data: {
+        kind: 'PUBLIC',
+        title,
+        startsAtUtc,
+        endsAtUtc,
+        churchId: input.churchId,
+        ministryId: null,
+      },
+      include: { church: true },
+    });
+
+    return {
+      id: row.id,
+      kind: row.kind,
+      title: row.title,
+      window: {
+        startsAtUtc: row.startsAtUtc.toISOString(),
+        endsAtUtc: row.endsAtUtc.toISOString(),
+      },
+      framing: churchFraming(
+        row.startsAtUtc,
+        row.endsAtUtc,
+        row.church.defaultTimezone,
+      ),
+      ministry: null,
+    };
+  }
+
   async listEvents(input: {
     churchId: string | undefined;
     authorizationHeader: string | undefined;

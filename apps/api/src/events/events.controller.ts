@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -24,6 +25,36 @@ export class EventsController {
     private readonly events: EventsService,
     private readonly scheduling: SchedulingService,
   ) {}
+
+  @Post()
+  createEvent(
+    @Body()
+    body: {
+      kind: 'PUBLIC';
+      churchId: string;
+      title: string;
+      startsAtUtc: string;
+      endsAtUtc: string;
+    },
+    @Headers('authorization') authorization: string | undefined,
+    @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
+  ) {
+    if (body.kind !== 'PUBLIC') {
+      throw new BadRequestException({
+        code: 'INVALID_EVENT_KIND',
+        message: 'Only PUBLIC events can be created on this endpoint.',
+      });
+    }
+
+    return this.events.createPublicEvent({
+      churchId: body.churchId,
+      title: body.title,
+      startsAtUtc: body.startsAtUtc,
+      endsAtUtc: body.endsAtUtc,
+      authorizationHeader: authorization,
+      devVolunteerIdHeader: volunteerIdHeader,
+    });
+  }
 
   @Get()
   listEvents(

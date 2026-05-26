@@ -68,6 +68,7 @@ export class OrganizationService {
       id: string;
       name: string;
       defaultTimezone: string;
+      isAccreditedAdmin: boolean;
       campuses: Map<string, { id: string; name: string; timezone: string }>;
       ministries: Map<string, MinistryEntry>;
     };
@@ -86,6 +87,7 @@ export class OrganizationService {
           id: church.id,
           name: church.name,
           defaultTimezone: church.defaultTimezone,
+          isAccreditedAdmin: false,
           campuses: new Map(),
           ministries: new Map(),
         };
@@ -142,6 +144,7 @@ export class OrganizationService {
 
     for (const accreditation of accreditations) {
       const entry = ensureChurch(accreditation.church);
+      entry.isAccreditedAdmin = true;
       for (const ministry of accreditation.church.ministries) {
         addMinistry(entry, ministry, undefined, false, true);
       }
@@ -154,6 +157,7 @@ export class OrganizationService {
           id: church.id,
           name: church.name,
           defaultTimezone: church.defaultTimezone,
+          isAccreditedAdmin: church.isAccreditedAdmin,
           campuses: [...church.campuses.values()].sort((a, b) =>
             a.name.localeCompare(b.name),
           ),

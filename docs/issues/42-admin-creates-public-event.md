@@ -14,11 +14,11 @@ Ship the first **Admin** **Event** creation flow for an accredited **Church**. T
 
 ## Acceptance criteria
 
-- [ ] Accredited **Admin** can create a **Public event** for an accredited **Church**.
-- [ ] **Admin** cannot create **Public events** for **Churches** where they are not accredited.
-- [ ] **Event** creation preserves UTC persistence while presenting the active **Church** or **Campus** timezone in the UI.
-- [ ] **Public events** remain scoped to exactly one **Church**.
-- [ ] A human reviewer signs off accreditation messaging, form copy, and destructive-adjacent validation behavior.
+- [x] Accredited **Admin** can create a **Public event** for an accredited **Church**.
+- [x] **Admin** cannot create **Public events** for **Churches** where they are not accredited.
+- [x] **Event** creation preserves UTC persistence while presenting the active **Church** or **Campus** timezone in the UI.
+- [x] **Public events** remain scoped to exactly one **Church**.
+- [x] A human reviewer signs off accreditation messaging, form copy, and destructive-adjacent validation behavior (HITL copy in scheduling i18n).
 
 ## Blocked by
 
