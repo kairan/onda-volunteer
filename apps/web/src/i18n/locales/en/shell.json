@@ -18,6 +18,7 @@
   "campusLabel": "Campus",
   "timezoneCue": "TZ: {{short}}",
   "timezoneDetails": "IANA timezone: {{iana}}",
+  "showLocalTime": "Also show my local time",
   "nav": {
     "dashboard": "Dashboard",
     "scheduling": "Schedule",

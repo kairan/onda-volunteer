@@ -5,6 +5,9 @@
   "listHeading": "Eventos",
   "loading": "Carregando eventos...",
   "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "errors": {
+    "loadFailed": "Não foi possível carregar os eventos."
+  },
   "visibility": {
     "public": "Público",
     "private": "Privado"
@@ -24,6 +27,13 @@
     },
     "assignHeading": "Designar (demo)",
     "assignDemoHelp": "Usa voluntário, ministério e função definidos no .env. A janela padrão evita o bloco de indisponibilidade da manhã no seed.",
+    "startsAtUtcLabel": "Início (UTC ISO)",
+    "endsAtUtcLabel": "Fim (UTC ISO)",
+    "errors": {
+      "assignFailed": "Não foi possível criar a designação.",
+      "releaseFailed": "Não foi possível liberar a designação.",
+      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
+    },
     "createAssignment": "Criar designação",
     "assignSuccess": "Designação criada.",
     "releaseSuccess": "Designação liberada.",

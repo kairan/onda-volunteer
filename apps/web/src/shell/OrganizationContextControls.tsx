@@ -80,7 +80,7 @@ export function OrganizationContextControls({
             checked={useLocalTime}
             onChange={(e) => setUseLocalTime(e.target.checked)}
           />
-          Show my local time
+          {t('showLocalTime')}
         </label>
       </div>
     </div>

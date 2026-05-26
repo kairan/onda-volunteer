@@ -3,6 +3,7 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
+import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { createAssignment } from '@/events/createAssignment';
 import { releaseAssignment } from '@/events/releaseAssignment';
@@ -37,7 +38,7 @@ function defaultAssignmentWindow(payload: EventDetailPayload): {
 
 export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }) {
   const { t, i18n } = useTranslation('scheduling');
-  const { formatWithLocal } = useLocalTimeContext();
+  const { buildDualInterval } = useLocalTimeContext();
   const router = useRouter();
   const toasts = useToasts();
   const auth = useAuthSession();
@@ -78,23 +79,24 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
   const timezone = data.church.defaultTimezone;
 
-  const formatInterval = (startsAtUtc: string, endsAtUtc: string) => {
-    const start = formatWithLocal(startsAtUtc, timezone, i18n.language, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    const end = formatWithLocal(endsAtUtc, timezone, i18n.language, {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    return `${start} → ${end}`;
+  const intervalStartOptions = {
+    weekday: 'short' as const,
+    month: 'short' as const,
+    day: 'numeric' as const,
+    hour: '2-digit' as const,
+    minute: '2-digit' as const,
   };
+  const intervalEndOptions = { hour: '2-digit' as const, minute: '2-digit' as const };
 
-  const formatEventWindow = () =>
-    formatInterval(data.event.window.startsAtUtc, data.event.window.endsAtUtc);
+  const formatIntervalLabels = (startsAtUtc: string, endsAtUtc: string) =>
+    buildDualInterval(
+      startsAtUtc,
+      endsAtUtc,
+      timezone,
+      i18n.language,
+      intervalStartOptions,
+      intervalEndOptions,
+    );
 
   function pushSuccessToast(message: string) {
     toasts.push({ id: crypto.randomUUID(), kind: 'success', message });
@@ -117,9 +119,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       await router.invalidate();
       pushSuccessToast(t('detail.assignSuccess'));
     } catch (err) {
-      setAssignError(
-        err instanceof Error ? err.message : 'Failed to create assignment',
-      );
+      setAssignError(t('detail.errors.assignFailed'));
     } finally {
       setBusy(false);
     }
@@ -144,9 +144,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       await router.invalidate();
       pushSuccessToast(t('detail.releaseSuccess'));
     } catch (err) {
-      setReleaseError(
-        err instanceof Error ? err.message : 'Failed to release assignment',
-      );
+      setReleaseError(t('detail.errors.releaseFailed'));
     } finally {
       setBusy(false);
     }
@@ -166,9 +164,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       setOfferDone(true);
       setReleasedOffer(null);
     } catch (err) {
-      setOfferError(
-        err instanceof Error ? err.message : 'Failed to record unavailability',
-      );
+      setOfferError(t('detail.errors.unavailabilityFailed'));
     } finally {
       setOfferBusy(false);
     }
@@ -195,7 +191,14 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
         <h1 className="mt-3 font-display text-4xl font-extrabold uppercase leading-tight tracking-tight md:text-5xl">
           {data.event.title}
         </h1>
-        <p className="mt-3 text-sm font-medium text-foreground">{formatEventWindow()}</p>
+        <p className="mt-3 text-sm font-medium text-foreground">
+          <SchedulingTimeDisplay
+            labels={formatIntervalLabels(
+              data.event.window.startsAtUtc,
+              data.event.window.endsAtUtc,
+            )}
+          />
+        </p>
         <p className="mt-2 text-xs text-muted-foreground">
           {t('detail.utcWindow', {
             start: data.event.window.startsAtUtc,
@@ -330,10 +333,12 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                       <td className="px-4 py-3">{assignment.volunteer.displayName}</td>
                       <td className="px-4 py-3">{assignment.role.name}</td>
                       <td className="px-4 py-3 text-muted-foreground">
-                        {formatInterval(
-                          assignment.window.startsAtUtc,
-                          assignment.window.endsAtUtc,
-                        )}
+                        <SchedulingTimeDisplay
+                          labels={formatIntervalLabels(
+                            assignment.window.startsAtUtc,
+                            assignment.window.endsAtUtc,
+                          )}
+                        />
                         <span className="mt-1 block font-mono text-[11px] text-muted-foreground/80">
                           {assignment.window.startsAtUtc} → {assignment.window.endsAtUtc}
                         </span>
@@ -383,7 +388,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label htmlFor="startsAtUtc" className="text-sm font-semibold uppercase tracking-wide">
-                startsAtUtc
+                {t('detail.startsAtUtcLabel')}
               </label>
               <input
                 id="startsAtUtc"
@@ -399,7 +404,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
             <div className="flex flex-col gap-1">
               <label htmlFor="endsAtUtc" className="text-sm font-semibold uppercase tracking-wide">
-                endsAtUtc
+                {t('detail.endsAtUtcLabel')}
               </label>
               <input
                 id="endsAtUtc"

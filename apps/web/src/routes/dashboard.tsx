@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
+import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { fetchVolunteerAssignments, type VolunteerAssignment } from '@/identity/fetchVolunteerAssignments';
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation('dashboard');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { formatWithLocal } = useLocalTimeContext();
+  const { buildDualTime } = useLocalTimeContext();
   
   const [assignments, setAssignments] = useState<VolunteerAssignment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +43,7 @@ export function DashboardPage() {
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load assignments');
+          setError(t('errors.loadFailed'));
         }
       } finally {
         if (!cancelled) {
@@ -59,14 +60,12 @@ export function DashboardPage() {
 
   const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
 
-  const formatDateTime = (iso: string) => {
-    return formatWithLocal(iso, timezone, i18n.language, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const dateTimeOptions = {
+    weekday: 'short' as const,
+    month: 'short' as const,
+    day: 'numeric' as const,
+    hour: '2-digit' as const,
+    minute: '2-digit' as const,
   };
 
   return (
@@ -74,8 +73,9 @@ export function DashboardPage() {
       {pendingMinistries.length > 0 && (
         <div className="border-2 border-primary bg-primary/10 p-4 text-sm font-medium">
           <p>
-            You have pending memberships in: {pendingMinistries.map(m => m.name).join(', ')}. 
-            You will be able to serve once they are activated.
+            {t('pendingMemberships', {
+              names: pendingMinistries.map((m) => m.name).join(', '),
+            })}
           </p>
         </div>
       )}
@@ -138,7 +138,14 @@ export function DashboardPage() {
                     {a.event.title}
                   </h3>
                   <p className="text-sm font-medium text-foreground">
-                    {formatDateTime(a.startsAtUtc)}
+                    <SchedulingTimeDisplay
+                      labels={buildDualTime(
+                        a.startsAtUtc,
+                        timezone,
+                        i18n.language,
+                        dateTimeOptions,
+                      )}
+                    />
                   </p>
                 </div>
               </article>
