@@ -56,6 +56,7 @@ export function SchedulingPage() {
   }, [volunteerId, activeChurch]);
 
   const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
+  const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
 
   const intervalOptions = {
     weekday: 'short' as const,
@@ -87,12 +88,14 @@ export function SchedulingPage() {
           <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
             {t('listHeading')}
           </h2>
-          <Link
-            to="/scheduling/events/new"
-            className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
-          >
-            {t('create.link')}
-          </Link>
+          {isAccreditedAdmin ? (
+            <Link
+              to="/scheduling/events/new"
+              className="text-sm font-semibold uppercase tracking-[0.12em] text-primary underline-offset-4 hover:underline"
+            >
+              {t('create.link')}
+            </Link>
+          ) : null}
         </div>
 
         {loading ? (

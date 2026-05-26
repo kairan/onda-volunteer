@@ -125,6 +125,7 @@ describe('GET /organization/context (e2e)', () => {
           id: churchAlpha.id,
           name: 'Alpha Church',
           defaultTimezone: 'America/Sao_Paulo',
+          isAccreditedAdmin: false,
           campuses: [
             {
               id: alphaCampusSede.id,
@@ -143,6 +144,7 @@ describe('GET /organization/context (e2e)', () => {
           id: churchBeta.id,
           name: 'Beta Church',
           defaultTimezone: 'America/Manaus',
+          isAccreditedAdmin: false,
           campuses: [
             {
               id: betaCampus.id,
@@ -190,6 +192,7 @@ describe('GET /organization/context (e2e)', () => {
         id: church.id,
         name: 'Admin Member Church',
         defaultTimezone: 'UTC',
+        isAccreditedAdmin: true,
         campuses: [],
         ministries: [
           {

@@ -95,4 +95,86 @@ describe('POST /events public create (e2e)', () => {
         expect(body.code).toBe('ADMIN_NOT_ACCREDITED');
       });
   });
+
+  it('rejects non-PUBLIC kind', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Kind Church', defaultTimezone: 'UTC' },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+
+    await request(app.getHttpServer())
+      .post('/events')
+      .set('X-Volunteer-Id', admin.id)
+      .send({
+        kind: 'PRIVATE',
+        churchId: church.id,
+        title: 'Should fail',
+        startsAtUtc: '2026-07-01T18:00:00.000Z',
+        endsAtUtc: '2026-07-01T21:00:00.000Z',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('INVALID_EVENT_KIND');
+      });
+  });
+
+  it('rejects empty title', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Title Church', defaultTimezone: 'UTC' },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+
+    await request(app.getHttpServer())
+      .post('/events')
+      .set('X-Volunteer-Id', admin.id)
+      .send({
+        kind: 'PUBLIC',
+        churchId: church.id,
+        title: '   ',
+        startsAtUtc: '2026-07-01T18:00:00.000Z',
+        endsAtUtc: '2026-07-01T21:00:00.000Z',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('TITLE_REQUIRED');
+      });
+  });
+
+  it('rejects invalid event window', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Window Church', defaultTimezone: 'UTC' },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+
+    await request(app.getHttpServer())
+      .post('/events')
+      .set('X-Volunteer-Id', admin.id)
+      .send({
+        kind: 'PUBLIC',
+        churchId: church.id,
+        title: 'Bad window',
+        startsAtUtc: '2026-07-01T21:00:00.000Z',
+        endsAtUtc: '2026-07-01T18:00:00.000Z',
+      })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('INVALID_EVENT_WINDOW');
+      });
+  });
+
 });

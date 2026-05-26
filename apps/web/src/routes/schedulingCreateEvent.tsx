@@ -19,9 +19,7 @@ export function SchedulingCreateEventPage() {
       ? auth.volunteerId
       : null;
 
-  const isAdmin =
-    activeChurch?.ministries.some((m) => m.isLeader && !m.membershipStatus) ??
-    false;
+  const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
 
   const timezone =
     activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
@@ -69,7 +67,7 @@ export function SchedulingCreateEventPage() {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAccreditedAdmin) {
     return (
       <section className="border-2 border-border bg-surface p-6">
         <p className="text-sm text-muted-foreground">{t('create.notAdmin')}</p>
