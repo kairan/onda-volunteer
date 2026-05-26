@@ -1,6 +1,9 @@
 ---
 name: triage
-description: Triage issues through a state machine driven by triage roles. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.
+metadata:
+  legacy: true
+  superseded-by: tlc-spec-driven
+description: LEGACY (Onda Volunteer) — superseded by tlc-spec-driven. Do NOT auto-select; use only if the user explicitly names this skill. Triage issues through a state machine driven by triage roles. Use when user wants to create an issue, triage issues, review incoming bugs or feature requests, prepare issues for an AFK agent, or manage issue workflow.
 ---
 
 # Triage

@@ -6,6 +6,7 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 
 - **2026-05-26:** Adopted **tlc-spec-driven** as the default planning/implementation playbook; brownfield context stays in `CONTEXT.md` / `docs/adr/` / `docs/issues/` (no `.specs/codebase/`).
 - **2026-05-26:** Feature artifacts live under `.specs/features/<slug>/`; GitHub Issues remain the shared execution queue.
+- **2026-05-26:** Moved pre-TLC skills to `.cursor/skills/_legacy/` — TLC only unless user explicitly names a legacy skill.
 
 ## Blockers
 

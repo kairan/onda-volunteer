@@ -43,9 +43,15 @@ Use kebab-case slugs (e.g. `leader-manages-unavailability`). Do not write under 
 
 - **Specify / Design / Tasks** live under `.specs/features/` (committed).
 - **Execute** happens on a branch; align commits with TLC atomic-commit guidance.
-- When work is ready for the shared queue, run **to-issues** against `spec.md` + `tasks.md`, or create/update issues manually with `gh`.
-- Use **triage** only for issue workflow (labels, agent briefs), not for feature planning.
+- After **Tasks**, create or update GitHub Issues from `tasks.md` with `gh` (requirement IDs in the spec should match issue numbers when both exist).
+- Do **not** invoke legacy [`to-issues`](../_legacy/to-issues/SKILL.md) or [`triage`](../_legacy/triage/SKILL.md) unless the user explicitly names them.
 
 ## Tests during Execute
 
-Invoke the **tdd** skill when adding or changing behavior tests. API: Jest e2e with Postgres. Web: Vitest + Playwright per `AGENTS.md`.
+Follow **tlc-spec-driven** `references/implement.md` and [`AGENTS.md`](../../../AGENTS.md) (Running tests). API: Jest e2e with Postgres. Web: Vitest + Playwright.
+
+Do **not** invoke legacy [`tdd`](../_legacy/tdd/SKILL.md) unless the user explicitly names it.
+
+## Legacy skills
+
+Skills under [`.cursor/skills/_legacy/`](../_legacy/README.md) are retired from default agent routing. TLC covers their workflows; see `_legacy/README.md` for the mapping.

@@ -22,23 +22,21 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 
 **Tracker rule:** GitHub Issues remain the execution queue for humans and cloud agents. After TLC **Tasks**, create or update issues from `tasks.md` (see skill routing below). Keep requirement IDs in specs aligned with issue numbers when both exist.
 
-### Skills routing
+### Skills
 
-Prefer **one primary playbook** per user request. Overlapping trigger words are disambiguated here:
+**Active (only):** [`tlc-spec-driven`](.cursor/skills/tlc-spec-driven/SKILL.md) — the sole default playbook for planning, implementation, tests, issue breakdown, and validation on this repo.
 
-| User intent | Skill | Notes |
-|-------------|-------|-------|
-| Plan or build a feature end-to-end | **tlc-spec-driven** | Default for “design”, “spec”, “tasks”, “implement”, “validate”, greenfield/brownfield features |
-| Tiny change (≤3 files, obvious fix) | **tlc-spec-driven** (quick mode) | Skip formal design/tasks files when scope is small |
-| Write or change tests while implementing | **tdd** | Use **during TLC Execute**, not instead of TLC |
-| Stress-test a plan before Specify | **grill-me** / **grill-with-docs** | Optional pre-step; then run TLC Specify |
-| Architecture decomposition / deepening | **improve-codebase-architecture** | TLC defers here; not for routine feature delivery |
-| Publish TLC `tasks.md` to GitHub Issues | **to-issues** | **After** TLC Tasks; input = spec + tasks, not a parallel planner |
-| PRD-style doc to tracker (legacy) | **to-prd** | Prefer TLC Specify; use only when user explicitly asks for a PRD issue |
-| Issue state machine, triage labels, agent briefs | **triage** | Only when user mentions triage, issue workflow, or preparing an AFK brief |
-| Break ad-hoc plan into issues (no TLC spec yet) | **to-issues** | When there is no `.specs/features/…` spec to anchor from |
+**Legacy:** [`.cursor/skills/_legacy/`](.cursor/skills/_legacy/README.md) (`to-issues`, `to-prd`, `triage`, `tdd`, `grill-me`, `grill-with-docs`, `improve-codebase-architecture`). Do **not** load or follow legacy skills unless the user **explicitly** names one (e.g. “use the triage skill”). Otherwise always use **tlc-spec-driven** + `ONDA.md`.
 
-When the user says **implement**, **design**, or **tasks** without naming another skill, use **tlc-spec-driven** and follow `ONDA.md`.
+| Former workflow | Use TLC instead |
+|-----------------|-----------------|
+| PRD / plan → issues (`to-prd`, `to-issues`) | **Specify** → **Tasks** → `gh issue create` from `tasks.md` |
+| Issue triage / agent briefs (`triage`) | **Specify** / **Tasks** + GitHub; see `docs/issues/` conventions |
+| Test-first dev (`tdd`) | **Execute** + `references/implement.md` + `AGENTS.md` (Running tests) |
+| Grill / stress-test plan (`grill-me`, `grill-with-docs`) | **Discuss** during Specify; update `CONTEXT.md` / ADRs when decisions land |
+| Architecture deepening (`improve-codebase-architecture`) | **Design** for structural changes; read `CONTEXT.md` + `docs/adr/` |
+
+When the user says **implement**, **design**, **tasks**, **triage**, **TDD**, or **break into issues** without naming a legacy skill, use **tlc-spec-driven** only.
 
 ## Cursor Cloud specific instructions
 
