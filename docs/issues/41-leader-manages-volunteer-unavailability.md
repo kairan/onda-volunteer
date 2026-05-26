@@ -14,11 +14,11 @@ Let a **Leader** create, edit, or remove **Unavailability** for **Volunteers** i
 
 ## Acceptance criteria
 
-- [ ] **Leader** can create **Unavailability** for a **Volunteer** with membership in a led **Ministry**.
-- [ ] **Leader** can edit or remove **Unavailability** only within **Ministries** they lead.
-- [ ] **Leader** cannot manage **Unavailability** for unrelated **Ministries** or **Churches**.
-- [ ] The UI distinguishes **Leader**-managed support actions from **Volunteer** self-service actions.
-- [ ] Automated tests cover authorized and unauthorized **Leader** paths.
+- [x] **Leader** can create **Unavailability** for a **Volunteer** with membership in a led **Ministry**.
+- [x] **Leader** can edit or remove **Unavailability** only within **Ministries** they lead.
+- [x] **Leader** cannot manage **Unavailability** for unrelated **Ministries** or **Churches**.
+- [x] The UI distinguishes **Leader**-managed support actions from **Volunteer** self-service actions.
+- [x] Automated tests cover authorized and unauthorized **Leader** paths.
 
 ## Blocked by
 
