@@ -11,6 +11,7 @@ import {
 } from '@/identity/fetchVolunteerUnavailability';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
+import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { Button } from '@/components/ui/button';
 
 type FieldErrors = {
@@ -38,7 +39,7 @@ export function TimeAwayPage() {
   const { t, i18n } = useTranslation('timeAway');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { formatWithLocal } = useLocalTimeContext();
+  const { buildDualInterval } = useLocalTimeContext();
 
   const pendingMinistries = useMemo(
     () =>
@@ -114,15 +115,14 @@ export function TimeAwayPage() {
 
   const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
 
-  const formatDateTime = (iso: string) => {
-    return formatWithLocal(iso, timezone, i18n.language, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const intervalStartOptions = {
+    weekday: 'short' as const,
+    month: 'short' as const,
+    day: 'numeric' as const,
+    hour: '2-digit' as const,
+    minute: '2-digit' as const,
   };
+  const intervalEndOptions = intervalStartOptions;
 
   const groupedByMinistry = useMemo(() => {
     const groups = new Map<string, { name: string; rows: VolunteerUnavailability[] }>();
@@ -601,7 +601,16 @@ export function TimeAwayPage() {
                       className="border-2 border-border bg-surface p-4 text-sm"
                     >
                       <p className="font-medium">
-                        {formatDateTime(row.startsAtUtc)} → {formatDateTime(row.endsAtUtc)}
+                        <SchedulingTimeDisplay
+                          labels={buildDualInterval(
+                            row.startsAtUtc,
+                            row.endsAtUtc,
+                            timezone,
+                            i18n.language,
+                            intervalStartOptions,
+                            intervalEndOptions,
+                          )}
+                        />
                       </p>
                     </li>
                   ))}

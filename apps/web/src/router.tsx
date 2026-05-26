@@ -19,13 +19,18 @@ import { DesignFoundationPreview } from "./routes/designFoundationPreview";
 import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
 import { PlaceholderPage } from "./routes/placeholderPage";
+import { MinistriesPage } from "./routes/ministries";
+import { MinistryLeadersPage } from "./routes/ministryLeaders";
+import { VolunteersPage } from "./routes/volunteers";
 import { SchedulingPage } from "./routes/scheduling";
 import {
   SchedulingEventDetailPending,
   SchedulingEventDetailView,
 } from "./routes/schedulingEventDetail";
+import { SchedulingCreateEventPage } from "./routes/schedulingCreateEvent";
 import { TimeAwayPage } from "./routes/timeAway";
 import { LeaderVolunteerTimeAwayPage } from "./routes/leaderVolunteerTimeAway";
+import { SchedulingCreatePrivateEventPage } from "./routes/schedulingCreatePrivateEvent";
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
@@ -625,6 +630,27 @@ const leaderVolunteerTimeAwayRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+const schedulingCreateEventRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/scheduling/events/new",
+  component: shellPage(() => <SchedulingCreateEventPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const schedulingCreatePrivateEventRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/scheduling/events/new-private",
+  component: shellPage(() => <SchedulingCreatePrivateEventPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const ministryLeadersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ministry-leaders",
+  component: shellPage(() => <MinistryLeadersPage />),
+  errorComponent: shellErrorComponent,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -638,6 +664,12 @@ const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
       }
       if (item.id === "timeAway") {
         return <TimeAwayPage />;
+      }
+      if (item.id === "ministries") {
+        return <MinistriesPage />;
+      }
+      if (item.id === "volunteers") {
+        return <VolunteersPage />;
       }
       if (item.placeholder) {
         return <PlaceholderPage namespace={item.namespace} />;
@@ -666,7 +698,10 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute, eventRoute]),
     schedulingEventDetailRoute,
+    schedulingCreateEventRoute,
+    schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
+    ministryLeadersRoute,
     ...shellRoutes,
   ]);
 }

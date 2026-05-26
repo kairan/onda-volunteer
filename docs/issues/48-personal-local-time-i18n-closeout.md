@@ -15,11 +15,11 @@ Close remaining presentation gaps for dual **Church**-time and personal-local ti
 
 ## Acceptance criteria
 
-- [ ] **Event** and **Assignment** screens can show personal-local time without replacing canonical **Church** or **Campus** framing.
-- [ ] Personal-local preference persists for the session or established local preference boundary.
-- [ ] Remaining product copy on shell, dashboard, and scheduling surfaces uses i18n keys for **pt-BR** and **en**.
-- [ ] Tests cover locale fallback, local-time toggle behavior, and at least one dual-time display.
-- [ ] UTC persistence remains unchanged.
+- [x] **Event** and **Assignment** screens can show personal-local time without replacing canonical **Church** or **Campus** framing.
+- [x] Personal-local preference persists for the session or established local preference boundary.
+- [x] Remaining product copy on shell, dashboard, and scheduling surfaces uses i18n keys for **pt-BR** and **en**.
+- [x] Tests cover locale fallback, local-time toggle behavior, and at least one dual-time display.
+- [x] UTC persistence remains unchanged.
 
 ## Blocked by
 
