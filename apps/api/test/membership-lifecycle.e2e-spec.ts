@@ -84,6 +84,176 @@ describe('Ministry membership lifecycle (e2e)', () => {
       });
   });
 
+  it('re-adds membership when prior row is inactive', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Rejoin Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Greeters', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Returning Volunteer' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        status: 'INACTIVE',
+      },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', admin.id)
+      .send({ volunteerId: member.id, status: 'PENDING' })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.status).toBe('PENDING');
+      });
+  });
+
+  it('rejects duplicate add for pending or active membership', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Dup Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Team', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Member' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', admin.id)
+      .send({ volunteerId: member.id, status: 'PENDING' })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('MEMBERSHIP_EXISTS');
+      });
+  });
+
+  it('rejects activate when membership is not pending', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Activate Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Team', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Member' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships/${member.id}/activate`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('MEMBERSHIP_NOT_PENDING');
+      });
+  });
+
+  it('denies activate when admin is not accredited for the church', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Scoped Church', defaultTimezone: 'UTC' },
+    });
+    const otherChurch = await prisma.church.create({
+      data: { name: 'Other Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Team', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Wrong Admin' },
+    });
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Volunteer' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: otherChurch.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: member.id,
+        ministryId: ministry.id,
+        status: 'PENDING',
+      },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships/${member.id}/activate`)
+      .set('X-Volunteer-Id', admin.id)
+      .expect(403)
+      .expect(({ body }) => {
+        expect(body.code).toBe('ADMIN_NOT_ACCREDITED');
+      });
+  });
+
+  it('rejects add when volunteerId or status is invalid', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Validation Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Team', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', admin.id)
+      .send({ status: 'PENDING' })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('VOLUNTEER_ID_REQUIRED');
+      });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', admin.id)
+      .send({ volunteerId: admin.id, status: 'INVALID' })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('INVALID_STATUS');
+      });
+  });
+
   it('denies add when admin is not accredited for the church', async () => {
     const church = await prisma.church.create({
       data: { name: 'Scoped Church', defaultTimezone: 'UTC' },

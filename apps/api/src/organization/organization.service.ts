@@ -61,6 +61,7 @@ export class OrganizationService {
       name: string;
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
       isLeader?: boolean;
+      isChurchAdmin?: boolean;
     };
 
     type ChurchAccumulator = {
@@ -105,6 +106,7 @@ export class OrganizationService {
       ministry: { id: string; name: string },
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE',
       isLeader = false,
+      isChurchAdmin = false,
     ) => {
       const existing = entry.ministries.get(ministry.id);
       if (existing) {
@@ -114,6 +116,9 @@ export class OrganizationService {
         if (isLeader) {
           existing.isLeader = true;
         }
+        if (isChurchAdmin) {
+          existing.isChurchAdmin = true;
+        }
         return;
       }
       entry.ministries.set(ministry.id, {
@@ -121,6 +126,7 @@ export class OrganizationService {
         name: ministry.name,
         membershipStatus,
         ...(isLeader ? { isLeader: true } : {}),
+        ...(isChurchAdmin ? { isChurchAdmin: true } : {}),
       });
     };
 
@@ -137,7 +143,7 @@ export class OrganizationService {
     for (const accreditation of accreditations) {
       const entry = ensureChurch(accreditation.church);
       for (const ministry of accreditation.church.ministries) {
-        addMinistry(entry, ministry, undefined, true);
+        addMinistry(entry, ministry, undefined, false, true);
       }
     }
 
@@ -202,6 +208,17 @@ export class OrganizationService {
       },
     });
     if (existing) {
+      if (existing.status === 'INACTIVE') {
+        const row = await this.prisma.ministryMembership.update({
+          where: { id: existing.id },
+          data: { status: input.status },
+        });
+        return {
+          volunteerId: row.volunteerId,
+          ministryId: row.ministryId,
+          status: row.status,
+        };
+      }
       throw new BadRequestException({
         code: 'MEMBERSHIP_EXISTS',
         message: 'Volunteer already has membership for this ministry.',

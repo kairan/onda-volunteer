@@ -25,9 +25,7 @@ export function VolunteersPage() {
       : null;
 
   const adminMinistries = useMemo(
-    () =>
-      activeChurch?.ministries.filter((m) => m.isLeader && !m.membershipStatus) ??
-      [],
+    () => activeChurch?.ministries.filter((m) => m.isChurchAdmin) ?? [],
     [activeChurch?.ministries],
   );
 
@@ -39,7 +37,8 @@ export function VolunteersPage() {
   const [newVolunteerId, setNewVolunteerId] = useState('');
   const [newStatus, setNewStatus] = useState<'PENDING' | 'ACTIVE'>('PENDING');
   const [submitting, setSubmitting] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
     if (adminMinistries.length === 1 && !ministryId) {
@@ -76,7 +75,8 @@ export function VolunteersPage() {
     e.preventDefault();
     if (!actingVolunteerId || !ministryId || !newVolunteerId.trim()) return;
     setSubmitting(true);
-    setStatusMessage(null);
+    setSuccessMessage(null);
+    setActionError(null);
     try {
       await addMinistryMembership({
         ministryId,
@@ -85,12 +85,12 @@ export function VolunteersPage() {
         status: newStatus,
       });
       setNewVolunteerId('');
-      setStatusMessage(t('messages.added'));
+      setSuccessMessage(t('messages.added'));
       await loadRows();
     } catch (err) {
       const code =
         err instanceof ApiRequestError ? err.code : undefined;
-      setStatusMessage(
+      setActionError(
         code === 'ADMIN_NOT_ACCREDITED'
           ? t('errors.notAccredited')
           : err instanceof Error
@@ -105,17 +105,18 @@ export function VolunteersPage() {
   async function handleActivate(volunteerId: string) {
     if (!actingVolunteerId || !ministryId) return;
     setSubmitting(true);
-    setStatusMessage(null);
+    setSuccessMessage(null);
+    setActionError(null);
     try {
       await activateMinistryMembership({
         ministryId,
         actingVolunteerId,
         volunteerId,
       });
-      setStatusMessage(t('messages.activated'));
+      setSuccessMessage(t('messages.activated'));
       await loadRows();
     } catch (err) {
-      setStatusMessage(
+      setActionError(
         err instanceof Error ? err.message : t('errors.actionFailed'),
       );
     } finally {
@@ -126,7 +127,8 @@ export function VolunteersPage() {
   async function handleDeactivate(volunteerId: string) {
     if (!actingVolunteerId || !ministryId) return;
     setSubmitting(true);
-    setStatusMessage(null);
+    setSuccessMessage(null);
+    setActionError(null);
     try {
       await deactivateMinistryMembership({
         ministryId,
@@ -134,10 +136,10 @@ export function VolunteersPage() {
         volunteerId,
         leaderMinistryId: ministryId,
       });
-      setStatusMessage(t('messages.deactivated'));
+      setSuccessMessage(t('messages.deactivated'));
       await loadRows();
     } catch (err) {
-      setStatusMessage(
+      setActionError(
         err instanceof Error ? err.message : t('errors.actionFailed'),
       );
     } finally {
@@ -218,9 +220,15 @@ export function VolunteersPage() {
         </form>
       </div>
 
-      {statusMessage ? (
+      {actionError ? (
+        <p role="alert" className="border-2 border-destructive p-3 text-sm text-destructive">
+          {actionError}
+        </p>
+      ) : null}
+
+      {successMessage ? (
         <p role="status" className="border-2 border-primary bg-primary/10 p-3 text-sm font-semibold text-primary">
-          {statusMessage}
+          {successMessage}
         </p>
       ) : null}
 

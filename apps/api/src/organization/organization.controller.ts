@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -11,9 +12,30 @@ import {
 import { OrganizationService } from './organization.service';
 
 type AddMembershipBody = {
+  volunteerId?: unknown;
+  status?: unknown;
+};
+
+function parseAddMembershipBody(body: AddMembershipBody): {
   volunteerId: string;
   status: 'PENDING' | 'ACTIVE';
-};
+} {
+  const volunteerId =
+    typeof body.volunteerId === 'string' ? body.volunteerId.trim() : '';
+  if (!volunteerId) {
+    throw new BadRequestException({
+      code: 'VOLUNTEER_ID_REQUIRED',
+      message: 'volunteerId is required.',
+    });
+  }
+  if (body.status !== 'PENDING' && body.status !== 'ACTIVE') {
+    throw new BadRequestException({
+      code: 'INVALID_STATUS',
+      message: 'status must be PENDING or ACTIVE.',
+    });
+  }
+  return { volunteerId, status: body.status };
+}
 
 @Controller('ministries')
 export class OrganizationController {
@@ -40,10 +62,11 @@ export class OrganizationController {
     @Headers('authorization') authorization: string | undefined,
     @Headers('x-volunteer-id') volunteerIdHeader: string | undefined,
   ) {
+    const parsed = parseAddMembershipBody(body);
     return this.organization.addMinistryMembership({
       ministryId,
-      volunteerId: body.volunteerId,
-      status: body.status,
+      volunteerId: parsed.volunteerId,
+      status: parsed.status,
       authorizationHeader: authorization,
       devVolunteerIdHeader: volunteerIdHeader,
     });
