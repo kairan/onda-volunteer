@@ -119,6 +119,7 @@ describe('GET /events/:id (e2e)', () => {
           startsDisplayInChurchTz: '2026-03-01T13:00:00-05:00',
           endsDisplayInChurchTz: '2026-03-01T14:30:00-05:00',
         },
+        cancelledAtUtc: null,
       },
       ministry: null,
       assignments: [],

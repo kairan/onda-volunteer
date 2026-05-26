@@ -1,4 +1,4 @@
-import { fetchJsonWithProtectedHeaders, fetchWithProtectedHeaders } from '@/apiAuthHeaders';
+import { fetchJsonWithProtectedHeaders } from '@/apiAuthHeaders';
 import type { MinistryRoleRow } from './fetchMinistryRoles';
 
 const base = () => import.meta.env.VITE_API_URL ?? 'http://localhost:3000';

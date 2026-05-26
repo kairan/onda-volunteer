@@ -13,5 +13,7 @@
   "rename": "Renomear",
   "retire": "Aposentar",
   "saveRename": "Salvar",
-  "cancelRename": "Cancelar"
+  "cancelRename": "Cancelar",
+  "errorGeneric": "Algo deu errado. Tente novamente.",
+  "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja."
 }

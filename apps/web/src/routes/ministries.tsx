@@ -32,6 +32,7 @@ export function MinistriesPage() {
   const [renameId, setRenameId] = useState<string | null>(null);
   const [renameName, setRenameName] = useState('');
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (ledMinistries.length === 1 && !ministryId) {
@@ -45,10 +46,13 @@ export function MinistriesPage() {
       return;
     }
     setLoading(true);
+    setError(null);
     try {
       setRoles(
         await fetchMinistryRoles({ ministryId, actingVolunteerId }),
       );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('errorGeneric'));
     } finally {
       setLoading(false);
     }
@@ -62,6 +66,7 @@ export function MinistriesPage() {
     e.preventDefault();
     if (!actingVolunteerId || !ministryId || !newName.trim()) return;
     setBusy(true);
+    setError(null);
     try {
       await createMinistryRole({
         ministryId,
@@ -70,6 +75,8 @@ export function MinistriesPage() {
       });
       setNewName('');
       await loadRoles();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('errorGeneric'));
     } finally {
       setBusy(false);
     }
@@ -78,6 +85,7 @@ export function MinistriesPage() {
   async function handleRename(roleId: string) {
     if (!actingVolunteerId || !ministryId || !renameName.trim()) return;
     setBusy(true);
+    setError(null);
     try {
       await renameMinistryRole({
         ministryId,
@@ -88,17 +96,23 @@ export function MinistriesPage() {
       setRenameId(null);
       setRenameName('');
       await loadRoles();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('errorGeneric'));
     } finally {
       setBusy(false);
     }
   }
 
-  async function handleRetire(roleId: string) {
+  async function handleRetire(roleId: string, roleName: string) {
     if (!actingVolunteerId || !ministryId) return;
+    if (!window.confirm(t('retireConfirm', { name: roleName }))) return;
     setBusy(true);
+    setError(null);
     try {
       await retireMinistryRole({ ministryId, roleId, actingVolunteerId });
       await loadRoles();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('errorGeneric'));
     } finally {
       setBusy(false);
     }
@@ -134,6 +148,12 @@ export function MinistriesPage() {
           ))}
         </select>
       </label>
+
+      {error ? (
+        <p role="alert" className="border-2 border-destructive bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
 
       <form className="flex flex-wrap gap-2 border-2 border-border bg-surface p-4" onSubmit={(e) => void handleAdd(e)}>
         <input
@@ -197,7 +217,7 @@ export function MinistriesPage() {
                           type="button"
                           size="sm"
                           variant="destructive"
-                          onClick={() => void handleRetire(role.id)}
+                          onClick={() => void handleRetire(role.id, role.name)}
                         >
                           {t('retire')}
                         </Button>

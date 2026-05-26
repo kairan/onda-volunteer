@@ -118,12 +118,14 @@ describe('GET /organization/context (e2e)', () => {
       .set('X-Volunteer-Id', volunteer.id)
       .expect(200);
 
+    expect(res.body.churches).toHaveLength(2);
     expect(res.body).toEqual({
       churches: [
         {
           id: churchAlpha.id,
           name: 'Alpha Church',
           defaultTimezone: 'America/Sao_Paulo',
+          isAccreditedAdmin: false,
           campuses: [
             {
               id: alphaCampusSede.id,
@@ -142,6 +144,7 @@ describe('GET /organization/context (e2e)', () => {
           id: churchBeta.id,
           name: 'Beta Church',
           defaultTimezone: 'America/Manaus',
+          isAccreditedAdmin: false,
           campuses: [
             {
               id: betaCampus.id,
@@ -153,5 +156,58 @@ describe('GET /organization/context (e2e)', () => {
         },
       ],
     });
+  });
+
+  it('marks church admin accreditation on ministries without hiding member ministries', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Admin Member Church', defaultTimezone: 'UTC' },
+    });
+    const greeters = await prisma.ministry.create({
+      data: { name: 'Greeters', churchId: church.id },
+    });
+    const band = await prisma.ministry.create({
+      data: { name: 'Band', churchId: church.id },
+    });
+    const admin = await prisma.volunteer.create({
+      data: { displayName: 'Admin Member' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: admin.id, churchId: church.id },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: admin.id,
+        ministryId: greeters.id,
+        status: 'ACTIVE',
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .get('/organization/context')
+      .set('X-Volunteer-Id', admin.id)
+      .expect(200);
+
+    expect(res.body.churches).toEqual([
+      {
+        id: church.id,
+        name: 'Admin Member Church',
+        defaultTimezone: 'UTC',
+        isAccreditedAdmin: true,
+        campuses: [],
+        ministries: [
+          {
+            id: band.id,
+            name: 'Band',
+            isChurchAdmin: true,
+          },
+          {
+            id: greeters.id,
+            name: 'Greeters',
+            membershipStatus: 'ACTIVE',
+            isChurchAdmin: true,
+          },
+        ],
+      },
+    ]);
   });
 });

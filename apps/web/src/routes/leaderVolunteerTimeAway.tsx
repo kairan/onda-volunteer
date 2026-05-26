@@ -18,6 +18,7 @@ import {
   utcIsoToDatetimeLocal,
 } from '@/settings/datetimeLocalUtc';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
+import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
 import { Button } from '@/components/ui/button';
 
 type FieldErrors = {
@@ -32,7 +33,7 @@ export function LeaderVolunteerTimeAwayPage() {
   const { t, i18n } = useTranslation('leaderTimeAway');
   const auth = useAuthSession();
   const { activeChurch, activeCampus } = useOrganization();
-  const { formatWithLocal, useLocalTime } = useLocalTimeContext();
+  const { buildDualInterval, formTimezone } = useLocalTimeContext();
 
   const actingVolunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
@@ -130,22 +131,15 @@ export function LeaderVolunteerTimeAwayPage() {
 
   const churchTimezone =
     activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
-  const formTimeZone = useMemo(
-    () =>
-      useLocalTime
-        ? Intl.DateTimeFormat().resolvedOptions().timeZone
-        : churchTimezone,
-    [useLocalTime, churchTimezone],
-  );
+  const formTimeZone = formTimezone(churchTimezone);
 
-  const formatDateTime = (iso: string) =>
-    formatWithLocal(iso, churchTimezone, i18n.language, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const listTimeOptions = {
+    weekday: 'short' as const,
+    month: 'short' as const,
+    day: 'numeric' as const,
+    hour: '2-digit' as const,
+    minute: '2-digit' as const,
+  };
 
   function validateForm(): FieldErrors {
     const next: FieldErrors = {};
@@ -416,7 +410,16 @@ export function LeaderVolunteerTimeAwayPage() {
                     className="flex flex-col gap-3 border-2 border-border bg-surface p-4 text-sm md:flex-row md:items-center md:justify-between"
                   >
                     <p className="font-medium">
-                      {formatDateTime(row.startsAtUtc)} → {formatDateTime(row.endsAtUtc)}
+                      <SchedulingTimeDisplay
+                        labels={buildDualInterval(
+                          row.startsAtUtc,
+                          row.endsAtUtc,
+                          churchTimezone,
+                          i18n.language,
+                          listTimeOptions,
+                          listTimeOptions,
+                        )}
+                      />
                     </p>
                     <div className="flex gap-2">
                       <Button type="button" variant="outline" onClick={() => beginEdit(row)}>

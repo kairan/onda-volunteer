@@ -137,6 +137,34 @@ export class IdentityService {
     });
   }
 
+  async assertAdminAccreditedForChurch(input: {
+    authorizationHeader: string | undefined;
+    devVolunteerIdHeader: string | undefined;
+    churchId: string;
+  }): Promise<Volunteer> {
+    const volunteer = await this.requireVolunteer({
+      authorizationHeader: input.authorizationHeader,
+      devVolunteerIdHeader: input.devVolunteerIdHeader,
+    });
+
+    const accreditation = await this.prisma.adminAccreditation.findUnique({
+      where: {
+        volunteerId_churchId: {
+          volunteerId: volunteer.id,
+          churchId: input.churchId,
+        },
+      },
+    });
+    if (!accreditation) {
+      throw new ForbiddenException({
+        code: 'ADMIN_NOT_ACCREDITED',
+        message:
+          'Authenticated volunteer is not an Admin accredited for this Church.',
+      });
+    }
+    return volunteer;
+  }
+
   async assertLeaderCanActOnMinistry(input: {
     authorizationHeader: string | undefined;
     devLeaderMinistryIdHeader: string | undefined;

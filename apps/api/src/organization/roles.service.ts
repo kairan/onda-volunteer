@@ -56,6 +56,16 @@ export class RolesService {
       });
     }
 
+    const duplicate = await this.prisma.ministryRole.findFirst({
+      where: { ministryId: input.ministryId, name },
+    });
+    if (duplicate) {
+      throw new BadRequestException({
+        code: 'ROLE_NAME_CONFLICT',
+        message: 'A role with this name already exists in the ministry.',
+      });
+    }
+
     const role = await this.prisma.ministryRole.create({
       data: { ministryId: input.ministryId, name, retired: false },
     });
@@ -89,6 +99,20 @@ export class RolesService {
     });
     if (!role || role.ministryId !== input.ministryId) {
       throw new NotFoundException();
+    }
+
+    const duplicate = await this.prisma.ministryRole.findFirst({
+      where: {
+        ministryId: input.ministryId,
+        name,
+        NOT: { id: role.id },
+      },
+    });
+    if (duplicate) {
+      throw new BadRequestException({
+        code: 'ROLE_NAME_CONFLICT',
+        message: 'A role with this name already exists in the ministry.',
+      });
     }
 
     const updated = await this.prisma.ministryRole.update({

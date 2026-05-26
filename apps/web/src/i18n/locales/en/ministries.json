@@ -13,5 +13,7 @@
   "rename": "Rename",
   "retire": "Retire",
   "saveRename": "Save",
-  "cancelRename": "Cancel"
+  "cancelRename": "Cancel",
+  "errorGeneric": "Something went wrong. Try again.",
+  "retireConfirm": "Retire \"{{name}}\"? Retired roles stay on past assignments but cannot be used for new ones. To restore a retired role, contact your church administrator."
 }
