@@ -57,7 +57,7 @@ PRs and pushes to `main` run:
 - **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — parallel `build` (`pnpm build`) and `test` (`pnpm test` with Postgres 16).
 - **Web Playwright e2e** ([`.github/workflows/e2e-web.yml`](.github/workflows/e2e-web.yml)) — browser e2e with Postgres + API.
 
-After the first green run on `main`, enable required status checks per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md). Deferred lint/coverage: `docs/issues/61-ci-lint-and-coverage.md`.
+After the first green run on `main`, enable required status checks per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md). Lint/coverage baseline shipped in `docs/issues/done/61-ci-lint-and-coverage.md`.
 
 ### GitHub CLI (cloud agents)
 
