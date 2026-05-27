@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft from the 2026-05-27 TLC missing-feature audit. No GitHub issue has been assigned yet.
+P1 implemented on branch `cursor/plan-missing-features-98df`. No GitHub issue has been assigned yet.
 
 ## Source references
 
@@ -17,9 +17,9 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 ## Goals
 
-- [ ] Give accredited **Admins** a supported way to create and rename **Ministries** inside their accredited **Churches**.
-- [ ] Keep structure mutations scoped to explicit **Church** accreditation; do not introduce global or network-wide authority.
-- [ ] Preserve stable IDs and historical references so existing **Assignments**, **Unavailability**, memberships, and role history remain understandable after a rename.
+- [x] Give accredited **Admins** a supported way to create and rename **Ministries** inside their accredited **Churches**.
+- [x] Keep structure mutations scoped to explicit **Church** accreditation; do not introduce global or network-wide authority.
+- [x] Preserve stable IDs and historical references so existing **Assignments**, **Unavailability**, memberships, and role history remain understandable after a rename.
 - [ ] Define whether Campus metadata/timezone maintenance belongs in this first slice or a follow-up.
 
 ## Out of Scope
@@ -113,27 +113,42 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| ORG-STRUCT-01 | P1: Create Ministry | Specify | Pending |
-| ORG-STRUCT-02 | P1: Rename Ministry | Specify | Pending |
-| ORG-STRUCT-03 | P1: Admin authorization boundary | Specify | Pending |
-| ORG-STRUCT-04 | P1: Validation and server-truth refresh | Specify | Pending |
+| ORG-STRUCT-01 | P1: Create Ministry | Execute | Verified |
+| ORG-STRUCT-02 | P1: Rename Ministry | Execute | Verified |
+| ORG-STRUCT-03 | P1: Admin authorization boundary | Execute | Verified |
+| ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
 | ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Specify | Pending |
 | ORG-STRUCT-06 | P2: Ministry archive/retirement | Specify | Pending |
 | ORG-STRUCT-07 | P3: Church metadata and first-admin setup | Specify | Pending |
 
-**Coverage:** 7 total, 0 mapped to tasks, 7 unmapped until Design/Tasks.
+**Coverage:** 7 total, 4 implemented in P1, 3 unmapped until future Design/Tasks.
+
+## Implementation Notes
+
+- API:
+  - `POST /churches/:churchId/ministries`
+  - `PATCH /ministries/:ministryId`
+  - Stable error codes: `MINISTRY_NAME_REQUIRED`, `MINISTRY_NAME_CONFLICT`, existing `ADMIN_NOT_ACCREDITED`.
+- Web:
+  - `/ministries` now includes a **Ministry structure** section for accredited **Admins**.
+  - Organization context refreshes after create/rename so shell and selectors use server truth.
+- Tests:
+  - API e2e spec: `apps/api/test/ministry-structure.e2e-spec.ts`.
+  - Web behavior spec: `apps/web/src/routes/ministries.behavior.test.tsx`.
 
 ---
 
 ## Open Questions
 
 1. Should the first implementation be **Ministry** create/rename only, leaving Campus metadata and Ministry archive to follow-up issues?
+   - **Answered for P1:** yes. Campus metadata and Ministry archive remain future slices.
 2. Does the product need a Church setup/operator role, or will first **Church** and first **Admin** continue to be provisioned outside the app?
 3. Should **Ministry** names be unique per **Church**, or only strongly warned for duplicates?
+   - **Answered for P1:** unique per **Church** at the application-service layer.
 4. If **Campus** timezone changes, does the UI need an explicit review dialog explaining that existing UTC schedules are unchanged but local presentation changes?
 
 ## Success Criteria
 
-- [ ] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
-- [ ] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
+- [x] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
+- [x] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
 - [ ] The next Design phase has explicit answers for Campus scope, archive semantics, and first-admin setup.
