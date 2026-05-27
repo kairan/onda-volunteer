@@ -16,6 +16,29 @@
   "cancelRename": "Cancel",
   "errorGeneric": "Something went wrong. Try again.",
   "retireConfirm": "Retire \"{{name}}\"? Retired roles stay on past assignments but cannot be used for new ones. To restore a retired role, contact your church administrator.",
+  "structure": {
+    "title": "Ministry structure",
+    "body": "Create and rename ministries for the active church. Renames keep the same ministry ID so memberships, roles, assignments, and time away history stay connected.",
+    "newNameLabel": "New ministry name",
+    "newNamePlaceholder": "Hospitality",
+    "create": "Create ministry",
+    "currentHeading": "Current ministries",
+    "empty": "No ministries yet.",
+    "rename": "Rename ministry",
+    "renameAria": "Rename ministry {{name}}",
+    "renameNameLabel": "Ministry name for {{name}}",
+    "saveRename": "Save ministry",
+    "cancelRename": "Cancel",
+    "messages": {
+      "created": "Ministry created.",
+      "renamed": "Ministry renamed."
+    },
+    "errors": {
+      "notAccredited": "You are not accredited for this church.",
+      "nameRequired": "Ministry name is required.",
+      "nameConflict": "A ministry with this name already exists in this church."
+    }
+  },
   "delegation": {
     "title": "Delegate leaders",
     "body": "Grant or revoke ministry-scoped leader stewardship. Delegation is limited to churches where you are an accredited admin.",

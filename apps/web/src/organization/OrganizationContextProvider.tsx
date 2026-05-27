@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+  useMemo,
+} from 'react';
 import { fetchOrganizationContext } from './fetchOrganizationContext';
 import type { Church } from './types';
 
@@ -16,6 +24,7 @@ type OrganizationContextValue = {
   activeCampus: { id: string; name: string; timezone: string } | null;
   onChurchChange: (churchId: string) => void;
   onCampusChange: (campusId: string) => void;
+  refresh: () => Promise<void>;
 };
 
 const OrganizationContext = createContext<OrganizationContextValue | null>(null);
@@ -35,6 +44,40 @@ export function OrganizationContextProvider({
   const [activeChurchId, setActiveChurchId] = useState<string | null>(null);
   const [activeCampusId, setActiveCampusId] = useState<string | null>(null);
 
+  const loadContext = useCallback(async (input?: {
+    preferredChurchId?: string | null;
+    preferredCampusId?: string | null;
+  }) => {
+    if (!enabled) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      const payload = await fetchOrganizationContext(
+        devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
+      );
+      setChurches(payload.churches);
+      const selectedChurch =
+        payload.churches.find(
+          (church) => church.id === input?.preferredChurchId,
+        ) ?? payload.churches[0];
+      setActiveChurchId(selectedChurch?.id ?? null);
+      const selectedCampus = selectedChurch?.campuses.find(
+        (campus) => campus.id === input?.preferredCampusId,
+      );
+      setActiveCampusId(selectedCampus?.id ?? firstCampusId(selectedChurch));
+    } catch (err) {
+      setChurches([]);
+      setActiveChurchId(null);
+      setActiveCampusId(null);
+      setError(err instanceof Error ? err.message : 'Failed to load organization context');
+    } finally {
+      setLoading(false);
+    }
+  }, [devVolunteerId, enabled]);
+
   useEffect(() => {
     if (!enabled) {
       return;
@@ -43,30 +86,11 @@ export function OrganizationContextProvider({
     let cancelled = false;
 
     async function load() {
-      setLoading(true);
-      setError(null);
       try {
-        const payload = await fetchOrganizationContext(
-          devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
-        );
-        if (cancelled) {
-          return;
-        }
-        setChurches(payload.churches);
-        const initialChurch = payload.churches[0];
-        setActiveChurchId(initialChurch?.id ?? null);
-        setActiveCampusId(firstCampusId(initialChurch));
-      } catch (err) {
-        if (cancelled) {
-          return;
-        }
-        setChurches([]);
-        setActiveChurchId(null);
-        setActiveCampusId(null);
-        setError(err instanceof Error ? err.message : 'Failed to load organization context');
+        await loadContext();
       } finally {
-        if (!cancelled) {
-          setLoading(false);
+        if (cancelled) {
+          return;
         }
       }
     }
@@ -75,7 +99,7 @@ export function OrganizationContextProvider({
     return () => {
       cancelled = true;
     };
-  }, [enabled, devVolunteerId]);
+  }, [enabled, loadContext]);
 
   function handleChurchChange(churchId: string) {
     setActiveChurchId(churchId);
@@ -93,6 +117,15 @@ export function OrganizationContextProvider({
     [activeChurch, activeCampusId]
   );
 
+  const refresh = useCallback(
+    () =>
+      loadContext({
+        preferredChurchId: activeChurchId,
+        preferredCampusId: activeCampusId,
+      }),
+    [activeCampusId, activeChurchId, loadContext],
+  );
+
   const value = useMemo(() => ({
     churches,
     loading,
@@ -103,7 +136,8 @@ export function OrganizationContextProvider({
     activeCampus,
     onChurchChange: handleChurchChange,
     onCampusChange: setActiveCampusId,
-  }), [churches, loading, error, activeChurchId, activeCampusId, activeChurch, activeCampus]);
+    refresh,
+  }), [churches, loading, error, activeChurchId, activeCampusId, activeChurch, activeCampus, refresh]);
 
   return (
     <OrganizationContext.Provider value={value}>
