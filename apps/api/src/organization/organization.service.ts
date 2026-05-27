@@ -145,6 +145,99 @@ export class OrganizationService {
     return ministry.churchId;
   }
 
+  private async assertUniqueMinistryName(input: {
+    churchId: string;
+    name: string;
+    excludeMinistryId?: string;
+  }) {
+    const duplicate = await this.prisma.ministry.findFirst({
+      where: {
+        churchId: input.churchId,
+        name: input.name,
+        ...(input.excludeMinistryId
+          ? { NOT: { id: input.excludeMinistryId } }
+          : {}),
+      },
+    });
+    if (duplicate) {
+      throw new BadRequestException({
+        code: 'MINISTRY_NAME_CONFLICT',
+        message: 'A ministry with this name already exists in this Church.',
+      });
+    }
+  }
+
+  private parseMinistryName(name: string | undefined): string {
+    const parsed = name?.trim();
+    if (!parsed) {
+      throw new BadRequestException({
+        code: 'MINISTRY_NAME_REQUIRED',
+        message: 'Ministry name is required.',
+      });
+    }
+    return parsed;
+  }
+
+  async createMinistry(input: {
+    churchId: string;
+    name: string | undefined;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+      select: { id: true },
+    });
+    if (!church) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(input.churchId);
+    const name = this.parseMinistryName(input.name);
+    await this.assertUniqueMinistryName({ churchId: input.churchId, name });
+
+    const ministry = await this.prisma.ministry.create({
+      data: { churchId: input.churchId, name },
+    });
+
+    return {
+      id: ministry.id,
+      churchId: ministry.churchId,
+      name: ministry.name,
+    };
+  }
+
+  async renameMinistry(input: {
+    ministryId: string;
+    name: string | undefined;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
+    const name = this.parseMinistryName(input.name);
+    await this.assertUniqueMinistryName({
+      churchId: ministry.churchId,
+      name,
+      excludeMinistryId: ministry.id,
+    });
+
+    const updated = await this.prisma.ministry.update({
+      where: { id: ministry.id },
+      data: { name },
+    });
+
+    return {
+      id: updated.id,
+      churchId: updated.churchId,
+      name: updated.name,
+    };
+  }
+
   async addMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;
