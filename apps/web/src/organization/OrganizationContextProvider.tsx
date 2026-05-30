@@ -44,39 +44,57 @@ export function OrganizationContextProvider({
   const [activeChurchId, setActiveChurchId] = useState<string | null>(null);
   const [activeCampusId, setActiveCampusId] = useState<string | null>(null);
 
-  const loadContext = useCallback(async (input?: {
-    preferredChurchId?: string | null;
-    preferredCampusId?: string | null;
-  }) => {
-    if (!enabled) {
-      return;
-    }
+  const loadContext = useCallback(
+    async (input?: {
+      preferredChurchId?: string | null;
+      preferredCampusId?: string | null;
+      isCancelled?: () => boolean;
+    }) => {
+      if (!enabled) {
+        return;
+      }
 
-    setLoading(true);
-    setError(null);
-    try {
-      const payload = await fetchOrganizationContext(
-        devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
-      );
-      setChurches(payload.churches);
-      const selectedChurch =
-        payload.churches.find(
-          (church) => church.id === input?.preferredChurchId,
-        ) ?? payload.churches[0];
-      setActiveChurchId(selectedChurch?.id ?? null);
-      const selectedCampus = selectedChurch?.campuses.find(
-        (campus) => campus.id === input?.preferredCampusId,
-      );
-      setActiveCampusId(selectedCampus?.id ?? firstCampusId(selectedChurch));
-    } catch (err) {
-      setChurches([]);
-      setActiveChurchId(null);
-      setActiveCampusId(null);
-      setError(err instanceof Error ? err.message : 'Failed to load organization context');
-    } finally {
-      setLoading(false);
-    }
-  }, [devVolunteerId, enabled]);
+      const cancelled = () => input?.isCancelled?.() ?? false;
+
+      setLoading(true);
+      setError(null);
+      try {
+        const payload = await fetchOrganizationContext(
+          devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
+        );
+        if (cancelled()) {
+          return;
+        }
+        setChurches(payload.churches);
+        const selectedChurch =
+          payload.churches.find(
+            (church) => church.id === input?.preferredChurchId,
+          ) ?? payload.churches[0];
+        setActiveChurchId(selectedChurch?.id ?? null);
+        const selectedCampus = selectedChurch?.campuses.find(
+          (campus) => campus.id === input?.preferredCampusId,
+        );
+        setActiveCampusId(selectedCampus?.id ?? firstCampusId(selectedChurch));
+      } catch (err) {
+        if (cancelled()) {
+          return;
+        }
+        setChurches([]);
+        setActiveChurchId(null);
+        setActiveCampusId(null);
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to load organization context',
+        );
+      } finally {
+        if (!cancelled()) {
+          setLoading(false);
+        }
+      }
+    },
+    [devVolunteerId, enabled],
+  );
 
   useEffect(() => {
     if (!enabled) {
@@ -84,18 +102,7 @@ export function OrganizationContextProvider({
     }
 
     let cancelled = false;
-
-    async function load() {
-      try {
-        await loadContext();
-      } finally {
-        if (cancelled) {
-          return;
-        }
-      }
-    }
-
-    void load();
+    void loadContext({ isCancelled: () => cancelled });
     return () => {
       cancelled = true;
     };
@@ -107,14 +114,14 @@ export function OrganizationContextProvider({
     setActiveCampusId(firstCampusId(church));
   }
 
-  const activeChurch = useMemo(() => 
-    churches.find(c => c.id === activeChurchId) ?? null,
-    [churches, activeChurchId]
+  const activeChurch = useMemo(
+    () => churches.find((c) => c.id === activeChurchId) ?? null,
+    [churches, activeChurchId],
   );
 
-  const activeCampus = useMemo(() => 
-    activeChurch?.campuses.find(c => c.id === activeCampusId) ?? null,
-    [activeChurch, activeCampusId]
+  const activeCampus = useMemo(
+    () => activeChurch?.campuses.find((c) => c.id === activeCampusId) ?? null,
+    [activeChurch, activeCampusId],
   );
 
   const refresh = useCallback(
@@ -126,18 +133,30 @@ export function OrganizationContextProvider({
     [activeCampusId, activeChurchId, loadContext],
   );
 
-  const value = useMemo(() => ({
-    churches,
-    loading,
-    error,
-    activeChurchId,
-    activeCampusId,
-    activeChurch,
-    activeCampus,
-    onChurchChange: handleChurchChange,
-    onCampusChange: setActiveCampusId,
-    refresh,
-  }), [churches, loading, error, activeChurchId, activeCampusId, activeChurch, activeCampus, refresh]);
+  const value = useMemo(
+    () => ({
+      churches,
+      loading,
+      error,
+      activeChurchId,
+      activeCampusId,
+      activeChurch,
+      activeCampus,
+      onChurchChange: handleChurchChange,
+      onCampusChange: setActiveCampusId,
+      refresh,
+    }),
+    [
+      churches,
+      loading,
+      error,
+      activeChurchId,
+      activeCampusId,
+      activeChurch,
+      activeCampus,
+      refresh,
+    ],
+  );
 
   return (
     <OrganizationContext.Provider value={value}>
