@@ -144,7 +144,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
    - **Answered for P1:** yes. Campus metadata and Ministry archive remain future slices.
 2. Does the product need a Church setup/operator role, or will first **Church** and first **Admin** continue to be provisioned outside the app?
 3. Should **Ministry** names be unique per **Church**, or only strongly warned for duplicates?
-   - **Answered for P1:** unique per **Church** at the application-service layer.
+   - **Answered for P1:** unique per **Church**, case-insensitive, enforced in the service layer and by a PostgreSQL unique index on `(churchId, LOWER(name))`.
 4. If **Campus** timezone changes, does the UI need an explicit review dialog explaining that existing UTC schedules are unchanged but local presentation changes?
 
 ## Success Criteria

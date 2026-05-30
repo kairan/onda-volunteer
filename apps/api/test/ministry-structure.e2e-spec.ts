@@ -138,5 +138,14 @@ describe('Ministry structure administration (e2e)', () => {
       .expect(({ body }) => {
         expect(body.code).toBe('MINISTRY_NAME_CONFLICT');
       });
+
+    await request(app.getHttpServer())
+      .post(`/churches/${church.id}/ministries`)
+      .set('X-Volunteer-Id', admin.id)
+      .send({ name: 'band' })
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('MINISTRY_NAME_CONFLICT');
+      });
   });
 });

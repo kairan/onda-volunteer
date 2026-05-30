@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CLOCK, type Clock } from '../common/clock';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
@@ -145,6 +146,23 @@ export class OrganizationService {
     return ministry.churchId;
   }
 
+  private ministryNameConflict(): BadRequestException {
+    return new BadRequestException({
+      code: 'MINISTRY_NAME_CONFLICT',
+      message: 'A ministry with this name already exists in this Church.',
+    });
+  }
+
+  private rethrowMinistryNameConflict(err: unknown): never {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2002'
+    ) {
+      throw this.ministryNameConflict();
+    }
+    throw err;
+  }
+
   private async assertUniqueMinistryName(input: {
     churchId: string;
     name: string;
@@ -153,17 +171,14 @@ export class OrganizationService {
     const duplicate = await this.prisma.ministry.findFirst({
       where: {
         churchId: input.churchId,
-        name: input.name,
+        name: { equals: input.name, mode: 'insensitive' },
         ...(input.excludeMinistryId
           ? { NOT: { id: input.excludeMinistryId } }
           : {}),
       },
     });
     if (duplicate) {
-      throw new BadRequestException({
-        code: 'MINISTRY_NAME_CONFLICT',
-        message: 'A ministry with this name already exists in this Church.',
-      });
+      throw this.ministryNameConflict();
     }
   }
 
@@ -195,9 +210,14 @@ export class OrganizationService {
     const name = this.parseMinistryName(input.name);
     await this.assertUniqueMinistryName({ churchId: input.churchId, name });
 
-    const ministry = await this.prisma.ministry.create({
-      data: { churchId: input.churchId, name },
-    });
+    let ministry;
+    try {
+      ministry = await this.prisma.ministry.create({
+        data: { churchId: input.churchId, name },
+      });
+    } catch (err) {
+      this.rethrowMinistryNameConflict(err);
+    }
 
     return {
       id: ministry.id,
@@ -226,10 +246,15 @@ export class OrganizationService {
       excludeMinistryId: ministry.id,
     });
 
-    const updated = await this.prisma.ministry.update({
-      where: { id: ministry.id },
-      data: { name },
-    });
+    let updated;
+    try {
+      updated = await this.prisma.ministry.update({
+        where: { id: ministry.id },
+        data: { name },
+      });
+    } catch (err) {
+      this.rethrowMinistryNameConflict(err);
+    }
 
     return {
       id: updated.id,
