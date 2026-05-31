@@ -7,6 +7,7 @@ import shellEn from './locales/en/shell.json';
 import timeAwayEn from './locales/en/timeAway.json';
 import leaderTimeAwayEn from './locales/en/leaderTimeAway.json';
 import volunteersEn from './locales/en/volunteers.json';
+import systemAdminEn from './locales/en/systemAdmin.json';
 import commonPt from './locales/pt-BR/common.json';
 import dashboardPt from './locales/pt-BR/dashboard.json';
 import ministriesPt from './locales/pt-BR/ministries.json';
@@ -15,6 +16,7 @@ import shellPt from './locales/pt-BR/shell.json';
 import timeAwayPt from './locales/pt-BR/timeAway.json';
 import leaderTimeAwayPt from './locales/pt-BR/leaderTimeAway.json';
 import volunteersPt from './locales/pt-BR/volunteers.json';
+import systemAdminPt from './locales/pt-BR/systemAdmin.json';
 
 export const i18nResources: Resource = {
   'pt-BR': {
@@ -26,6 +28,7 @@ export const i18nResources: Resource = {
     volunteers: volunteersPt,
     timeAway: timeAwayPt,
     leaderTimeAway: leaderTimeAwayPt,
+    systemAdmin: systemAdminPt,
   },
   en: {
     common: commonEn,
@@ -36,6 +39,7 @@ export const i18nResources: Resource = {
     volunteers: volunteersEn,
     timeAway: timeAwayEn,
     leaderTimeAway: leaderTimeAwayEn,
+    systemAdmin: systemAdminEn,
   },
 };
 
@@ -46,4 +50,5 @@ export const ROUTE_NAMESPACES = [
   'volunteers',
   'timeAway',
   'leaderTimeAway',
+  'systemAdmin',
 ] as const;
