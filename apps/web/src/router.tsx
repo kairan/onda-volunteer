@@ -169,11 +169,31 @@ const ministryLeadersRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+function systemAdminErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-4 py-12">
+        <RouteErrorPanel
+          message={shellRouteErrorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
+    </div>
+  );
+}
+
 const systemAdminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/system-admin",
   beforeLoad: () => ensureSystemAdminRouteAccess(),
   component: SystemAdminShell,
+  errorComponent: systemAdminErrorComponent,
 });
 
 const systemAdminIndexRoute = createRoute({

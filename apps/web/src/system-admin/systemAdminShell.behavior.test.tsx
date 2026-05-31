@@ -68,6 +68,19 @@ describe('System Admin shell routing', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows a route error when identity/me fails', async () => {
+    await initI18n();
+    fetchIdentityMeMock.mockRejectedValue(new Error('Failed to fetch'));
+
+    const { history } = renderSystemAdminRoute({
+      status: 'dev-bypass',
+      volunteerId: 'seed-volunteer-demo',
+    });
+
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(history.location.pathname).toBe('/system-admin');
+  });
+
   it('redirects a non-operator volunteer to the dashboard', async () => {
     await initI18n();
     fetchIdentityMeMock.mockResolvedValue({

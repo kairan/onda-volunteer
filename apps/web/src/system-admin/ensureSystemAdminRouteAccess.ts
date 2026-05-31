@@ -9,15 +9,9 @@ export async function ensureSystemAdminRouteAccess(): Promise<void> {
     throw redirect({ to: '/dashboard' });
   }
 
-  let isSystemAdmin = false;
-  try {
-    const me = await fetchIdentityMe({ volunteerId });
-    isSystemAdmin = me.isSystemAdmin;
-  } catch {
-    isSystemAdmin = false;
-  }
+  const me = await fetchIdentityMe({ volunteerId });
 
-  if (!isSystemAdmin) {
+  if (!me.isSystemAdmin) {
     markSystemAdminAccessDenied();
     throw redirect({ to: '/dashboard' });
   }
