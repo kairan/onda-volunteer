@@ -26,14 +26,14 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 | [#55](https://github.com/kairan/onda-volunteer/issues/55) | `done/55-api-request-scoped-auth-context.md` | Nest request-scoped auth | Shipped |
 | [#56](https://github.com/kairan/onda-volunteer/issues/56) | `done/56-api-church-stewardship-access-module.md` | Consolidate church access queries | Shipped |
 | [#57](https://github.com/kairan/onda-volunteer/issues/57) | `done/57-api-assignment-route-under-scheduling.md` | Move assign POST to **Scheduling** | Shipped |
-| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` | Retire `/events/$eventId` (PRD-gated) | Closed blocked pending PRD/ADR |
+| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` | Retire `/events/$eventId` (redirect → shell) | Shipped (ADR 0004) |
 
 ## Recently archived (`done/`)
 
 | Issue | Spec |
 |------:|------|
 | local #61 / PR [#83](https://github.com/kairan/onda-volunteer/pull/83) | `done/61-ci-lint-and-coverage.md` |
-| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` (closed blocked) |
+| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` |
 | [#57](https://github.com/kairan/onda-volunteer/issues/57) | `done/57-api-assignment-route-under-scheduling.md` |
 | [#56](https://github.com/kairan/onda-volunteer/issues/56) | `done/56-api-church-stewardship-access-module.md` |
 | [#55](https://github.com/kairan/onda-volunteer/issues/55) | `done/55-api-request-scoped-auth-context.md` |

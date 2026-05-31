@@ -17,6 +17,20 @@ _(none)_
 
 - **Organization setup/operator path:** Church creation, Church metadata edits, and first-Admin bootstrap may be needed later, but they imply authority beyond church-scoped **Admin** and need an explicit decision before implementation.
 
+## TLC completion tracking (canonical order)
+
+Use this stack so “done” is unambiguous; do not treat `.specs/features/` alone as shipped status.
+
+1. **`tasks.md`** — Mark `[x]` on each task when Execute finishes; requirement IDs in `spec.md` should stay aligned.
+2. **`docs/issues/done/<#>-*.md`** — Check acceptance criteria when the GitHub issue closes; this is the human/agent execution record.
+3. **`docs/issues/README.md`** — Index row (Shipped / Blocked / Active); update when issue state changes.
+4. **`.specs/project/ROADMAP.md`** — Theme-level summary only; link to `docs/issues/` for detail.
+5. **`.specs/project/STATE.md`** (this file) — Decisions, blockers, and lessons; note when TLC artifacts were left stale vs code.
+
+**HITL gates** (e.g. #49 `hitl-signoff.md`): automated checks can ship in CI; human rows stay open until a reviewer signs.
+
+**Stale TLC rule:** If `tasks.md` disagrees with green tests + `docs/issues/README.md`, trust the tracker index and code, then sync `tasks.md`.
+
 ## Lessons learned
 
-_(add after Execute / validate when something should inform the next feature)_
+- **2026-05-31:** Retired legacy `/events/$eventId` UI in favor of shell redirect (ADR 0004, #58). TLC `tasks.md` checkboxes were often stale for already-shipped slices — sync on close.

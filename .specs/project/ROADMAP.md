@@ -57,4 +57,4 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 | Third locales beyond `pt-BR` and `en` | Deferred by the web PRD. |
 | Marketing redesign of `/` and public landing pages | Deferred by the web and HOPE PRDs. |
 | Per-Church white-label branding | Deferred by the web PRD and current brand/domain separation. |
-| Retiring legacy `/events/$eventId` routes | Closed blocked as issue 58; requires PRD/ADR change because ADR 0001 preserves legacy `/` behavior for now. |
+| Retiring legacy `/` demo landing | Deferred; ADR 0001 dual entry. Event detail legacy path retired via ADR 0004 / issue 58. |

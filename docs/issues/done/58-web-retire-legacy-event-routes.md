@@ -1,7 +1,7 @@
 # 58 — Web: retire legacy **Event** demo routes (tech debt)
 
-**Type:** Tech debt (defer — PRD-gated)  
-**Status:** **Blocked** — awaiting PRD/ADR sign-off before implementation.  
+**Type:** Tech debt  
+**Status:** **Shipped** — ADR [0004](../../adr/0004-retire-legacy-event-detail-route.md); legacy `/events/$eventId` redirects to shell.  
 **Bounded context:** Web shell / routing  
 **Index:** `docs/issues/architecture-debt.md` (candidate **#6**)
 
@@ -19,11 +19,11 @@ After shell roster read/write (**35**, **36**) are proven:
 
 ## Acceptance criteria
 
-- [ ] No primary nav or **`/scheduling`** link targets legacy **`/events/$eventId`**.
-- [ ] Shell roster assign/release only on **`/scheduling/events/$eventId`**.
-- [ ] PRD story **42** amended or superseded in an ADR noting legacy retirement date.
-- [ ] Runbook (`docs/runbooks/supabase-auth-local.md`) updated to point agents at shell routes.
-- [ ] Behavior tests cover scheduling → shell detail navigation (Vitest and Playwright — update `apps/web/e2e/demo-event.integration.spec.ts` to shell routes per slice **60**).
+- [x] No primary nav or **`/scheduling`** link targets legacy **`/events/$eventId`**.
+- [x] Shell roster assign/release only on **`/scheduling/events/$eventId`**.
+- [x] PRD story **42** amended or superseded in an ADR noting legacy retirement date (ADR 0004).
+- [x] Runbook (`docs/runbooks/supabase-auth-local.md`) updated to point agents at shell routes.
+- [x] Behavior tests cover scheduling → shell detail navigation and legacy redirect (`demo-event.integration.spec.ts`, `AppShell.behavior.test.tsx`).
 
 ## When to schedule
 
