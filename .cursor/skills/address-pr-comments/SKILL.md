@@ -3,8 +3,9 @@ name: address-pr-comments
 description: >-
   Triage pull request review comments with TLC feature context (spec.md,
   tasks.md Verify lines), implement fixes, push, reply on GitHub threads, and
-  summarize. Use when the user asks to address PR comments, respond to review
-  feedback, answer comments on a pull request, or fix reviewer or Bugbot feedback.
+  summarize what was addressed. Use when the user asks to address PR comments,
+  respond to review feedback, answer comments on a pull request, or fix reviewer
+  or Bugbot feedback.
 disable-model-invocation: true
 ---
 
@@ -56,10 +57,58 @@ Requires **`gh`** authenticated for the repo (`GH_TOKEN` / `GITHUB_TOKEN` in clo
    - When applicable, cite TLC task ID (e.g. “supports **T49-02** Verify”).
    - Mention commit SHA, the fix, and verification (local command and/or CI after push).
 
-7. **User summary** (always)
-   - **TLC:** issue number(s), feature slug(s), which tasks/Verify lines the PR satisfies or still leaves open.
-   - **Changes:** table — file | change | why | task ID (if any)
-   - PR link, latest commit, CI status after push
+7. **Addressed summary** (always — chat + PR when fixes were shipped)
+   - Build the summary **while triaging** (track each review thread: fixed / deferred / out of scope / no action).
+   - Post the same summary in **two places**:
+     1. **Chat** — full [Addressed summary template](#addressed-summary-template) for the user.
+     2. **PR comment** — when step 6 ran or the user asked to address comments:
+        ```bash
+        gh pr comment <number> --body-file /tmp/pr-addressed-summary.md
+        ```
+        (Write the body to a temp file; use HEREDOC in shell. Do not skip unless the user said explain-only, no PR noise.)
+   - Link inline thread replies from the summary (e.g. “keyboard e2e — [thread](url)”).
+
+8. **User wrap-up** (always, after step 7)
+   - Point to the PR summary comment URL if posted.
+   - One line: merge-ready? (CI + open threads + remaining TLC/HITL)
+
+## Addressed summary template
+
+Use this structure in chat and in the PR comment (adjust sections that are empty):
+
+```markdown
+## Review feedback addressed
+
+**PR:** #{number} · **Commit(s):** `{short_sha}` (latest) · **CI:** {pass | failing — job names}
+
+### TLC context
+- **Issues:** #{n}, …
+- **Features:** `{slug}`, …
+- **Tasks touched:** Txx-yy (Verify: …) — only tasks this round satisfied or advanced
+
+### Addressed
+| Feedback | Action | Commit | TLC |
+|----------|--------|--------|-----|
+| {short paraphrase — e.g. CI blocker: leader time-away e2e} | {what you changed} | `{sha}` | {T49-02 or —} |
+| … | … | … | … |
+
+### Not changed (with reason)
+| Feedback | Reason |
+|----------|--------|
+| {paraphrase} | {out of scope / invalid / HITL / deferred to follow-up issue} |
+
+### Verification
+- {commands run locally}
+- {CI jobs green after push, or what is still red}
+
+### Still open on this PR
+- {unresolved threads, HITL gates, TLC tasks not done by this round}
+```
+
+**Rules for the table:**
+- One row per distinct review comment or thread (not per file).
+- **Addressed** = code/docs pushed + thread replied (step 6).
+- **Not changed** = explained in thread or in this table; no silent drops.
 
 ## Reply template
 
