@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
@@ -56,6 +57,19 @@ export class OrganizationController {
     @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.organization.listMinistryLeaders({ ministryId, auth });
+  }
+
+  @Patch(':ministryId')
+  renameMinistry(
+    @Param('ministryId') ministryId: string,
+    @Body() body: { name?: string },
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    return this.organization.renameMinistry({
+      ministryId,
+      name: body.name,
+      auth,
+    });
   }
 
   @Post(':ministryId/memberships')

@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { CLOCK, type Clock } from '../common/clock';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
@@ -143,6 +144,123 @@ export class OrganizationService {
       throw new NotFoundException();
     }
     return ministry.churchId;
+  }
+
+  private ministryNameConflict(): BadRequestException {
+    return new BadRequestException({
+      code: 'MINISTRY_NAME_CONFLICT',
+      message: 'A ministry with this name already exists in this Church.',
+    });
+  }
+
+  private rethrowMinistryNameConflict(err: unknown): never {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2002'
+    ) {
+      throw this.ministryNameConflict();
+    }
+    throw err;
+  }
+
+  private async assertUniqueMinistryName(input: {
+    churchId: string;
+    name: string;
+    excludeMinistryId?: string;
+  }) {
+    const duplicate = await this.prisma.ministry.findFirst({
+      where: {
+        churchId: input.churchId,
+        name: { equals: input.name, mode: 'insensitive' },
+        ...(input.excludeMinistryId
+          ? { NOT: { id: input.excludeMinistryId } }
+          : {}),
+      },
+    });
+    if (duplicate) {
+      throw this.ministryNameConflict();
+    }
+  }
+
+  private parseMinistryName(name: string | undefined): string {
+    const parsed = name?.trim();
+    if (!parsed) {
+      throw new BadRequestException({
+        code: 'MINISTRY_NAME_REQUIRED',
+        message: 'Ministry name is required.',
+      });
+    }
+    return parsed;
+  }
+
+  async createMinistry(input: {
+    churchId: string;
+    name: string | undefined;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+      select: { id: true },
+    });
+    if (!church) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(input.churchId);
+    const name = this.parseMinistryName(input.name);
+    await this.assertUniqueMinistryName({ churchId: input.churchId, name });
+
+    let ministry;
+    try {
+      ministry = await this.prisma.ministry.create({
+        data: { churchId: input.churchId, name },
+      });
+    } catch (err) {
+      this.rethrowMinistryNameConflict(err);
+    }
+
+    return {
+      id: ministry.id,
+      churchId: ministry.churchId,
+      name: ministry.name,
+    };
+  }
+
+  async renameMinistry(input: {
+    ministryId: string;
+    name: string | undefined;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
+    const name = this.parseMinistryName(input.name);
+    await this.assertUniqueMinistryName({
+      churchId: ministry.churchId,
+      name,
+      excludeMinistryId: ministry.id,
+    });
+
+    let updated;
+    try {
+      updated = await this.prisma.ministry.update({
+        where: { id: ministry.id },
+        data: { name },
+      });
+    } catch (err) {
+      this.rethrowMinistryNameConflict(err);
+    }
+
+    return {
+      id: updated.id,
+      churchId: updated.churchId,
+      name: updated.name,
+    };
   }
 
   async addMinistryMembership(input: {
