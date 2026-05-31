@@ -12,9 +12,17 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
+**System Admin platform** — execution chains and parallelism: [`.specs/features/system-admin-platform/parallel-execution.md`](../.specs/features/system-admin-platform/parallel-execution.md).
+
 | Issue | Spec | Type | Status | Summary |
 |------:|------|------|--------|---------|
-| — | — | — | — | No open GitHub issues. |
+| [#87](https://github.com/kairan/onda-volunteer/issues/87) | `87-system-admin-chain-0-documentation.md` | Docs | Active | ADR 0005, CONTEXT/PRD, runbooks (T-SYS-01–03) |
+| [#88](https://github.com/kairan/onda-volunteer/issues/88) | `88-system-admin-chain-1-identity-shell.md` | Feature | Active | P1: System Admin identity + `/system-admin` shell (T-SYS-04–10) |
+| [#89](https://github.com/kairan/onda-volunteer/issues/89) | `89-system-admin-chain-2-church-provisioning.md` | Feature | Active | P2: Create church + campus (T-SYS-11–13); blocked by #88 |
+| [#90](https://github.com/kairan/onda-volunteer/issues/90) | `90-system-admin-chain-3-admin-invite.md` | Feature | Active | P3: Invite church Admin by email (T-SYS-14–18); blocked by #88, #89 |
+| [#91](https://github.com/kairan/onda-volunteer/issues/91) | `91-system-admin-chain-4-stewardship.md` | Feature | Active | P4: User/role stewardship (T-SYS-19–23); blocked by #88 |
+| [#92](https://github.com/kairan/onda-volunteer/issues/92) | `92-system-admin-chain-5-scheduling-readonly.md` | Feature | Active | P5: Read-only scheduling support (T-SYS-24–26); blocked by #88 |
+| [#93](https://github.com/kairan/onda-volunteer/issues/93) | `93-church-admin-church-metadata.md` | Feature | Active | CHURCH-META: Admin edits church name/timezone (T-CHURCH-01–03); no blocker |
 
 ## Architecture tech debt
 
