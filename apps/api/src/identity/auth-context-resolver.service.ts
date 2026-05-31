@@ -1,5 +1,6 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, forwardRef } from '@nestjs/common';
 import type { Volunteer } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import { StewardshipService } from '../organization/stewardship.service';
 import {
   type AuthenticatedRequestContext,
@@ -11,6 +12,7 @@ import { IdentityService } from './identity.service';
 export class AuthContextResolverService {
   constructor(
     private readonly identity: IdentityService,
+    private readonly prisma: PrismaService,
     @Inject(forwardRef(() => StewardshipService))
     private readonly stewardship: StewardshipService,
   ) {}
@@ -36,6 +38,22 @@ export class AuthContextResolverService {
       return volunteerPromise;
     };
 
+    let systemAdminPromise: Promise<boolean> | undefined;
+
+    const isSystemAdmin = async (): Promise<boolean> => {
+      if (systemAdminPromise) {
+        return systemAdminPromise;
+      }
+      systemAdminPromise = (async () => {
+        const volunteer = await requireVolunteer();
+        const row = await this.prisma.systemAdministrator.findUnique({
+          where: { volunteerId: volunteer.id },
+        });
+        return row !== null;
+      })();
+      return systemAdminPromise;
+    };
+
     return {
       headers,
       requireVolunteer,
@@ -52,6 +70,17 @@ export class AuthContextResolverService {
           ministryId,
           requireVolunteer,
         ),
+      isSystemAdmin,
+      assertSystemAdmin: async () => {
+        const volunteer = await requireVolunteer();
+        if (!(await isSystemAdmin())) {
+          throw new ForbiddenException({
+            code: 'NOT_SYSTEM_ADMIN',
+            message: 'System Admin grant required for this operation.',
+          });
+        }
+        return volunteer;
+      },
     };
   }
 }

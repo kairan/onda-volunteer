@@ -55,6 +55,7 @@ describe('GET /identity/me (e2e)', () => {
   });
 
   beforeEach(async () => {
+    await prisma.systemAdministrator.deleteMany();
     await prisma.assignment.deleteMany();
     await prisma.unavailability.deleteMany();
     await prisma.ministryLeader.deleteMany();
@@ -108,6 +109,7 @@ describe('GET /identity/me (e2e)', () => {
         uiLocale: null,
       },
       authSubjectId,
+      isSystemAdmin: false,
     });
   });
 

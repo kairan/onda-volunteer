@@ -15,6 +15,8 @@ export type AuthenticatedRequestContext = {
   requireVolunteer: (options?: { attemptAutoLink?: boolean }) => Promise<Volunteer>;
   assertAdminAccreditedForChurch: (churchId: string) => Promise<Volunteer>;
   assertLeaderCanActOnMinistry: (ministryId: string) => Promise<void>;
+  assertSystemAdmin: () => Promise<Volunteer>;
+  isSystemAdmin: () => Promise<boolean>;
 };
 
 export function authHeadersFromRequest(request: {

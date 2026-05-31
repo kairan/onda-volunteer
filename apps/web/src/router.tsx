@@ -30,6 +30,9 @@ import { SchedulingCreatePrivateEventPage } from "./routes/schedulingCreatePriva
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
+import { SystemAdminShell } from "./system-admin/SystemAdminShell";
+import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -166,6 +169,39 @@ const ministryLeadersRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+function systemAdminErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-4 py-12">
+        <RouteErrorPanel
+          message={shellRouteErrorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
+    </div>
+  );
+}
+
+const systemAdminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/system-admin",
+  beforeLoad: () => ensureSystemAdminRouteAccess(),
+  component: SystemAdminShell,
+  errorComponent: systemAdminErrorComponent,
+});
+
+const systemAdminIndexRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/",
+  component: SystemAdminDashboardPage,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -215,6 +251,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
+    systemAdminRoute.addChildren([systemAdminIndexRoute]),
     ...shellRoutes,
   ]);
 }
