@@ -65,6 +65,10 @@ _Avoid_: Treating **Admin** as mutually exclusive with being a **Volunteer** or 
 A permission level granted in **Organization** for stewardship of explicitly assigned **Ministries** (which may belong to **more than one Church**); may create, change, or remove **Unavailability** scoped to a **Ministry** they lead, for **Volunteers** who have **Ministry membership** in that **Ministry**, and may manage **Assignments** tied to **Ministries** they lead (for **Events** they may access).
 _Avoid_: Using “**Leader**” to mean the serving **Role** on an **Event** (e.g. “team lead” slot) unless you rename that slot in **Scheduling**; assuming a **Leader** may act for a **Ministry** they have not been assigned to lead.
 
+**System Admin**:
+A platform operator grant on an existing **Volunteer** (many allowed) for network-wide onboarding and support: create **Churches**, invite church **Admins** by email, adjust **Organization** grants across **Churches**, and **read** scheduling data for diagnosis. **System Admin** is **not** church-scoped **Admin** accreditation; v1 grants **System Admin** only via seed (no in-app bootstrap). Operator UX lives under `/system-admin/*`, separate from the volunteer/leader shell. **Scheduling** writes are forbidden for **System Admin** (read-only support).
+_Avoid_: Calling **System Admin** “super **Admin**” or treating it as automatic **Admin** accreditation for every **Church**; using operator APIs for day-to-day church roster work; expecting **System Admin** to edit **Church** display metadata (church-scoped **Admin** may do that per product slice `CHURCH-META-01`).
+
 **Scheduling**:
 The bounded context that owns **Assignments** of **Volunteers** to **Events** and enforces time-overlap rules across ministries using a single canonical timeline shared by all **Churches**.
 
@@ -91,7 +95,8 @@ A time-bounded commitment that a given **Volunteer** will fill a **Role** during
 ## Relationships
 
 - The same person behind a sign-in may hold **Admin**, **Leader**, and **Volunteer** permissions together, as granted by **Organization**; these are not mutually exclusive “hats.”
-- An **Admin** is accredited for one or more specific **Churches**; stewardship actions apply only within those **Churches** (and their **Ministries**, **Events**, and people) unless a future model adds a broader network role.
+- An **Admin** is accredited for one or more specific **Churches**; stewardship actions apply only within those **Churches** (and their **Ministries**, **Events**, and people).
+- A **System Admin** is a separate platform grant on a **Volunteer** (see ADR [`docs/adr/0005-system-admin-operator-role.md`](docs/adr/0005-system-admin-operator-role.md)): cross-church onboarding, user stewardship, and read-only scheduling support — not a substitute for church **Admin** accreditation inside the shell.
 - A **Leader** may steward **Ministries** that belong to **more than one Church** when **Organization** assigns those ministries to them; their authority still attaches ministry-by-ministry, not church-wide by default.
 - Each **Volunteer** corresponds to exactly one authenticated person via **Identity** (current scope).
 - **Events**, **Assignments**, and **Unavailability** intervals are recorded as **UTC** instants so conflicts and reports compare one global timeline across **Churches**; each **Church** has a configured timezone used as the default for presenting that **Church**’s schedules, and a **Campus** may supply its own timezone when **Campuses** are used.

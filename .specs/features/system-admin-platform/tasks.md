@@ -93,8 +93,8 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] ADR accepted and linked from design.md
-- [ ] Contrasts church-scoped **Admin** vs **System Admin**
+- [x] ADR accepted and linked from design.md
+- [x] Contrasts church-scoped **Admin** vs **System Admin**
 
 **Tests**: none  
 **Gate**: doc review
@@ -110,7 +110,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Terminology matches ADR 0005
+- [x] Terminology matches ADR 0005
 
 **Tests**: none  
 **Gate**: doc review
@@ -126,7 +126,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Local happy path documented for operator + invite
+- [x] Local happy path documented for operator + invite
 
 **Tests**: none  
 **Gate**: doc review

@@ -16,6 +16,8 @@ type AuthenticatedRequestContext = {
   requireVolunteer(options?: { attemptAutoLink?: boolean }): Promise<Volunteer>;
   assertAdminAccreditedForChurch(churchId: string): Promise<Volunteer>;
   assertLeaderCanActOnMinistry(ministryId: string): Promise<void>;
+  assertSystemAdmin(): Promise<Volunteer>;
+  isSystemAdmin(): Promise<boolean>;
 };
 ```
 
@@ -39,6 +41,29 @@ Pass `auth: AuthenticatedRequestContext` through service boundaries. Call `await
 ## Local development
 
 With `AUTH_ALLOW_DEV_HEADERS=true`, send `X-Volunteer-Id` and/or `X-Leader-Ministry-Id` instead of Bearer tokens. Behavior is unchanged from pre-#55 flows.
+
+## System Admin (platform operator)
+
+ADR [0005](../adr/0005-system-admin-operator-role.md). Operator APIs live under **`/system-admin/*`** and call `auth.assertSystemAdmin()` first.
+
+| Check | Behavior |
+|-------|----------|
+| `assertSystemAdmin()` | Resolves volunteer; loads `SystemAdministrator` for that `volunteerId`; **403** `NOT_SYSTEM_ADMIN` if missing |
+| `isSystemAdmin()` | Same lookup; returns boolean (for scheduling read bypass) |
+| Scheduling writes | Reject **System Admin** with **`SYSTEM_ADMIN_READ_ONLY`** before mutating |
+
+### `GET /identity/me`
+
+Response includes `isSystemAdmin: boolean` for web route guards (`/system-admin/*` vs `ProtectedAppShell`).
+
+### Dev headers (operator)
+
+When `AUTH_ALLOW_DEV_HEADERS=true`:
+
+- Use **`X-Volunteer-Id: seed-volunteer-system-admin`** (after seed T-SYS-05) for operator API and e2e.
+- **Do not** add `X-System-Admin: true` on arbitrary volunteers — elevation requires a seeded `SystemAdministrator` row tied to that volunteer id.
+
+Church **Admin** invite fulfillment runs in **Identity** on JWT sign-in (email claim + pending `AdminInvite`); see [`supabase-auth-local.md`](supabase-auth-local.md) §8.
 
 ## Assignment route ownership
 
