@@ -56,6 +56,10 @@ test.describe('keyboard navigation @smoke @a11y', () => {
       page.goto('/leader/volunteer-time-away'),
     ]);
 
+    await page
+      .getByRole('combobox', { name: /church|igreja/i })
+      .selectOption('Igreja Central');
+
     await expect(
       page.getByRole('heading', {
         level: 1,

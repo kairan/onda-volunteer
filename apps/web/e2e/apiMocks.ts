@@ -16,6 +16,8 @@ const smokeOrganizationContext = {
           id: 'seed-ministry-demo',
           name: 'Hospitality',
           membershipStatus: 'ACTIVE',
+          // Single-church mock: leader flows pass without API. With PLAYWRIGHT_WITH_API,
+          // seed has multiple churches — pick Igreja Central in tests that need led ministries.
           isLeader: true,
         },
       ],
