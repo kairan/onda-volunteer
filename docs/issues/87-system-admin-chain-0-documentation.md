@@ -15,9 +15,9 @@ T-SYS-01 → T-SYS-02 ∥ T-SYS-03 (see `tasks.md`)
 
 ## Acceptance criteria
 
-- [ ] `docs/adr/0005-system-admin-operator-role.md` merged
-- [ ] **System Admin** defined in `CONTEXT.md`; PRD out-of-scope updated
-- [ ] Runbooks cover service role, invite redirect, seeded operator volunteer
+- [x] `docs/adr/0005-system-admin-operator-role.md` merged
+- [x] **System Admin** defined in `CONTEXT.md`; PRD out-of-scope updated
+- [x] Runbooks cover service role, invite redirect, seeded operator volunteer
 
 ## Tracker
 

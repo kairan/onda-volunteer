@@ -8,7 +8,7 @@
 
 - Decision log: [`.specs/project/STATE.md`](../../project/STATE.md)
 - Adjacent org slices: [organization-structure-administration](../organization-structure-administration/spec.md) (P1 ministry structure; P2 campus/ministry archive)
-- Domain glossary: [`CONTEXT.md`](../../../CONTEXT.md) — **System Admin** term to be added during Design
+- Domain glossary: [`CONTEXT.md`](../../../CONTEXT.md) — **System Admin** (ADR [0005](../../../docs/adr/0005-system-admin-operator-role.md))
 - Identity: Supabase JWT + **Volunteer** linking (`apps/api/src/identity/`)
 - Platform PRD: `docs/prd/volunteer-management-platform.md` (update out-of-scope note for operator role)
 
@@ -175,4 +175,4 @@ New **Churches** and their first **Admin** users are provisioned via Prisma seed
 
 - [ ] New **Church** + first **Admin** can be onboarded without `prisma:seed` for that church.
 - [ ] **System Admin** cannot mutate schedules; church **Admin** retains full stewardship within accreditation.
-- [ ] `CONTEXT.md`, Platform PRD, and ADR document **System Admin** vs church **Admin** boundaries.
+- [x] `CONTEXT.md`, Platform PRD, and ADR document **System Admin** vs church **Admin** boundaries.
