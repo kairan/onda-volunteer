@@ -1,8 +1,9 @@
 import type { ReactElement } from 'react';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
+import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { buildTestRouteTree } from '@/router.testUtils';
@@ -14,11 +15,13 @@ vi.mock('@/organization/fetchOrganizationContext', () => ({
 function shellTestProviders(ui: ReactElement) {
   return (
     <I18nProvider>
-      <AuthSessionTestProvider
-        state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-demo' }}
-      >
-        {ui}
-      </AuthSessionTestProvider>
+      <ToastProvider>
+        <AuthSessionTestProvider
+          state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-demo' }}
+        >
+          {ui}
+        </AuthSessionTestProvider>
+      </ToastProvider>
     </I18nProvider>
   );
 }
@@ -99,10 +102,10 @@ describe('App shell routing', () => {
     expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
   });
 
-  it('still mounts the event detail route', async () => {
+  it('redirects legacy /events/:id to shell scheduling detail', async () => {
     await initI18n();
-    const { routeTree, eventLoader } = buildTestRouteTree();
-    eventLoader.mockImplementation(async () => ({
+    const { routeTree, schedulingEventDetailLoader } = buildTestRouteTree();
+    schedulingEventDetailLoader.mockImplementation(async () => ({
       church: { name: 'Demo Church', defaultTimezone: 'America/Sao_Paulo' },
       event: {
         id: 'evt-1',
@@ -123,7 +126,10 @@ describe('App shell routing', () => {
 
     render(shellTestProviders(<RouterProvider router={routed} />));
 
+    await waitFor(() => {
+      expect(history.location.pathname).toBe('/scheduling/events/evt-1');
+    });
     expect(await screen.findByRole('heading', { name: 'Sunday' })).toBeInTheDocument();
-    expect(screen.queryByRole('navigation', { name: 'Primary' })).not.toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
   });
 });

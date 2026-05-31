@@ -24,7 +24,9 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 
 ### Skills
 
-**Active (only):** [`tlc-spec-driven`](.cursor/skills/tlc-spec-driven/SKILL.md) — the sole default playbook for planning, implementation, tests, issue breakdown, and validation on this repo.
+**Active:** [`tlc-spec-driven`](.cursor/skills/tlc-spec-driven/SKILL.md) — default for planning, implementation, tests, issue breakdown, and validation on this repo.
+
+**PR review (explicit):** [`address-pr-comments`](.cursor/skills/address-pr-comments/SKILL.md) — when the user asks to address or answer PR comments: load linked TLC feature(s) (`spec.md`, `tasks.md` **Verify** lines), triage in scope, fix, push, reply on threads, summarize. See [tlc-context.md](.cursor/skills/address-pr-comments/tlc-context.md). Not auto-selected for feature work.
 
 **Legacy:** [`.cursor/skills/_legacy/`](.cursor/skills/_legacy/README.md) (`to-issues`, `to-prd`, `triage`, `tdd`, `grill-me`, `grill-with-docs`, `improve-codebase-architecture`). Do **not** load or follow legacy skills unless the user **explicitly** names one (e.g. “use the triage skill”). Otherwise always use **tlc-spec-driven** + `ONDA.md`.
 

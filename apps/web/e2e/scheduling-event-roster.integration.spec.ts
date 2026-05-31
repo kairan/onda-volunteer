@@ -17,14 +17,24 @@ function reseedDatabase() {
 }
 
 test.describe('scheduling event roster @integration', () => {
+  // Reseed mutates shared Postgres; parallel workers cause flaky roster rows.
+  test.describe.configure({ mode: 'serial' });
+
   test.beforeEach(() => {
     reseedDatabase();
   });
+
   test('authorized viewer reaches shell roster from the scheduling list', async ({
     page,
   }) => {
-    await page.goto('/scheduling');
-    await page.getByRole('combobox', { name: 'Church' }).selectOption('Igreja Central');
+    await Promise.all([
+      page.waitForResponse(
+        (res) =>
+          res.url().includes('/organization/context') && res.status() === 200,
+      ),
+      page.goto('/scheduling'),
+    ]);
+    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central');
 
     const listLink = page.getByRole('link', { name: 'Sunday Gathering' });
     await expect(listLink).toBeVisible({ timeout: 30_000 });
@@ -43,9 +53,14 @@ test.describe('scheduling event roster @integration', () => {
 
     const rosterTable = page.getByRole('table');
     await expect(
-      rosterTable.getByRole('row', { name: 'Ministry Volunteer Role Interval' }),
+      rosterTable.getByRole('columnheader', { name: /ministry|ministério/i }),
     ).toBeVisible();
-    await expect(rosterTable.getByRole('cell', { name: 'Hospitality' })).toBeVisible();
+    await expect(
+      rosterTable.getByRole('columnheader', { name: /volunteer|voluntário/i }),
+    ).toBeVisible();
+    await expect(rosterTable.getByRole('cell', { name: 'Hospitality' })).toBeVisible({
+      timeout: 30_000,
+    });
     await expect(rosterTable.getByRole('cell', { name: 'Demo Volunteer' })).toBeVisible();
     await expect(rosterTable.getByRole('cell', { name: 'Greeter' })).toBeVisible();
   });

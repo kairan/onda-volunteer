@@ -30,7 +30,7 @@ Product vertical slices live in `docs/issues/` and on GitHub. This document inde
 | 3 | Request-scoped auth (API) | Shipped | `done/55-api-request-scoped-auth-context.md` | [#55](https://github.com/kairan/onda-volunteer/issues/55) |
 | 1 | Church stewardship access (API) | Shipped | `done/56-api-church-stewardship-access-module.md` | [#56](https://github.com/kairan/onda-volunteer/issues/56) |
 | 4 | **Assignment** route under **Scheduling** (API) | Shipped | `done/57-api-assignment-route-under-scheduling.md` | [#57](https://github.com/kairan/onda-volunteer/issues/57) |
-| 6 | Retire legacy **Event** routes (Web) | Closed blocked pending PRD/ADR | `done/58-web-retire-legacy-event-routes.md` | [#58](https://github.com/kairan/onda-volunteer/issues/58) |
+| 6 | Retire legacy **Event** routes (Web) | Shipped — redirect to shell detail (ADR 0004) | `done/58-web-retire-legacy-event-routes.md` | [#58](https://github.com/kairan/onda-volunteer/issues/58) |
 | 8 | CI ESLint + coverage reporting | Shipped | `done/61-ci-lint-and-coverage.md` | PR [#83](https://github.com/kairan/onda-volunteer/pull/83) |
 
 ## Archived execution order (documentation only)
@@ -42,11 +42,11 @@ Product vertical slices live in `docs/issues/` and on GitHub. This document inde
 
 ## Browser e2e ([#60](https://github.com/kairan/onda-volunteer/issues/60))
 
-Playwright in `apps/web/e2e` complements API Jest e2e and Vitest unit tests. **Shipped** — see `done/60-web-playwright-browser-e2e.md`. Shell roster integration coverage lives in `scheduling-event-roster.integration.spec.ts`. Product slice **#49** added keyboard/WCAG smoke coverage; legacy route retirement remains PRD/ADR-gated and archived under `done/58-web-retire-legacy-event-routes.md`.
+Playwright in `apps/web/e2e` complements API Jest e2e and Vitest unit tests. **Shipped** — see `done/60-web-playwright-browser-e2e.md`. Shell roster integration coverage lives in `scheduling-event-roster.integration.spec.ts`. Product slice **#49** adds keyboard/WCAG smoke coverage (`keyboard-navigation.smoke.spec.ts`); HITL sign-off remains in `.specs/features/49-hope-polish-and-wcag-release-gate/hitl-signoff.md`. Legacy `/events/$eventId` redirects to shell per ADR 0004 (**#58**).
 
 ## PRD constraints (do not re-litigate in slice work)
 
-- **Web PRD story 42:** legacy `/` and `/events/$eventId` remain by product decision; **#58** is archived as blocked until a PRD/ADR changes that constraint. Playwright integration tests still cover the legacy demo path via `demo-event.integration.spec.ts` until shell routes are canonical.
+- **Web PRD story 42:** legacy `/` demo landing remains; **`/events/$eventId`** redirects to **`/scheduling/events/$eventId`** per ADR 0004. Playwright covers shell paths and legacy redirect in `demo-event.integration.spec.ts`.
 - **Platform PRD:** tracer-bullet **e2e** is the default test seam; API Jest e2e, Playwright browser e2e, and the shipped Scheduling unit seam (**#54**) are complementary.
 
 ## Canvas

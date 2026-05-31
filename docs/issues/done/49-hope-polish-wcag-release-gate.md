@@ -15,11 +15,11 @@ Run a focused accessibility and visual-polish pass after the core **Scheduling**
 
 ## Acceptance criteria
 
-- [ ] Core **Scheduling** and **Time away** surfaces pass keyboard-only smoke testing (add Playwright specs under `apps/web/e2e/` — slice **60**).
-- [ ] Focus states remain visible and meet WCAG 2.2 AA expectations on HOPE surfaces.
-- [ ] Reduced-motion behavior is respected for overlays, hover, and loading states.
-- [ ] Loading skeletons and dense tables follow the HOPE visual contract without regressing readability.
-- [ ] Human review records WCAG and visual-polish signoff before release.
+- [x] Core **Scheduling** and **Time away** surfaces pass keyboard-only smoke testing (`apps/web/e2e/keyboard-navigation.smoke.spec.ts`).
+- [x] Focus states remain visible and meet WCAG 2.2 AA expectations on HOPE surfaces (global `:focus-visible` + Vitest baseline).
+- [x] Reduced-motion behavior is respected for overlays, hover, and loading states (globals + Playwright smoke).
+- [x] Loading skeletons and dense tables follow the HOPE visual contract without regressing readability (Vitest on pending + roster table).
+- [ ] Human review records WCAG and visual-polish signoff before release (`.specs/features/49-hope-polish-and-wcag-release-gate/hitl-signoff.md`).
 
 ## Blocked by
 

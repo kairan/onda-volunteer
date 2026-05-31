@@ -46,6 +46,10 @@ Use kebab-case slugs (e.g. `leader-manages-unavailability`). Do not write under 
 - After **Tasks**, create or update GitHub Issues from `tasks.md` with `gh` (requirement IDs in the spec should match issue numbers when both exist).
 - Do **not** invoke legacy [`to-issues`](../_legacy/to-issues/SKILL.md) or [`triage`](../_legacy/triage/SKILL.md) unless the user explicitly names them.
 
+## Tracking “done” on brownfield Onda
+
+When closing a feature, update in order: `tasks.md` checkboxes → `docs/issues/done/<#>-*.md` acceptance criteria → `docs/issues/README.md` row → `.specs/project/ROADMAP.md` if theme status changed → `.specs/project/STATE.md` for decisions/lessons. **Shipped code + README index beat stale TLC checkboxes.** HITL-only rows (e.g. WCAG human sign-off) may stay open in `hitl-signoff.md` after automated gates ship.
+
 ## Tests during Execute
 
 Follow **tlc-spec-driven** `references/implement.md` and [`AGENTS.md`](../../../AGENTS.md) (Running tests). API: Jest e2e with Postgres. Web: Vitest + Playwright.

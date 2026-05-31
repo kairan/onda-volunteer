@@ -45,12 +45,53 @@ test.describe('keyboard navigation @smoke @a11y', () => {
     await expect(ministrySelect).toBeFocused();
   });
 
-  test('scheduling list links are focusable', async ({ page }) => {
-    test.skip(
-      !process.env.CI && process.env.PLAYWRIGHT_WITH_API !== 'true',
-      'Event list links require API-backed seed data',
-    );
+  test('leader volunteer time away form controls accept keyboard focus', async ({
+    page,
+  }) => {
+    await Promise.all([
+      page.waitForResponse(
+        (res) =>
+          res.url().includes('/organization/context') && res.status() === 200,
+      ),
+      page.goto('/leader/volunteer-time-away'),
+    ]);
 
+    await page
+      .getByRole('combobox', { name: /church|igreja/i })
+      .selectOption('Igreja Central');
+
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: /volunteer time away|tempo livre do voluntário/i,
+      }),
+    ).toBeVisible({ timeout: 30_000 });
+
+    const ministrySelect = page
+      .locator('label')
+      .filter({ hasText: /ministry you lead|ministério que você lidera/i })
+      .locator('select');
+    await expect(ministrySelect).toBeVisible({ timeout: 30_000 });
+    await ministrySelect.focus();
+    await expect(ministrySelect).toBeFocused();
+  });
+
+  test('respects prefers-reduced-motion for pulse skeletons', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/dashboard');
+
+    const animationDuration = await page.evaluate(() => {
+      const el = document.createElement('div');
+      el.className = 'animate-pulse';
+      document.body.appendChild(el);
+      return window.getComputedStyle(el).animationDuration;
+    });
+
+    // globals.css sets 0.01ms on * and animation:none on .animate-pulse; Chromium may report 0s.
+    expect(['0s', '0.01ms']).toContain(animationDuration);
+  });
+
+  test('scheduling list links are focusable', async ({ page }) => {
     await page.goto('/scheduling');
 
     await expect(page.getByRole('heading', { name: /schedule/i })).toBeVisible();

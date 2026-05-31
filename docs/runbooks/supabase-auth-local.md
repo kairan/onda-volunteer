@@ -71,7 +71,9 @@ Default volunteer id is `seed-volunteer-demo`.
 
 If `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are unset but `VITE_AUTH_USE_DEV_HEADERS=true` and `VITE_DEMO_VOLUNTEER_ID` are set, shell routes use `X-Volunteer-Id` without sign-in. The API must have `AUTH_ALLOW_DEV_HEADERS=true`.
 
-## 7. Try JWT-protected actions on legacy demo pages
+## 7. Try JWT-protected actions in the shell
+
+Event detail and roster flows live at **`/scheduling/events/$eventId`**. Legacy **`/events/$eventId`** redirects there (ADR 0004). The **`/`** demo landing remains for design preview only.
 
 With a session active, protected calls send `Authorization: Bearer <token>` (dev headers only when there is no valid session).
 
