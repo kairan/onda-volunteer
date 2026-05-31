@@ -1,6 +1,8 @@
 import { Link, Outlet } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useToasts } from '@/feedback/ToastHost';
+import { consumeSystemAdminAccessDenied } from '@/system-admin/accessDenied';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { demoVolunteerId } from '@/auth/authSession';
 import { OrganizationContextProvider, useOrganization } from '@/organization/OrganizationContextProvider';
@@ -39,9 +41,21 @@ export function AppShell({ children }: { children?: ReactNode }) {
 }
 
 function AppShellContent({ children }: { children?: ReactNode }) {
-  const { t } = useTranslation(['shell', 'common']);
+  const { t } = useTranslation(['shell', 'common', 'systemAdmin']);
+  const toasts = useToasts();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+
+  useEffect(() => {
+    if (!consumeSystemAdminAccessDenied()) {
+      return;
+    }
+    toasts.push({
+      id: crypto.randomUUID(),
+      kind: 'info',
+      message: t('systemAdmin:accessDenied'),
+    });
+  }, [t, toasts]);
 
   const {
     churches,

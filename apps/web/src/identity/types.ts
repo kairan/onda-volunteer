@@ -5,4 +5,5 @@ export type IdentityMePayload = {
     uiLocale: string | null;
   };
   authSubjectId: string | null;
+  isSystemAdmin: boolean;
 };

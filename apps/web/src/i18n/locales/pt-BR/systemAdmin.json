@@ -1,0 +1,11 @@
+{
+  "shell": {
+    "brand": "Admin do sistema",
+    "backToApp": "App de voluntários"
+  },
+  "dashboard": {
+    "title": "Painel do operador",
+    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda."
+  },
+  "accessDenied": "É necessário acesso de Admin do sistema para essa área."
+}

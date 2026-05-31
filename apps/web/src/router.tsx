@@ -30,6 +30,9 @@ import { SchedulingCreatePrivateEventPage } from "./routes/schedulingCreatePriva
 import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
+import { SystemAdminShell } from "./system-admin/SystemAdminShell";
+import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -166,6 +169,19 @@ const ministryLeadersRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
+const systemAdminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/system-admin",
+  beforeLoad: () => ensureSystemAdminRouteAccess(),
+  component: SystemAdminShell,
+});
+
+const systemAdminIndexRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/",
+  component: SystemAdminDashboardPage,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -215,6 +231,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
+    systemAdminRoute.addChildren([systemAdminIndexRoute]),
     ...shellRoutes,
   ]);
 }
