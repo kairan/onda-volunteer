@@ -8,6 +8,10 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 - **2026-05-26:** Feature artifacts live under `.specs/features/<slug>/`; GitHub Issues remain the shared execution queue.
 - **2026-05-26:** Moved pre-TLC skills to `.cursor/skills/_legacy/` — TLC only unless user explicitly names a legacy skill.
 - **2026-05-27:** Missing-feature audit found no open GitHub issues and treated GitHub closed/completed state plus `docs/issues/README.md` as canonical over stale unchecked boxes in some archived issue specs. The only active PRD-aligned candidate identified was **Organization structure administration** (`.specs/features/organization-structure-administration/spec.md`).
+- **2026-05-31:** **System Admin** operator path approved (replaces seed/script provisioning for net-new churches). A dedicated **System Admin** sign-in and dashboard SHALL support: create **Church** (and required structure bootstrap), add/edit users, and assign **Organization** permission levels (**Admin** accreditation per **Church**, **Leader** per **Ministry**, **Volunteer** membership) within product guardrails. Church-scoped **Admin** UX remains for day-to-day ministry structure inside accredited **Churches**. During **Specify**, add **System Admin** to `CONTEXT.md`, update Platform PRD out-of-scope notes, and add an ADR for auth boundary vs church-scoped **Admin**.
+- **2026-05-31 (System Admin Specify):** Many System Admins; **only seed** grants System Admin (no in-app bootstrap). Church **Admin** onboarding = **System Admin sends Supabase invite email** per church. System Admin scheduling access = **read-only**. Church-scoped **Admin** **may** edit accredited **Church** name and default timezone (separate slice from operator dashboard). Feature spec: `.specs/features/system-admin-platform/spec.md`.
+- **2026-05-31 (System Admin Design/Tasks):** Design + tasks approved — `SystemAdministrator` + `AdminInvite` models, `/system-admin/*` API module, invite fulfillment on JWT sign-in, reuse scheduling GET with write guard. Execute via `tasks.md` (T-SYS-01–26, optional T-CHURCH-01–03). ADR 0005 pending in T-SYS-01.
+- **2026-05-31:** Parallel execution guide + GitHub chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93); see `.specs/features/system-admin-platform/parallel-execution.md` and `docs/issues/README.md`.
 
 ## Blockers
 
@@ -15,7 +19,7 @@ _(none)_
 
 ## Deferred ideas
 
-- **Organization setup/operator path:** Church creation, Church metadata edits, and first-Admin bootstrap may be needed later, but they imply authority beyond church-scoped **Admin** and need an explicit decision before implementation.
+_(none — System Admin operator path promoted to Decisions 2026-05-31.)_
 
 ## TLC completion tracking (canonical order)
 

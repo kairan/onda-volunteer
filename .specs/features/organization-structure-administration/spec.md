@@ -87,16 +87,39 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 ---
 
-### P3: Church metadata and first-admin setup
+### P3: System Admin — church provisioning and user stewardship
 
-**User Story**: As a product operator, I want a supported path to maintain **Church** metadata and bootstrap first **Admin** accreditation, so that new Churches do not depend on manual seed scripts forever.
+**Status:** Product decision **2026-05-31** — promote to its own TLC feature (recommended slug: `system-admin-platform`) rather than overloading church-scoped **Admin** flows.
 
-**Why P3**: This may imply product-operator authority beyond church-scoped **Admin**, which is deliberately not the same as the out-of-scope network-wide super **Admin**. It needs an explicit decision before implementation.
+**User Story**: As a **System Admin**, I want a dedicated dashboard to create **Churches**, manage **Church** metadata, and add or edit any user’s **Organization** permissions, so that onboarding and support do not depend on seed scripts or database access.
 
-**Acceptance Criteria**:
+**Why P3**: Replaces manual/seed provisioning. Distinct from church-scoped **Admin**: **System Admin** is platform operator authority; **Admin** remains accredited per **Church** for in-church stewardship (membership, ministries, scheduling support).
 
-1. WHEN this story is promoted beyond P3 THEN the spec SHALL define who may create or edit **Church** records without introducing implicit global **Admin** powers.
-2. WHEN **Church** default timezone changes THEN canonical UTC records SHALL remain unchanged and presentation effects SHALL be documented for users.
+**Scope (v1 direction — refine in Specify/Design)**:
+
+| Capability | System Admin | Church-scoped Admin (existing) |
+|------------|--------------|--------------------------------|
+| Create **Church** (+ initial **Campus** / structure bootstrap) | Yes | No |
+| Edit **Church** metadata (name, default timezone, etc.) | Yes | TBD — likely read-only or limited |
+| Create/link user identity (**Volunteer** profile) | Yes | No (membership invite flows only) |
+| Grant/revoke **Admin** accreditation for a **Church** | Yes | No (cannot self-elevate across churches) |
+| Assign **Leader** for a **Ministry** | Yes | Yes (within accredited churches) |
+| Manage **Volunteer** **Ministry** membership | Yes | Yes (within accredited churches) |
+| Scheduling, Time away, roster mutations | Support/debug TBD | Per existing slices |
+
+**Acceptance Criteria** (draft — Design phase):
+
+1. WHEN a user without **System Admin** attempts System Admin routes or APIs THEN the system SHALL reject with a stable authorization error.
+2. WHEN a **System Admin** creates a **Church** THEN the system SHALL persist the **Church** and minimum structure needed for shell context (at least one **Campus** per product rules).
+3. WHEN a **System Admin** edits a user THEN the system SHALL update the linked **Volunteer** identity and applicable **Organization** grants (accreditation, leadership, membership) with audit-friendly server truth.
+4. WHEN a **System Admin** changes **Church** default timezone THEN canonical UTC **Event**, **Assignment**, and **Unavailability** records SHALL remain unchanged; presentation rules SHALL match P2 campus timezone semantics.
+5. WHEN a church-scoped **Admin** uses existing in-app flows THEN behavior SHALL be unchanged except where explicitly delegated to System Admin-only APIs.
+
+**Independent Test**: System Admin creates a new **Church**, provisions a user with **Admin** accreditation for that **Church**, signs in as that user, and completes one existing Organization read (e.g. ministry list) without seed scripts.
+
+**Out of scope for this slice** (unless Specify expands): impersonation (“act as user”), bulk import, billing, multi-tenant branding, network-wide combined **Public events**.
+
+**Specify answers (2026-05-31):** See [system-admin-platform](../system-admin-platform/spec.md). Church **Admin** may edit accredited **Church** name and default timezone — tracked as related slice `CHURCH-META-01`, not System Admin–exclusive.
 
 ---
 
@@ -119,7 +142,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
 | ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Specify | Pending |
 | ORG-STRUCT-06 | P2: Ministry archive/retirement | Specify | Pending |
-| ORG-STRUCT-07 | P3: Church metadata and first-admin setup | Specify | Pending |
+| ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Pending — split to `system-admin-platform` |
 
 **Coverage:** 7 total, 4 implemented in P1, 3 unmapped until future Design/Tasks.
 
@@ -143,6 +166,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 1. Should the first implementation be **Ministry** create/rename only, leaving Campus metadata and Ministry archive to follow-up issues?
    - **Answered for P1:** yes. Campus metadata and Ministry archive remain future slices.
 2. Does the product need a Church setup/operator role, or will first **Church** and first **Admin** continue to be provisioned outside the app?
+   - **Answered 2026-05-31:** yes — **System Admin** dashboard for **Church** creation and user/role stewardship; see P3 and `.specs/project/STATE.md`.
 3. Should **Ministry** names be unique per **Church**, or only strongly warned for duplicates?
    - **Answered for P1:** unique per **Church**, case-insensitive, enforced in the service layer and by a PostgreSQL unique index on `(churchId, LOWER(name))`.
 4. If **Campus** timezone changes, does the UI need an explicit review dialog explaining that existing UTC schedules are unchanged but local presentation changes?

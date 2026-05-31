@@ -49,7 +49,8 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 |------|--------|
 | Household / non-sign-in Volunteers | Explicitly out of scope in `CONTEXT.md` and the Platform PRD. |
 | Public Events spanning multiple Churches | Explicitly deferred by `CONTEXT.md` and the Platform PRD. |
-| Network-wide super Admin | Explicitly out of scope until a future decision adds that role. |
+| ~~Network-wide super Admin~~ **System Admin** | **In scope (2026-05-31):** `.specs/features/system-admin-platform/` — seed-granted operators, church create, Admin invite-by-email, user/role stewardship, read-only scheduling. |
+| Church **Admin** metadata self-service | **In scope (2026-05-31):** accredited **Admin** edits **Church** name + default timezone (`CHURCH-META-01` in system-admin spec; may ship as org-structure follow-up). |
 | Email templates, push notifications, advanced audit UI, reporting dashboards, mobile apps | Platform PRD production-hardening items; do not plan until product priority changes. |
 | Dark mode toggle | Token architecture supports it, but the web and HOPE PRDs defer the UI toggle. |
 | Optimistic roster mutations / concurrent editor merge UI | Deferred by ADR 0001; Scheduling mutations remain pessimistic by default. |
