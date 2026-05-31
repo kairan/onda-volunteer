@@ -32,6 +32,9 @@ export class IdentityService {
     const volunteer = await this.requireVolunteer(auth, {
       attemptAutoLink: true,
     });
+    const systemAdmin = await this.prisma.systemAdministrator.findUnique({
+      where: { volunteerId: volunteer.id },
+    });
     return {
       volunteer: {
         id: volunteer.id,
@@ -39,6 +42,7 @@ export class IdentityService {
         uiLocale: volunteer.uiLocale,
       },
       authSubjectId: volunteer.authSubjectId,
+      isSystemAdmin: systemAdmin !== null,
     };
   }
 

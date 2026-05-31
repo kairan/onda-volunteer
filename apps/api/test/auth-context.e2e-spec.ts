@@ -33,6 +33,7 @@ describe('Authenticated request context (e2e)', () => {
   });
 
   beforeEach(async () => {
+    await prisma.systemAdministrator.deleteMany();
     await prisma.assignment.deleteMany();
     await prisma.unavailability.deleteMany();
     await prisma.ministryLeader.deleteMany();

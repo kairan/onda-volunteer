@@ -77,6 +77,13 @@ model Volunteer {
   unavailabilities    Unavailability[]
   ministryLeaderships MinistryLeader[]
   adminAccreditations AdminAccreditation[]
+  systemAdministrator SystemAdministrator?
+}
+
+model SystemAdministrator {
+  volunteerId String    @id
+  volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
 }
 
 model MinistryLeader {

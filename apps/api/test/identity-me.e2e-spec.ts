@@ -108,6 +108,7 @@ describe('GET /identity/me (e2e)', () => {
         uiLocale: null,
       },
       authSubjectId,
+      isSystemAdmin: false,
     });
   });
 

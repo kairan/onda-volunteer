@@ -114,6 +114,21 @@ async function main() {
     },
   });
 
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-system-admin' },
+    update: { displayName: 'System Operator' },
+    create: {
+      id: 'seed-volunteer-system-admin',
+      displayName: 'System Operator',
+    },
+  });
+
+  await prisma.systemAdministrator.upsert({
+    where: { volunteerId: 'seed-volunteer-system-admin' },
+    update: {},
+    create: { volunteerId: 'seed-volunteer-system-admin' },
+  });
+
   await prisma.adminAccreditation.upsert({
     where: {
       volunteerId_churchId: {
