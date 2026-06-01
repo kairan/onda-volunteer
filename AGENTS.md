@@ -96,7 +96,7 @@ API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. 
 
 - Use `@testing-library/user-event` for all user interactions in Vitest + React Testing Library behavior tests (`*.behavior.test.tsx`).
 - Do **not** use `fireEvent` from Testing Library to simulate clicks, typing, or keyboard input.
-- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web/src/organization/churchSettings.behavior.test.tsx` and `apps/web/src/routes/ministries.behavior.test.tsx`.
+- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web/src/routes/ministries.behavior.test.tsx` (rename test ~L116–134).
 - Exception: only when `userEvent` cannot model the interaction — add a brief comment in the test explaining why. Keep exceptions rare.
 
 ```bash
