@@ -16,6 +16,11 @@ export function SystemAdminDashboardPage() {
       <ul className="mt-8 flex flex-col gap-3 border-t border-border pt-6">
         <li>
           <Button variant="outline" asChild>
+            <Link to="/system-admin/churches">{t('dashboard.links.churches')}</Link>
+          </Button>
+        </li>
+        <li>
+          <Button variant="outline" asChild>
             <Link to="/system-admin/scheduling">{t('dashboard.links.scheduling')}</Link>
           </Button>
         </li>

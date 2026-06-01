@@ -13,6 +13,7 @@ import {
   renameMinistryRole,
   retireMinistryRole,
 } from '@/organization/roleCatalog';
+import { ChurchSettingsSection } from '@/organization/ChurchSettingsSection';
 import { Button } from '@/components/ui/button';
 
 export function MinistriesPage() {
@@ -207,6 +208,8 @@ export function MinistriesPage() {
         <h1 className="font-display text-4xl font-bold uppercase">{t('title')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t('body')}</p>
       </div>
+
+      <ChurchSettingsSection />
 
       {canManageStructure ? (
         <section className="flex flex-col gap-4 border-2 border-border bg-surface p-4">

@@ -7,6 +7,7 @@
     "title": "Painel do operador",
     "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
     "links": {
+      "churches": "Igrejas",
       "scheduling": "Agenda (somente leitura)"
     }
   },
@@ -29,6 +30,31 @@
       "noAssignments": "Nenhuma designação ativa.",
       "cancelled": "Este evento está cancelado.",
       "backToList": "Voltar à lista da agenda"
+    }
+  },
+  "churches": {
+    "eyebrow": "Provisionamento",
+    "title": "Igrejas",
+    "intro": "Crie igrejas e campus padrão para onboarding sem acesso ao banco de dados.",
+    "backToDashboard": "Voltar ao painel",
+    "createHeading": "Criar igreja",
+    "listHeading": "Todas as igrejas",
+    "fields": {
+      "name": "Nome da igreja",
+      "timezone": "Fuso padrão (IANA)"
+    },
+    "createAction": "Criar igreja",
+    "creating": "Criando…",
+    "createSuccess": "Igreja criada.",
+    "loading": "Carregando igrejas…",
+    "loadMore": "Carregar mais",
+    "loadingMore": "Carregando mais…",
+    "empty": "Nenhuma igreja ainda.",
+    "campusCount": "{{count}} campus",
+    "errors": {
+      "generic": "Algo deu errado.",
+      "nameRequired": "O nome da igreja é obrigatório.",
+      "invalidTimezone": "Informe um fuso IANA válido."
     }
   },
   "accessDenied": "É necessário acesso de Admin do sistema para essa área."

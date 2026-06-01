@@ -31,6 +31,7 @@ import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
+import { SystemAdminChurchesPage } from "./system-admin/SystemAdminChurchesPage";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
 import { SystemAdminSchedulingPage } from "./system-admin/SystemAdminSchedulingPage";
 import { SystemAdminSchedulingEventDetailPage } from "./system-admin/SystemAdminSchedulingEventDetailPage";
@@ -204,6 +205,12 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminChurchesRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/churches",
+  component: SystemAdminChurchesPage,
+});
+
 const systemAdminSchedulingRoute = createRoute({
   getParentRoute: () => systemAdminRoute,
   path: "/scheduling",
@@ -279,6 +286,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     ministryLeadersRoute,
     systemAdminRoute.addChildren([
       systemAdminIndexRoute,
+      systemAdminChurchesRoute,
       systemAdminSchedulingRoute,
       systemAdminSchedulingEventDetailRoute,
     ]),
