@@ -31,6 +31,7 @@ import { RouteErrorPanel } from "./shell/RouteErrorPanel";
 import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
+import { SystemAdminChurchesPage } from "./system-admin/SystemAdminChurchesPage";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
@@ -202,6 +203,12 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminChurchesRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/churches",
+  component: SystemAdminChurchesPage,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -251,7 +258,10 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
-    systemAdminRoute.addChildren([systemAdminIndexRoute]),
+    systemAdminRoute.addChildren([
+      systemAdminIndexRoute,
+      systemAdminChurchesRoute,
+    ]),
     ...shellRoutes,
   ]);
 }
