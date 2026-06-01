@@ -5,7 +5,37 @@
   },
   "dashboard": {
     "title": "Painel do operador",
-    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda."
+    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
+    "links": {
+      "users": "Usuários e papéis"
+    }
   },
-  "accessDenied": "É necessário acesso de Admin do sistema para essa área."
+  "accessDenied": "É necessário acesso de Admin do sistema para essa área.",
+  "users": {
+    "title": "Usuários",
+    "intro": "Busque voluntários e gerencie acreditações de Admin da igreja.",
+    "backToDashboard": "Voltar ao painel",
+    "backToSearch": "Voltar à busca",
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Nome ou id do voluntário",
+    "searchAction": "Buscar",
+    "loading": "Carregando…",
+    "empty": "Nenhum voluntário corresponde à busca.",
+    "summaryCounts": "{{accreditations}} acreditações · {{leaderships}} lideranças · {{memberships}} membros",
+    "viewDetail": "Ver",
+    "accreditationsTitle": "Acreditações de Admin da igreja",
+    "noAccreditations": "Ainda não há acreditações de Admin.",
+    "grantChurchIdLabel": "Id da igreja",
+    "grantChurchIdPlaceholder": "Informe o id da igreja para conceder Admin",
+    "grantAdmin": "Conceder Admin",
+    "revokeAdmin": "Revogar Admin",
+    "grantSuccess": "Acreditação de Admin concedida.",
+    "revokeSuccess": "Acreditação de Admin revogada.",
+    "leadershipsTitle": "Lideranças de ministério",
+    "membershipsTitle": "Membros de ministério",
+    "errors": {
+      "generic": "Algo deu errado. Tente novamente.",
+      "lastAdmin": "Não é possível revogar o último Admin desta igreja."
+    }
+  }
 }

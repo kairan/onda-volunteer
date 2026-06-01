@@ -32,6 +32,8 @@ import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { SystemAdminUsersPage } from "./system-admin/SystemAdminUsersPage";
+import { SystemAdminUserDetailPage } from "./system-admin/SystemAdminUserDetailPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
 const rootRoute = createRootRoute({
@@ -202,6 +204,18 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminUsersRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users",
+  component: SystemAdminUsersPage,
+});
+
+const systemAdminUserDetailRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users/$volunteerId",
+  component: SystemAdminUserDetailPage,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -251,7 +265,11 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
-    systemAdminRoute.addChildren([systemAdminIndexRoute]),
+    systemAdminRoute.addChildren([
+      systemAdminIndexRoute,
+      systemAdminUsersRoute,
+      systemAdminUserDetailRoute,
+    ]),
     ...shellRoutes,
   ]);
 }

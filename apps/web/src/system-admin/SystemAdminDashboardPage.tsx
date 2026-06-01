@@ -1,4 +1,6 @@
+import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
 
 export function SystemAdminDashboardPage() {
   const { t } = useTranslation('systemAdmin');
@@ -11,6 +13,13 @@ export function SystemAdminDashboardPage() {
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
         {t('dashboard.intro')}
       </p>
+      <ul className="mt-8 flex flex-col gap-3 border-t border-border pt-6">
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/users">{t('dashboard.links.users')}</Link>
+          </Button>
+        </li>
+      </ul>
     </section>
   );
 }
