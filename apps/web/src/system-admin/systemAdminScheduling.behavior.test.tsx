@@ -92,12 +92,12 @@ describe('System Admin scheduling page', () => {
     expect(
       await screen.findByRole('heading', {
         level: 1,
-        name: /^scheduling$|^agenda$/i,
+        name: /scheduling support|suporte à agenda/i,
       }),
     ).toBeInTheDocument();
 
     expect(await screen.findByText('Sunday Service')).toBeInTheDocument();
-    expect(screen.getByText(/read-only|somente leitura/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/read-only|somente leitura/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: /create|criar/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /assign|designar/i })).not.toBeInTheDocument();
 

@@ -26,7 +26,6 @@ import { SupabaseAdminService } from './supabase-admin.service';
     SystemAdminChurchesService,
     SystemAdminVolunteersService,
     SystemAdminAccreditationService,
-    SupabaseAdminService,
   ],
 })
 export class SystemAdminModule {
