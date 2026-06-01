@@ -147,6 +147,7 @@
     "inviteSuccess": "Convite de admin enviado.",
     "invitesListTitle": "Convites de admin",
     "invitesLoading": "Carregando convites…",
+    "invitesLoadError": "Não foi possível carregar os convites de admin.",
     "invitesEmpty": "Nenhum convite de admin para esta igreja ainda.",
     "revokeInvite": "Revogar convite",
     "revokeSuccess": "Convite revogado.",

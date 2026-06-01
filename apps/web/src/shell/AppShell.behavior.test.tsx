@@ -145,6 +145,34 @@ describe('App shell routing', () => {
     ).toHaveAttribute('href', '/system-admin');
   });
 
+  it('retries identity fetch once before hiding System Admin nav', async () => {
+    await initI18n();
+    fetchIdentityMeMock
+      .mockRejectedValueOnce(new Error('network'))
+      .mockResolvedValueOnce({
+        volunteer: {
+          id: 'seed-volunteer-demo',
+          displayName: 'Demo',
+          uiLocale: null,
+        },
+        authSubjectId: null,
+        isSystemAdmin: true,
+      });
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    await waitFor(() => {
+      expect(
+        within(primaryNav).getByRole('link', { name: /system admin|admin do sistema/i }),
+      ).toHaveAttribute('href', '/system-admin');
+    });
+    expect(fetchIdentityMeMock).toHaveBeenCalledTimes(2);
+  });
+
   it('hides System Admin nav link for non-operators', async () => {
     await initI18n();
     const { routeTree } = buildTestRouteTree();

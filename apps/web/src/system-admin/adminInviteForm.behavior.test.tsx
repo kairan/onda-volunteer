@@ -204,4 +204,36 @@ describe('System Admin admin invite form', () => {
       });
     });
   });
+
+  it('shows invite list load error instead of empty state', async () => {
+    await initI18n();
+    fetchIdentityMeMock.mockResolvedValue({
+      volunteer: {
+        id: 'seed-volunteer-system-admin',
+        displayName: 'System Operator',
+        uiLocale: null,
+      },
+      authSubjectId: null,
+      isSystemAdmin: true,
+    });
+    fetchSystemAdminChurchMock.mockResolvedValue({
+      id: 'ch-1',
+      name: 'Test Church',
+      defaultTimezone: 'America/Sao_Paulo',
+    });
+    const { ApiRequestError } = await import('@/apiError');
+    fetchAdminInvitesMock.mockRejectedValue(
+      new ApiRequestError(500, 'Server error'),
+    );
+
+    renderChurchDetail();
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Server error');
+    expect(
+      screen.getByRole('button', { name: /try again|tentar novamente/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/no admin invites|nenhum convite de admin/i),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -59,18 +59,21 @@ function AppShellContent({ children }: { children?: ReactNode }) {
       return;
     }
     let cancelled = false;
-    void fetchIdentityMe({ volunteerId }).then(
-      (me) => {
-        if (!cancelled) {
-          setIsSystemAdmin(me.isSystemAdmin);
+    void (async () => {
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        try {
+          const me = await fetchIdentityMe({ volunteerId });
+          if (!cancelled) {
+            setIsSystemAdmin(me.isSystemAdmin);
+          }
+          return;
+        } catch {
+          if (attempt === 1 && !cancelled) {
+            setIsSystemAdmin(false);
+          }
         }
-      },
-      () => {
-        if (!cancelled) {
-          setIsSystemAdmin(false);
-        }
-      },
-    );
+      }
+    })();
     return () => {
       cancelled = true;
     };

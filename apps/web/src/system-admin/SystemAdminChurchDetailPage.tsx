@@ -18,7 +18,7 @@ import {
 
 export function SystemAdminChurchDetailPage() {
   const { churchId } = useParams({ from: '/system-admin/churches/$churchId' });
-  const { t } = useTranslation('systemAdmin');
+  const { t } = useTranslation(['systemAdmin', 'common']);
   const toasts = useToasts();
   const [church, setChurch] = useState<SystemAdminChurchSummary | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -27,19 +27,26 @@ export function SystemAdminChurchDetailPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [invites, setInvites] = useState<AdminInviteSummary[]>([]);
   const [invitesLoading, setInvitesLoading] = useState(false);
+  const [invitesLoadError, setInvitesLoadError] = useState<string | null>(null);
   const [revokeBusyId, setRevokeBusyId] = useState<string | null>(null);
 
   const loadInvites = useCallback(async () => {
     setInvitesLoading(true);
+    setInvitesLoadError(null);
     try {
       const rows = await fetchAdminInvites({ churchId });
       setInvites(rows);
-    } catch {
+    } catch (err) {
       setInvites([]);
+      setInvitesLoadError(
+        err instanceof ApiRequestError
+          ? err.message
+          : t('churchDetail.invitesLoadError'),
+      );
     } finally {
       setInvitesLoading(false);
     }
-  }, [churchId]);
+  }, [churchId, t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -177,7 +184,19 @@ export function SystemAdminChurchDetailPage() {
         <h2 className="font-display text-xl font-bold uppercase tracking-tight">
           {t('churchDetail.invitesListTitle')}
         </h2>
-        {invitesLoading ? (
+        {invitesLoadError ? (
+          <div className="mt-3 space-y-2" role="alert">
+            <p className="text-sm text-destructive">{invitesLoadError}</p>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={invitesLoading}
+              onClick={() => void loadInvites()}
+            >
+              {t('common:retry')}
+            </Button>
+          </div>
+        ) : invitesLoading ? (
           <p className="mt-3 text-sm text-muted-foreground">
             {t('churchDetail.invitesLoading')}
           </p>

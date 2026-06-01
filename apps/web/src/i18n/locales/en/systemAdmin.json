@@ -147,6 +147,7 @@
     "inviteSuccess": "Admin invite sent.",
     "invitesListTitle": "Admin invites",
     "invitesLoading": "Loading invites…",
+    "invitesLoadError": "Could not load admin invites.",
     "invitesEmpty": "No admin invites for this church yet.",
     "revokeInvite": "Revoke invite",
     "revokeSuccess": "Invite revoked.",
