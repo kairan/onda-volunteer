@@ -20,8 +20,9 @@ export class ChurchesController {
   ) {
     return this.organization.updateChurchMetadata({
       churchId,
-      name: body.name,
-      defaultTimezone: body.defaultTimezone,
+      name: typeof body.name === 'string' ? body.name : undefined,
+      defaultTimezone:
+        typeof body.defaultTimezone === 'string' ? body.defaultTimezone : undefined,
       auth,
     });
   }

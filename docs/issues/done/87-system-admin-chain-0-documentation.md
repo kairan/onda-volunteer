@@ -3,7 +3,7 @@
 **Type:** Docs  
 **Label:** `ready-for-agent`  
 **TLC:** `.specs/features/system-admin-platform/`  
-**Parallel plan:** [parallel-execution.md](../.specs/features/system-admin-platform/parallel-execution.md)
+**Parallel plan:** [parallel-execution.md](../../../.specs/features/system-admin-platform/parallel-execution.md)
 
 ## What to build
 

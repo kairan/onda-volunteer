@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+
 import { isValidIanaTimezone } from '../common/iana-timezone';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -139,4 +140,19 @@ export class SystemAdminChurchesService {
       nextCursor: hasMore ? page[page.length - 1]!.id : null,
     };
   }
+
+  async getChurch(churchId: string): Promise<SystemAdminChurchRow> {
+    const church = await this.prisma.church.findUnique({
+      where: { id: churchId },
+      include: { campuses: { orderBy: { name: 'asc' } } },
+    });
+    if (!church) {
+      throw new NotFoundException({
+        code: 'CHURCH_NOT_FOUND',
+        message: 'Church not found.',
+      });
+    }
+    return this.toRow(church);
+  }
+
 }

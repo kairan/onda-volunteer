@@ -10,18 +10,21 @@
       "users": "Usuários e papéis",
       "churches": "Igrejas",
       "scheduling": "Agenda (somente leitura)"
-    }
+    },
+    "churchesLink": "Igrejas",
+    "usersLink": "Usuários",
+    "schedulingLink": "Agenda (somente leitura)"
   },
   "scheduling": {
     "eyebrow": "Suporte",
-    "title": "Agenda",
-    "intro": "Consulte eventos em todas as igrejas para diagnóstico. Operadores não podem criar nem alterar escalas.",
+    "title": "Suporte à agenda",
+    "intro": "Visualização somente leitura de eventos em todas as igrejas. Alterações na agenda estão desabilitadas para operadores.",
     "readOnlyNotice": "Somente leitura — ações de escrita estão desativadas para Admin do sistema.",
     "listHeading": "Eventos",
     "churchFilter": "Igreja",
     "allChurches": "Todas as igrejas",
     "loading": "Carregando eventos…",
-    "empty": "Nenhum evento futuro encontrado.",
+    "empty": "Nenhum evento futuro.",
     "backToDashboard": "Voltar ao painel",
     "errors": {
       "loadFailed": "Não foi possível carregar os eventos."
@@ -31,12 +34,13 @@
       "noAssignments": "Nenhuma designação ativa.",
       "cancelled": "Este evento está cancelado.",
       "backToList": "Voltar à lista da agenda"
-    }
+    },
+    "loadError": "Não foi possível carregar os eventos."
   },
   "churches": {
     "eyebrow": "Provisionamento",
     "title": "Igrejas",
-    "intro": "Crie igrejas e campus padrão para onboarding sem acesso ao banco de dados.",
+    "intro": "Crie igrejas ou selecione uma para convidar um Admin da igreja por e-mail.",
     "backToDashboard": "Voltar ao painel",
     "createHeading": "Criar igreja",
     "listHeading": "Todas as igrejas",
@@ -56,6 +60,17 @@
       "generic": "Algo deu errado.",
       "nameRequired": "O nome da igreja é obrigatório.",
       "invalidTimezone": "Informe um fuso IANA válido."
+    },
+    "loadError": "Não foi possível carregar as igrejas.",
+    "create": {
+      "title": "Criar igreja",
+      "nameLabel": "Nome da igreja",
+      "timezoneLabel": "Fuso padrão (IANA)",
+      "submit": "Criar igreja",
+      "submitting": "Criando…",
+      "errors": {
+        "generic": "Não foi possível criar a igreja. Tente novamente."
+      }
     }
   },
   "accessDenied": "É necessário acesso de Admin do sistema para essa área.",
@@ -65,12 +80,12 @@
     "backToDashboard": "Voltar ao painel",
     "backToSearch": "Voltar à busca",
     "searchLabel": "Buscar",
-    "searchPlaceholder": "Nome ou id do voluntário",
+    "searchPlaceholder": "Nome ou ID",
     "searchAction": "Buscar",
-    "loading": "Carregando…",
+    "loading": "Carregando usuários…",
     "loadingMore": "Carregando mais…",
     "loadMore": "Carregar mais",
-    "empty": "Nenhum voluntário corresponde à busca.",
+    "empty": "Nenhum usuário corresponde à busca.",
     "summaryCounts": "{{accreditations}} acreditações · {{leaderships}} lideranças · {{memberships}} membros",
     "viewDetail": "Ver",
     "accreditationsTitle": "Acreditações de Admin da igreja",
@@ -86,6 +101,39 @@
     "errors": {
       "generic": "Algo deu errado. Tente novamente.",
       "lastAdmin": "Não é possível revogar o último Admin desta igreja."
+    },
+    "loadError": "Não foi possível carregar os usuários.",
+    "search": "Buscar",
+    "adminCount": "{{count}} acreditação(ões) de admin"
+  },
+  "userDetail": {
+    "backToUsers": "Todos os usuários",
+    "loading": "Carregando usuário…",
+    "loadError": "Não foi possível carregar este usuário.",
+    "accreditationsTitle": "Acreditações de Admin",
+    "noAccreditations": "Nenhuma acreditação de Admin ainda.",
+    "grantLabel": "Conceder Admin para igreja",
+    "grantPlaceholder": "Selecione a igreja",
+    "grant": "Conceder",
+    "revoke": "Revogar",
+    "errors": {
+      "generic": "Não foi possível atualizar a acreditação. Tente novamente."
+    }
+  },
+  "churchDetail": {
+    "backToChurches": "Todas as igrejas",
+    "loading": "Carregando igreja…",
+    "loadError": "Não foi possível carregar esta igreja.",
+    "inviteTitle": "Convidar Admin",
+    "inviteIntro": "Envia um convite por e-mail via Supabase e registra um convite de admin pendente para esta igreja.",
+    "emailLabel": "E-mail",
+    "submit": "Enviar convite",
+    "submitting": "Enviando…",
+    "inviteSuccess": "Convite de admin enviado.",
+    "errors": {
+      "invalidEmail": "Informe um endereço de e-mail válido.",
+      "alreadyPending": "Já existe um convite pendente para este e-mail.",
+      "generic": "Não foi possível enviar o convite. Tente novamente."
     }
   }
 }

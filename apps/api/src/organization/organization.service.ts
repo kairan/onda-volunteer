@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CLOCK, type Clock } from '../common/clock';
-import { isValidIanaTimezone } from '../common/iana-timezone';
+import { parseIanaTimezone } from '../common/iana-timezone';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { StewardshipService } from './stewardship.service';
+
+type OrganizationActorOptions = {
+  asSystemAdmin?: boolean;
+};
 
 @Injectable()
 export class OrganizationService {
@@ -147,30 +151,6 @@ export class OrganizationService {
     return ministry.churchId;
   }
 
-  private async assertOrganizationActor(input: {
-    auth: AuthenticatedRequestContext;
-    churchId: string;
-    systemAdminActor?: boolean;
-  }) {
-    if (input.systemAdminActor) {
-      await input.auth.assertSystemAdmin();
-      return;
-    }
-    await input.auth.assertAdminAccreditedForChurch(input.churchId);
-  }
-
-  private async assertMinistryActor(input: {
-    auth: AuthenticatedRequestContext;
-    ministryId: string;
-    systemAdminActor?: boolean;
-  }) {
-    if (input.systemAdminActor) {
-      await input.auth.assertSystemAdmin();
-      return;
-    }
-    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
-  }
-
   private ministryNameConflict(): BadRequestException {
     return new BadRequestException({
       code: 'MINISTRY_NAME_CONFLICT',
@@ -218,8 +198,8 @@ export class OrganizationService {
     return parsed;
   }
 
-  private parseChurchName(name: unknown): string {
-    const parsed = typeof name === 'string' ? name.trim() : '';
+  private parseChurchName(name: string | undefined): string {
+    const parsed = name?.trim();
     if (!parsed) {
       throw new BadRequestException({
         code: 'CHURCH_NAME_REQUIRED',
@@ -229,57 +209,63 @@ export class OrganizationService {
     return parsed;
   }
 
-  private parseChurchTimezone(label: string, timezone: unknown): string {
-    const parsed = typeof timezone === 'string' ? timezone.trim() : '';
-    if (!parsed) {
-      throw new BadRequestException({
-        code: 'INVALID_TIMEZONE',
-        message: `${label} is required.`,
-      });
+  private async assertChurchAdminActor(
+    auth: AuthenticatedRequestContext,
+    churchId: string,
+    options?: OrganizationActorOptions,
+  ): Promise<void> {
+    if (options?.asSystemAdmin) {
+      await auth.assertSystemAdmin();
+      return;
     }
-    if (!isValidIanaTimezone(parsed)) {
-      throw new BadRequestException({
-        code: 'INVALID_TIMEZONE',
-        message: `${label} must be a valid IANA timezone.`,
-      });
+    await auth.assertAdminAccreditedForChurch(churchId);
+  }
+
+  private async assertLeaderOrSystemAdmin(
+    auth: AuthenticatedRequestContext,
+    ministryId: string,
+    options?: OrganizationActorOptions,
+  ): Promise<void> {
+    if (options?.asSystemAdmin) {
+      await auth.assertSystemAdmin();
+      return;
     }
-    return parsed;
+    await auth.assertLeaderCanActOnMinistry(ministryId);
   }
 
   async updateChurchMetadata(input: {
     churchId: string;
-    name?: unknown;
-    defaultTimezone?: unknown;
+    name?: string;
+    defaultTimezone?: string;
     auth: AuthenticatedRequestContext;
   }) {
-    const church = await this.prisma.church.findUnique({
-      where: { id: input.churchId },
-      select: { id: true },
-    });
-    if (!church) {
-      throw new NotFoundException();
-    }
-
     await input.auth.assertAdminAccreditedForChurch(input.churchId);
 
-    const hasName = input.name !== undefined;
-    const hasTimezone = input.defaultTimezone !== undefined;
-    if (!hasName && !hasTimezone) {
-      throw new BadRequestException({
-        code: 'CHURCH_METADATA_EMPTY',
-        message: 'Provide name and/or defaultTimezone to update.',
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+    });
+    if (!church) {
+      throw new NotFoundException({
+        code: 'CHURCH_NOT_FOUND',
+        message: 'Church not found.',
       });
     }
 
     const data: { name?: string; defaultTimezone?: string } = {};
-    if (hasName) {
+    if (input.name !== undefined) {
       data.name = this.parseChurchName(input.name);
     }
-    if (hasTimezone) {
-      data.defaultTimezone = this.parseChurchTimezone(
-        'defaultTimezone',
+    if (input.defaultTimezone !== undefined) {
+      data.defaultTimezone = parseIanaTimezone(
         input.defaultTimezone,
+        'defaultTimezone',
       );
+    }
+    if (Object.keys(data).length === 0) {
+      throw new BadRequestException({
+        code: 'CHURCH_METADATA_EMPTY',
+        message: 'Provide at least one of name or defaultTimezone.',
+      });
     }
 
     const updated = await this.prisma.church.update({
@@ -369,13 +355,11 @@ export class OrganizationService {
     volunteerId: string;
     status: 'PENDING' | 'ACTIVE';
     auth: AuthenticatedRequestContext;
-    systemAdminActor?: boolean;
+    asSystemAdmin?: boolean;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await this.assertOrganizationActor({
-      auth: input.auth,
-      churchId,
-      systemAdminActor: input.systemAdminActor,
+    await this.assertChurchAdminActor(input.auth, churchId, {
+      asSystemAdmin: input.asSystemAdmin,
     });
 
     const volunteer = await this.prisma.volunteer.findUnique({
@@ -433,13 +417,11 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
-    systemAdminActor?: boolean;
+    asSystemAdmin?: boolean;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await this.assertOrganizationActor({
-      auth: input.auth,
-      churchId,
-      systemAdminActor: input.systemAdminActor,
+    await this.assertChurchAdminActor(input.auth, churchId, {
+      asSystemAdmin: input.asSystemAdmin,
     });
 
     const membership = await this.prisma.ministryMembership.findUnique({
@@ -532,7 +514,7 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
-    systemAdminActor?: boolean;
+    asSystemAdmin?: boolean;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -540,10 +522,8 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await this.assertOrganizationActor({
-      auth: input.auth,
-      churchId: ministry.churchId,
-      systemAdminActor: input.systemAdminActor,
+    await this.assertChurchAdminActor(input.auth, ministry.churchId, {
+      asSystemAdmin: input.asSystemAdmin,
     });
 
     const volunteer = await this.prisma.volunteer.findUnique({
@@ -580,7 +560,7 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
-    systemAdminActor?: boolean;
+    asSystemAdmin?: boolean;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -588,10 +568,8 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await this.assertOrganizationActor({
-      auth: input.auth,
-      churchId: ministry.churchId,
-      systemAdminActor: input.systemAdminActor,
+    await this.assertChurchAdminActor(input.auth, ministry.churchId, {
+      asSystemAdmin: input.asSystemAdmin,
     });
 
     await this.prisma.ministryLeader.deleteMany({
@@ -611,12 +589,10 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
-    systemAdminActor?: boolean;
+    asSystemAdmin?: boolean;
   }) {
-    await this.assertMinistryActor({
-      auth: input.auth,
-      ministryId: input.ministryId,
-      systemAdminActor: input.systemAdminActor,
+    await this.assertLeaderOrSystemAdmin(input.auth, input.ministryId, {
+      asSystemAdmin: input.asSystemAdmin,
     });
 
     const membership = await this.prisma.ministryMembership.findUnique({

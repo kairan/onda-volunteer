@@ -32,6 +32,9 @@ importers:
       '@prisma/client':
         specifier: ^6.3.1
         version: 6.19.3(prisma@6.19.3(typescript@5.7.3))(typescript@5.7.3)
+      '@supabase/supabase-js':
+        specifier: ^2.105.4
+        version: 2.105.4
       dotenv:
         specifier: ^16.6.1
         version: 16.6.1

@@ -33,6 +33,7 @@ describe('System Admin authorization (e2e)', () => {
   });
 
   beforeEach(async () => {
+    await prisma.adminInvite.deleteMany();
     await prisma.systemAdministrator.deleteMany();
     await prisma.assignment.deleteMany();
     await prisma.unavailability.deleteMany();

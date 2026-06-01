@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -48,5 +49,14 @@ export class SystemAdminChurchesController {
       cursor,
       limit: Number.isFinite(limit) ? limit : undefined,
     });
+  }
+
+  @Get(':churchId')
+  async getOne(
+    @Param('churchId') churchId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    await auth.assertSystemAdmin();
+    return this.churches.getChurch(churchId);
   }
 }

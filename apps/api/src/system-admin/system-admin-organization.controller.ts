@@ -81,7 +81,7 @@ export class SystemAdminOrganizationController {
       ministryId,
       volunteerId,
       auth,
-      systemAdminActor: true,
+      asSystemAdmin: true,
     });
   }
 
@@ -97,7 +97,7 @@ export class SystemAdminOrganizationController {
       ministryId,
       volunteerId,
       auth,
-      systemAdminActor: true,
+      asSystemAdmin: true,
     });
   }
 
@@ -115,7 +115,7 @@ export class SystemAdminOrganizationController {
       volunteerId: parsed.volunteerId,
       status: parsed.status,
       auth,
-      systemAdminActor: true,
+      asSystemAdmin: true,
     });
   }
 
@@ -134,14 +134,14 @@ export class SystemAdminOrganizationController {
         ministryId,
         volunteerId,
         auth,
-        systemAdminActor: true,
+        asSystemAdmin: true,
       });
     }
     return this.organization.deactivateMinistryMembership({
       ministryId,
       volunteerId,
       auth,
-      systemAdminActor: true,
+      asSystemAdmin: true,
     });
   }
 }

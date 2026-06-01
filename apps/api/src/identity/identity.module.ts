@@ -1,5 +1,6 @@
 import { forwardRef, Global, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AdminInviteModule } from '../system-admin/admin-invite.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { StewardshipModule } from '../organization/stewardship.module';
 import { AuthContextInterceptor } from './auth-context.interceptor';
@@ -10,7 +11,11 @@ import { SupabaseJwtVerifier } from './supabase-jwt-verifier';
 
 @Global()
 @Module({
-  imports: [PrismaModule, forwardRef(() => StewardshipModule)],
+  imports: [
+    PrismaModule,
+    AdminInviteModule,
+    forwardRef(() => StewardshipModule),
+  ],
   controllers: [IdentityController],
   providers: [
     SupabaseJwtVerifier,

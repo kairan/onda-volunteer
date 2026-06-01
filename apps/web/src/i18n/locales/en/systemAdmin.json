@@ -10,18 +10,21 @@
       "users": "Users and roles",
       "churches": "Churches",
       "scheduling": "Scheduling (read-only)"
-    }
+    },
+    "churchesLink": "Churches",
+    "usersLink": "Users",
+    "schedulingLink": "Scheduling (read-only)"
   },
   "scheduling": {
     "eyebrow": "Support",
-    "title": "Scheduling",
-    "intro": "Browse events across churches for diagnosis. Operators cannot create or change schedules.",
+    "title": "Scheduling support",
+    "intro": "Read-only view of events across all churches. Scheduling writes are disabled for operators.",
     "readOnlyNotice": "Read-only — write actions are disabled for System Admin.",
     "listHeading": "Events",
     "churchFilter": "Church",
     "allChurches": "All churches",
     "loading": "Loading events…",
-    "empty": "No upcoming events found.",
+    "empty": "No upcoming events.",
     "backToDashboard": "Back to dashboard",
     "errors": {
       "loadFailed": "Could not load events."
@@ -31,12 +34,13 @@
       "noAssignments": "No active assignments.",
       "cancelled": "This event is cancelled.",
       "backToList": "Back to scheduling list"
-    }
+    },
+    "loadError": "Could not load events."
   },
   "churches": {
     "eyebrow": "Provisioning",
     "title": "Churches",
-    "intro": "Create churches and default campuses for onboarding without database access.",
+    "intro": "Create churches or select one to invite a church Admin by email.",
     "backToDashboard": "Back to dashboard",
     "createHeading": "Create church",
     "listHeading": "All churches",
@@ -56,6 +60,17 @@
       "generic": "Something went wrong.",
       "nameRequired": "Church name is required.",
       "invalidTimezone": "Enter a valid IANA timezone."
+    },
+    "loadError": "Could not load churches.",
+    "create": {
+      "title": "Create church",
+      "nameLabel": "Church name",
+      "timezoneLabel": "Default timezone (IANA)",
+      "submit": "Create church",
+      "submitting": "Creating…",
+      "errors": {
+        "generic": "Could not create the church. Try again."
+      }
     }
   },
   "accessDenied": "System Admin access is required for that area.",
@@ -65,12 +80,12 @@
     "backToDashboard": "Back to dashboard",
     "backToSearch": "Back to search",
     "searchLabel": "Search",
-    "searchPlaceholder": "Name or volunteer id",
+    "searchPlaceholder": "Name or ID",
     "searchAction": "Search",
-    "loading": "Loading…",
+    "loading": "Loading users…",
     "loadingMore": "Loading more…",
     "loadMore": "Load more",
-    "empty": "No volunteers match your search.",
+    "empty": "No users match your search.",
     "summaryCounts": "{{accreditations}} accreditations · {{leaderships}} leaderships · {{memberships}} memberships",
     "viewDetail": "View",
     "accreditationsTitle": "Church Admin accreditations",
@@ -86,6 +101,39 @@
     "errors": {
       "generic": "Something went wrong. Try again.",
       "lastAdmin": "Cannot revoke the last Admin for this church."
+    },
+    "loadError": "Could not load users.",
+    "search": "Search",
+    "adminCount": "{{count}} church admin grant(s)"
+  },
+  "userDetail": {
+    "backToUsers": "All users",
+    "loading": "Loading user…",
+    "loadError": "Could not load this user.",
+    "accreditationsTitle": "Admin accreditations",
+    "noAccreditations": "No church Admin grants yet.",
+    "grantLabel": "Grant Admin for church",
+    "grantPlaceholder": "Select church",
+    "grant": "Grant",
+    "revoke": "Revoke",
+    "errors": {
+      "generic": "Could not update accreditation. Try again."
+    }
+  },
+  "churchDetail": {
+    "backToChurches": "All churches",
+    "loading": "Loading church…",
+    "loadError": "Could not load this church.",
+    "inviteTitle": "Invite Admin",
+    "inviteIntro": "Sends a Supabase email invite and records a pending admin invite for this church.",
+    "emailLabel": "Email",
+    "submit": "Send invite",
+    "submitting": "Sending…",
+    "inviteSuccess": "Admin invite sent.",
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "alreadyPending": "A pending invite already exists for this email.",
+      "generic": "Could not send the invite. Try again."
     }
   }
 }

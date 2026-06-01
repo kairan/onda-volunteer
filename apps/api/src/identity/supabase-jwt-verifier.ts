@@ -4,6 +4,7 @@ import jwksClient from 'jwks-rsa';
 
 export type VerifiedAccessToken = {
   sub: string;
+  email?: string;
 };
 
 const client = jwksClient({
@@ -57,7 +58,11 @@ export class SupabaseJwtVerifier {
             })
           );
         }
-        resolve({ sub: payload.sub });
+        const email =
+          typeof payload.email === 'string' && payload.email.trim()
+            ? payload.email.trim().toLowerCase()
+            : undefined;
+        resolve({ sub: payload.sub, email });
       });
     });
   }
