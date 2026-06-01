@@ -32,6 +32,8 @@ import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { SystemAdminSchedulingPage } from "./system-admin/SystemAdminSchedulingPage";
+import { SystemAdminSchedulingEventDetailPage } from "./system-admin/SystemAdminSchedulingEventDetailPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
 const rootRoute = createRootRoute({
@@ -202,6 +204,27 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminSchedulingRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/scheduling",
+  component: SystemAdminSchedulingPage,
+});
+
+function createSystemAdminSchedulingEventDetailRoute(
+  schedulingEventDetailLoader: SchedulingEventDetailLoader,
+) {
+  const route = createRoute({
+    getParentRoute: () => systemAdminRoute,
+    path: "/scheduling/events/$eventId",
+    loader: ({ params }) => schedulingEventDetailLoader({ params }),
+    component: function SystemAdminSchedulingEventDetailRoute() {
+      const data = route.useLoaderData();
+      return <SystemAdminSchedulingEventDetailPage data={data} />;
+    },
+  });
+  return route;
+}
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -240,9 +263,12 @@ async function defaultSchedulingEventDetailLoader({
 }
 
 export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
-  const schedulingEventDetailRoute = createSchedulingEventDetailRoute(
-    options.schedulingEventDetailLoader ?? defaultSchedulingEventDetailLoader,
-  );
+  const schedulingEventDetailLoader =
+    options.schedulingEventDetailLoader ?? defaultSchedulingEventDetailLoader;
+  const schedulingEventDetailRoute =
+    createSchedulingEventDetailRoute(schedulingEventDetailLoader);
+  const systemAdminSchedulingEventDetailRoute =
+    createSystemAdminSchedulingEventDetailRoute(schedulingEventDetailLoader);
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute]),
     legacyEventRedirectRoute,
@@ -251,7 +277,11 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
-    systemAdminRoute.addChildren([systemAdminIndexRoute]),
+    systemAdminRoute.addChildren([
+      systemAdminIndexRoute,
+      systemAdminSchedulingRoute,
+      systemAdminSchedulingEventDetailRoute,
+    ]),
     ...shellRoutes,
   ]);
 }
