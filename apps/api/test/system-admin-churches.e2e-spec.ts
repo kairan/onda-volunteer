@@ -93,6 +93,9 @@ describe('System Admin churches (e2e)', () => {
     expect(stored?.campuses).toHaveLength(1);
   });
 
+  // Org-context visibility for accredited Admin (T-SYS-11 done when): add e2e in #90
+  // once system-admin grant accreditation APIs exist — create church → grant → GET org context.
+
   it('lists churches with search and pagination', async () => {
     await seedSystemAdmin();
     const alpha = await prisma.church.create({

@@ -25,6 +25,8 @@
     "creating": "Criando…",
     "createSuccess": "Igreja criada.",
     "loading": "Carregando igrejas…",
+    "loadMore": "Carregar mais",
+    "loadingMore": "Carregando mais…",
     "empty": "Nenhuma igreja ainda.",
     "campusCount": "{{count}} campus",
     "errors": {

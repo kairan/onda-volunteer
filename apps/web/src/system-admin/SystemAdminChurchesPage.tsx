@@ -20,7 +20,9 @@ export function SystemAdminChurchesPage() {
       : null;
 
   const [churches, setChurches] = useState<SystemAdminChurchRow[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
 
   const [name, setName] = useState('');
@@ -29,9 +31,10 @@ export function SystemAdminChurchesPage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [createMessage, setCreateMessage] = useState<string | null>(null);
 
-  const loadChurches = useCallback(async () => {
+  const refreshChurches = useCallback(async () => {
     if (!actingVolunteerId) {
       setChurches([]);
+      setNextCursor(null);
       return;
     }
     setLoading(true);
@@ -42,6 +45,7 @@ export function SystemAdminChurchesPage() {
         limit: 100,
       });
       setChurches(page.items);
+      setNextCursor(page.nextCursor);
     } catch (err) {
       setListError(err instanceof Error ? err.message : t('churches.errors.generic'));
     } finally {
@@ -49,9 +53,30 @@ export function SystemAdminChurchesPage() {
     }
   }, [actingVolunteerId, t]);
 
+  const loadMoreChurches = useCallback(async () => {
+    if (!actingVolunteerId || !nextCursor) {
+      return;
+    }
+    setLoadingMore(true);
+    setListError(null);
+    try {
+      const page = await fetchSystemAdminChurches({
+        volunteerId: actingVolunteerId,
+        limit: 100,
+        cursor: nextCursor,
+      });
+      setChurches((prev) => [...prev, ...page.items]);
+      setNextCursor(page.nextCursor);
+    } catch (err) {
+      setListError(err instanceof Error ? err.message : t('churches.errors.generic'));
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [actingVolunteerId, nextCursor, t]);
+
   useEffect(() => {
-    void loadChurches();
-  }, [loadChurches]);
+    void refreshChurches();
+  }, [refreshChurches]);
 
   function createErrorMessage(err: unknown): string {
     if (err instanceof ApiRequestError) {
@@ -79,7 +104,7 @@ export function SystemAdminChurchesPage() {
       });
       setName('');
       setCreateMessage(t('churches.createSuccess'));
-      await loadChurches();
+      await refreshChurches();
     } catch (err) {
       setCreateError(createErrorMessage(err));
     } finally {
@@ -174,6 +199,18 @@ export function SystemAdminChurchesPage() {
               </li>
             ))}
           </ul>
+        ) : null}
+        {!loading && nextCursor ? (
+          <div className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loadingMore}
+              onClick={() => void loadMoreChurches()}
+            >
+              {loadingMore ? t('churches.loadingMore') : t('churches.loadMore')}
+            </Button>
+          </div>
         ) : null}
       </section>
     </div>

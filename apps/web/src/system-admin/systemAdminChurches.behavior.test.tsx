@@ -118,4 +118,55 @@ describe('System Admin churches page', () => {
     expect(await screen.findByText('New Parish')).toBeInTheDocument();
     expect(fetchChurchesMock).toHaveBeenCalledTimes(2);
   });
+
+  it('loads additional pages when nextCursor is present', async () => {
+    await initI18n();
+    fetchIdentityMeMock.mockResolvedValue({
+      volunteer: {
+        id: 'seed-volunteer-system-admin',
+        displayName: 'System Operator',
+        uiLocale: null,
+      },
+      authSubjectId: null,
+      isSystemAdmin: true,
+    });
+
+    fetchChurchesMock
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: 'church-1',
+            name: 'First Parish',
+            defaultTimezone: 'UTC',
+            campuses: [{ id: 'c1', name: 'Principal', timezone: 'UTC' }],
+          },
+        ],
+        nextCursor: 'church-1',
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: 'church-2',
+            name: 'Second Parish',
+            defaultTimezone: 'UTC',
+            campuses: [{ id: 'c2', name: 'Principal', timezone: 'UTC' }],
+          },
+        ],
+        nextCursor: null,
+      });
+
+    renderChurchesPage();
+
+    expect(await screen.findByText('First Parish')).toBeInTheDocument();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /load more|carregar mais/i }));
+
+    expect(await screen.findByText('Second Parish')).toBeInTheDocument();
+    expect(fetchChurchesMock).toHaveBeenLastCalledWith({
+      volunteerId: 'seed-volunteer-system-admin',
+      limit: 100,
+      cursor: 'church-1',
+    });
+  });
 });
