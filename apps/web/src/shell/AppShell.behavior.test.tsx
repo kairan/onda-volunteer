@@ -1,16 +1,23 @@
 import type { ReactElement } from 'react';
 import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { buildTestRouteTree } from '@/router.testUtils';
+import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+
+vi.mock('@/identity/fetchIdentityMe', () => ({
+  fetchIdentityMe: vi.fn(),
+}));
 
 vi.mock('@/organization/fetchOrganizationContext', () => ({
   fetchOrganizationContext: vi.fn(async () => ({ churches: [] })),
 }));
+
+const fetchIdentityMeMock = vi.mocked(fetchIdentityMe);
 
 function shellTestProviders(ui: ReactElement) {
   return (
@@ -28,6 +35,19 @@ function shellTestProviders(ui: ReactElement) {
 
 afterEach(() => {
   cleanup();
+  vi.clearAllMocks();
+});
+
+beforeEach(() => {
+  fetchIdentityMeMock.mockResolvedValue({
+    volunteer: {
+      id: 'seed-volunteer-demo',
+      displayName: 'Demo',
+      uiLocale: null,
+    },
+    authSubjectId: null,
+    isSystemAdmin: false,
+  });
 });
 
 describe('App shell routing', () => {
@@ -100,6 +120,43 @@ describe('App shell routing', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('Event not found');
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /tentar novamente/i })).toBeInTheDocument();
+  });
+
+  it('shows System Admin nav link when identity reports operator', async () => {
+    await initI18n();
+    fetchIdentityMeMock.mockResolvedValue({
+      volunteer: {
+        id: 'seed-volunteer-demo',
+        displayName: 'Demo',
+        uiLocale: null,
+      },
+      authSubjectId: null,
+      isSystemAdmin: true,
+    });
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    expect(
+      within(primaryNav).getByRole('link', { name: /system admin|admin do sistema/i }),
+    ).toHaveAttribute('href', '/system-admin');
+  });
+
+  it('hides System Admin nav link for non-operators', async () => {
+    await initI18n();
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    expect(
+      within(primaryNav).queryByRole('link', { name: /system admin|admin do sistema/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('redirects legacy /events/:id to shell scheduling detail', async () => {

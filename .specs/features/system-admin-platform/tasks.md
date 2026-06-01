@@ -554,6 +554,71 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 ---
 
+## Post-ship operator gaps (2026-06-01)
+
+Follow-up tasks after initial Execute (#87–#92). P2 verified complete; no code changes.
+
+| Task | Story | What | Status |
+|------|-------|------|--------|
+| T-SYS-27 | P1 | AppShell nav link to `/system-admin` when `isSystemAdmin` | Done |
+| T-SYS-28 | P3 | `GET`/`DELETE` admin invites list + revoke; church detail UI | Done |
+| T-SYS-29 | P4 | User detail web UI for leader + membership stewardship | Done |
+| T-SYS-30 | P5 | Defer scheduling audit log + pagination; defer Playwright smoke | Deferred |
+| T-SYS-31 | P4 | Volunteer email search — **skipped** (`Volunteer` has no `email`; search by name/id only) | Documented |
+
+### T-SYS-27: System Admin discoverability in AppShell
+
+**What**: Show primary-nav link to `/system-admin` when `GET /identity/me` reports `isSystemAdmin`.  
+**Where**: `apps/web/src/shell/AppShell.tsx`, `shell.json` locales  
+**Requirement**: SYSADM-01
+
+**Done when**:
+
+- [x] Operators see link; non-operators do not
+- [x] Vitest `AppShell.behavior.test.tsx`
+
+---
+
+### T-SYS-28: Admin invite list and revoke
+
+**What**: List invites on church detail; revoke `PENDING` → `REVOKED`.  
+**Where**: `admin-invite.service.ts`, `system-admin-admin-invites.controller.ts`, `SystemAdminChurchDetailPage.tsx`  
+**Requirement**: SYSADM-03
+
+**Done when**:
+
+- [x] API e2e list + revoke + not-revokable guard
+- [x] Vitest church detail invite list behavior
+
+---
+
+### T-SYS-29: Web stewardship for leaders and memberships
+
+**What**: Wire user detail UI to `system-admin-organization.controller.ts`.  
+**Where**: `systemAdminOrganization.ts`, `SystemAdminUserDetailPage.tsx`  
+**Requirement**: SYSADM-04
+
+**Done when**:
+
+- [x] Grant/revoke leader and add/patch membership from UI
+- [x] Vitest stewardship behavior test
+
+---
+
+### T-SYS-30: P5 scheduling polish (deferred)
+
+**What**: Operator read audit logging; full pagination UX; optional Playwright smoke.  
+**Reason**: Not required for support MVP; existing Vitest + API e2e cover read-only guard. Revisit in a dedicated issue if product wants operator e2e in CI.
+
+---
+
+### T-SYS-31: Volunteer email search (skipped)
+
+**What**: Design mentioned email fragment search.  
+**Reason**: `Volunteer` model has no `email` column (email only on `AdminInvite` / Supabase). Document in runbook; keep `?q=` on display name and id.
+
+---
+
 ## Execute checklist (per task)
 
 1. Implement smallest diff per task.  

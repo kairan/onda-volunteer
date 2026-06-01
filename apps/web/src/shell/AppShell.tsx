@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useToasts } from '@/feedback/ToastHost';
 import { consumeSystemAdminAccessDenied } from '@/system-admin/accessDenied';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
+import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { demoVolunteerId } from '@/auth/authSession';
 import { OrganizationContextProvider, useOrganization } from '@/organization/OrganizationContextProvider';
 import { OrganizationContextControls } from './OrganizationContextControls';
@@ -42,9 +43,38 @@ export function AppShell({ children }: { children?: ReactNode }) {
 
 function AppShellContent({ children }: { children?: ReactNode }) {
   const { t } = useTranslation(['shell', 'common', 'systemAdmin']);
+  const auth = useAuthSession();
   const toasts = useToasts();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [isSystemAdmin, setIsSystemAdmin] = useState(false);
+
+  useEffect(() => {
+    const volunteerId =
+      auth.status === 'authenticated' || auth.status === 'dev-bypass'
+        ? auth.volunteerId
+        : undefined;
+    if (!volunteerId) {
+      setIsSystemAdmin(false);
+      return;
+    }
+    let cancelled = false;
+    void fetchIdentityMe({ volunteerId }).then(
+      (me) => {
+        if (!cancelled) {
+          setIsSystemAdmin(me.isSystemAdmin);
+        }
+      },
+      () => {
+        if (!cancelled) {
+          setIsSystemAdmin(false);
+        }
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [auth]);
 
   useEffect(() => {
     if (!consumeSystemAdminAccessDenied()) {
@@ -107,6 +137,12 @@ function AppShellContent({ children }: { children?: ReactNode }) {
                 label={t(item.labelKey)}
               />
             ))}
+            {isSystemAdmin ? (
+              <ShellNavLink
+                to="/system-admin"
+                label={t('shell:nav.systemAdmin')}
+              />
+            ) : null}
           </nav>
           <footer className="mt-auto flex flex-col gap-3 border-t-2 border-border px-4 py-4">
             <ExternalLink
@@ -178,6 +214,13 @@ function AppShellContent({ children }: { children?: ReactNode }) {
                     onNavigate={() => setMobileNavOpen(false)}
                   />
                 ))}
+                {isSystemAdmin ? (
+                  <ShellNavLink
+                    to="/system-admin"
+                    label={t('shell:nav.systemAdmin')}
+                    onNavigate={() => setMobileNavOpen(false)}
+                  />
+                ) : null}
               </nav>
             </div>
           ) : null}

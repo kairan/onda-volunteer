@@ -247,4 +247,70 @@ describe('System Admin admin invites (e2e)', () => {
     expect(invite?.status).toBe('FULFILLED');
     expect(invite?.fulfilledVolunteerId).toBe('existing-admin');
   });
+
+  it('lists admin invites for a church', async () => {
+    const church = await seedOperatorAndChurch();
+    await request(app.getHttpServer())
+      .post(`/system-admin/churches/${church.id}/admin-invites`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ email: 'pending@example.com' })
+      .expect(201);
+
+    const res = await request(app.getHttpServer())
+      .get(`/system-admin/churches/${church.id}/admin-invites`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+
+    expect(res.body.items).toHaveLength(1);
+    expect(res.body.items[0]).toMatchObject({
+      email: 'pending@example.com',
+      status: 'PENDING',
+    });
+  });
+
+  it('revokes a pending admin invite', async () => {
+    const church = await seedOperatorAndChurch();
+    const created = await request(app.getHttpServer())
+      .post(`/system-admin/churches/${church.id}/admin-invites`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ email: 'revoke-me@example.com' })
+      .expect(201);
+
+    const revoked = await request(app.getHttpServer())
+      .delete(
+        `/system-admin/churches/${church.id}/admin-invites/${created.body.id}`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+
+    expect(revoked.body.status).toBe('REVOKED');
+
+    const row = await prisma.adminInvite.findUnique({
+      where: { id: created.body.id },
+    });
+    expect(row?.status).toBe('REVOKED');
+  });
+
+  it('returns ADMIN_INVITE_NOT_REVOKABLE when revoking a fulfilled invite', async () => {
+    const church = await seedOperatorAndChurch();
+    const created = await request(app.getHttpServer())
+      .post(`/system-admin/churches/${church.id}/admin-invites`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ email: 'fulfilled@example.com' })
+      .expect(201);
+
+    await prisma.adminInvite.update({
+      where: { id: created.body.id },
+      data: { status: 'FULFILLED', fulfilledAt: new Date() },
+    });
+
+    const res = await request(app.getHttpServer())
+      .delete(
+        `/system-admin/churches/${church.id}/admin-invites/${created.body.id}`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(400);
+
+    expect(res.body.code).toBe('ADMIN_INVITE_NOT_REVOKABLE');
+  });
 });

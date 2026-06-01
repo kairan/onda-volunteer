@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import { ToastProvider } from '@/feedback/ToastHost';
@@ -8,6 +8,7 @@ import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { buildTestRouteTree } from '@/router.testUtils';
+import { fetchAdminInvites } from './adminInvites';
 import { createAdminInvite } from './createAdminInvite';
 import { fetchSystemAdminChurch } from './fetchSystemAdminChurches';
 
@@ -28,9 +29,15 @@ vi.mock('./createAdminInvite', () => ({
   createAdminInvite: vi.fn(),
 }));
 
+vi.mock('./adminInvites', () => ({
+  fetchAdminInvites: vi.fn(),
+  revokeAdminInvite: vi.fn(),
+}));
+
 const fetchIdentityMeMock = vi.mocked(fetchIdentityMe);
 const fetchSystemAdminChurchMock = vi.mocked(fetchSystemAdminChurch);
 const createAdminInviteMock = vi.mocked(createAdminInvite);
+const fetchAdminInvitesMock = vi.mocked(fetchAdminInvites);
 
 function renderChurchDetail(initialPath = '/system-admin/churches/ch-1') {
   const { routeTree } = buildTestRouteTree();
@@ -56,6 +63,10 @@ afterEach(() => {
 });
 
 describe('System Admin admin invite form', () => {
+  beforeEach(() => {
+    fetchAdminInvitesMock.mockResolvedValue([]);
+  });
+
   it('submits an invite and shows success feedback', async () => {
     await initI18n();
     fetchIdentityMeMock.mockResolvedValue({
@@ -140,5 +151,57 @@ describe('System Admin admin invite form', () => {
     expect(
       await screen.findByText(/valid email|e-mail válido/i),
     ).toBeInTheDocument();
+  });
+
+  it('lists pending invites with revoke action', async () => {
+    await initI18n();
+    const { revokeAdminInvite } = await import('./adminInvites');
+    const revokeMock = vi.mocked(revokeAdminInvite);
+
+    fetchIdentityMeMock.mockResolvedValue({
+      volunteer: {
+        id: 'seed-volunteer-system-admin',
+        displayName: 'System Operator',
+        uiLocale: null,
+      },
+      authSubjectId: null,
+      isSystemAdmin: true,
+    });
+    fetchSystemAdminChurchMock.mockResolvedValue({
+      id: 'ch-1',
+      name: 'Test Church',
+      defaultTimezone: 'America/Sao_Paulo',
+    });
+    fetchAdminInvitesMock.mockResolvedValue([
+      {
+        id: 'invite-pending',
+        email: 'pending@example.com',
+        status: 'PENDING',
+        createdAt: new Date().toISOString(),
+        fulfilledAt: null,
+      },
+    ]);
+    revokeMock.mockResolvedValue({
+      id: 'invite-pending',
+      email: 'pending@example.com',
+      status: 'REVOKED',
+      createdAt: new Date().toISOString(),
+      fulfilledAt: null,
+    });
+
+    const user = userEvent.setup();
+    renderChurchDetail();
+
+    expect(await screen.findByText('pending@example.com')).toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', { name: /revoke invite|revogar convite/i }),
+    );
+
+    await waitFor(() => {
+      expect(revokeMock).toHaveBeenCalledWith({
+        churchId: 'ch-1',
+        inviteId: 'invite-pending',
+      });
+    });
   });
 });

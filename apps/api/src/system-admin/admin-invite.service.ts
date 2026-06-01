@@ -140,4 +140,59 @@ export class AdminInviteService {
       return volunteer;
     });
   }
+
+  async listByChurch(churchId: string) {
+    const church = await this.prisma.church.findUnique({
+      where: { id: churchId },
+      select: { id: true },
+    });
+    if (!church) {
+      throw new NotFoundException({
+        code: 'CHURCH_NOT_FOUND',
+        message: 'Church not found.',
+      });
+    }
+
+    return this.prisma.adminInvite.findMany({
+      where: { churchId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        email: true,
+        status: true,
+        createdAt: true,
+        fulfilledAt: true,
+      },
+    });
+  }
+
+  async revokeInvite(input: { churchId: string; inviteId: string }) {
+    const invite = await this.prisma.adminInvite.findFirst({
+      where: { id: input.inviteId, churchId: input.churchId },
+    });
+    if (!invite) {
+      throw new NotFoundException({
+        code: 'ADMIN_INVITE_NOT_FOUND',
+        message: 'Admin invite not found.',
+      });
+    }
+    if (invite.status !== AdminInviteStatus.PENDING) {
+      throw new BadRequestException({
+        code: 'ADMIN_INVITE_NOT_REVOKABLE',
+        message: 'Only pending admin invites can be revoked.',
+      });
+    }
+
+    return this.prisma.adminInvite.update({
+      where: { id: invite.id },
+      data: { status: AdminInviteStatus.REVOKED },
+      select: {
+        id: true,
+        email: true,
+        status: true,
+        createdAt: true,
+        fulfilledAt: true,
+      },
+    });
+  }
 }
