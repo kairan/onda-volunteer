@@ -61,6 +61,7 @@ Response includes `isSystemAdmin: boolean` for web route guards (`/system-admin/
 When `AUTH_ALLOW_DEV_HEADERS=true`:
 
 - Use **`X-Volunteer-Id: seed-volunteer-system-admin`** (after seed T-SYS-05) for operator API and e2e.
+- **`GET /system-admin/volunteers?q=`** matches volunteer **display name** and **id** only. The `Volunteer` row has no email column; invite email lives on `AdminInvite` / Supabase auth.
 - **Do not** add `X-System-Admin: true` on arbitrary volunteers — elevation requires a seeded `SystemAdministrator` row tied to that volunteer id.
 
 Church **Admin** invite fulfillment runs in **Identity** on JWT sign-in (email claim + pending `AdminInvite`); see [`supabase-auth-local.md`](supabase-auth-local.md) §8.

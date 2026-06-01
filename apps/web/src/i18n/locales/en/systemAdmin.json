@@ -98,6 +98,21 @@
     "revokeSuccess": "Admin accreditation revoked.",
     "leadershipsTitle": "Ministry leaderships",
     "membershipsTitle": "Ministry memberships",
+    "noLeaderships": "No ministry leaderships yet.",
+    "noMemberships": "No ministry memberships yet.",
+    "leaderMinistryIdLabel": "Ministry id",
+    "leaderMinistryIdPlaceholder": "Enter ministry id to grant leader",
+    "grantLeader": "Grant leader",
+    "revokeLeader": "Revoke leader",
+    "membershipMinistryIdLabel": "Ministry id",
+    "membershipMinistryIdPlaceholder": "Enter ministry id for membership",
+    "membershipStatusLabel": "Initial status",
+    "membershipStatusPending": "Pending",
+    "membershipStatusActive": "Active",
+    "addMembership": "Add membership",
+    "activateMembership": "Activate",
+    "deactivateMembership": "Deactivate",
+    "stewardshipSuccess": "Stewardship updated.",
     "errors": {
       "generic": "Something went wrong. Try again.",
       "lastAdmin": "Cannot revoke the last Admin for this church."
@@ -130,7 +145,19 @@
     "submit": "Send invite",
     "submitting": "Sending…",
     "inviteSuccess": "Admin invite sent.",
+    "invitesListTitle": "Admin invites",
+    "invitesLoading": "Loading invites…",
+    "invitesLoadError": "Could not load admin invites.",
+    "invitesEmpty": "No admin invites for this church yet.",
+    "revokeInvite": "Revoke invite",
+    "revokeSuccess": "Invite revoked.",
+    "inviteStatus": {
+      "PENDING": "Pending",
+      "FULFILLED": "Fulfilled",
+      "REVOKED": "Revoked"
+    },
     "errors": {
+      "notRevokable": "Only pending invites can be revoked.",
       "invalidEmail": "Enter a valid email address.",
       "alreadyPending": "A pending invite already exists for this email.",
       "generic": "Could not send the invite. Try again."

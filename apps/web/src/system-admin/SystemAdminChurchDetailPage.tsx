@@ -1,10 +1,15 @@
 import { Link, useParams } from '@tanstack/react-router';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/apiError';
 import { Button } from '@/components/ui/button';
 import { useToasts } from '@/feedback/ToastHost';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
+import {
+  fetchAdminInvites,
+  revokeAdminInvite,
+  type AdminInviteSummary,
+} from './adminInvites';
 import { createAdminInvite } from './createAdminInvite';
 import {
   fetchSystemAdminChurch,
@@ -13,13 +18,35 @@ import {
 
 export function SystemAdminChurchDetailPage() {
   const { churchId } = useParams({ from: '/system-admin/churches/$churchId' });
-  const { t } = useTranslation('systemAdmin');
+  const { t } = useTranslation(['systemAdmin', 'common']);
   const toasts = useToasts();
   const [church, setChurch] = useState<SystemAdminChurchSummary | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [invites, setInvites] = useState<AdminInviteSummary[]>([]);
+  const [invitesLoading, setInvitesLoading] = useState(false);
+  const [invitesLoadError, setInvitesLoadError] = useState<string | null>(null);
+  const [revokeBusyId, setRevokeBusyId] = useState<string | null>(null);
+
+  const loadInvites = useCallback(async () => {
+    setInvitesLoading(true);
+    setInvitesLoadError(null);
+    try {
+      const rows = await fetchAdminInvites({ churchId });
+      setInvites(rows);
+    } catch (err) {
+      setInvites([]);
+      setInvitesLoadError(
+        err instanceof ApiRequestError
+          ? err.message
+          : t('churchDetail.invitesLoadError'),
+      );
+    } finally {
+      setInvitesLoading(false);
+    }
+  }, [churchId, t]);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,6 +72,10 @@ export function SystemAdminChurchDetailPage() {
     };
   }, [churchId, t]);
 
+  useEffect(() => {
+    void loadInvites();
+  }, [loadInvites]);
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormError(null);
@@ -57,6 +88,7 @@ export function SystemAdminChurchDetailPage() {
         message: t('churchDetail.inviteSuccess'),
         kind: 'success',
       });
+      await loadInvites();
     } catch (err) {
       if (err instanceof ApiRequestError) {
         const key =
@@ -71,6 +103,27 @@ export function SystemAdminChurchDetailPage() {
       }
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function onRevokeInvite(inviteId: string) {
+    setRevokeBusyId(inviteId);
+    try {
+      await revokeAdminInvite({ churchId, inviteId });
+      toasts.push({
+        id: crypto.randomUUID(),
+        message: t('churchDetail.revokeSuccess'),
+        kind: 'success',
+      });
+      await loadInvites();
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.code === 'ADMIN_INVITE_NOT_REVOKABLE') {
+        setFormError(t('churchDetail.errors.notRevokable'));
+      } else {
+        setFormError(t('churchDetail.errors.generic'));
+      }
+    } finally {
+      setRevokeBusyId(null);
     }
   }
 
@@ -126,6 +179,59 @@ export function SystemAdminChurchDetailPage() {
           {submitting ? t('churchDetail.submitting') : t('churchDetail.submit')}
         </Button>
       </form>
+
+      <div className="mt-10">
+        <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+          {t('churchDetail.invitesListTitle')}
+        </h2>
+        {invitesLoadError ? (
+          <div className="mt-3 space-y-2" role="alert">
+            <p className="text-sm text-destructive">{invitesLoadError}</p>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={invitesLoading}
+              onClick={() => void loadInvites()}
+            >
+              {t('common:retry')}
+            </Button>
+          </div>
+        ) : invitesLoading ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t('churchDetail.invitesLoading')}
+          </p>
+        ) : invites.length === 0 ? (
+          <p className="mt-3 text-sm text-muted-foreground">
+            {t('churchDetail.invitesEmpty')}
+          </p>
+        ) : (
+          <ul className="mt-3 divide-y divide-border">
+            {invites.map((row) => (
+              <li
+                key={row.id}
+                className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm"
+              >
+                <div>
+                  <p className="font-medium">{row.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t(`churchDetail.inviteStatus.${row.status}`)}
+                  </p>
+                </div>
+                {row.status === 'PENDING' ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={revokeBusyId === row.id}
+                    onClick={() => void onRevokeInvite(row.id)}
+                  >
+                    {t('churchDetail.revokeInvite')}
+                  </Button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

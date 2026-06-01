@@ -22,7 +22,7 @@ New **Churches** and their first **Admin** users are provisioned via Prisma seed
 - [x] **System Admin** dashboard (separate from volunteer/leader shell) to create **Churches** and manage users.
 - [x] **System Admin** invites a new church **Admin** by email (Supabase invite); on accept, user links to **Volunteer** + church **Admin** accreditation.
 - [x] **System Admin** has **read-only** access to scheduling data (support visibility; no roster/assignment mutations).
-- [ ] Church-scoped **Admin** may edit their accredited **Church** name and default timezone (separate slice — see Related work).
+- [x] Church-scoped **Admin** may edit their accredited **Church** name and default timezone (separate slice — CHURCH-META / issue [#93](https://github.com/kairan/onda-volunteer/issues/93)).
 
 ## Out of Scope
 

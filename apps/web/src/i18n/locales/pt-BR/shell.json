@@ -24,6 +24,7 @@
     "scheduling": "Agenda",
     "ministries": "Ministérios",
     "volunteers": "Voluntários",
-    "timeAway": "Tempo livre"
+    "timeAway": "Tempo livre",
+    "systemAdmin": "Admin do sistema"
   }
 }

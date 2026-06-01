@@ -5,6 +5,12 @@ import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { Button } from '@/components/ui/button';
 import {
+  addSystemAdminMinistryMembership,
+  grantSystemAdminMinistryLeader,
+  patchSystemAdminMinistryMembership,
+  revokeSystemAdminMinistryLeader,
+} from './systemAdminOrganization';
+import {
   fetchSystemAdminVolunteerDetail,
   grantSystemAdminAccreditation,
   revokeSystemAdminAccreditation,
@@ -27,6 +33,11 @@ export function SystemAdminUserDetailPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [grantChurchId, setGrantChurchId] = useState('');
+  const [leaderMinistryId, setLeaderMinistryId] = useState('');
+  const [membershipMinistryId, setMembershipMinistryId] = useState('');
+  const [membershipStatus, setMembershipStatus] = useState<'PENDING' | 'ACTIVE'>(
+    'ACTIVE',
+  );
   const [actionBusy, setActionBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -86,6 +97,84 @@ export function SystemAdminUserDetailPage() {
     } finally {
       setActionBusy(false);
     }
+  }
+
+  async function runStewardshipAction(action: () => Promise<void>) {
+    setActionBusy(true);
+    setActionError(null);
+    setActionMessage(null);
+    try {
+      await action();
+      setActionMessage(t('users.stewardshipSuccess'));
+      await loadDetail();
+    } catch (err) {
+      setActionError(actionErrorMessage(err));
+    } finally {
+      setActionBusy(false);
+    }
+  }
+
+  async function handleGrantLeader(e: FormEvent) {
+    e.preventDefault();
+    if (!actingVolunteerId || !targetVolunteerId || !leaderMinistryId.trim()) {
+      return;
+    }
+    const ministryId = leaderMinistryId.trim();
+    await runStewardshipAction(async () => {
+      await grantSystemAdminMinistryLeader({
+        volunteerId: actingVolunteerId,
+        ministryId,
+        targetVolunteerId,
+      });
+      setLeaderMinistryId('');
+    });
+  }
+
+  async function handleRevokeLeader(ministryId: string) {
+    if (!actingVolunteerId || !targetVolunteerId) {
+      return;
+    }
+    await runStewardshipAction(async () => {
+      await revokeSystemAdminMinistryLeader({
+        volunteerId: actingVolunteerId,
+        ministryId,
+        targetVolunteerId,
+      });
+    });
+  }
+
+  async function handleAddMembership(e: FormEvent) {
+    e.preventDefault();
+    if (!actingVolunteerId || !targetVolunteerId || !membershipMinistryId.trim()) {
+      return;
+    }
+    const ministryId = membershipMinistryId.trim();
+    await runStewardshipAction(async () => {
+      await addSystemAdminMinistryMembership({
+        volunteerId: actingVolunteerId,
+        ministryId,
+        targetVolunteerId,
+        status: membershipStatus,
+      });
+      setMembershipMinistryId('');
+    });
+  }
+
+  async function handlePatchMembership(
+    ministryId: string,
+    status: 'ACTIVE' | 'INACTIVE',
+  ) {
+    if (!actingVolunteerId || !targetVolunteerId) {
+      return;
+    }
+    await runStewardshipAction(async () => {
+      await patchSystemAdminMinistryMembership({
+        volunteerId: actingVolunteerId,
+        ministryId,
+        targetVolunteerId,
+        status,
+      });
+    });
   }
 
   async function handleRevoke(churchId: string) {
@@ -181,45 +270,160 @@ export function SystemAdminUserDetailPage() {
                 {t('users.grantAdmin')}
               </Button>
             </form>
-
-            {actionError ? (
-              <p className="mt-3 text-sm text-destructive" role="alert">
-                {actionError}
-              </p>
-            ) : null}
-            {actionMessage ? (
-              <p className="mt-3 text-sm text-muted-foreground">{actionMessage}</p>
-            ) : null}
           </div>
 
-          {detail.leaderships.length > 0 ? (
-            <div className="border border-border bg-background p-6">
-              <h2 className="font-display text-xl font-bold uppercase tracking-tight">
-                {t('users.leadershipsTitle')}
-              </h2>
-              <ul className="mt-3 divide-y divide-border text-sm">
+          <div className="border border-border bg-background p-6">
+            <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+              {t('users.leadershipsTitle')}
+            </h2>
+            {detail.leaderships.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                {t('users.noLeaderships')}
+              </p>
+            ) : (
+              <ul className="mt-3 divide-y divide-border">
                 {detail.leaderships.map((row) => (
-                  <li key={row.ministryId} className="py-2">
-                    {row.ministryName} — {row.churchName}
+                  <li
+                    key={row.ministryId}
+                    className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">{row.ministryName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {row.churchName} · {row.ministryId}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={actionBusy}
+                      onClick={() => void handleRevokeLeader(row.ministryId)}
+                    >
+                      {t('users.revokeLeader')}
+                    </Button>
                   </li>
                 ))}
               </ul>
-            </div>
-          ) : null}
+            )}
+            <form
+              onSubmit={handleGrantLeader}
+              className="mt-6 flex flex-wrap items-end gap-3"
+            >
+              <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-sm">
+                <span className="font-medium">{t('users.leaderMinistryIdLabel')}</span>
+                <input
+                  type="text"
+                  value={leaderMinistryId}
+                  onChange={(e) => setLeaderMinistryId(e.target.value)}
+                  placeholder={t('users.leaderMinistryIdPlaceholder')}
+                  className="border border-border bg-background px-3 py-2"
+                />
+              </label>
+              <Button
+                type="submit"
+                disabled={actionBusy || !leaderMinistryId.trim()}
+              >
+                {t('users.grantLeader')}
+              </Button>
+            </form>
+          </div>
 
-          {detail.memberships.length > 0 ? (
-            <div className="border border-border bg-background p-6">
-              <h2 className="font-display text-xl font-bold uppercase tracking-tight">
-                {t('users.membershipsTitle')}
-              </h2>
-              <ul className="mt-3 divide-y divide-border text-sm">
+          <div className="border border-border bg-background p-6">
+            <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+              {t('users.membershipsTitle')}
+            </h2>
+            {detail.memberships.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                {t('users.noMemberships')}
+              </p>
+            ) : (
+              <ul className="mt-3 divide-y divide-border">
                 {detail.memberships.map((row) => (
-                  <li key={row.ministryId} className="py-2">
-                    {row.ministryName} — {row.status}
+                  <li
+                    key={row.ministryId}
+                    className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">{row.ministryName}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {row.churchName} · {row.status}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {row.status === 'PENDING' || row.status === 'INACTIVE' ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={actionBusy}
+                          onClick={() =>
+                            void handlePatchMembership(row.ministryId, 'ACTIVE')
+                          }
+                        >
+                          {t('users.activateMembership')}
+                        </Button>
+                      ) : null}
+                      {row.status === 'ACTIVE' ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          disabled={actionBusy}
+                          onClick={() =>
+                            void handlePatchMembership(row.ministryId, 'INACTIVE')
+                          }
+                        >
+                          {t('users.deactivateMembership')}
+                        </Button>
+                      ) : null}
+                    </div>
                   </li>
                 ))}
               </ul>
-            </div>
+            )}
+            <form
+              onSubmit={handleAddMembership}
+              className="mt-6 flex flex-wrap items-end gap-3"
+            >
+              <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-sm">
+                <span className="font-medium">
+                  {t('users.membershipMinistryIdLabel')}
+                </span>
+                <input
+                  type="text"
+                  value={membershipMinistryId}
+                  onChange={(e) => setMembershipMinistryId(e.target.value)}
+                  placeholder={t('users.membershipMinistryIdPlaceholder')}
+                  className="border border-border bg-background px-3 py-2"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                <span className="font-medium">{t('users.membershipStatusLabel')}</span>
+                <select
+                  value={membershipStatus}
+                  onChange={(e) =>
+                    setMembershipStatus(e.target.value as 'PENDING' | 'ACTIVE')
+                  }
+                  className="border border-border bg-background px-3 py-2"
+                >
+                  <option value="PENDING">{t('users.membershipStatusPending')}</option>
+                  <option value="ACTIVE">{t('users.membershipStatusActive')}</option>
+                </select>
+              </label>
+              <Button
+                type="submit"
+                disabled={actionBusy || !membershipMinistryId.trim()}
+              >
+                {t('users.addMembership')}
+              </Button>
+            </form>
+          </div>
+
+          {actionError ? (
+            <p className="text-sm text-destructive" role="alert">
+              {actionError}
+            </p>
+          ) : null}
+          {actionMessage ? (
+            <p className="text-sm text-muted-foreground">{actionMessage}</p>
           ) : null}
         </>
       ) : null}

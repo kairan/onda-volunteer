@@ -98,6 +98,21 @@
     "revokeSuccess": "Acreditação de Admin revogada.",
     "leadershipsTitle": "Lideranças de ministério",
     "membershipsTitle": "Membros de ministério",
+    "noLeaderships": "Nenhuma liderança de ministério ainda.",
+    "noMemberships": "Nenhuma participação em ministério ainda.",
+    "leaderMinistryIdLabel": "Id do ministério",
+    "leaderMinistryIdPlaceholder": "Informe o id do ministério para conceder líder",
+    "grantLeader": "Conceder líder",
+    "revokeLeader": "Revogar líder",
+    "membershipMinistryIdLabel": "Id do ministério",
+    "membershipMinistryIdPlaceholder": "Informe o id do ministério para a participação",
+    "membershipStatusLabel": "Status inicial",
+    "membershipStatusPending": "Pendente",
+    "membershipStatusActive": "Ativo",
+    "addMembership": "Adicionar participação",
+    "activateMembership": "Ativar",
+    "deactivateMembership": "Desativar",
+    "stewardshipSuccess": "Gestão atualizada.",
     "errors": {
       "generic": "Algo deu errado. Tente novamente.",
       "lastAdmin": "Não é possível revogar o último Admin desta igreja."
@@ -130,7 +145,19 @@
     "submit": "Enviar convite",
     "submitting": "Enviando…",
     "inviteSuccess": "Convite de admin enviado.",
+    "invitesListTitle": "Convites de admin",
+    "invitesLoading": "Carregando convites…",
+    "invitesLoadError": "Não foi possível carregar os convites de admin.",
+    "invitesEmpty": "Nenhum convite de admin para esta igreja ainda.",
+    "revokeInvite": "Revogar convite",
+    "revokeSuccess": "Convite revogado.",
+    "inviteStatus": {
+      "PENDING": "Pendente",
+      "FULFILLED": "Concluído",
+      "REVOKED": "Revogado"
+    },
     "errors": {
+      "notRevokable": "Somente convites pendentes podem ser revogados.",
       "invalidEmail": "Informe um endereço de e-mail válido.",
       "alreadyPending": "Já existe um convite pendente para este e-mail.",
       "generic": "Não foi possível enviar o convite. Tente novamente."
