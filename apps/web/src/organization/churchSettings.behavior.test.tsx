@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { AuthSessionContext } from '@/auth/AuthSessionProvider';
@@ -79,10 +79,14 @@ describe('ChurchSettingsSection', () => {
     await renderSection();
 
     const nameInput = await screen.findByLabelText('Church name');
-    fireEvent.change(nameInput, { target: { value: 'Renamed Church' } });
+    await waitFor(() => expect(nameInput).toHaveValue('Test Church'));
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Renamed Church');
 
     const timezoneInput = screen.getByLabelText('Default timezone');
-    fireEvent.change(timezoneInput, { target: { value: 'America/New_York' } });
+    await waitFor(() => expect(timezoneInput).toHaveValue('UTC'));
+    await user.clear(timezoneInput);
+    await user.type(timezoneInput, 'America/New_York');
 
     await user.click(screen.getByRole('button', { name: 'Save church settings' }));
 
