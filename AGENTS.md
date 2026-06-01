@@ -92,6 +92,13 @@ pnpm test
 
 API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
 
+#### Web Vitest behavior tests (RTL)
+
+- Use `@testing-library/user-event` for all user interactions in Vitest + React Testing Library behavior tests (`*.behavior.test.tsx`).
+- Do **not** use `fireEvent` from Testing Library to simulate clicks, typing, or keyboard input.
+- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web/src/organization/churchSettings.behavior.test.tsx` and `apps/web/src/routes/ministries.behavior.test.tsx`.
+- Exception: only when `userEvent` cannot model the interaction — add a brief comment in the test explaining why. Keep exceptions rare.
+
 ```bash
 pnpm --filter @onda/web exec playwright install chromium   # once per machine
 pnpm test:e2e:web                                          # smoke + API integration (CI parity)
