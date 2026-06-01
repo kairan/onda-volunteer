@@ -33,6 +33,8 @@ import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
 import { SystemAdminChurchesPage } from "./system-admin/SystemAdminChurchesPage";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { SystemAdminUsersPage } from "./system-admin/SystemAdminUsersPage";
+import { SystemAdminUserDetailPage } from "./system-admin/SystemAdminUserDetailPage";
 import { SystemAdminSchedulingPage } from "./system-admin/SystemAdminSchedulingPage";
 import { SystemAdminSchedulingEventDetailPage } from "./system-admin/SystemAdminSchedulingEventDetailPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
@@ -205,6 +207,18 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminUsersRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users",
+  component: SystemAdminUsersPage,
+});
+
+const systemAdminUserDetailRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users/$volunteerId",
+  component: SystemAdminUserDetailPage,
+});
+
 const systemAdminChurchesRoute = createRoute({
   getParentRoute: () => systemAdminRoute,
   path: "/churches",
@@ -231,6 +245,7 @@ function createSystemAdminSchedulingEventDetailRoute(
   });
   return route;
 }
+
 
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
@@ -286,6 +301,8 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     ministryLeadersRoute,
     systemAdminRoute.addChildren([
       systemAdminIndexRoute,
+      systemAdminUsersRoute,
+      systemAdminUserDetailRoute,
       systemAdminChurchesRoute,
       systemAdminSchedulingRoute,
       systemAdminSchedulingEventDetailRoute,

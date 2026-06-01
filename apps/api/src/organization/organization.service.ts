@@ -147,6 +147,30 @@ export class OrganizationService {
     return ministry.churchId;
   }
 
+  private async assertOrganizationActor(input: {
+    auth: AuthenticatedRequestContext;
+    churchId: string;
+    systemAdminActor?: boolean;
+  }) {
+    if (input.systemAdminActor) {
+      await input.auth.assertSystemAdmin();
+      return;
+    }
+    await input.auth.assertAdminAccreditedForChurch(input.churchId);
+  }
+
+  private async assertMinistryActor(input: {
+    auth: AuthenticatedRequestContext;
+    ministryId: string;
+    systemAdminActor?: boolean;
+  }) {
+    if (input.systemAdminActor) {
+      await input.auth.assertSystemAdmin();
+      return;
+    }
+    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+  }
+
   private ministryNameConflict(): BadRequestException {
     return new BadRequestException({
       code: 'MINISTRY_NAME_CONFLICT',
@@ -345,9 +369,14 @@ export class OrganizationService {
     volunteerId: string;
     status: 'PENDING' | 'ACTIVE';
     auth: AuthenticatedRequestContext;
+    systemAdminActor?: boolean;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await input.auth.assertAdminAccreditedForChurch(churchId);
+    await this.assertOrganizationActor({
+      auth: input.auth,
+      churchId,
+      systemAdminActor: input.systemAdminActor,
+    });
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },
@@ -404,9 +433,14 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
+    systemAdminActor?: boolean;
   }) {
     const churchId = await this.ministryChurchId(input.ministryId);
-    await input.auth.assertAdminAccreditedForChurch(churchId);
+    await this.assertOrganizationActor({
+      auth: input.auth,
+      churchId,
+      systemAdminActor: input.systemAdminActor,
+    });
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {
@@ -498,6 +532,7 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
+    systemAdminActor?: boolean;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -505,7 +540,11 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
+    await this.assertOrganizationActor({
+      auth: input.auth,
+      churchId: ministry.churchId,
+      systemAdminActor: input.systemAdminActor,
+    });
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },
@@ -541,6 +580,7 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
+    systemAdminActor?: boolean;
   }) {
     const ministry = await this.prisma.ministry.findUnique({
       where: { id: input.ministryId },
@@ -548,7 +588,11 @@ export class OrganizationService {
     if (!ministry) {
       throw new NotFoundException();
     }
-    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
+    await this.assertOrganizationActor({
+      auth: input.auth,
+      churchId: ministry.churchId,
+      systemAdminActor: input.systemAdminActor,
+    });
 
     await this.prisma.ministryLeader.deleteMany({
       where: {
@@ -567,8 +611,13 @@ export class OrganizationService {
     ministryId: string;
     volunteerId: string;
     auth: AuthenticatedRequestContext;
+    systemAdminActor?: boolean;
   }) {
-    await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await this.assertMinistryActor({
+      auth: input.auth,
+      ministryId: input.ministryId,
+      systemAdminActor: input.systemAdminActor,
+    });
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {

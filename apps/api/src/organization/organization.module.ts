@@ -20,5 +20,6 @@ import { StewardshipModule } from './stewardship.module';
     RolesController,
   ],
   providers: [OrganizationService, RolesService],
+  exports: [OrganizationService],
 })
 export class OrganizationModule {}
