@@ -106,6 +106,52 @@ describe('System Admin users pages', () => {
     expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
   });
 
+  it('loads additional pages when nextCursor is present', async () => {
+    fetchVolunteersMock
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: 'vol-alice',
+            displayName: 'Alice Admin',
+            accreditations: [],
+            leaderships: [],
+            memberships: [],
+          },
+        ],
+        nextCursor: 'vol-alice',
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: 'vol-bob',
+            displayName: 'Bob Leader',
+            accreditations: [],
+            leaderships: [],
+            memberships: [],
+          },
+        ],
+        nextCursor: null,
+      });
+
+    renderUsersRoute();
+
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /load more|carregar mais/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bob Leader')).toBeInTheDocument();
+    });
+
+    expect(fetchVolunteersMock).toHaveBeenLastCalledWith({
+      volunteerId: 'seed-volunteer-system-admin',
+      q: undefined,
+      limit: 50,
+      cursor: 'vol-alice',
+    });
+  });
+
   it('reflects grant and revoke after refetch on detail page', async () => {
     fetchVolunteersMock.mockResolvedValue({
       items: [

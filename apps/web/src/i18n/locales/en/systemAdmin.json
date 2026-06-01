@@ -20,6 +20,8 @@
     "searchPlaceholder": "Name or volunteer id",
     "searchAction": "Search",
     "loading": "Loading…",
+    "loadingMore": "Loading more…",
+    "loadMore": "Load more",
     "empty": "No volunteers match your search.",
     "summaryCounts": "{{accreditations}} accreditations · {{leaderships}} leaderships · {{memberships}} memberships",
     "viewDetail": "View",

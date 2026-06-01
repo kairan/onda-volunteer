@@ -20,6 +20,8 @@
     "searchPlaceholder": "Nome ou id do voluntário",
     "searchAction": "Buscar",
     "loading": "Carregando…",
+    "loadingMore": "Carregando mais…",
+    "loadMore": "Carregar mais",
     "empty": "Nenhum voluntário corresponde à busca.",
     "summaryCounts": "{{accreditations}} acreditações · {{leaderships}} lideranças · {{memberships}} membros",
     "viewDetail": "Ver",

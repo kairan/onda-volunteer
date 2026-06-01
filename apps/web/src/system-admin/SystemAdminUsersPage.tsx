@@ -22,12 +22,15 @@ export function SystemAdminUsersPage() {
   const [volunteers, setVolunteers] = useState<SystemAdminVolunteerSummary[]>(
     [],
   );
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loadVolunteers = useCallback(async () => {
     if (!actingVolunteerId) {
       setVolunteers([]);
+      setNextCursor(null);
       return;
     }
     setLoading(true);
@@ -39,12 +42,35 @@ export function SystemAdminUsersPage() {
         limit: 50,
       });
       setVolunteers(page.items);
+      setNextCursor(page.nextCursor);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('users.errors.generic'));
     } finally {
       setLoading(false);
     }
   }, [actingVolunteerId, query, t]);
+
+  const loadMoreVolunteers = useCallback(async () => {
+    if (!actingVolunteerId || !nextCursor || loadingMore) {
+      return;
+    }
+    setLoadingMore(true);
+    setError(null);
+    try {
+      const page = await fetchSystemAdminVolunteers({
+        volunteerId: actingVolunteerId,
+        q: query || undefined,
+        limit: 50,
+        cursor: nextCursor,
+      });
+      setVolunteers((current) => [...current, ...page.items]);
+      setNextCursor(page.nextCursor);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('users.errors.generic'));
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [actingVolunteerId, loadingMore, nextCursor, query, t]);
 
   useEffect(() => {
     void loadVolunteers();
@@ -101,31 +127,46 @@ export function SystemAdminUsersPage() {
       ) : volunteers.length === 0 ? (
         <p className="text-sm text-muted-foreground">{t('users.empty')}</p>
       ) : (
-        <ul className="divide-y divide-border border border-border bg-background">
-          {volunteers.map((volunteer) => (
-            <li key={volunteer.id} className="flex flex-wrap items-center justify-between gap-3 p-4">
-              <div>
-                <p className="font-medium">{volunteer.displayName}</p>
-                <p className="text-xs text-muted-foreground">{volunteer.id}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {t('users.summaryCounts', {
-                    accreditations: volunteer.accreditations.length,
-                    leaderships: volunteer.leaderships.length,
-                    memberships: volunteer.memberships.length,
-                  })}
-                </p>
-              </div>
-              <Button variant="outline" asChild>
-                <Link
-                  to="/system-admin/users/$volunteerId"
-                  params={{ volunteerId: volunteer.id }}
-                >
-                  {t('users.viewDetail')}
-                </Link>
-              </Button>
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-4">
+          <ul className="divide-y divide-border border border-border bg-background">
+            {volunteers.map((volunteer) => (
+              <li
+                key={volunteer.id}
+                className="flex flex-wrap items-center justify-between gap-3 p-4"
+              >
+                <div>
+                  <p className="font-medium">{volunteer.displayName}</p>
+                  <p className="text-xs text-muted-foreground">{volunteer.id}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t('users.summaryCounts', {
+                      accreditations: volunteer.accreditations.length,
+                      leaderships: volunteer.leaderships.length,
+                      memberships: volunteer.memberships.length,
+                    })}
+                  </p>
+                </div>
+                <Button variant="outline" asChild>
+                  <Link
+                    to="/system-admin/users/$volunteerId"
+                    params={{ volunteerId: volunteer.id }}
+                  >
+                    {t('users.viewDetail')}
+                  </Link>
+                </Button>
+              </li>
+            ))}
+          </ul>
+          {nextCursor ? (
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loadingMore}
+              onClick={() => void loadMoreVolunteers()}
+            >
+              {loadingMore ? t('users.loadingMore') : t('users.loadMore')}
+            </Button>
+          ) : null}
+        </div>
       )}
     </section>
   );
