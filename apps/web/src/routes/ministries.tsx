@@ -14,6 +14,7 @@ import {
   retireMinistryRole,
 } from '@/organization/roleCatalog';
 import { Button } from '@/components/ui/button';
+import { ChurchSettingsSection } from '@/organization/ChurchSettingsSection';
 
 export function MinistriesPage() {
   const { t } = useTranslation('ministries');
@@ -207,6 +208,8 @@ export function MinistriesPage() {
         <h1 className="font-display text-4xl font-bold uppercase">{t('title')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">{t('body')}</p>
       </div>
+
+      <ChurchSettingsSection />
 
       {canManageStructure ? (
         <section className="flex flex-col gap-4 border-2 border-border bg-surface p-4">

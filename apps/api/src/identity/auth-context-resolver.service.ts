@@ -45,6 +45,12 @@ export class AuthContextResolverService {
         return systemAdminPromise;
       }
       systemAdminPromise = (async () => {
+        const hasVolunteerIdentity =
+          Boolean(headers.authorization?.startsWith('Bearer ')) ||
+          Boolean(headers.volunteerId?.trim());
+        if (!hasVolunteerIdentity) {
+          return false;
+        }
         const volunteer = await requireVolunteer();
         const row = await this.prisma.systemAdministrator.findUnique({
           where: { volunteerId: volunteer.id },

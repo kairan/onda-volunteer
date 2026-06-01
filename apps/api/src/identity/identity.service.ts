@@ -6,6 +6,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import type { Volunteer } from '@prisma/client';
+import { AdminInviteService } from '../system-admin/admin-invite.service';
 import { StewardshipService } from '../organization/stewardship.service';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthHeaders } from './authenticated-request-context';
@@ -24,6 +25,7 @@ export class IdentityService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtVerifier: SupabaseJwtVerifier,
+    private readonly adminInvites: AdminInviteService,
     @Inject(forwardRef(() => StewardshipService))
     private readonly stewardship: StewardshipService,
   ) {}
@@ -81,10 +83,22 @@ export class IdentityService {
     options: { attemptAutoLink: boolean },
   ): Promise<Volunteer> {
     if (auth.authorization?.startsWith('Bearer ')) {
-      const { sub } = await this.jwtVerifier.verifyBearerToken(auth.authorization);
+      const { sub, email } = await this.jwtVerifier.verifyBearerToken(
+        auth.authorization,
+      );
       let volunteer = await this.prisma.volunteer.findUnique({
         where: { authSubjectId: sub },
       });
+      if (email) {
+        const fulfilled = await this.adminInvites.fulfillPendingInvites({
+          authSubjectId: sub,
+          email,
+          existingVolunteer: volunteer,
+        });
+        if (fulfilled) {
+          volunteer = fulfilled;
+        }
+      }
       if (!volunteer && options.attemptAutoLink) {
         volunteer = await this.tryAutoLinkSeedVolunteer(sub);
       }

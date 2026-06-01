@@ -15,6 +15,18 @@
   "saveRename": "Salvar",
   "cancelRename": "Cancelar",
   "errorGeneric": "Algo deu errado. Tente novamente.",
+  "churchSettings": {
+    "title": "Configurações da igreja",
+    "intro": "Atualize o nome de exibição e o fuso padrão da igreja acreditada. Horários dos eventos em UTC não mudam.",
+    "nameLabel": "Nome da igreja",
+    "timezoneLabel": "Fuso padrão (IANA)",
+    "save": "Salvar configurações",
+    "saving": "Salvando…",
+    "saved": "Configurações da igreja salvas.",
+    "errors": {
+      "generic": "Não foi possível salvar as configurações."
+    }
+  },
   "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja.",
   "structure": {
     "title": "Estrutura dos ministérios",

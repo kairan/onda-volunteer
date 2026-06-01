@@ -5,7 +5,74 @@
   },
   "dashboard": {
     "title": "Painel do operador",
-    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda."
+    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
+    "churchesLink": "Igrejas",
+    "usersLink": "Usuários",
+    "schedulingLink": "Agenda (somente leitura)"
+  },
+  "churches": {
+    "title": "Igrejas",
+    "intro": "Crie igrejas ou selecione uma para convidar um Admin da igreja por e-mail.",
+    "loading": "Carregando igrejas…",
+    "loadError": "Não foi possível carregar as igrejas.",
+    "empty": "Nenhuma igreja ainda.",
+    "create": {
+      "title": "Criar igreja",
+      "nameLabel": "Nome da igreja",
+      "timezoneLabel": "Fuso padrão (IANA)",
+      "submit": "Criar igreja",
+      "submitting": "Criando…",
+      "errors": {
+        "generic": "Não foi possível criar a igreja. Tente novamente."
+      }
+    }
+  },
+  "users": {
+    "title": "Usuários",
+    "intro": "Busque voluntários e gerencie acreditações de Admin da igreja.",
+    "loading": "Carregando usuários…",
+    "loadError": "Não foi possível carregar os usuários.",
+    "empty": "Nenhum usuário corresponde à busca.",
+    "search": "Buscar",
+    "searchPlaceholder": "Nome ou ID",
+    "adminCount": "{{count}} acreditação(ões) de admin"
+  },
+  "userDetail": {
+    "backToUsers": "Todos os usuários",
+    "loading": "Carregando usuário…",
+    "loadError": "Não foi possível carregar este usuário.",
+    "accreditationsTitle": "Acreditações de Admin",
+    "noAccreditations": "Nenhuma acreditação de Admin ainda.",
+    "grantLabel": "Conceder Admin para igreja",
+    "grantPlaceholder": "Selecione a igreja",
+    "grant": "Conceder",
+    "revoke": "Revogar",
+    "errors": {
+      "generic": "Não foi possível atualizar a acreditação. Tente novamente."
+    }
+  },
+  "scheduling": {
+    "title": "Suporte à agenda",
+    "intro": "Visualização somente leitura de eventos em todas as igrejas. Alterações na agenda estão desabilitadas para operadores.",
+    "loading": "Carregando eventos…",
+    "loadError": "Não foi possível carregar os eventos.",
+    "empty": "Nenhum evento futuro."
+  },
+  "churchDetail": {
+    "backToChurches": "Todas as igrejas",
+    "loading": "Carregando igreja…",
+    "loadError": "Não foi possível carregar esta igreja.",
+    "inviteTitle": "Convidar Admin",
+    "inviteIntro": "Envia um convite por e-mail via Supabase e registra um convite de admin pendente para esta igreja.",
+    "emailLabel": "E-mail",
+    "submit": "Enviar convite",
+    "submitting": "Enviando…",
+    "inviteSuccess": "Convite de admin enviado.",
+    "errors": {
+      "invalidEmail": "Informe um endereço de e-mail válido.",
+      "alreadyPending": "Já existe um convite pendente para este e-mail.",
+      "generic": "Não foi possível enviar o convite. Tente novamente."
+    }
   },
   "accessDenied": "É necessário acesso de Admin do sistema para essa área."
 }

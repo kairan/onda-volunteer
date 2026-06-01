@@ -32,6 +32,11 @@ import { ProtectedAppShell } from "./shell/ProtectedAppShell";
 import { shellPage } from "./shell/shellPage";
 import { SystemAdminShell } from "./system-admin/SystemAdminShell";
 import { SystemAdminDashboardPage } from "./system-admin/SystemAdminDashboardPage";
+import { SystemAdminChurchDetailPage } from "./system-admin/SystemAdminChurchDetailPage";
+import { SystemAdminChurchesPage } from "./system-admin/SystemAdminChurchesPage";
+import { SystemAdminSchedulingPage } from "./system-admin/SystemAdminSchedulingPage";
+import { SystemAdminUserDetailPage } from "./system-admin/SystemAdminUserDetailPage";
+import { SystemAdminUsersPage } from "./system-admin/SystemAdminUsersPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
 
 const rootRoute = createRootRoute({
@@ -202,6 +207,36 @@ const systemAdminIndexRoute = createRoute({
   component: SystemAdminDashboardPage,
 });
 
+const systemAdminChurchesRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/churches",
+  component: SystemAdminChurchesPage,
+});
+
+const systemAdminChurchDetailRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/churches/$churchId",
+  component: SystemAdminChurchDetailPage,
+});
+
+const systemAdminUsersRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users",
+  component: SystemAdminUsersPage,
+});
+
+const systemAdminUserDetailRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/users/$volunteerId",
+  component: SystemAdminUserDetailPage,
+});
+
+const systemAdminSchedulingRoute = createRoute({
+  getParentRoute: () => systemAdminRoute,
+  path: "/scheduling",
+  component: SystemAdminSchedulingPage,
+});
+
 const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
   createRoute({
     getParentRoute: () => rootRoute,
@@ -251,7 +286,14 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     schedulingCreatePrivateEventRoute,
     leaderVolunteerTimeAwayRoute,
     ministryLeadersRoute,
-    systemAdminRoute.addChildren([systemAdminIndexRoute]),
+    systemAdminRoute.addChildren([
+      systemAdminIndexRoute,
+      systemAdminChurchesRoute,
+      systemAdminChurchDetailRoute,
+      systemAdminUsersRoute,
+      systemAdminUserDetailRoute,
+      systemAdminSchedulingRoute,
+    ]),
     ...shellRoutes,
   ]);
 }

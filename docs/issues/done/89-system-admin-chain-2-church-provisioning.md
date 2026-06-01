@@ -2,7 +2,7 @@
 
 **Type:** Feature  
 **Label:** `ready-for-agent`  
-**Blocked by:** #88  
+**Blocked by:** #88 (shipped — see `done/88-system-admin-chain-1-identity-shell.md`)  
 **TLC:** `.specs/features/system-admin-platform/`
 
 ## What to build

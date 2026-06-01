@@ -2,7 +2,7 @@
 
 **Type:** Feature  
 **Label:** `ready-for-agent`  
-**Blocked by:** #88, #89  
+**Blocked by:** #88, #89 (church list/detail read endpoints shipped for invite UI; full church create remains #89)  
 **TLC:** `.specs/features/system-admin-platform/`
 
 ## What to build
@@ -15,9 +15,9 @@ T-SYS-14–18
 
 ## Acceptance criteria
 
-- [ ] Invite email sent; pending row recorded
-- [ ] First sign-in links **Volunteer** + **Admin** accreditation
-- [ ] Existing volunteer gets additional church accreditation
+- [x] Invite email sent; pending row recorded
+- [x] First sign-in links **Volunteer** + **Admin** accreditation
+- [x] Existing volunteer gets additional church accreditation
 
 ## Tracker
 

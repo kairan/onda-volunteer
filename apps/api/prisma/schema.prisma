@@ -18,6 +18,12 @@ enum MembershipStatus {
   INACTIVE
 }
 
+enum AdminInviteStatus {
+  PENDING
+  FULFILLED
+  REVOKED
+}
+
 model Church {
   id                   String               @id @default(cuid())
   name                 String
@@ -26,6 +32,7 @@ model Church {
   ministries           Ministry[]
   events               Event[]
   adminAccreditations  AdminAccreditation[]
+  adminInvites         AdminInvite[]
 }
 
 model Campus {
@@ -78,12 +85,31 @@ model Volunteer {
   ministryLeaderships MinistryLeader[]
   adminAccreditations AdminAccreditation[]
   systemAdministrator SystemAdministrator?
+  adminInvitesSent    AdminInvite[]        @relation("AdminInviteInvitedBy")
+  adminInvitesFulfilled AdminInvite[]      @relation("AdminInviteFulfilledVolunteer")
 }
 
 model SystemAdministrator {
   volunteerId String    @id
   volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
+}
+
+model AdminInvite {
+  id                     String            @id @default(cuid())
+  email                  String
+  churchId               String
+  church                 Church            @relation(fields: [churchId], references: [id], onDelete: Cascade)
+  status                 AdminInviteStatus
+  invitedByVolunteerId   String
+  invitedByVolunteer     Volunteer         @relation("AdminInviteInvitedBy", fields: [invitedByVolunteerId], references: [id], onDelete: Cascade)
+  fulfilledVolunteerId   String?
+  fulfilledVolunteer     Volunteer?        @relation("AdminInviteFulfilledVolunteer", fields: [fulfilledVolunteerId], references: [id], onDelete: SetNull)
+  createdAt              DateTime          @default(now())
+  fulfilledAt            DateTime?
+
+  @@index([churchId])
+  @@index([email, status])
 }
 
 model MinistryLeader {

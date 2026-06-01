@@ -9,6 +9,7 @@ import { DateTime } from 'luxon';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { StewardshipService } from '../organization/stewardship.service';
+import { assertSchedulingWriteAllowed } from '../scheduling/scheduling-write.guard';
 
 export type EventDetailResponse = {
   church: {
@@ -130,6 +131,7 @@ export class EventsService {
     endsAtUtc: string;
     auth: AuthenticatedRequestContext;
   }) {
+    await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertAdminAccreditedForChurch(input.churchId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
@@ -170,6 +172,7 @@ export class EventsService {
     endsAtUtc: string;
     auth: AuthenticatedRequestContext;
   }) {
+    await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
@@ -230,39 +233,43 @@ export class EventsService {
     auth: AuthenticatedRequestContext;
   }) {
     const volunteer = await input.auth.requireVolunteer();
+    const systemAdmin = await input.auth.isSystemAdmin();
 
-    if (!input.churchId) {
+    if (!systemAdmin && !input.churchId) {
       throw new BadRequestException({
         code: 'CHURCH_ID_REQUIRED',
         message: 'churchId query parameter is required.',
       });
     }
 
-    const stewardship = await this.stewardship.getChurchStewardship(
-      volunteer.id,
-      input.churchId,
-    );
-
-    const visibilityOr: Array<
+    let visibilityOr: Array<
       | { kind: 'PUBLIC' }
       | { kind: 'PRIVATE' }
       | { kind: 'PRIVATE'; ministryId: { in: string[] } }
-    > = [{ kind: 'PUBLIC' }];
+    > | undefined;
 
-    if (stewardship.isAccreditedAdmin) {
-      visibilityOr.push({ kind: 'PRIVATE' });
-    } else if (stewardship.accessibleMinistryIds.length > 0) {
-      visibilityOr.push({
-        kind: 'PRIVATE',
-        ministryId: { in: stewardship.accessibleMinistryIds },
-      });
+    if (!systemAdmin) {
+      const stewardship = await this.stewardship.getChurchStewardship(
+        volunteer.id,
+        input.churchId!,
+      );
+
+      visibilityOr = [{ kind: 'PUBLIC' }];
+      if (stewardship.isAccreditedAdmin) {
+        visibilityOr.push({ kind: 'PRIVATE' });
+      } else if (stewardship.accessibleMinistryIds.length > 0) {
+        visibilityOr.push({
+          kind: 'PRIVATE',
+          ministryId: { in: stewardship.accessibleMinistryIds },
+        });
+      }
     }
 
     const rows = await this.prisma.event.findMany({
       where: {
-        churchId: input.churchId,
+        ...(input.churchId ? { churchId: input.churchId } : {}),
         cancelledAtUtc: null,
-        OR: visibilityOr,
+        ...(visibilityOr ? { OR: visibilityOr } : {}),
       },
       include: {
         church: true,
@@ -313,12 +320,15 @@ export class EventsService {
       throw new NotFoundException();
     }
 
-    const stewardship = await this.stewardship.getChurchStewardship(
-      volunteer.id,
-      row.churchId,
-    );
-    if (!this.stewardship.canViewEvent(row, stewardship)) {
-      throw new NotFoundException();
+    const systemAdmin = await input.auth.isSystemAdmin();
+    if (!systemAdmin) {
+      const stewardship = await this.stewardship.getChurchStewardship(
+        volunteer.id,
+        row.churchId,
+      );
+      if (!this.stewardship.canViewEvent(row, stewardship)) {
+        throw new NotFoundException();
+      }
     }
 
     const zone = row.church.defaultTimezone;
@@ -377,6 +387,7 @@ export class EventsService {
       });
     }
 
+    await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertAdminAccreditedForChurch(event.churchId);
 
     const now = this.clock.now();

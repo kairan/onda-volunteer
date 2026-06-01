@@ -5,7 +5,74 @@
   },
   "dashboard": {
     "title": "Operator dashboard",
-    "intro": "Platform operator tools for churches, users, and read-only scheduling support."
+    "intro": "Platform operator tools for churches, users, and read-only scheduling support.",
+    "churchesLink": "Churches",
+    "usersLink": "Users",
+    "schedulingLink": "Scheduling (read-only)"
+  },
+  "churches": {
+    "title": "Churches",
+    "intro": "Create churches or select one to invite a church Admin by email.",
+    "loading": "Loading churches…",
+    "loadError": "Could not load churches.",
+    "empty": "No churches yet.",
+    "create": {
+      "title": "Create church",
+      "nameLabel": "Church name",
+      "timezoneLabel": "Default timezone (IANA)",
+      "submit": "Create church",
+      "submitting": "Creating…",
+      "errors": {
+        "generic": "Could not create the church. Try again."
+      }
+    }
+  },
+  "users": {
+    "title": "Users",
+    "intro": "Search volunteers and manage church Admin accreditations.",
+    "loading": "Loading users…",
+    "loadError": "Could not load users.",
+    "empty": "No users match your search.",
+    "search": "Search",
+    "searchPlaceholder": "Name or ID",
+    "adminCount": "{{count}} church admin grant(s)"
+  },
+  "userDetail": {
+    "backToUsers": "All users",
+    "loading": "Loading user…",
+    "loadError": "Could not load this user.",
+    "accreditationsTitle": "Admin accreditations",
+    "noAccreditations": "No church Admin grants yet.",
+    "grantLabel": "Grant Admin for church",
+    "grantPlaceholder": "Select church",
+    "grant": "Grant",
+    "revoke": "Revoke",
+    "errors": {
+      "generic": "Could not update accreditation. Try again."
+    }
+  },
+  "scheduling": {
+    "title": "Scheduling support",
+    "intro": "Read-only view of events across all churches. Scheduling writes are disabled for operators.",
+    "loading": "Loading events…",
+    "loadError": "Could not load events.",
+    "empty": "No upcoming events."
+  },
+  "churchDetail": {
+    "backToChurches": "All churches",
+    "loading": "Loading church…",
+    "loadError": "Could not load this church.",
+    "inviteTitle": "Invite Admin",
+    "inviteIntro": "Sends a Supabase email invite and records a pending admin invite for this church.",
+    "emailLabel": "Email",
+    "submit": "Send invite",
+    "submitting": "Sending…",
+    "inviteSuccess": "Admin invite sent.",
+    "errors": {
+      "invalidEmail": "Enter a valid email address.",
+      "alreadyPending": "A pending invite already exists for this email.",
+      "generic": "Could not send the invite. Try again."
+    }
   },
   "accessDenied": "System Admin access is required for that area."
 }

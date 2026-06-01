@@ -7,7 +7,7 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-describe('System Admin authorization (e2e)', () => {
+describe('System Admin scheduling read-only (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -33,17 +33,12 @@ describe('System Admin authorization (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await prisma.adminInvite.deleteMany();
     await prisma.systemAdministrator.deleteMany();
     await prisma.assignment.deleteMany();
-    await prisma.unavailability.deleteMany();
-    await prisma.ministryLeader.deleteMany();
-    await prisma.adminAccreditation.deleteMany();
-    await prisma.ministryMembership.deleteMany();
-    await prisma.ministryRole.deleteMany();
-    await prisma.volunteer.deleteMany();
     await prisma.event.deleteMany();
+    await prisma.ministryMembership.deleteMany();
     await prisma.ministry.deleteMany();
+    await prisma.volunteer.deleteMany();
     await prisma.campus.deleteMany();
     await prisma.church.deleteMany();
   });
@@ -52,7 +47,32 @@ describe('System Admin authorization (e2e)', () => {
     await app.close();
   });
 
-  it('returns isSystemAdmin on GET /identity/me for seeded operator', async () => {
+  it('lists events across churches without churchId for system admin', async () => {
+    const churchA = await prisma.church.create({
+      data: { name: 'A', defaultTimezone: 'UTC' },
+    });
+    const churchB = await prisma.church.create({
+      data: { name: 'B', defaultTimezone: 'UTC' },
+    });
+    await prisma.event.create({
+      data: {
+        kind: 'PUBLIC',
+        title: 'Event A',
+        startsAtUtc: new Date('2026-06-01T14:00:00.000Z'),
+        endsAtUtc: new Date('2026-06-01T16:00:00.000Z'),
+        churchId: churchA.id,
+      },
+    });
+    await prisma.event.create({
+      data: {
+        kind: 'PUBLIC',
+        title: 'Event B',
+        startsAtUtc: new Date('2026-06-02T14:00:00.000Z'),
+        endsAtUtc: new Date('2026-06-02T16:00:00.000Z'),
+        churchId: churchB.id,
+      },
+    });
+
     await prisma.volunteer.create({
       data: {
         id: 'seed-volunteer-system-admin',
@@ -62,27 +82,17 @@ describe('System Admin authorization (e2e)', () => {
     });
 
     const res = await request(app.getHttpServer())
-      .get('/identity/me')
+      .get('/events')
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
       .expect(200);
 
-    expect(res.body.isSystemAdmin).toBe(true);
+    expect(res.body).toHaveLength(2);
   });
 
-  it('returns isSystemAdmin false for a regular volunteer', async () => {
-    const volunteer = await prisma.volunteer.create({
-      data: { displayName: 'Regular Volunteer' },
+  it('rejects scheduling writes for system admin', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Write Church', defaultTimezone: 'UTC' },
     });
-
-    const res = await request(app.getHttpServer())
-      .get('/identity/me')
-      .set('X-Volunteer-Id', volunteer.id)
-      .expect(200);
-
-    expect(res.body.isSystemAdmin).toBe(false);
-  });
-
-  it('allows GET /system-admin/health for system admin', async () => {
     await prisma.volunteer.create({
       data: {
         id: 'seed-volunteer-system-admin',
@@ -92,30 +102,17 @@ describe('System Admin authorization (e2e)', () => {
     });
 
     const res = await request(app.getHttpServer())
-      .get('/system-admin/health')
+      .post('/events')
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
-      .expect(200);
-
-    expect(res.body).toEqual({
-      ok: true,
-      volunteerId: 'seed-volunteer-system-admin',
-    });
-  });
-
-  it('returns 403 NOT_SYSTEM_ADMIN for volunteer on operator route', async () => {
-    const volunteer = await prisma.volunteer.create({
-      data: { displayName: 'Regular Volunteer' },
-    });
-
-    const res = await request(app.getHttpServer())
-      .get('/system-admin/health')
-      .set('X-Volunteer-Id', volunteer.id)
+      .send({
+        kind: 'PUBLIC',
+        churchId: church.id,
+        title: 'Blocked',
+        startsAtUtc: '2026-06-01T14:00:00.000Z',
+        endsAtUtc: '2026-06-01T16:00:00.000Z',
+      })
       .expect(403);
 
-    expect(res.body.code).toBe('NOT_SYSTEM_ADMIN');
-  });
-
-  it('returns 401 when unauthenticated on operator route', async () => {
-    await request(app.getHttpServer()).get('/system-admin/health').expect(401);
+    expect(res.body.code).toBe('SYSTEM_ADMIN_READ_ONLY');
   });
 });

@@ -7,7 +7,7 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 
-describe('System Admin authorization (e2e)', () => {
+describe('System Admin churches (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -35,24 +35,17 @@ describe('System Admin authorization (e2e)', () => {
   beforeEach(async () => {
     await prisma.adminInvite.deleteMany();
     await prisma.systemAdministrator.deleteMany();
-    await prisma.assignment.deleteMany();
-    await prisma.unavailability.deleteMany();
-    await prisma.ministryLeader.deleteMany();
     await prisma.adminAccreditation.deleteMany();
-    await prisma.ministryMembership.deleteMany();
-    await prisma.ministryRole.deleteMany();
-    await prisma.volunteer.deleteMany();
-    await prisma.event.deleteMany();
-    await prisma.ministry.deleteMany();
     await prisma.campus.deleteMany();
     await prisma.church.deleteMany();
+    await prisma.volunteer.deleteMany();
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  it('returns isSystemAdmin on GET /identity/me for seeded operator', async () => {
+  async function seedOperator() {
     await prisma.volunteer.create({
       data: {
         id: 'seed-volunteer-system-admin',
@@ -60,62 +53,61 @@ describe('System Admin authorization (e2e)', () => {
         systemAdministrator: { create: {} },
       },
     });
+  }
+
+  it('creates a church with default campus transactionally', async () => {
+    await seedOperator();
 
     const res = await request(app.getHttpServer())
-      .get('/identity/me')
+      .post('/system-admin/churches')
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
-      .expect(200);
+      .send({
+        name: 'New Parish',
+        defaultTimezone: 'America/Sao_Paulo',
+      })
+      .expect(201);
 
-    expect(res.body.isSystemAdmin).toBe(true);
-  });
-
-  it('returns isSystemAdmin false for a regular volunteer', async () => {
-    const volunteer = await prisma.volunteer.create({
-      data: { displayName: 'Regular Volunteer' },
+    expect(res.body).toMatchObject({
+      name: 'New Parish',
+      defaultTimezone: 'America/Sao_Paulo',
+      campuses: [
+        {
+          name: 'Principal',
+          timezone: 'America/Sao_Paulo',
+        },
+      ],
     });
 
-    const res = await request(app.getHttpServer())
-      .get('/identity/me')
-      .set('X-Volunteer-Id', volunteer.id)
-      .expect(200);
-
-    expect(res.body.isSystemAdmin).toBe(false);
+    const campuses = await prisma.campus.findMany({
+      where: { churchId: res.body.id },
+    });
+    expect(campuses).toHaveLength(1);
   });
 
-  it('allows GET /system-admin/health for system admin', async () => {
-    await prisma.volunteer.create({
-      data: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        systemAdministrator: { create: {} },
-      },
-    });
+  it('returns validation errors for invalid timezone', async () => {
+    await seedOperator();
 
     const res = await request(app.getHttpServer())
-      .get('/system-admin/health')
+      .post('/system-admin/churches')
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
-      .expect(200);
+      .send({
+        name: 'Bad TZ Church',
+        defaultTimezone: 'Not/A_Timezone',
+      })
+      .expect(400);
 
-    expect(res.body).toEqual({
-      ok: true,
-      volunteerId: 'seed-volunteer-system-admin',
-    });
+    expect(res.body.code).toBe('INVALID_TIMEZONE');
   });
 
-  it('returns 403 NOT_SYSTEM_ADMIN for volunteer on operator route', async () => {
+  it('denies church create for non–system-admin', async () => {
     const volunteer = await prisma.volunteer.create({
-      data: { displayName: 'Regular Volunteer' },
+      data: { displayName: 'Regular' },
     });
 
-    const res = await request(app.getHttpServer())
-      .get('/system-admin/health')
+    await request(app.getHttpServer())
+      .post('/system-admin/churches')
       .set('X-Volunteer-Id', volunteer.id)
+      .send({ name: 'Nope', defaultTimezone: 'UTC' })
       .expect(403);
-
-    expect(res.body.code).toBe('NOT_SYSTEM_ADMIN');
-  });
-
-  it('returns 401 when unauthenticated on operator route', async () => {
-    await request(app.getHttpServer()).get('/system-admin/health').expect(401);
   });
 });

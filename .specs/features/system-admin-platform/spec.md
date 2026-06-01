@@ -18,10 +18,10 @@ New **Churches** and their first **Admin** users are provisioned via Prisma seed
 
 ## Goals
 
-- [ ] **System Admin** accounts exist (many allowed); initial grant via **seed** only (no in-app bootstrap of the first System Admin).
-- [ ] **System Admin** dashboard (separate from volunteer/leader shell) to create **Churches** and manage users.
-- [ ] **System Admin** invites a new church **Admin** by email (Supabase invite); on accept, user links to **Volunteer** + church **Admin** accreditation.
-- [ ] **System Admin** has **read-only** access to scheduling data (support visibility; no roster/assignment mutations).
+- [x] **System Admin** accounts exist (many allowed); initial grant via **seed** only (no in-app bootstrap of the first System Admin).
+- [x] **System Admin** dashboard (separate from volunteer/leader shell) to create **Churches** and manage users.
+- [x] **System Admin** invites a new church **Admin** by email (Supabase invite); on accept, user links to **Volunteer** + church **Admin** accreditation.
+- [x] **System Admin** has **read-only** access to scheduling data (support visibility; no roster/assignment mutations).
 - [ ] Church-scoped **Admin** may edit their accredited **Church** name and default timezone (separate slice — see Related work).
 
 ## Out of Scope
@@ -173,6 +173,6 @@ New **Churches** and their first **Admin** users are provisioned via Prisma seed
 
 ## Success Criteria
 
-- [ ] New **Church** + first **Admin** can be onboarded without `prisma:seed` for that church.
-- [ ] **System Admin** cannot mutate schedules; church **Admin** retains full stewardship within accreditation.
+- [x] New **Church** + first **Admin** can be onboarded without `prisma:seed` for that church.
+- [x] **System Admin** cannot mutate schedules; church **Admin** retains full stewardship within accreditation.
 - [x] `CONTEXT.md`, Platform PRD, and ADR document **System Admin** vs church **Admin** boundaries.

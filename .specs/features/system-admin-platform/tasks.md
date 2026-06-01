@@ -142,7 +142,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] `prisma migrate deploy` succeeds on clean DB
+- [x] `prisma migrate deploy` succeeds on clean DB
 
 **Tests**: none (schema)  
 **Gate**: migrate
@@ -158,7 +158,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] `pnpm prisma:seed` creates operator volunteer
+- [x] `pnpm prisma:seed` creates operator volunteer
 
 **Tests**: none  
 **Gate**: seed
@@ -175,7 +175,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Seeded system admin passes; demo volunteer fails assert
+- [x] Seeded system admin passes; demo volunteer fails assert
 
 **Tests**: e2e (auth guard)  
 **Gate**: `pnpm --filter @onda/api test` (new spec file started)
@@ -191,7 +191,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Response shape documented in runbook
+- [x] Response shape documented in runbook
 
 **Tests**: e2e in `identity` or `system-admin-auth` spec  
 **Gate**: api test
@@ -207,7 +207,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Module registered in `app.module.ts`
+- [x] Module registered in `app.module.ts`
 
 **Tests**: e2e smoke `GET /system-admin/health` or churches stub 401/403  
 **Gate**: api test
@@ -223,7 +223,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] All cases green
+- [x] All cases green
 
 **Tests**: e2e  
 **Gate**: `pnpm test`
@@ -239,7 +239,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Seeded system admin reaches dashboard; demo volunteer redirected
+- [x] Seeded system admin reaches dashboard; demo volunteer redirected
 
 **Tests**: Vitest `systemAdminShell.behavior.test.tsx`  
 **Gate**: web unit test
@@ -256,7 +256,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Church appears in organization context for later-accredited admin
+- [x] Church appears in organization context for later-accredited admin
 
 **Tests**: e2e  
 **Gate**: api test
@@ -272,7 +272,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Stable validation errors for bad timezone/name
+- [x] Stable validation errors for bad timezone/name
 
 **Tests**: e2e  
 **Gate**: api test
@@ -288,7 +288,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Create church refreshes list from server truth
+- [x] Create church refreshes list from server truth
 
 **Tests**: Vitest behavior test with mocked API  
 **Gate**: web unit test
@@ -304,7 +304,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Migrate deploy green
+- [x] Migrate deploy green
 
 **Tests**: none  
 **Gate**: migrate
@@ -320,7 +320,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Missing service role → clear startup warning or controlled error code
+- [x] Missing service role → clear startup warning or controlled error code
 
 **Tests**: unit or e2e with mock  
 **Gate**: api test
@@ -336,8 +336,8 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Pending invite → sign-in → accreditation + FULFILLED
-- [ ] Existing volunteer gets additional church accreditation
+- [x] Pending invite → sign-in → accreditation + FULFILLED
+- [x] Existing volunteer gets additional church accreditation
 
 **Tests**: e2e with mock Supabase  
 **Gate**: api test
@@ -353,7 +353,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Invalid email returns `ADMIN_INVITE_INVALID`
+- [x] Invalid email returns `ADMIN_INVITE_INVALID`
 
 **Tests**: e2e  
 **Gate**: api test
@@ -369,7 +369,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Success and error copy in en + pt-BR
+- [x] Success and error copy in en + pt-BR
 
 **Tests**: Vitest behavior  
 **Gate**: web unit test
@@ -385,7 +385,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Non–system-admin denied
+- [x] Non–system-admin denied
 
 **Tests**: e2e  
 **Gate**: api test
@@ -402,7 +402,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Revoke last admin blocked
+- [x] Revoke last admin blocked
 
 **Tests**: e2e  
 **Gate**: api test
@@ -419,7 +419,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Leader assign and membership deactivate e2e paths green
+- [x] Leader assign and membership deactivate e2e paths green
 
 **Tests**: e2e  
 **Gate**: api test
@@ -435,7 +435,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Full `pnpm test` green
+- [x] Full `pnpm test` green
 
 **Tests**: e2e  
 **Gate**: `pnpm test`
@@ -451,7 +451,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Grant/revoke admin reflected after refetch
+- [x] Grant/revoke admin reflected after refetch
 
 **Tests**: Vitest behavior  
 **Gate**: web unit test
@@ -467,7 +467,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] System admin lists events across churches
+- [x] System admin lists events across churches
 
 **Tests**: e2e  
 **Gate**: api test
@@ -483,7 +483,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] POST assign returns read-only error for system admin
+- [x] POST assign returns read-only error for system admin
 
 **Tests**: e2e  
 **Gate**: api test
@@ -499,7 +499,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] No write actions rendered for operator
+- [x] No write actions rendered for operator
 
 **Tests**: Vitest behavior  
 **Gate**: web unit test
@@ -515,7 +515,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Non-accredited admin denied
+- [x] Non-accredited admin denied
 
 **Tests**: e2e  
 **Gate**: api test
@@ -531,7 +531,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Rename + timezone change cases green
+- [x] Rename + timezone change cases green
 
 **Tests**: e2e  
 **Gate**: api test
@@ -547,7 +547,7 @@ T-CHURCH-01 → T-CHURCH-02 → T-CHURCH-03 [P]
 
 **Done when**:
 
-- [ ] Organization context refreshes after save
+- [x] Organization context refreshes after save
 
 **Tests**: Vitest behavior  
 **Gate**: web unit test
