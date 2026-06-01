@@ -263,8 +263,8 @@ export class OrganizationService {
     }
     if (Object.keys(data).length === 0) {
       throw new BadRequestException({
-        code: 'CHURCH_UPDATE_EMPTY',
-        message: 'Provide name and/or defaultTimezone to update.',
+        code: 'CHURCH_METADATA_EMPTY',
+        message: 'Provide at least one of name or defaultTimezone.',
       });
     }
 
