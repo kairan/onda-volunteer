@@ -19,6 +19,16 @@ export function SystemAdminDashboardPage() {
             <Link to="/system-admin/users">{t('dashboard.links.users')}</Link>
           </Button>
         </li>
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/churches">{t('dashboard.links.churches')}</Link>
+          </Button>
+        </li>
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/scheduling">{t('dashboard.links.scheduling')}</Link>
+          </Button>
+        </li>
       </ul>
     </section>
   );

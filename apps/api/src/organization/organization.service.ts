@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { CLOCK, type Clock } from '../common/clock';
+import { isValidIanaTimezone } from '../common/iana-timezone';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { StewardshipService } from './stewardship.service';
@@ -215,6 +216,82 @@ export class OrganizationService {
       });
     }
     return parsed;
+  }
+
+  private parseChurchName(name: unknown): string {
+    const parsed = typeof name === 'string' ? name.trim() : '';
+    if (!parsed) {
+      throw new BadRequestException({
+        code: 'CHURCH_NAME_REQUIRED',
+        message: 'Church name is required.',
+      });
+    }
+    return parsed;
+  }
+
+  private parseChurchTimezone(label: string, timezone: unknown): string {
+    const parsed = typeof timezone === 'string' ? timezone.trim() : '';
+    if (!parsed) {
+      throw new BadRequestException({
+        code: 'INVALID_TIMEZONE',
+        message: `${label} is required.`,
+      });
+    }
+    if (!isValidIanaTimezone(parsed)) {
+      throw new BadRequestException({
+        code: 'INVALID_TIMEZONE',
+        message: `${label} must be a valid IANA timezone.`,
+      });
+    }
+    return parsed;
+  }
+
+  async updateChurchMetadata(input: {
+    churchId: string;
+    name?: unknown;
+    defaultTimezone?: unknown;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const church = await this.prisma.church.findUnique({
+      where: { id: input.churchId },
+      select: { id: true },
+    });
+    if (!church) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(input.churchId);
+
+    const hasName = input.name !== undefined;
+    const hasTimezone = input.defaultTimezone !== undefined;
+    if (!hasName && !hasTimezone) {
+      throw new BadRequestException({
+        code: 'CHURCH_METADATA_EMPTY',
+        message: 'Provide name and/or defaultTimezone to update.',
+      });
+    }
+
+    const data: { name?: string; defaultTimezone?: string } = {};
+    if (hasName) {
+      data.name = this.parseChurchName(input.name);
+    }
+    if (hasTimezone) {
+      data.defaultTimezone = this.parseChurchTimezone(
+        'defaultTimezone',
+        input.defaultTimezone,
+      );
+    }
+
+    const updated = await this.prisma.church.update({
+      where: { id: input.churchId },
+      data,
+    });
+
+    return {
+      id: updated.id,
+      name: updated.name,
+      defaultTimezone: updated.defaultTimezone,
+    };
   }
 
   async createMinistry(input: {
