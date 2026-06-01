@@ -8,6 +8,18 @@ import {
 } from './authenticated-request-context';
 import { IdentityService } from './identity.service';
 
+function devHeadersAllowed(): boolean {
+  return process.env.AUTH_ALLOW_DEV_HEADERS === 'true';
+}
+
+/** Volunteer-bound identity (JWT or dev X-Volunteer-Id), not leader-only dev headers. */
+function hasVolunteerIdentity(headers: AuthHeaders): boolean {
+  if (headers.authorization?.startsWith('Bearer ')) {
+    return true;
+  }
+  return devHeadersAllowed() && Boolean(headers.volunteerId?.trim());
+}
+
 @Injectable()
 export class AuthContextResolverService {
   constructor(
@@ -45,6 +57,9 @@ export class AuthContextResolverService {
         return systemAdminPromise;
       }
       systemAdminPromise = (async () => {
+        if (!hasVolunteerIdentity(headers)) {
+          return false;
+        }
         const volunteer = await requireVolunteer();
         const row = await this.prisma.systemAdministrator.findUnique({
           where: { volunteerId: volunteer.id },

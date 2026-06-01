@@ -7,7 +7,29 @@
     "title": "Painel do operador",
     "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
     "links": {
-      "churches": "Igrejas"
+      "churches": "Igrejas",
+      "scheduling": "Agenda (somente leitura)"
+    }
+  },
+  "scheduling": {
+    "eyebrow": "Suporte",
+    "title": "Agenda",
+    "intro": "Consulte eventos em todas as igrejas para diagnóstico. Operadores não podem criar nem alterar escalas.",
+    "readOnlyNotice": "Somente leitura — ações de escrita estão desativadas para Admin do sistema.",
+    "listHeading": "Eventos",
+    "churchFilter": "Igreja",
+    "allChurches": "Todas as igrejas",
+    "loading": "Carregando eventos…",
+    "empty": "Nenhum evento futuro encontrado.",
+    "backToDashboard": "Voltar ao painel",
+    "errors": {
+      "loadFailed": "Não foi possível carregar os eventos."
+    },
+    "detail": {
+      "assignmentsHeading": "Designações",
+      "noAssignments": "Nenhuma designação ativa.",
+      "cancelled": "Este evento está cancelado.",
+      "backToList": "Voltar à lista da agenda"
     }
   },
   "churches": {

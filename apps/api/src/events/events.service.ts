@@ -9,6 +9,7 @@ import { DateTime } from 'luxon';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
 import { StewardshipService } from '../organization/stewardship.service';
+import { assertSchedulingWriteAllowed } from '../scheduling/scheduling-write-guard';
 
 export type EventDetailResponse = {
   church: {
@@ -55,6 +56,7 @@ export type EventListItem = {
     endsDisplayInChurchTz: string;
   };
   ministry: { id: string; name: string } | null;
+  church?: { id: string; name: string };
 };
 
 function churchFraming(
@@ -130,6 +132,7 @@ export class EventsService {
     endsAtUtc: string;
     auth: AuthenticatedRequestContext;
   }) {
+    await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertAdminAccreditedForChurch(input.churchId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
@@ -170,6 +173,7 @@ export class EventsService {
     endsAtUtc: string;
     auth: AuthenticatedRequestContext;
   }) {
+    await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
@@ -201,16 +205,19 @@ export class EventsService {
     return this.toEventListItem(row);
   }
 
-  private toEventListItem(row: {
-    id: string;
-    kind: 'PUBLIC' | 'PRIVATE';
-    title: string;
-    startsAtUtc: Date;
-    endsAtUtc: Date;
-    church: { defaultTimezone: string };
-    ministry: { id: string; name: string } | null;
-  }): EventListItem {
-    return {
+  private toEventListItem(
+    row: {
+      id: string;
+      kind: 'PUBLIC' | 'PRIVATE';
+      title: string;
+      startsAtUtc: Date;
+      endsAtUtc: Date;
+      church: { id: string; name: string; defaultTimezone: string };
+      ministry: { id: string; name: string } | null;
+    },
+    includeChurch = false,
+  ): EventListItem {
+    const item: EventListItem = {
       id: row.id,
       kind: row.kind,
       title: row.title,
@@ -223,6 +230,12 @@ export class EventsService {
         ? { id: row.ministry.id, name: row.ministry.name }
         : null,
     };
+
+    if (includeChurch) {
+      item.church = { id: row.church.id, name: row.church.name };
+    }
+
+    return item;
   }
 
   async listEvents(input: {
@@ -230,6 +243,23 @@ export class EventsService {
     auth: AuthenticatedRequestContext;
   }) {
     const volunteer = await input.auth.requireVolunteer();
+    const isSystemAdmin = await input.auth.isSystemAdmin();
+
+    if (isSystemAdmin) {
+      const rows = await this.prisma.event.findMany({
+        where: {
+          ...(input.churchId ? { churchId: input.churchId } : {}),
+          cancelledAtUtc: null,
+        },
+        include: {
+          church: true,
+          ministry: true,
+        },
+        orderBy: { startsAtUtc: 'asc' },
+      });
+
+      return rows.map((row) => this.toEventListItem(row, !input.churchId));
+    }
 
     if (!input.churchId) {
       throw new BadRequestException({
@@ -271,19 +301,7 @@ export class EventsService {
       orderBy: { startsAtUtc: 'asc' },
     });
 
-    return rows.map((row) => ({
-      id: row.id,
-      kind: row.kind,
-      title: row.title,
-      window: {
-        startsAtUtc: row.startsAtUtc.toISOString(),
-        endsAtUtc: row.endsAtUtc.toISOString(),
-      },
-      framing: churchFraming(row.startsAtUtc, row.endsAtUtc, row.church.defaultTimezone),
-      ministry: row.ministry
-        ? { id: row.ministry.id, name: row.ministry.name }
-        : null,
-    }));
+    return rows.map((row) => this.toEventListItem(row));
   }
 
   async getEventDetail(input: {
@@ -313,12 +331,14 @@ export class EventsService {
       throw new NotFoundException();
     }
 
-    const stewardship = await this.stewardship.getChurchStewardship(
-      volunteer.id,
-      row.churchId,
-    );
-    if (!this.stewardship.canViewEvent(row, stewardship)) {
-      throw new NotFoundException();
+    if (!(await input.auth.isSystemAdmin())) {
+      const stewardship = await this.stewardship.getChurchStewardship(
+        volunteer.id,
+        row.churchId,
+      );
+      if (!this.stewardship.canViewEvent(row, stewardship)) {
+        throw new NotFoundException();
+      }
     }
 
     const zone = row.church.defaultTimezone;
@@ -364,6 +384,8 @@ export class EventsService {
     eventId: string;
     auth: AuthenticatedRequestContext;
   }) {
+    await assertSchedulingWriteAllowed(input.auth);
+
     const event = await this.prisma.event.findUnique({
       where: { id: input.eventId },
     });

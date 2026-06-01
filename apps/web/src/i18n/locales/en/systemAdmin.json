@@ -7,7 +7,29 @@
     "title": "Operator dashboard",
     "intro": "Platform operator tools for churches, users, and read-only scheduling support.",
     "links": {
-      "churches": "Churches"
+      "churches": "Churches",
+      "scheduling": "Scheduling (read-only)"
+    }
+  },
+  "scheduling": {
+    "eyebrow": "Support",
+    "title": "Scheduling",
+    "intro": "Browse events across churches for diagnosis. Operators cannot create or change schedules.",
+    "readOnlyNotice": "Read-only — write actions are disabled for System Admin.",
+    "listHeading": "Events",
+    "churchFilter": "Church",
+    "allChurches": "All churches",
+    "loading": "Loading events…",
+    "empty": "No upcoming events found.",
+    "backToDashboard": "Back to dashboard",
+    "errors": {
+      "loadFailed": "Could not load events."
+    },
+    "detail": {
+      "assignmentsHeading": "Assignments",
+      "noAssignments": "No active assignments.",
+      "cancelled": "This event is cancelled.",
+      "backToList": "Back to scheduling list"
     }
   },
   "churches": {

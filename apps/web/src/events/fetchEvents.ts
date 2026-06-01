@@ -14,6 +14,7 @@ export type EventListItem = {
     endsDisplayInChurchTz: string;
   };
   ministry: { id: string; name: string } | null;
+  church?: { id: string; name: string };
 };
 
 export async function fetchEvents(input: {
