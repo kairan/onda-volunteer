@@ -9,27 +9,39 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { AuthContext } from '../identity/auth-context.decorator';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
 import { OrganizationService } from '../organization/organization.service';
+
+type GrantLeaderBody = {
+  volunteerId?: unknown;
+};
 
 type AddMembershipBody = {
   volunteerId?: unknown;
   status?: unknown;
 };
 
-function parseAddMembershipBody(body: AddMembershipBody): {
-  volunteerId: string;
-  status: 'PENDING' | 'ACTIVE';
-} {
-  const volunteerId =
-    typeof body.volunteerId === 'string' ? body.volunteerId.trim() : '';
+type PatchMembershipBody = {
+  status?: unknown;
+};
+
+function parseVolunteerId(value: unknown): string {
+  const volunteerId = typeof value === 'string' ? value.trim() : '';
   if (!volunteerId) {
     throw new BadRequestException({
       code: 'VOLUNTEER_ID_REQUIRED',
       message: 'volunteerId is required.',
     });
   }
+  return volunteerId;
+}
+
+function parseAddMembershipBody(body: AddMembershipBody): {
+  volunteerId: string;
+  status: 'PENDING' | 'ACTIVE';
+} {
+  const volunteerId = parseVolunteerId(body.volunteerId);
   if (body.status !== 'PENDING' && body.status !== 'ACTIVE') {
     throw new BadRequestException({
       code: 'INVALID_STATUS',
@@ -39,25 +51,32 @@ function parseAddMembershipBody(body: AddMembershipBody): {
   return { volunteerId, status: body.status };
 }
 
-@Controller('system-admin')
+function parsePatchMembershipBody(body: PatchMembershipBody): 'ACTIVE' | 'INACTIVE' {
+  if (body.status === 'ACTIVE') {
+    return 'ACTIVE';
+  }
+  if (body.status === 'INACTIVE') {
+    return 'INACTIVE';
+  }
+  throw new BadRequestException({
+    code: 'INVALID_STATUS',
+    message: 'status must be ACTIVE or INACTIVE.',
+  });
+}
+
+@Controller('system-admin/ministries')
 export class SystemAdminOrganizationController {
   constructor(private readonly organization: OrganizationService) {}
 
-  @Post('ministries/:ministryId/leaders')
+  @Post(':ministryId/leaders')
   @HttpCode(HttpStatus.CREATED)
   async grantLeader(
     @Param('ministryId') ministryId: string,
-    @Body() body: { volunteerId?: string },
+    @Body() body: GrantLeaderBody,
     @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
-    const volunteerId = body.volunteerId?.trim();
-    if (!volunteerId) {
-      throw new BadRequestException({
-        code: 'VOLUNTEER_ID_REQUIRED',
-        message: 'volunteerId is required.',
-      });
-    }
+    const volunteerId = parseVolunteerId(body.volunteerId);
     return this.organization.grantMinistryLeader({
       ministryId,
       volunteerId,
@@ -66,7 +85,7 @@ export class SystemAdminOrganizationController {
     });
   }
 
-  @Delete('ministries/:ministryId/leaders/:volunteerId')
+  @Delete(':ministryId/leaders/:volunteerId')
   @HttpCode(HttpStatus.OK)
   async revokeLeader(
     @Param('ministryId') ministryId: string,
@@ -82,7 +101,7 @@ export class SystemAdminOrganizationController {
     });
   }
 
-  @Post('ministries/:ministryId/memberships')
+  @Post(':ministryId/memberships')
   @HttpCode(HttpStatus.CREATED)
   async addMembership(
     @Param('ministryId') ministryId: string,
@@ -100,16 +119,17 @@ export class SystemAdminOrganizationController {
     });
   }
 
-  @Patch('ministries/:ministryId/memberships/:volunteerId')
+  @Patch(':ministryId/memberships/:volunteerId')
   @HttpCode(HttpStatus.OK)
   async patchMembership(
     @Param('ministryId') ministryId: string,
     @Param('volunteerId') volunteerId: string,
-    @Body() body: { status?: string },
+    @Body() body: PatchMembershipBody,
     @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
-    if (body.status === 'ACTIVE') {
+    const status = parsePatchMembershipBody(body);
+    if (status === 'ACTIVE') {
       return this.organization.activateMinistryMembership({
         ministryId,
         volunteerId,
@@ -117,17 +137,11 @@ export class SystemAdminOrganizationController {
         asSystemAdmin: true,
       });
     }
-    if (body.status === 'INACTIVE') {
-      return this.organization.deactivateMinistryMembership({
-        ministryId,
-        volunteerId,
-        auth,
-        asSystemAdmin: true,
-      });
-    }
-    throw new BadRequestException({
-      code: 'INVALID_STATUS',
-      message: 'status must be ACTIVE or INACTIVE.',
+    return this.organization.deactivateMinistryMembership({
+      ministryId,
+      volunteerId,
+      auth,
+      asSystemAdmin: true,
     });
   }
 }

@@ -13,8 +13,8 @@ import {
   renameMinistryRole,
   retireMinistryRole,
 } from '@/organization/roleCatalog';
-import { Button } from '@/components/ui/button';
 import { ChurchSettingsSection } from '@/organization/ChurchSettingsSection';
+import { Button } from '@/components/ui/button';
 
 export function MinistriesPage() {
   const { t } = useTranslation('ministries');

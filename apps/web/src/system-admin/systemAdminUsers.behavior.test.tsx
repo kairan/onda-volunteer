@@ -1,19 +1,23 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  createMemoryHistory,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
+import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
-import i18n from 'i18next';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { buildTestRouteTree } from '@/router.testUtils';
 import {
-  fetchSystemAdminVolunteer,
+  fetchSystemAdminVolunteerDetail,
   fetchSystemAdminVolunteers,
   grantSystemAdminAccreditation,
-} from './fetchSystemAdminVolunteers';
-import { fetchSystemAdminChurches } from './fetchSystemAdminChurches';
+  revokeSystemAdminAccreditation,
+} from './systemAdminUsers';
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
   fetchIdentityMe: vi.fn(),
@@ -23,92 +27,212 @@ vi.mock('@/organization/fetchOrganizationContext', () => ({
   fetchOrganizationContext: vi.fn(async () => ({ churches: [] })),
 }));
 
-vi.mock('./fetchSystemAdminVolunteers', () => ({
-  fetchSystemAdminVolunteers: vi.fn(),
-  fetchSystemAdminVolunteer: vi.fn(),
-  grantSystemAdminAccreditation: vi.fn(),
-  revokeSystemAdminAccreditation: vi.fn(),
-}));
-
-vi.mock('./fetchSystemAdminChurches', () => ({
-  fetchSystemAdminChurches: vi.fn(),
-  fetchSystemAdminChurch: vi.fn(),
-}));
+vi.mock('./systemAdminUsers', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./systemAdminUsers')>();
+  return {
+    ...actual,
+    fetchSystemAdminVolunteers: vi.fn(),
+    fetchSystemAdminVolunteerDetail: vi.fn(),
+    grantSystemAdminAccreditation: vi.fn(),
+    revokeSystemAdminAccreditation: vi.fn(),
+  };
+});
 
 const fetchIdentityMeMock = vi.mocked(fetchIdentityMe);
 const fetchVolunteersMock = vi.mocked(fetchSystemAdminVolunteers);
-const fetchVolunteerMock = vi.mocked(fetchSystemAdminVolunteer);
+const fetchDetailMock = vi.mocked(fetchSystemAdminVolunteerDetail);
 const grantMock = vi.mocked(grantSystemAdminAccreditation);
-const fetchChurchesMock = vi.mocked(fetchSystemAdminChurches);
+const revokeMock = vi.mocked(revokeSystemAdminAccreditation);
+
+function renderUsersRoute(initialPath = '/system-admin/users') {
+  const { routeTree } = buildTestRouteTree();
+  const history = createMemoryHistory({ initialEntries: [initialPath] });
+  const routed = createRouter({ routeTree, history });
+  render(
+    <I18nProvider>
+      <ToastProvider>
+        <AuthSessionTestProvider
+          state={{
+            status: 'dev-bypass',
+            volunteerId: 'seed-volunteer-system-admin',
+          }}
+        >
+          <RouterProvider router={routed} />
+        </AuthSessionTestProvider>
+      </ToastProvider>
+    </I18nProvider>,
+  );
+  return { history };
+}
 
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
 
-describe('System Admin user grants', () => {
-  it('grants admin accreditation after refetch', async () => {
+describe('System Admin users pages', () => {
+  beforeEach(async () => {
     await initI18n();
-    await i18n.changeLanguage('en');
     fetchIdentityMeMock.mockResolvedValue({
       volunteer: {
         id: 'seed-volunteer-system-admin',
-        displayName: 'Operator',
+        displayName: 'System Operator',
         uiLocale: null,
       },
       authSubjectId: null,
       isSystemAdmin: true,
     });
-    fetchVolunteerMock
+  });
+
+  it('lists volunteers from search results', async () => {
+    fetchVolunteersMock.mockResolvedValue({
+      items: [
+        {
+          id: 'vol-alice',
+          displayName: 'Alice Admin',
+          accreditations: [{ churchId: 'church-1', churchName: 'Grace Chapel' }],
+          leaderships: [],
+          memberships: [],
+        },
+      ],
+      nextCursor: null,
+    });
+
+    renderUsersRoute();
+
+    expect(
+      await screen.findByRole('heading', { name: /users|usuários/i }),
+    ).toBeInTheDocument();
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+  });
+
+  it('loads additional pages when nextCursor is present', async () => {
+    fetchVolunteersMock
       .mockResolvedValueOnce({
-        id: 'vol-1',
-        displayName: 'Sam',
-        authSubjectId: null,
-        adminAccreditations: [],
+        items: [
+          {
+            id: 'vol-alice',
+            displayName: 'Alice Admin',
+            accreditations: [],
+            leaderships: [],
+            memberships: [],
+          },
+        ],
+        nextCursor: 'vol-alice',
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            id: 'vol-bob',
+            displayName: 'Bob Leader',
+            accreditations: [],
+            leaderships: [],
+            memberships: [],
+          },
+        ],
+        nextCursor: null,
+      });
+
+    renderUsersRoute();
+
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /load more|carregar mais/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bob Leader')).toBeInTheDocument();
+    });
+
+    expect(fetchVolunteersMock).toHaveBeenLastCalledWith({
+      volunteerId: 'seed-volunteer-system-admin',
+      q: undefined,
+      limit: 50,
+      cursor: 'vol-alice',
+    });
+  });
+
+  it('reflects grant and revoke after refetch on detail page', async () => {
+    fetchVolunteersMock.mockResolvedValue({
+      items: [
+        {
+          id: 'vol-alice',
+          displayName: 'Alice Admin',
+          accreditations: [],
+          leaderships: [],
+          memberships: [],
+        },
+      ],
+      nextCursor: null,
+    });
+
+    fetchDetailMock
+      .mockResolvedValueOnce({
+        id: 'vol-alice',
+        displayName: 'Alice Admin',
+        accreditations: [],
         leaderships: [],
         memberships: [],
       })
       .mockResolvedValueOnce({
-        id: 'vol-1',
-        displayName: 'Sam',
-        authSubjectId: null,
-        adminAccreditations: [{ churchId: 'ch-1', churchName: 'Test Church' }],
+        id: 'vol-alice',
+        displayName: 'Alice Admin',
+        accreditations: [{ churchId: 'church-1', churchName: 'Grace Chapel' }],
+        leaderships: [],
+        memberships: [],
+      })
+      .mockResolvedValueOnce({
+        id: 'vol-alice',
+        displayName: 'Alice Admin',
+        accreditations: [],
         leaderships: [],
         memberships: [],
       });
-    fetchChurchesMock.mockResolvedValue([
-      { id: 'ch-1', name: 'Test Church', defaultTimezone: 'UTC' },
-    ]);
-    grantMock.mockResolvedValue(undefined);
 
-    const { routeTree } = buildTestRouteTree();
-    const history = createMemoryHistory({
-      initialEntries: ['/system-admin/users/vol-1'],
+    grantMock.mockResolvedValue({
+      volunteerId: 'vol-alice',
+      churchId: 'church-1',
     });
-    const routed = createRouter({ routeTree, history });
-    render(
-      <I18nProvider>
-        <AuthSessionTestProvider
-          state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-system-admin' }}
-        >
-          <RouterProvider router={routed} />
-        </AuthSessionTestProvider>
-      </I18nProvider>,
-    );
+    revokeMock.mockResolvedValue({
+      volunteerId: 'vol-alice',
+      churchId: 'church-1',
+    });
 
-    await screen.findByText('Sam');
+    renderUsersRoute('/system-admin/users/vol-alice');
+
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+
     const user = userEvent.setup();
-    await user.selectOptions(screen.getByLabelText('Grant Admin for church'), 'ch-1');
-    await user.click(screen.getByRole('button', { name: 'Grant' }));
+    await user.type(
+      screen.getByPlaceholderText(/church id|id da igreja/i),
+      'church-1',
+    );
+    await user.click(screen.getByRole('button', { name: /grant admin|conceder admin/i }));
 
     await waitFor(() => {
       expect(grantMock).toHaveBeenCalledWith({
-        volunteerId: 'vol-1',
-        churchId: 'ch-1',
+        volunteerId: 'seed-volunteer-system-admin',
+        targetVolunteerId: 'vol-alice',
+        churchId: 'church-1',
       });
     });
+
+    expect(await screen.findByText('Grace Chapel')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /revoke admin|revogar admin/i }));
+
     await waitFor(() => {
-      expect(fetchVolunteerMock).toHaveBeenCalledTimes(2);
+      expect(revokeMock).toHaveBeenCalledWith({
+        volunteerId: 'seed-volunteer-system-admin',
+        targetVolunteerId: 'vol-alice',
+        churchId: 'church-1',
+      });
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: /revoke admin|revogar admin/i }),
+      ).not.toBeInTheDocument();
     });
   });
 });

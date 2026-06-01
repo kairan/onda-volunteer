@@ -28,6 +28,23 @@
     }
   },
   "retireConfirm": "Retire \"{{name}}\"? Retired roles stay on past assignments but cannot be used for new ones. To restore a retired role, contact your church administrator.",
+  "churchSettings": {
+    "title": "Church settings",
+    "body": "Update the active church name and default timezone. Event times stay stored in UTC; changing timezone only affects how times are shown.",
+    "nameLabel": "Church name",
+    "timezoneLabel": "Default timezone",
+    "timezoneHint": "Use an IANA timezone such as America/New_York or UTC.",
+    "save": "Save church settings",
+    "saving": "Saving…",
+    "messages": {
+      "saved": "Church settings saved."
+    },
+    "errors": {
+      "notAccredited": "You are not accredited for this church.",
+      "nameRequired": "Church name is required.",
+      "invalidTimezone": "Enter a valid IANA timezone."
+    }
+  },
   "structure": {
     "title": "Ministry structure",
     "body": "Create and rename ministries for the active church. Renames keep the same ministry ID so memberships, roles, assignments, and time away history stay connected.",

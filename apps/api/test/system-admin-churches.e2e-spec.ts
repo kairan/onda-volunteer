@@ -33,19 +33,25 @@ describe('System Admin churches (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await prisma.adminInvite.deleteMany();
     await prisma.systemAdministrator.deleteMany();
+    await prisma.assignment.deleteMany();
+    await prisma.unavailability.deleteMany();
+    await prisma.ministryLeader.deleteMany();
     await prisma.adminAccreditation.deleteMany();
+    await prisma.ministryMembership.deleteMany();
+    await prisma.ministryRole.deleteMany();
+    await prisma.volunteer.deleteMany();
+    await prisma.event.deleteMany();
+    await prisma.ministry.deleteMany();
     await prisma.campus.deleteMany();
     await prisma.church.deleteMany();
-    await prisma.volunteer.deleteMany();
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  async function seedOperator() {
+  async function seedSystemAdmin() {
     await prisma.volunteer.create({
       data: {
         id: 'seed-volunteer-system-admin',
@@ -55,8 +61,8 @@ describe('System Admin churches (e2e)', () => {
     });
   }
 
-  it('creates a church with default campus transactionally', async () => {
-    await seedOperator();
+  it('creates a church with default campus', async () => {
+    await seedSystemAdmin();
 
     const res = await request(app.getHttpServer())
       .post('/system-admin/churches')
@@ -77,37 +83,84 @@ describe('System Admin churches (e2e)', () => {
         },
       ],
     });
+    expect(res.body.id).toBeTruthy();
+    expect(res.body.campuses[0].id).toBeTruthy();
 
-    const campuses = await prisma.campus.findMany({
-      where: { churchId: res.body.id },
+    const stored = await prisma.church.findUnique({
+      where: { id: res.body.id },
+      include: { campuses: true },
     });
-    expect(campuses).toHaveLength(1);
+    expect(stored?.campuses).toHaveLength(1);
   });
 
-  it('returns validation errors for invalid timezone', async () => {
-    await seedOperator();
+  // Org-context visibility for accredited Admin (T-SYS-11 done when): add e2e in #90
+  // once system-admin grant accreditation APIs exist — create church → grant → GET org context.
+
+  it('lists churches with search and pagination', async () => {
+    await seedSystemAdmin();
+    const alpha = await prisma.church.create({
+      data: {
+        name: 'Alpha Chapel',
+        defaultTimezone: 'UTC',
+        campuses: { create: { name: 'Principal', timezone: 'UTC' } },
+      },
+    });
+    await prisma.church.create({
+      data: {
+        name: 'Beta Chapel',
+        defaultTimezone: 'UTC',
+        campuses: { create: { name: 'Principal', timezone: 'UTC' } },
+      },
+    });
+
+    const listRes = await request(app.getHttpServer())
+      .get('/system-admin/churches?q=Alpha&limit=10')
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+
+    expect(listRes.body.items).toHaveLength(1);
+    expect(listRes.body.items[0].id).toBe(alpha.id);
+    expect(listRes.body.nextCursor).toBeNull();
+  });
+
+  it('returns validation errors for empty name', async () => {
+    await seedSystemAdmin();
 
     const res = await request(app.getHttpServer())
       .post('/system-admin/churches')
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
-      .send({
-        name: 'Bad TZ Church',
-        defaultTimezone: 'Not/A_Timezone',
-      })
+      .send({ name: '  ', defaultTimezone: 'UTC' })
+      .expect(400);
+
+    expect(res.body.code).toBe('CHURCH_NAME_REQUIRED');
+  });
+
+  it('returns validation errors for invalid timezone', async () => {
+    await seedSystemAdmin();
+
+    const res = await request(app.getHttpServer())
+      .post('/system-admin/churches')
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ name: 'Bad TZ Church', defaultTimezone: 'Not/A/Zone' })
       .expect(400);
 
     expect(res.body.code).toBe('INVALID_TIMEZONE');
   });
 
-  it('denies church create for non–system-admin', async () => {
+  it('denies non–system-admin on church routes', async () => {
     const volunteer = await prisma.volunteer.create({
-      data: { displayName: 'Regular' },
+      data: { displayName: 'Regular Volunteer' },
     });
+
+    await request(app.getHttpServer())
+      .get('/system-admin/churches')
+      .set('X-Volunteer-Id', volunteer.id)
+      .expect(403);
 
     await request(app.getHttpServer())
       .post('/system-admin/churches')
       .set('X-Volunteer-Id', volunteer.id)
-      .send({ name: 'Nope', defaultTimezone: 'UTC' })
+      .send({ name: 'Blocked', defaultTimezone: 'UTC' })
       .expect(403);
   });
 });

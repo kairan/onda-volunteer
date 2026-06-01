@@ -1,70 +1,130 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
+import userEvent from '@testing-library/user-event';
+import { AuthSessionContext } from '@/auth/AuthSessionProvider';
 import { I18nProvider } from '@/i18n/I18nProvider';
-import i18n from 'i18next';
 import { initI18n } from '@/i18n/controller';
+import { OrganizationContextProvider } from '@/organization/OrganizationContextProvider';
+import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
+import * as churchMetadata from '@/organization/churchMetadata';
 import { ChurchSettingsSection } from '@/organization/ChurchSettingsSection';
-import { updateChurchMetadata } from '@/organization/updateChurchMetadata';
 
-vi.mock('@/organization/OrganizationContextProvider', () => ({
-  useOrganization: vi.fn(),
-}));
-
-vi.mock('@/organization/updateChurchMetadata', () => ({
-  updateChurchMetadata: vi.fn(),
-}));
-
-import { useOrganization } from '@/organization/OrganizationContextProvider';
-
-const useOrganizationMock = vi.mocked(useOrganization);
-const updateMock = vi.mocked(updateChurchMetadata);
+vi.mock('@/organization/fetchOrganizationContext');
+vi.mock('@/organization/churchMetadata');
 
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
 });
 
-describe('Church settings section', () => {
-  it('saves church metadata and refreshes organization context', async () => {
-    await initI18n();
-    await i18n.changeLanguage('en');
-    const refresh = vi.fn(async () => undefined);
-    useOrganizationMock.mockReturnValue({
-      activeChurch: {
-        id: 'ch-1',
-        name: 'Old',
+describe('ChurchSettingsSection', () => {
+  const adminId = 'admin-1';
+  const churchId = 'church-1';
+
+  const authState = {
+    status: 'authenticated' as const,
+    volunteerId: adminId,
+    displayName: 'Pat Admin',
+    uiLocale: 'en',
+    refresh: async () => {},
+  };
+
+  const initialContext = {
+    churches: [
+      {
+        id: churchId,
+        name: 'Test Church',
         defaultTimezone: 'UTC',
         isAccreditedAdmin: true,
         campuses: [],
         ministries: [],
       },
-      refresh,
-    } as ReturnType<typeof useOrganization>);
-    updateMock.mockResolvedValue({
-      id: 'ch-1',
-      name: 'Renamed',
-      defaultTimezone: 'America/Sao_Paulo',
+    ],
+  };
+
+  const updatedContext = {
+    churches: [
+      {
+        ...initialContext.churches[0],
+        name: 'Renamed Church',
+        defaultTimezone: 'America/New_York',
+      },
+    ],
+  };
+
+  async function renderSection() {
+    await initI18n(undefined, 'en');
+    render(
+      <I18nProvider>
+        <AuthSessionContext.Provider value={authState}>
+          <OrganizationContextProvider enabled={true}>
+            <ChurchSettingsSection />
+          </OrganizationContextProvider>
+        </AuthSessionContext.Provider>
+      </I18nProvider>,
+    );
+  }
+
+  it('saves church metadata and refreshes organization context', async () => {
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext)
+      .mockResolvedValueOnce(initialContext as never)
+      .mockResolvedValueOnce(updatedContext as never);
+    vi.mocked(churchMetadata.updateChurchMetadata).mockResolvedValue({
+      id: churchId,
+      name: 'Renamed Church',
+      defaultTimezone: 'America/New_York',
     });
+
+    await renderSection();
+
+    const nameInput = await screen.findByLabelText('Church name');
+    await waitFor(() => expect(nameInput).toHaveValue('Test Church'));
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Renamed Church');
+
+    const timezoneInput = screen.getByLabelText('Default timezone');
+    await waitFor(() => expect(timezoneInput).toHaveValue('UTC'));
+    await user.clear(timezoneInput);
+    await user.type(timezoneInput, 'America/New_York');
+
+    await user.click(screen.getByRole('button', { name: 'Save church settings' }));
+
+    await waitFor(() => {
+      expect(churchMetadata.updateChurchMetadata).toHaveBeenCalledWith({
+        churchId,
+        actingVolunteerId: adminId,
+        name: 'Renamed Church',
+        defaultTimezone: 'America/New_York',
+      });
+    });
+    await waitFor(() => {
+      expect(fetchOrgContext.fetchOrganizationContext).toHaveBeenCalledTimes(2);
+    });
+    expect(screen.getByText('Church settings saved.')).toBeInTheDocument();
+  });
+
+  it('does not render for non-accredited volunteers', async () => {
+    await initI18n(undefined, 'en');
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
+      churches: [
+        {
+          ...initialContext.churches[0],
+          isAccreditedAdmin: false,
+        },
+      ],
+    } as never);
 
     render(
       <I18nProvider>
-        <AuthSessionTestProvider state={{ status: 'dev-bypass', volunteerId: 'admin-1' }}>
-          <ChurchSettingsSection />
-        </AuthSessionTestProvider>
+        <AuthSessionContext.Provider value={authState}>
+          <OrganizationContextProvider enabled={true}>
+            <ChurchSettingsSection />
+          </OrganizationContextProvider>
+        </AuthSessionContext.Provider>
       </I18nProvider>,
     );
 
-    const user = userEvent.setup();
-    const nameInput = screen.getByLabelText('Church name');
-    await user.clear(nameInput);
-    await user.type(nameInput, 'Renamed');
-    await user.click(screen.getByRole('button', { name: 'Save settings' }));
-
-    await waitFor(() => {
-      expect(updateMock).toHaveBeenCalled();
-      expect(refresh).toHaveBeenCalled();
-    });
+    expect(screen.queryByText('Church settings')).not.toBeInTheDocument();
   });
 });

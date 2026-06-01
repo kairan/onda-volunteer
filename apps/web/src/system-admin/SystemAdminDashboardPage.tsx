@@ -13,17 +13,23 @@ export function SystemAdminDashboardPage() {
       <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
         {t('dashboard.intro')}
       </p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Button variant="outline" asChild>
-          <Link to="/system-admin/churches">{t('dashboard.churchesLink')}</Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link to="/system-admin/users">{t('dashboard.usersLink')}</Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link to="/system-admin/scheduling">{t('dashboard.schedulingLink')}</Link>
-        </Button>
-      </div>
+      <ul className="mt-8 flex flex-col gap-3 border-t border-border pt-6">
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/users">{t('dashboard.links.users')}</Link>
+          </Button>
+        </li>
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/churches">{t('dashboard.links.churches')}</Link>
+          </Button>
+        </li>
+        <li>
+          <Button variant="outline" asChild>
+            <Link to="/system-admin/scheduling">{t('dashboard.links.scheduling')}</Link>
+          </Button>
+        </li>
+      </ul>
     </section>
   );
 }

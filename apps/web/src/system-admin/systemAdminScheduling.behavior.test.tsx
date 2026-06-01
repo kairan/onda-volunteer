@@ -1,50 +1,78 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
+import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
-import { initI18n } from '@/i18n/controller';
+import { initI18n, resetI18nForTests } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { buildTestRouteTree } from '@/router.testUtils';
-import { fetchSystemAdminEvents } from './fetchSystemAdminEvents';
+import { fetchSystemAdminEvents } from './systemAdminScheduling';
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
   fetchIdentityMe: vi.fn(),
+}));
+
+vi.mock('./systemAdminScheduling', () => ({
+  fetchSystemAdminEvents: vi.fn(),
 }));
 
 vi.mock('@/organization/fetchOrganizationContext', () => ({
   fetchOrganizationContext: vi.fn(async () => ({ churches: [] })),
 }));
 
-vi.mock('./fetchSystemAdminEvents', () => ({
-  fetchSystemAdminEvents: vi.fn(),
-}));
-
 const fetchIdentityMeMock = vi.mocked(fetchIdentityMe);
 const fetchEventsMock = vi.mocked(fetchSystemAdminEvents);
+
+function renderSchedulingPage() {
+  const { routeTree } = buildTestRouteTree();
+  const history = createMemoryHistory({
+    initialEntries: ['/system-admin/scheduling'],
+  });
+  const routed = createRouter({ routeTree, history });
+  render(
+    <I18nProvider>
+      <ToastProvider>
+        <LocalTimeProvider>
+          <AuthSessionTestProvider
+            state={{
+              status: 'dev-bypass',
+              volunteerId: 'seed-volunteer-system-admin',
+            }}
+          >
+            <RouterProvider router={routed} />
+          </AuthSessionTestProvider>
+        </LocalTimeProvider>
+      </ToastProvider>
+    </I18nProvider>,
+  );
+}
 
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  resetI18nForTests();
 });
 
 describe('System Admin scheduling page', () => {
-  it('lists events without write actions', async () => {
+  it('lists events read-only without write actions', async () => {
     await initI18n();
     fetchIdentityMeMock.mockResolvedValue({
       volunteer: {
         id: 'seed-volunteer-system-admin',
-        displayName: 'Operator',
+        displayName: 'System Operator',
         uiLocale: null,
       },
       authSubjectId: null,
       isSystemAdmin: true,
     });
+
     fetchEventsMock.mockResolvedValue([
       {
-        id: 'ev-1',
+        id: 'event-1',
         kind: 'PUBLIC',
-        title: 'Sunday',
+        title: 'Sunday Service',
         window: {
           startsAtUtc: '2026-06-01T14:00:00.000Z',
           endsAtUtc: '2026-06-01T16:00:00.000Z',
@@ -55,25 +83,29 @@ describe('System Admin scheduling page', () => {
           endsDisplayInChurchTz: '2026-06-01T16:00:00+00:00',
         },
         ministry: null,
+        church: { id: 'church-1', name: 'Alpha Church' },
       },
     ]);
 
-    const { routeTree } = buildTestRouteTree();
-    const history = createMemoryHistory({
-      initialEntries: ['/system-admin/scheduling'],
-    });
-    const routed = createRouter({ routeTree, history });
-    render(
-      <I18nProvider>
-        <AuthSessionTestProvider
-          state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-system-admin' }}
-        >
-          <RouterProvider router={routed} />
-        </AuthSessionTestProvider>
-      </I18nProvider>,
-    );
+    renderSchedulingPage();
 
-    expect(await screen.findByText('Sunday')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /create/i })).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: /^scheduling$|^agenda$/i,
+      }),
+    ).toBeInTheDocument();
+
+    expect(await screen.findByText('Sunday Service')).toBeInTheDocument();
+    expect(screen.getByText(/read-only|somente leitura/i)).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /create|criar/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /assign|designar/i })).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(fetchEventsMock).toHaveBeenCalledWith({
+        volunteerId: 'seed-volunteer-system-admin',
+        churchId: undefined,
+      });
+    });
   });
 });

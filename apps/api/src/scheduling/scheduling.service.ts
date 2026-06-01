@@ -16,7 +16,7 @@ import {
   SCHEDULING_CONFLICT_GUARD_CODES,
   validateAssignmentGuards,
 } from './scheduling-rules';
-import { assertSchedulingWriteAllowed } from './scheduling-write.guard';
+import { assertSchedulingWriteAllowed } from './scheduling-write-guard';
 
 export type CreateAssignmentInput = {
   eventId: string;
@@ -113,6 +113,7 @@ export class SchedulingService {
 
   async createBulkUnavailability(input: CreateBulkUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
+
     const volunteer = await input.auth.requireVolunteer();
     if (volunteer.id !== input.volunteerId) {
       throw new ForbiddenException({
@@ -439,6 +440,7 @@ export class SchedulingService {
 
   async releaseAssignment(input: ReleaseAssignmentInput) {
     await assertSchedulingWriteAllowed(input.auth);
+
     const volunteer = await input.auth.requireVolunteer();
 
     const assignment = await this.prisma.assignment.findUnique({
@@ -479,6 +481,7 @@ export class SchedulingService {
 
   async createUnavailability(input: CreateUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
+
     const caller = await input.auth.requireVolunteer();
 
     if (caller.id !== input.volunteerId) {
@@ -532,6 +535,7 @@ export class SchedulingService {
 
   async updateUnavailability(input: UpdateUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
+
     const row = await this.prisma.unavailability.findUnique({
       where: { id: input.unavailabilityId },
     });
@@ -571,6 +575,7 @@ export class SchedulingService {
 
   async deleteUnavailability(input: DeleteUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
+
     const row = await this.prisma.unavailability.findUnique({
       where: { id: input.unavailabilityId },
     });

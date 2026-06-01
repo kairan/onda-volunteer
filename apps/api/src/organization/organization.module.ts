@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { IdentityModule } from '../identity/identity.module';
 import { PrismaModule } from '../prisma/prisma.module';
-import { ChurchController } from './church.controller';
+import { ChurchesController } from './churches.controller';
 import { ChurchMinistriesController } from './church-ministries.controller';
 import { OrganizationContextController } from './organization-context.controller';
 import { OrganizationController } from './organization.controller';
@@ -13,7 +13,7 @@ import { StewardshipModule } from './stewardship.module';
 @Module({
   imports: [PrismaModule, IdentityModule, StewardshipModule],
   controllers: [
-    ChurchController,
+    ChurchesController,
     ChurchMinistriesController,
     OrganizationController,
     OrganizationContextController,

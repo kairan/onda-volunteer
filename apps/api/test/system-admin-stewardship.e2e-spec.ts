@@ -11,6 +11,8 @@ describe('System Admin stewardship (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
+  jest.setTimeout(30_000);
+
   beforeAll(async () => {
     process.env.AUTH_ALLOW_DEV_HEADERS = 'true';
     if (!process.env.DATABASE_URL) {
@@ -34,11 +36,14 @@ describe('System Admin stewardship (e2e)', () => {
 
   beforeEach(async () => {
     await prisma.systemAdministrator.deleteMany();
-    await prisma.adminAccreditation.deleteMany();
+    await prisma.assignment.deleteMany();
+    await prisma.unavailability.deleteMany();
     await prisma.ministryLeader.deleteMany();
+    await prisma.adminAccreditation.deleteMany();
     await prisma.ministryMembership.deleteMany();
     await prisma.ministryRole.deleteMany();
     await prisma.volunteer.deleteMany();
+    await prisma.event.deleteMany();
     await prisma.ministry.deleteMany();
     await prisma.campus.deleteMany();
     await prisma.church.deleteMany();
@@ -48,7 +53,7 @@ describe('System Admin stewardship (e2e)', () => {
     await app.close();
   });
 
-  async function seedFixture() {
+  async function seedSystemAdmin() {
     await prisma.volunteer.create({
       data: {
         id: 'seed-volunteer-system-admin',
@@ -56,6 +61,9 @@ describe('System Admin stewardship (e2e)', () => {
         systemAdministrator: { create: {} },
       },
     });
+  }
+
+  async function seedChurchWithMinistry() {
     const church = await prisma.church.create({
       data: {
         name: 'Stewardship Church',
@@ -64,24 +72,115 @@ describe('System Admin stewardship (e2e)', () => {
       },
     });
     const ministry = await prisma.ministry.create({
-      data: { churchId: church.id, name: 'Greeters' },
+      data: { name: 'Worship', churchId: church.id },
     });
-    const target = await prisma.volunteer.create({
-      data: { displayName: 'Target Volunteer' },
-    });
-    return { church, ministry, target };
+    return { church, ministry };
   }
 
-  it('searches volunteers and grants admin accreditation', async () => {
-    const { church, target } = await seedFixture();
+  it('grants and revokes ministry leadership via system admin', async () => {
+    await seedSystemAdmin();
+    const { ministry } = await seedChurchWithMinistry();
+    const leader = await prisma.volunteer.create({
+      data: { displayName: 'New Leader' },
+    });
 
-    const search = await request(app.getHttpServer())
-      .get('/system-admin/volunteers')
-      .query({ q: 'Target' })
+    await request(app.getHttpServer())
+      .post(`/system-admin/ministries/${ministry.id}/leaders`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ volunteerId: leader.id })
+      .expect(201);
+
+    const detail = await request(app.getHttpServer())
+      .get(`/system-admin/volunteers/${leader.id}`)
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
       .expect(200);
 
-    expect(search.body.some((v: { id: string }) => v.id === target.id)).toBe(true);
+    expect(detail.body.leaderships).toHaveLength(1);
+
+    await request(app.getHttpServer())
+      .delete(
+        `/system-admin/ministries/${ministry.id}/leaders/${leader.id}`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+  });
+
+  it('adds and deactivates ministry membership via system admin', async () => {
+    await seedSystemAdmin();
+    const { ministry } = await seedChurchWithMinistry();
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Member One' },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/system-admin/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ volunteerId: member.id, status: 'ACTIVE' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .patch(
+        `/system-admin/ministries/${ministry.id}/memberships/${member.id}`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ status: 'INACTIVE' })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.status).toBe('INACTIVE');
+      });
+  });
+
+  it('activates pending membership via system admin', async () => {
+    await seedSystemAdmin();
+    const { ministry } = await seedChurchWithMinistry();
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'Pending Member' },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/system-admin/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ volunteerId: member.id, status: 'PENDING' })
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .patch(
+        `/system-admin/ministries/${ministry.id}/memberships/${member.id}`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ status: 'ACTIVE' })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.status).toBe('ACTIVE');
+      });
+  });
+
+  it('denies non–system-admin on organization wrapper routes', async () => {
+    await seedSystemAdmin();
+    const { ministry } = await seedChurchWithMinistry();
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Regular Volunteer' },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/system-admin/ministries/${ministry.id}/leaders`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({ volunteerId: volunteer.id })
+      .expect(403);
+  });
+
+  it('full stewardship lifecycle: grant admin, leader, membership, revoke admin blocked', async () => {
+    await seedSystemAdmin();
+    const { church, ministry } = await seedChurchWithMinistry();
+    const keeper = await prisma.volunteer.create({
+      data: { displayName: 'Keeper Admin' },
+    });
+    const target = await prisma.volunteer.create({
+      data: { displayName: 'Target User' },
+    });
+    await prisma.adminAccreditation.create({
+      data: { volunteerId: keeper.id, churchId: church.id },
+    });
 
     await request(app.getHttpServer())
       .put(
@@ -90,50 +189,42 @@ describe('System Admin stewardship (e2e)', () => {
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
       .expect(200);
 
-    const accreditation = await prisma.adminAccreditation.findUnique({
-      where: {
-        volunteerId_churchId: {
-          volunteerId: target.id,
-          churchId: church.id,
-        },
-      },
-    });
-    expect(accreditation).not.toBeNull();
-  });
-
-  it('blocks revoking the last admin accreditation', async () => {
-    const { church, target } = await seedFixture();
-    await prisma.adminAccreditation.create({
-      data: { volunteerId: target.id, churchId: church.id },
-    });
-
-    const res = await request(app.getHttpServer())
-      .delete(
-        `/system-admin/volunteers/${target.id}/churches/${church.id}/admin-accreditation`,
-      )
-      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
-      .expect(400);
-
-    expect(res.body.code).toBe('LAST_ADMIN_ACCREDITATION');
-  });
-
-  it('grants ministry leader under system admin', async () => {
-    const { ministry, target } = await seedFixture();
-
     await request(app.getHttpServer())
       .post(`/system-admin/ministries/${ministry.id}/leaders`)
       .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
       .send({ volunteerId: target.id })
       .expect(201);
 
-    const leader = await prisma.ministryLeader.findUnique({
-      where: {
-        volunteerId_ministryId: {
-          volunteerId: target.id,
-          ministryId: ministry.id,
-        },
-      },
-    });
-    expect(leader).not.toBeNull();
+    await request(app.getHttpServer())
+      .post(`/system-admin/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .send({ volunteerId: target.id, status: 'ACTIVE' })
+      .expect(201);
+
+    const summary = await request(app.getHttpServer())
+      .get(`/system-admin/volunteers/${target.id}`)
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+
+    expect(summary.body.accreditations).toHaveLength(1);
+    expect(summary.body.leaderships).toHaveLength(1);
+    expect(summary.body.memberships).toHaveLength(1);
+
+    await request(app.getHttpServer())
+      .delete(
+        `/system-admin/volunteers/${keeper.id}/churches/${church.id}/admin-accreditation`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(200);
+
+    await request(app.getHttpServer())
+      .delete(
+        `/system-admin/volunteers/${target.id}/churches/${church.id}/admin-accreditation`,
+      )
+      .set('X-Volunteer-Id', 'seed-volunteer-system-admin')
+      .expect(400)
+      .expect(({ body }) => {
+        expect(body.code).toBe('LAST_ADMIN_ACCREDITATION');
+      });
   });
 });

@@ -6,16 +6,62 @@
   "dashboard": {
     "title": "Operator dashboard",
     "intro": "Platform operator tools for churches, users, and read-only scheduling support.",
+    "links": {
+      "users": "Users and roles",
+      "churches": "Churches",
+      "scheduling": "Scheduling (read-only)"
+    },
     "churchesLink": "Churches",
     "usersLink": "Users",
     "schedulingLink": "Scheduling (read-only)"
   },
+  "scheduling": {
+    "eyebrow": "Support",
+    "title": "Scheduling support",
+    "intro": "Read-only view of events across all churches. Scheduling writes are disabled for operators.",
+    "readOnlyNotice": "Read-only — write actions are disabled for System Admin.",
+    "listHeading": "Events",
+    "churchFilter": "Church",
+    "allChurches": "All churches",
+    "loading": "Loading events…",
+    "empty": "No upcoming events.",
+    "backToDashboard": "Back to dashboard",
+    "errors": {
+      "loadFailed": "Could not load events."
+    },
+    "detail": {
+      "assignmentsHeading": "Assignments",
+      "noAssignments": "No active assignments.",
+      "cancelled": "This event is cancelled.",
+      "backToList": "Back to scheduling list"
+    },
+    "loadError": "Could not load events."
+  },
   "churches": {
+    "eyebrow": "Provisioning",
     "title": "Churches",
     "intro": "Create churches or select one to invite a church Admin by email.",
+    "backToDashboard": "Back to dashboard",
+    "createHeading": "Create church",
+    "listHeading": "All churches",
+    "fields": {
+      "name": "Church name",
+      "timezone": "Default timezone (IANA)"
+    },
+    "createAction": "Create church",
+    "creating": "Creating…",
+    "createSuccess": "Church created.",
     "loading": "Loading churches…",
-    "loadError": "Could not load churches.",
+    "loadMore": "Load more",
+    "loadingMore": "Loading more…",
     "empty": "No churches yet.",
+    "campusCount": "{{count}} campus(es)",
+    "errors": {
+      "generic": "Something went wrong.",
+      "nameRequired": "Church name is required.",
+      "invalidTimezone": "Enter a valid IANA timezone."
+    },
+    "loadError": "Could not load churches.",
     "create": {
       "title": "Create church",
       "nameLabel": "Church name",
@@ -27,14 +73,37 @@
       }
     }
   },
+  "accessDenied": "System Admin access is required for that area.",
   "users": {
     "title": "Users",
     "intro": "Search volunteers and manage church Admin accreditations.",
-    "loading": "Loading users…",
-    "loadError": "Could not load users.",
-    "empty": "No users match your search.",
-    "search": "Search",
+    "backToDashboard": "Back to dashboard",
+    "backToSearch": "Back to search",
+    "searchLabel": "Search",
     "searchPlaceholder": "Name or ID",
+    "searchAction": "Search",
+    "loading": "Loading users…",
+    "loadingMore": "Loading more…",
+    "loadMore": "Load more",
+    "empty": "No users match your search.",
+    "summaryCounts": "{{accreditations}} accreditations · {{leaderships}} leaderships · {{memberships}} memberships",
+    "viewDetail": "View",
+    "accreditationsTitle": "Church Admin accreditations",
+    "noAccreditations": "No Admin accreditations yet.",
+    "grantChurchIdLabel": "Church id",
+    "grantChurchIdPlaceholder": "Enter church id to grant Admin",
+    "grantAdmin": "Grant Admin",
+    "revokeAdmin": "Revoke Admin",
+    "grantSuccess": "Admin accreditation granted.",
+    "revokeSuccess": "Admin accreditation revoked.",
+    "leadershipsTitle": "Ministry leaderships",
+    "membershipsTitle": "Ministry memberships",
+    "errors": {
+      "generic": "Something went wrong. Try again.",
+      "lastAdmin": "Cannot revoke the last Admin for this church."
+    },
+    "loadError": "Could not load users.",
+    "search": "Search",
     "adminCount": "{{count}} church admin grant(s)"
   },
   "userDetail": {
@@ -51,13 +120,6 @@
       "generic": "Could not update accreditation. Try again."
     }
   },
-  "scheduling": {
-    "title": "Scheduling support",
-    "intro": "Read-only view of events across all churches. Scheduling writes are disabled for operators.",
-    "loading": "Loading events…",
-    "loadError": "Could not load events.",
-    "empty": "No upcoming events."
-  },
   "churchDetail": {
     "backToChurches": "All churches",
     "loading": "Loading church…",
@@ -73,6 +135,5 @@
       "alreadyPending": "A pending invite already exists for this email.",
       "generic": "Could not send the invite. Try again."
     }
-  },
-  "accessDenied": "System Admin access is required for that area."
+  }
 }

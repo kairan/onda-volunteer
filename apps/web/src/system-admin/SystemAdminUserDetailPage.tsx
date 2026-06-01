@@ -1,180 +1,227 @@
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/apiError';
+import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { Button } from '@/components/ui/button';
-import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
 import {
-  fetchSystemAdminChurches,
-  type SystemAdminChurchSummary,
-} from './fetchSystemAdminChurches';
-import {
-  fetchSystemAdminVolunteer,
+  fetchSystemAdminVolunteerDetail,
   grantSystemAdminAccreditation,
   revokeSystemAdminAccreditation,
-  type SystemAdminVolunteerDetail,
-} from './fetchSystemAdminVolunteers';
+  type SystemAdminVolunteerSummary,
+} from './systemAdminUsers';
 
 export function SystemAdminUserDetailPage() {
-  const { volunteerId } = useParams({ from: '/system-admin/users/$volunteerId' });
   const { t } = useTranslation('systemAdmin');
-  const [volunteer, setVolunteer] = useState<SystemAdminVolunteerDetail | null>(null);
-  const [churches, setChurches] = useState<SystemAdminChurchSummary[]>([]);
-  const [grantChurchId, setGrantChurchId] = useState('');
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const auth = useAuthSession();
+  const { volunteerId: targetVolunteerId } = useParams({
+    from: '/system-admin/users/$volunteerId',
+  });
 
-  async function reload() {
-    const [detail, churchList] = await Promise.all([
-      fetchSystemAdminVolunteer(volunteerId),
-      fetchSystemAdminChurches(),
-    ]);
-    setVolunteer(detail);
-    setChurches(churchList);
-    setLoadError(null);
-  }
+  const actingVolunteerId =
+    auth.status === 'authenticated' || auth.status === 'dev-bypass'
+      ? auth.volunteerId
+      : null;
+
+  const [detail, setDetail] = useState<SystemAdminVolunteerSummary | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [grantChurchId, setGrantChurchId] = useState('');
+  const [actionBusy, setActionBusy] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+
+  const loadDetail = useCallback(async () => {
+    if (!actingVolunteerId || !targetVolunteerId) {
+      setDetail(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchSystemAdminVolunteerDetail({
+        volunteerId: actingVolunteerId,
+        targetVolunteerId,
+      });
+      setDetail(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('users.errors.generic'));
+    } finally {
+      setLoading(false);
+    }
+  }, [actingVolunteerId, targetVolunteerId, t]);
 
   useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      try {
-        await reload();
-      } catch (err) {
-        if (!cancelled) {
-          setLoadError(
-            err instanceof ApiRequestError
-              ? err.message
-              : t('userDetail.loadError'),
-          );
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [volunteerId, t]);
+    void loadDetail();
+  }, [loadDetail]);
 
-  async function onGrant() {
-    if (!grantChurchId) return;
-    setBusy(true);
+  function actionErrorMessage(err: unknown): string {
+    if (err instanceof ApiRequestError) {
+      if (err.code === 'LAST_ADMIN_ACCREDITATION') {
+        return t('users.errors.lastAdmin');
+      }
+    }
+    return err instanceof Error ? err.message : t('users.errors.generic');
+  }
+
+  async function handleGrant(e: FormEvent) {
+    e.preventDefault();
+    if (!actingVolunteerId || !targetVolunteerId || !grantChurchId.trim()) {
+      return;
+    }
+    setActionBusy(true);
+    setActionError(null);
+    setActionMessage(null);
     try {
       await grantSystemAdminAccreditation({
-        volunteerId,
-        churchId: grantChurchId,
+        volunteerId: actingVolunteerId,
+        targetVolunteerId,
+        churchId: grantChurchId.trim(),
       });
       setGrantChurchId('');
-      await reload();
+      setActionMessage(t('users.grantSuccess'));
+      await loadDetail();
     } catch (err) {
-      setLoadError(
-        err instanceof ApiRequestError
-          ? err.message
-          : t('userDetail.errors.generic'),
-      );
+      setActionError(actionErrorMessage(err));
     } finally {
-      setBusy(false);
+      setActionBusy(false);
     }
   }
 
-  async function onRevoke(churchId: string) {
-    setBusy(true);
+  async function handleRevoke(churchId: string) {
+    if (!actingVolunteerId || !targetVolunteerId) {
+      return;
+    }
+    setActionBusy(true);
+    setActionError(null);
+    setActionMessage(null);
     try {
-      await revokeSystemAdminAccreditation({ volunteerId, churchId });
-      await reload();
+      await revokeSystemAdminAccreditation({
+        volunteerId: actingVolunteerId,
+        targetVolunteerId,
+        churchId,
+      });
+      setActionMessage(t('users.revokeSuccess'));
+      await loadDetail();
     } catch (err) {
-      setLoadError(
-        err instanceof ApiRequestError
-          ? err.message
-          : t('userDetail.errors.generic'),
-      );
+      setActionError(actionErrorMessage(err));
     } finally {
-      setBusy(false);
+      setActionBusy(false);
     }
   }
-
-  if (loadError && !volunteer) {
-    return (
-      <RouteErrorPanel message={loadError} onRetry={() => void reload()} />
-    );
-  }
-
-  if (!volunteer) {
-    return (
-      <p className="text-sm text-muted-foreground">{t('userDetail.loading')}</p>
-    );
-  }
-
-  const accreditedIds = new Set(
-    volunteer.adminAccreditations.map((a) => a.churchId),
-  );
-  const grantOptions = churches.filter((c) => !accreditedIds.has(c.id));
 
   return (
-    <section className="border border-border bg-background p-6">
-      <Link
-        to="/system-admin/users"
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        {t('userDetail.backToUsers')}
-      </Link>
-      <h1 className="mt-4 font-display text-3xl font-bold uppercase leading-none tracking-tight">
-        {volunteer.displayName}
-      </h1>
-      <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide">
-        {t('userDetail.accreditationsTitle')}
-      </h2>
-      {volunteer.adminAccreditations.length === 0 ? (
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t('userDetail.noAccreditations')}
-        </p>
-      ) : (
-        <ul className="mt-3 divide-y divide-border border border-border">
-          {volunteer.adminAccreditations.map((a) => (
-            <li
-              key={a.churchId}
-              className="flex items-center justify-between gap-3 px-4 py-3"
-            >
-              <span>{a.churchName}</span>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                disabled={busy}
-                onClick={() => void onRevoke(a.churchId)}
-              >
-                {t('userDetail.revoke')}
+    <section className="space-y-6">
+      <div className="border border-border bg-background p-6">
+        <Button variant="outline" asChild>
+          <Link to="/system-admin/users">{t('users.backToSearch')}</Link>
+        </Button>
+        {loading ? (
+          <p className="mt-4 text-sm text-muted-foreground">{t('users.loading')}</p>
+        ) : error ? (
+          <p className="mt-4 text-sm text-destructive" role="alert">
+            {error}
+          </p>
+        ) : detail ? (
+          <>
+            <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-none tracking-tight">
+              {detail.displayName}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">{detail.id}</p>
+          </>
+        ) : null}
+      </div>
+
+      {detail ? (
+        <>
+          <div className="border border-border bg-background p-6">
+            <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+              {t('users.accreditationsTitle')}
+            </h2>
+            {detail.accreditations.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                {t('users.noAccreditations')}
+              </p>
+            ) : (
+              <ul className="mt-3 divide-y divide-border">
+                {detail.accreditations.map((row) => (
+                  <li
+                    key={row.churchId}
+                    className="flex flex-wrap items-center justify-between gap-3 py-3"
+                  >
+                    <div>
+                      <p className="font-medium">{row.churchName}</p>
+                      <p className="text-xs text-muted-foreground">{row.churchId}</p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={actionBusy}
+                      onClick={() => void handleRevoke(row.churchId)}
+                    >
+                      {t('users.revokeAdmin')}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <form onSubmit={handleGrant} className="mt-6 flex flex-wrap items-end gap-3">
+              <label className="flex min-w-[12rem] flex-1 flex-col gap-1 text-sm">
+                <span className="font-medium">{t('users.grantChurchIdLabel')}</span>
+                <input
+                  type="text"
+                  value={grantChurchId}
+                  onChange={(e) => setGrantChurchId(e.target.value)}
+                  placeholder={t('users.grantChurchIdPlaceholder')}
+                  className="border border-border bg-background px-3 py-2"
+                />
+              </label>
+              <Button type="submit" disabled={actionBusy || !grantChurchId.trim()}>
+                {t('users.grantAdmin')}
               </Button>
-            </li>
-          ))}
-        </ul>
-      )}
-      {grantOptions.length > 0 ? (
-        <div className="mt-6 flex max-w-md flex-wrap items-end gap-2">
-          <label className="flex flex-1 flex-col gap-1 text-sm">
-            <span>{t('userDetail.grantLabel')}</span>
-            <select
-              className="border border-border bg-background px-3 py-2"
-              value={grantChurchId}
-              onChange={(e) => setGrantChurchId(e.target.value)}
-            >
-              <option value="">{t('userDetail.grantPlaceholder')}</option>
-              {grantOptions.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <Button
-            type="button"
-            disabled={busy || !grantChurchId}
-            onClick={() => void onGrant()}
-          >
-            {t('userDetail.grant')}
-          </Button>
-        </div>
-      ) : null}
-      {loadError ? (
-        <p className="mt-4 text-sm text-destructive">{loadError}</p>
+            </form>
+
+            {actionError ? (
+              <p className="mt-3 text-sm text-destructive" role="alert">
+                {actionError}
+              </p>
+            ) : null}
+            {actionMessage ? (
+              <p className="mt-3 text-sm text-muted-foreground">{actionMessage}</p>
+            ) : null}
+          </div>
+
+          {detail.leaderships.length > 0 ? (
+            <div className="border border-border bg-background p-6">
+              <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+                {t('users.leadershipsTitle')}
+              </h2>
+              <ul className="mt-3 divide-y divide-border text-sm">
+                {detail.leaderships.map((row) => (
+                  <li key={row.ministryId} className="py-2">
+                    {row.ministryName} — {row.churchName}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {detail.memberships.length > 0 ? (
+            <div className="border border-border bg-background p-6">
+              <h2 className="font-display text-xl font-bold uppercase tracking-tight">
+                {t('users.membershipsTitle')}
+              </h2>
+              <ul className="mt-3 divide-y divide-border text-sm">
+                {detail.memberships.map((row) => (
+                  <li key={row.ministryId} className="py-2">
+                    {row.ministryName} — {row.status}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </>
       ) : null}
     </section>
   );

@@ -1,10 +1,22 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
-import { AuthContext } from '../identity/auth-context.decorator';
-import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import {
-  SystemAdminChurchesService,
-  type CreateSystemAdminChurchInput,
-} from './system-admin-churches.service';
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
+import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
+import { SystemAdminChurchesService } from './system-admin-churches.service';
+
+type CreateChurchBody = {
+  name?: unknown;
+  defaultTimezone?: unknown;
+  campus?: { name?: unknown; timezone?: unknown };
+};
 
 @Controller('system-admin/churches')
 export class SystemAdminChurchesController {
@@ -13,23 +25,36 @@ export class SystemAdminChurchesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
+    @Body() body: CreateChurchBody,
     @AuthContext() auth: AuthenticatedRequestContext,
-    @Body() body: CreateSystemAdminChurchInput,
   ) {
     await auth.assertSystemAdmin();
-    return this.churches.createChurch(body);
+    return this.churches.create(body);
   }
 
   @Get()
-  async list(@AuthContext() auth: AuthenticatedRequestContext) {
+  async list(
+    @Query('q') q: string | undefined,
+    @Query('limit') limitRaw: string | undefined,
+    @Query('cursor') cursor: string | undefined,
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
     await auth.assertSystemAdmin();
-    return this.churches.listChurches();
+    const limit =
+      limitRaw !== undefined && limitRaw !== ''
+        ? Number.parseInt(limitRaw, 10)
+        : undefined;
+    return this.churches.list({
+      q,
+      cursor,
+      limit: Number.isFinite(limit) ? limit : undefined,
+    });
   }
 
   @Get(':churchId')
   async getOne(
-    @AuthContext() auth: AuthenticatedRequestContext,
     @Param('churchId') churchId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
     return this.churches.getChurch(churchId);

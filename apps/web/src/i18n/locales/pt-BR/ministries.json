@@ -28,6 +28,23 @@
     }
   },
   "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja.",
+  "churchSettings": {
+    "title": "Configurações da igreja",
+    "body": "Atualize o nome da igreja ativa e o fuso horário padrão. Os horários dos eventos continuam em UTC; alterar o fuso afeta apenas a exibição.",
+    "nameLabel": "Nome da igreja",
+    "timezoneLabel": "Fuso horário padrão",
+    "timezoneHint": "Use um fuso IANA como America/Sao_Paulo ou UTC.",
+    "save": "Salvar configurações",
+    "saving": "Salvando…",
+    "messages": {
+      "saved": "Configurações da igreja salvas."
+    },
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "nameRequired": "O nome da igreja é obrigatório.",
+      "invalidTimezone": "Informe um fuso horário IANA válido."
+    }
+  },
   "structure": {
     "title": "Estrutura dos ministérios",
     "body": "Crie e renomeie ministérios da igreja ativa. Renomeações mantêm o mesmo ID do ministério para preservar vínculos com membros, funções, designações e histórico de ausências.",

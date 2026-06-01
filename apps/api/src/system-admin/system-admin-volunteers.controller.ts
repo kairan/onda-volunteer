@@ -8,56 +8,65 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { AuthContext } from '../identity/auth-context.decorator';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { AuthContext } from '../identity/auth-context.decorator';
+import { SystemAdminAccreditationService } from './system-admin-accreditation.service';
 import { SystemAdminVolunteersService } from './system-admin-volunteers.service';
 
 @Controller('system-admin/volunteers')
 export class SystemAdminVolunteersController {
-  constructor(private readonly volunteers: SystemAdminVolunteersService) {}
+  constructor(
+    private readonly volunteers: SystemAdminVolunteersService,
+    private readonly accreditation: SystemAdminAccreditationService,
+  ) {}
 
   @Get()
   async search(
+    @Query('q') q: string | undefined,
+    @Query('limit') limitRaw: string | undefined,
+    @Query('cursor') cursor: string | undefined,
     @AuthContext() auth: AuthenticatedRequestContext,
-    @Query('q') q?: string,
-    @Query('limit') limit?: string,
   ) {
     await auth.assertSystemAdmin();
-    const parsedLimit = limit ? Number.parseInt(limit, 10) : undefined;
-    return this.volunteers.searchVolunteers({
+    const limit =
+      limitRaw !== undefined && limitRaw !== ''
+        ? Number.parseInt(limitRaw, 10)
+        : undefined;
+    return this.volunteers.list({
       q,
-      limit: Number.isFinite(parsedLimit) ? parsedLimit : undefined,
+      cursor,
+      limit: Number.isFinite(limit) ? limit : undefined,
     });
   }
 
   @Get(':volunteerId')
-  async getOne(
-    @AuthContext() auth: AuthenticatedRequestContext,
+  async detail(
     @Param('volunteerId') volunteerId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
-    return this.volunteers.getVolunteer(volunteerId);
+    return this.volunteers.getById(volunteerId);
   }
 
   @Put(':volunteerId/churches/:churchId/admin-accreditation')
   @HttpCode(HttpStatus.OK)
-  async grantAdmin(
-    @AuthContext() auth: AuthenticatedRequestContext,
+  async grantAccreditation(
     @Param('volunteerId') volunteerId: string,
     @Param('churchId') churchId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
-    return this.volunteers.grantAdminAccreditation({ volunteerId, churchId });
+    return this.accreditation.grant({ volunteerId, churchId });
   }
 
   @Delete(':volunteerId/churches/:churchId/admin-accreditation')
   @HttpCode(HttpStatus.OK)
-  async revokeAdmin(
-    @AuthContext() auth: AuthenticatedRequestContext,
+  async revokeAccreditation(
     @Param('volunteerId') volunteerId: string,
     @Param('churchId') churchId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     await auth.assertSystemAdmin();
-    return this.volunteers.revokeAdminAccreditation({ volunteerId, churchId });
+    return this.accreditation.revoke({ volunteerId, churchId });
   }
 }
