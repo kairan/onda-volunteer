@@ -6,7 +6,6 @@ import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n, resetI18nForTests } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
-import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { buildTestRouteTree } from '@/router.testUtils';
 import { fetchSystemAdminEvents } from './systemAdminScheduling';
 
@@ -34,16 +33,14 @@ function renderSchedulingPage() {
   render(
     <I18nProvider>
       <ToastProvider>
-        <LocalTimeProvider>
-          <AuthSessionTestProvider
-            state={{
-              status: 'dev-bypass',
-              volunteerId: 'seed-volunteer-system-admin',
-            }}
-          >
-            <RouterProvider router={routed} />
-          </AuthSessionTestProvider>
-        </LocalTimeProvider>
+        <AuthSessionTestProvider
+          state={{
+            status: 'dev-bypass',
+            volunteerId: 'seed-volunteer-system-admin',
+          }}
+        >
+          <RouterProvider router={routed} />
+        </AuthSessionTestProvider>
       </ToastProvider>
     </I18nProvider>,
   );

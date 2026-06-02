@@ -1,8 +1,8 @@
 {
   "title": "Volunteers",
-  "body": "Manage ministry membership lifecycle for your accredited church. Add volunteers as Pending or Active, activate pending members, and deactivate active members (future assignments are voided automatically).",
+  "body": "Manage ministry membership for ministries you lead or administer. Add volunteers as Pending or Active, activate pending members, and deactivate active members (future assignments are voided automatically).",
   "signInRequired": "Sign in to manage ministry memberships.",
-  "notAdmin": "You need church admin accreditation to manage memberships here.",
+  "notSteward": "You need to be a Leader or church Admin for a ministry to manage memberships here.",
   "ministryLabel": "Ministry",
   "ministryPlaceholder": "Select a ministry",
   "addHeading": "Add membership",

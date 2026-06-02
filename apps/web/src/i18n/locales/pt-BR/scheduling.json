@@ -64,6 +64,9 @@
       "unavailabilityBlocksAssign": "Este voluntário está indisponível para este ministério no horário selecionado.",
       "assignFailed": "Não foi possível criar a designação.",
       "releaseFailed": "Não foi possível liberar a designação.",
+      "releaseNotOwned": "Você só pode liberar a sua própria designação.",
+      "releaseAlreadyVoided": "Esta designação não está mais ativa.",
+      "releaseReadOnly": "Administrador do sistema não pode alterar designações aqui.",
       "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
     },
     "createAssignment": "Criar designação",

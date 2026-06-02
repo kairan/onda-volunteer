@@ -17,11 +17,17 @@ import {
   type AuthSessionState,
   demoVolunteerId,
   devAuthBypassAllowed,
+  devHeadersEnabled,
   syncAuthVolunteerId,
 } from './authSession';
+import {
+  readStoredDevVolunteerId,
+  setStoredDevVolunteerId,
+} from './devVolunteerStorage';
 
 type AuthSessionContextValue = AuthSessionState & {
   refresh: () => Promise<void>;
+  selectDevVolunteer: (volunteerId: string) => void;
 };
 
 export const AuthSessionContext =
@@ -39,6 +45,7 @@ export function AuthSessionTestProvider({
     () => ({
       ...state,
       refresh: async () => {},
+      selectDevVolunteer: () => {},
     }),
     [state],
   );
@@ -52,9 +59,29 @@ export function AuthSessionTestProvider({
 export function AuthSessionProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthSessionState>({ status: 'loading' });
 
+  const selectDevVolunteer = useCallback((volunteerId: string) => {
+    const id = volunteerId.trim();
+    if (!id) {
+      return;
+    }
+    setStoredDevVolunteerId(id);
+    const next: AuthSessionState = { status: 'dev-bypass', volunteerId: id };
+    syncAuthVolunteerId(next);
+    setState(next);
+  }, []);
+
   const refresh = useCallback(async () => {
     const supabase = getSupabaseClient();
     const demoId = demoVolunteerId();
+    const impersonatedVolunteerId = readStoredDevVolunteerId();
+
+    if (impersonatedVolunteerId && devHeadersEnabled()) {
+      setState({
+        status: 'dev-bypass',
+        volunteerId: impersonatedVolunteerId,
+      });
+      return;
+    }
 
     if (!supabase) {
       if (devAuthBypassAllowed() && demoId) {
@@ -70,6 +97,10 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
 
     const { data: sessionData } = await supabase.auth.getSession();
     if (!sessionData.session) {
+      if (devAuthBypassAllowed() && demoId) {
+        setState({ status: 'dev-bypass', volunteerId: demoId });
+        return;
+      }
       setState({ status: 'unauthenticated', reason: 'signed-out' });
       return;
     }
@@ -164,8 +195,9 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
     () => ({
       ...state,
       refresh,
+      selectDevVolunteer,
     }),
-    [state, refresh],
+    [state, refresh, selectDevVolunteer],
   );
 
   return (
@@ -181,4 +213,18 @@ export function useAuthSession(): AuthSessionContextValue {
     throw new Error('useAuthSession must be used within AuthSessionProvider');
   }
   return ctx;
+}
+
+/** Test fixtures: auth state plus default no-op session actions. */
+export function authSessionContextFixture(
+  state: AuthSessionState,
+  actions?: Partial<
+    Pick<AuthSessionContextValue, 'refresh' | 'selectDevVolunteer'>
+  >,
+): AuthSessionContextValue {
+  return {
+    ...state,
+    refresh: actions?.refresh ?? (async () => {}),
+    selectDevVolunteer: actions?.selectDevVolunteer ?? (() => {}),
+  };
 }

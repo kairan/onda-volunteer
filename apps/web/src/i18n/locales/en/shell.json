@@ -26,5 +26,23 @@
     "volunteers": "Volunteers",
     "timeAway": "Time away",
     "systemAdmin": "System Admin"
+  },
+  "devPersona": {
+    "switchUser": "Switch dev user",
+    "eyebrow": "Local development",
+    "title": "Choose volunteer",
+    "subtitle": "Pick a seeded persona for API calls via dev headers. Your choice is saved in this browser — no server restart.",
+    "listLabel": "Seed volunteers",
+    "current": "Active",
+    "unavailableTitle": "Not available",
+    "unavailableBody": "Dev volunteer switching is only available in local development with dev auth headers enabled.",
+    "goDashboard": "Dashboard",
+    "goSystemAdmin": "System admin",
+    "capabilities": {
+      "leader": "Ministry leader",
+      "volunteer": "Volunteer",
+      "churchAdmin": "Church admin",
+      "systemAdmin": "System operator"
+    }
   }
 }

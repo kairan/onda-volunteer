@@ -1,3 +1,4 @@
+import { shouldForceDevHeadersForApi } from './auth/authSession';
 import { getAccessToken } from './supabaseClient';
 import { apiErrorFromResponse } from './apiError';
 
@@ -39,7 +40,7 @@ export async function buildProtectedHeaders(
     headers['Content-Type'] = 'application/json';
   }
 
-  if (options?.forceDev) {
+  if (options?.forceDev || shouldForceDevHeadersForApi()) {
     applyDevHeaders(headers, scope);
     return headers;
   }

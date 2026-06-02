@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
@@ -121,11 +122,12 @@ export function DashboardPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {assignments.map((a) => (
-              <article
-                key={a.id}
-                className="group relative border-2 border-border bg-surface p-4 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_hsl(var(--border))]"
-              >
-                <div className="flex flex-col gap-2">
+              <article key={a.id}>
+                <Link
+                  to="/scheduling/events/$eventId"
+                  params={{ eventId: a.event.id }}
+                  className="group relative flex flex-col gap-2 border-2 border-border bg-surface p-4 transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_hsl(var(--border))]"
+                >
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                       {a.role.name}
@@ -149,7 +151,7 @@ export function DashboardPage() {
                       )}
                     />
                   </p>
-                </div>
+                </Link>
               </article>
             ))}
           </div>

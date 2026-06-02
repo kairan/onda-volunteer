@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import type { ReactNode } from 'react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { DashboardPage } from './dashboard';
@@ -11,6 +12,35 @@ import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
 
 vi.mock('@/identity/fetchVolunteerAssignments');
 vi.mock('@/organization/fetchOrganizationContext');
+vi.mock('@tanstack/react-router', async (importOriginal) => {
+  const mod = await importOriginal<typeof import('@tanstack/react-router')>();
+  return {
+    ...mod,
+    Link: ({
+      children,
+      to,
+      params,
+    }: {
+      children: ReactNode;
+      to: string;
+      params?: { eventId: string };
+    }) => (
+      <a
+        href={
+          params?.eventId && to.includes('$eventId')
+            ? to.replace('$eventId', params.eventId)
+            : to
+        }
+      >
+        {children}
+      </a>
+    ),
+  };
+});
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('DashboardPage', () => {
   const mockVolunteerId = 'vol-123';
@@ -69,6 +99,10 @@ describe('DashboardPage', () => {
     });
 
     expect(screen.getByText('Greeter')).toBeInTheDocument();
+    expect(screen.getByText('Sunday Morning').closest('a')).toHaveAttribute(
+      'href',
+      '/scheduling/events/evt-1',
+    );
     expect(screen.queryByText('Carregando escalas...')).not.toBeInTheDocument();
   });
 

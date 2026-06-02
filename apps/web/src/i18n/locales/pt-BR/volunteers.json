@@ -1,8 +1,8 @@
 {
   "title": "Voluntários",
-  "body": "Gerencie o ciclo de vínculo no ministério da igreja em que você é administrador. Adicione voluntários como Pendente ou Ativo, ative pendentes e desative ativos (escalas futuras são anuladas automaticamente).",
+  "body": "Gerencie vínculos nos ministérios que você lidera ou administra. Adicione voluntários como Pendente ou Ativo, ative pendentes e desative ativos (escalas futuras são anuladas automaticamente).",
   "signInRequired": "Entre para gerenciar vínculos de ministério.",
-  "notAdmin": "É necessária credenciamento de administrador da igreja para gerenciar vínculos aqui.",
+  "notSteward": "É necessário ser Líder ou administrador da igreja em um ministério para gerenciar vínculos aqui.",
   "ministryLabel": "Ministério",
   "ministryPlaceholder": "Selecione um ministério",
   "addHeading": "Adicionar vínculo",

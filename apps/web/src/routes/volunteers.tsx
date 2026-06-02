@@ -24,8 +24,10 @@ export function VolunteersPage() {
       ? auth.volunteerId
       : null;
 
-  const adminMinistries = useMemo(
-    () => activeChurch?.ministries.filter((m) => m.isChurchAdmin) ?? [],
+  const stewardshipMinistries = useMemo(
+    () =>
+      activeChurch?.ministries.filter((m) => m.isLeader || m.isChurchAdmin) ??
+      [],
     [activeChurch?.ministries],
   );
 
@@ -41,10 +43,10 @@ export function VolunteersPage() {
   const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (adminMinistries.length === 1 && !ministryId) {
-      setMinistryId(adminMinistries[0].id);
+    if (stewardshipMinistries.length === 1 && !ministryId) {
+      setMinistryId(stewardshipMinistries[0].id);
     }
-  }, [adminMinistries, ministryId]);
+  }, [stewardshipMinistries, ministryId]);
 
   const loadRows = useCallback(async () => {
     if (!ministryId || !actingVolunteerId) {
@@ -155,11 +157,11 @@ export function VolunteersPage() {
     );
   }
 
-  if (adminMinistries.length === 0) {
+  if (stewardshipMinistries.length === 0) {
     return (
       <section className="border-2 border-border bg-surface p-6">
         <h1 className="font-display text-4xl font-bold uppercase">{t('title')}</h1>
-        <p className="mt-4 text-sm text-muted-foreground">{t('notAdmin')}</p>
+        <p className="mt-4 text-sm text-muted-foreground">{t('notSteward')}</p>
       </section>
     );
   }
@@ -182,7 +184,7 @@ export function VolunteersPage() {
             onChange={(e) => setMinistryId(e.target.value)}
           >
             <option value="">{t('ministryPlaceholder')}</option>
-            {adminMinistries.map((m) => (
+            {stewardshipMinistries.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
               </option>

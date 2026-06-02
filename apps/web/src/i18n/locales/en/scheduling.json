@@ -64,6 +64,9 @@
       "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
       "assignFailed": "Could not create assignment.",
       "releaseFailed": "Could not release assignment.",
+      "releaseNotOwned": "You can only release your own assignment.",
+      "releaseAlreadyVoided": "This assignment is no longer active.",
+      "releaseReadOnly": "System Admin cannot change assignments here.",
       "unavailabilityFailed": "Could not record unavailability."
     },
     "createAssignment": "Create assignment",

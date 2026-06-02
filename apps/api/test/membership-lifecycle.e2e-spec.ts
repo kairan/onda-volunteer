@@ -49,6 +49,43 @@ describe('Ministry membership lifecycle (e2e)', () => {
     await app.close();
   });
 
+  it('allows ministry leader to add pending and activate membership', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Leader Lifecycle Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Ushers', churchId: church.id },
+    });
+    const leader = await prisma.volunteer.create({
+      data: { displayName: 'Leader Pat' },
+    });
+    const member = await prisma.volunteer.create({
+      data: { displayName: 'New Volunteer' },
+    });
+    await prisma.ministryLeader.create({
+      data: { volunteerId: leader.id, ministryId: ministry.id },
+    });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({ volunteerId: member.id, status: 'PENDING' })
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.status).toBe('PENDING');
+      });
+
+    await request(app.getHttpServer())
+      .post(`/ministries/${ministry.id}/memberships/${member.id}/activate`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.status).toBe('ACTIVE');
+      });
+  });
+
   it('allows accredited admin to add pending and activate membership', async () => {
     const church = await prisma.church.create({
       data: { name: 'Lifecycle Church', defaultTimezone: 'UTC' },
@@ -217,7 +254,7 @@ describe('Ministry membership lifecycle (e2e)', () => {
       .set('X-Volunteer-Id', admin.id)
       .expect(403)
       .expect(({ body }) => {
-        expect(body.code).toBe('ADMIN_NOT_ACCREDITED');
+        expect(body.code).toBe('LEADER_NOT_AUTHORIZED');
       });
   });
 
@@ -280,7 +317,7 @@ describe('Ministry membership lifecycle (e2e)', () => {
       .send({ volunteerId: member.id, status: 'ACTIVE' })
       .expect(403)
       .expect(({ body }) => {
-        expect(body.code).toBe('ADMIN_NOT_ACCREDITED');
+        expect(body.code).toBe('LEADER_NOT_AUTHORIZED');
       });
   });
 });
