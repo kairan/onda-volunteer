@@ -5,7 +5,7 @@ import { useToasts } from '@/feedback/ToastHost';
 import { consumeSystemAdminAccessDenied } from '@/system-admin/accessDenied';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
-import { demoVolunteerId } from '@/auth/authSession';
+import { demoVolunteerId, devUserSelectAvailable } from '@/auth/authSession';
 import { OrganizationContextProvider, useOrganization } from '@/organization/OrganizationContextProvider';
 import { OrganizationContextControls } from './OrganizationContextControls';
 import { useTranslation } from 'react-i18next';
@@ -148,6 +148,14 @@ function AppShellContent({ children }: { children?: ReactNode }) {
             ) : null}
           </nav>
           <footer className="mt-auto flex flex-col gap-3 border-t-2 border-border px-4 py-4">
+            {devUserSelectAvailable() ? (
+              <Link
+                to="/user-select"
+                className="text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
+              >
+                {t('shell:devPersona.switchUser')}
+              </Link>
+            ) : null}
             <ExternalLink
               href="https://example.com/help"
               className="text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
@@ -233,6 +241,14 @@ function AppShellContent({ children }: { children?: ReactNode }) {
               id="mobile-account-panel"
               className="border-b-2 border-border bg-surface px-4 py-3 md:hidden"
             >
+              {devUserSelectAvailable() ? (
+                <Link
+                  to="/user-select"
+                  className="mb-3 block text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"
+                >
+                  {t('shell:devPersona.switchUser')}
+                </Link>
+              ) : null}
               <ExternalLink
                 href="https://example.com/help"
                 className="mb-3 text-sm uppercase tracking-[0.12em] text-muted-foreground hover:text-primary"

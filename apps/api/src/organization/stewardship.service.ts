@@ -114,6 +114,52 @@ export class StewardshipService {
     return volunteer;
   }
 
+  private async assertVolunteerLeaderOrAdminForMinistry(
+    volunteer: Volunteer,
+    ministryId: string,
+  ): Promise<void> {
+    const leadership = await this.prisma.ministryLeader.findUnique({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: volunteer.id,
+          ministryId,
+        },
+      },
+    });
+    if (leadership) {
+      return;
+    }
+
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: ministryId },
+      select: { churchId: true },
+    });
+    if (!ministry) {
+      throw new ForbiddenException({
+        code: 'MINISTRY_NOT_FOUND',
+        message: 'Ministry not found.',
+      });
+    }
+
+    const accreditation = await this.prisma.adminAccreditation.findUnique({
+      where: {
+        volunteerId_churchId: {
+          volunteerId: volunteer.id,
+          churchId: ministry.churchId,
+        },
+      },
+    });
+    if (accreditation) {
+      return;
+    }
+
+    throw new ForbiddenException({
+      code: 'LEADER_NOT_AUTHORIZED',
+      message:
+        'Authenticated volunteer is not a Leader for this Ministry and is not an Admin accredited for its Church.',
+    });
+  }
+
   async assertLeaderCanActOnMinistry(
     headers: AuthHeaders,
     ministryId: string,
@@ -126,47 +172,8 @@ export class StewardshipService {
             authorization: headers.authorization,
             volunteerId: undefined,
           });
-
-      const leadership = await this.prisma.ministryLeader.findUnique({
-        where: {
-          volunteerId_ministryId: {
-            volunteerId: volunteer.id,
-            ministryId,
-          },
-        },
-      });
-      if (leadership) {
-        return;
-      }
-
-      const ministry = await this.prisma.ministry.findUnique({
-        where: { id: ministryId },
-        select: { churchId: true },
-      });
-      if (!ministry) {
-        throw new ForbiddenException({
-          code: 'MINISTRY_NOT_FOUND',
-          message: 'Ministry not found.',
-        });
-      }
-
-      const accreditation = await this.prisma.adminAccreditation.findUnique({
-        where: {
-          volunteerId_churchId: {
-            volunteerId: volunteer.id,
-            churchId: ministry.churchId,
-          },
-        },
-      });
-      if (accreditation) {
-        return;
-      }
-
-      throw new ForbiddenException({
-        code: 'LEADER_NOT_AUTHORIZED',
-        message:
-          'Authenticated volunteer is not a Leader for this Ministry and is not an Admin accredited for its Church.',
-      });
+      await this.assertVolunteerLeaderOrAdminForMinistry(volunteer, ministryId);
+      return;
     }
 
     if (devHeadersAllowed() && headers.leaderMinistryId?.trim()) {
@@ -179,10 +186,21 @@ export class StewardshipService {
       return;
     }
 
+    if (devHeadersAllowed() && headers.volunteerId?.trim()) {
+      const volunteer = requireVolunteer
+        ? await requireVolunteer()
+        : await this.identity.requireVolunteer({
+            authorization: undefined,
+            volunteerId: headers.volunteerId,
+          });
+      await this.assertVolunteerLeaderOrAdminForMinistry(volunteer, ministryId);
+      return;
+    }
+
     throw new UnauthorizedException({
       code: 'AUTH_REQUIRED',
       message: devHeadersAllowed()
-        ? 'Provide Authorization Bearer token or X-Leader-Ministry-Id (dev only).'
+        ? 'Provide Authorization Bearer token, X-Volunteer-Id, or X-Leader-Ministry-Id (dev only).'
         : 'Provide Authorization Bearer token.',
     });
   }

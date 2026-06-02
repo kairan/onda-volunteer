@@ -4,7 +4,14 @@ import { useTranslation } from 'react-i18next';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
-import { useAuthSession } from '@/auth/AuthSessionProvider';
+import {
+  useAuthSession,
+  type AuthSessionContextValue,
+} from '@/auth/AuthSessionProvider';
+import {
+  devAuthBypassAllowed,
+  volunteerIdForProtectedRequests,
+} from '@/auth/authSession';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { cancelEvent } from '@/events/cancelEvent';
 import { DestructiveConfirmDialog } from '@/components/DestructiveConfirmDialog';
@@ -15,6 +22,16 @@ import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavail
 import { Button } from '@/components/ui/button';
 import { useToasts } from '@/feedback/ToastHost';
 import { cn } from '@/lib/utils';
+
+function resolveActingVolunteerId(auth: AuthSessionContextValue): string | null {
+  if (auth.status === 'authenticated' || auth.status === 'dev-bypass') {
+    return auth.volunteerId;
+  }
+  if (auth.status === 'loading' && devAuthBypassAllowed()) {
+    return volunteerIdForProtectedRequests() ?? null;
+  }
+  return null;
+}
 
 export function SchedulingEventDetailPending() {
   const { t } = useTranslation('scheduling');
@@ -48,10 +65,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const auth = useAuthSession();
   const { activeChurch } = useOrganization();
 
-  const actingVolunteerId =
-    auth.status === 'authenticated' || auth.status === 'dev-bypass'
-      ? auth.volunteerId
-      : null;
+  const actingVolunteerId = resolveActingVolunteerId(auth);
 
   const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
 
@@ -92,10 +106,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [offerBusy, setOfferBusy] = useState(false);
   const [offerDone, setOfferDone] = useState(false);
 
-  const volunteerId =
-    auth.status === 'authenticated' || auth.status === 'dev-bypass'
-      ? auth.volunteerId
-      : null;
+  const volunteerId = actingVolunteerId;
 
   const timezone = data.church.defaultTimezone;
 
@@ -189,7 +200,23 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       await router.invalidate();
       pushSuccessToast(t('detail.releaseSuccess'));
     } catch (err) {
-      setReleaseError(t('detail.errors.releaseFailed'));
+      if (err instanceof ApiRequestError && err.code === 'ASSIGNMENT_NOT_OWNED') {
+        setReleaseError(t('detail.errors.releaseNotOwned'));
+      } else if (
+        err instanceof ApiRequestError &&
+        err.code === 'ASSIGNMENT_ALREADY_VOIDED'
+      ) {
+        setReleaseError(t('detail.errors.releaseAlreadyVoided'));
+      } else if (
+        err instanceof ApiRequestError &&
+        err.code === 'SYSTEM_ADMIN_READ_ONLY'
+      ) {
+        setReleaseError(t('detail.errors.releaseReadOnly'));
+      } else if (err instanceof ApiRequestError) {
+        setReleaseError(err.message);
+      } else {
+        setReleaseError(t('detail.errors.releaseFailed'));
+      }
     } finally {
       setBusy(false);
     }

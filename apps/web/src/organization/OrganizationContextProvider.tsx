@@ -8,6 +8,11 @@ import {
   useMemo,
 } from 'react';
 import { fetchOrganizationContext } from './fetchOrganizationContext';
+import {
+  readStoredActiveCampusId,
+  readStoredActiveChurchId,
+  setStoredOrganizationSelection,
+} from './organizationContextStorage';
 import type { Church } from './types';
 
 function firstCampusId(church: Church | undefined): string | null {
@@ -70,11 +75,14 @@ export function OrganizationContextProvider({
           payload.churches.find(
             (church) => church.id === input?.preferredChurchId,
           ) ?? payload.churches[0];
-        setActiveChurchId(selectedChurch?.id ?? null);
-        const selectedCampus = selectedChurch?.campuses.find(
-          (campus) => campus.id === input?.preferredCampusId,
-        );
-        setActiveCampusId(selectedCampus?.id ?? firstCampusId(selectedChurch));
+        const churchId = selectedChurch?.id ?? null;
+        const campusId =
+          selectedChurch?.campuses.find(
+            (campus) => campus.id === input?.preferredCampusId,
+          )?.id ?? firstCampusId(selectedChurch);
+        setActiveChurchId(churchId);
+        setActiveCampusId(campusId);
+        setStoredOrganizationSelection(churchId, campusId);
       } catch (err) {
         if (cancelled()) {
           return;
@@ -102,16 +110,27 @@ export function OrganizationContextProvider({
     }
 
     let cancelled = false;
-    void loadContext({ isCancelled: () => cancelled });
+    void loadContext({
+      isCancelled: () => cancelled,
+      preferredChurchId: readStoredActiveChurchId(),
+      preferredCampusId: readStoredActiveCampusId(),
+    });
     return () => {
       cancelled = true;
     };
   }, [enabled, loadContext]);
 
   function handleChurchChange(churchId: string) {
-    setActiveChurchId(churchId);
     const church = churches.find((item) => item.id === churchId);
-    setActiveCampusId(firstCampusId(church));
+    const campusId = firstCampusId(church);
+    setActiveChurchId(churchId);
+    setActiveCampusId(campusId);
+    setStoredOrganizationSelection(churchId, campusId);
+  }
+
+  function handleCampusChange(campusId: string) {
+    setActiveCampusId(campusId);
+    setStoredOrganizationSelection(activeChurchId, campusId);
   }
 
   const activeChurch = useMemo(
@@ -143,7 +162,7 @@ export function OrganizationContextProvider({
       activeChurch,
       activeCampus,
       onChurchChange: handleChurchChange,
-      onCampusChange: setActiveCampusId,
+      onCampusChange: handleCampusChange,
       refresh,
     }),
     [

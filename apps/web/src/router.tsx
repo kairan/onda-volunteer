@@ -39,6 +39,7 @@ import { SystemAdminUserDetailPage } from "./system-admin/SystemAdminUserDetailP
 import { SystemAdminSchedulingPage } from "./system-admin/SystemAdminSchedulingPage";
 import { SystemAdminSchedulingEventDetailPage } from "./system-admin/SystemAdminSchedulingEventDetailPage";
 import { ensureSystemAdminRouteAccess } from "./system-admin/ensureSystemAdminRouteAccess";
+import { UserSelectPage } from "./routes/userSelect";
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -114,6 +115,12 @@ function shellErrorComponent({
     </ProtectedAppShell>
   );
 }
+
+const userSelectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/user-select",
+  component: UserSelectPage,
+});
 
 const legacyEventRedirectRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -301,6 +308,7 @@ export function buildRouteTree(options: BuildRouteTreeOptions = {}) {
     createSystemAdminSchedulingEventDetailRoute(schedulingEventDetailLoader);
   return rootRoute.addChildren([
     legacyLayoutRoute.addChildren([indexRoute]),
+    userSelectRoute,
     legacyEventRedirectRoute,
     schedulingEventDetailRoute,
     schedulingCreateEventRoute,

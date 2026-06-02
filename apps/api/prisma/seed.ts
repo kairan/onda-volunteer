@@ -123,6 +123,15 @@ async function main() {
     },
   });
 
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-hospitality' },
+    update: { displayName: 'Hospitality Volunteer' },
+    create: {
+      id: 'seed-volunteer-hospitality',
+      displayName: 'Hospitality Volunteer',
+    },
+  });
+
   await prisma.systemAdministrator.upsert({
     where: { volunteerId: 'seed-volunteer-system-admin' },
     update: {},
@@ -167,6 +176,21 @@ async function main() {
     update: { status: 'ACTIVE' },
     create: {
       volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-demo',
+      status: 'ACTIVE',
+    },
+  });
+
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-hospitality',
+        ministryId: 'seed-ministry-demo',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-hospitality',
       ministryId: 'seed-ministry-demo',
       status: 'ACTIVE',
     },

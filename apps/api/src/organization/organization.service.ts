@@ -357,8 +357,7 @@ export class OrganizationService {
     auth: AuthenticatedRequestContext;
     asSystemAdmin?: boolean;
   }) {
-    const churchId = await this.ministryChurchId(input.ministryId);
-    await this.assertChurchAdminActor(input.auth, churchId, {
+    await this.assertLeaderOrSystemAdmin(input.auth, input.ministryId, {
       asSystemAdmin: input.asSystemAdmin,
     });
 
@@ -419,8 +418,7 @@ export class OrganizationService {
     auth: AuthenticatedRequestContext;
     asSystemAdmin?: boolean;
   }) {
-    const churchId = await this.ministryChurchId(input.ministryId);
-    await this.assertChurchAdminActor(input.auth, churchId, {
+    await this.assertLeaderOrSystemAdmin(input.auth, input.ministryId, {
       asSystemAdmin: input.asSystemAdmin,
     });
 

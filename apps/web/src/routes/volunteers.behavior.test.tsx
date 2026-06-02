@@ -120,4 +120,98 @@ describe('VolunteersPage', () => {
     });
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
+
+  it('lets a leader select a led ministry, add a member, and deactivate', async () => {
+    await initI18n(undefined, 'en');
+    const user = userEvent.setup();
+    const leaderId = 'leader-1';
+    const ledMinistryId = 'min-greeters';
+    const memberId = 'vol-member';
+
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
+      churches: [
+        {
+          id: churchId,
+          name: 'Test Church',
+          defaultTimezone: 'UTC',
+          isAccreditedAdmin: false,
+          campuses: [],
+          ministries: [
+            {
+              id: ledMinistryId,
+              name: 'Greeters',
+              isLeader: true,
+            },
+            {
+              id: 'min-band',
+              name: 'Band',
+              membershipStatus: 'ACTIVE' as const,
+            },
+          ],
+        },
+      ],
+    } as never);
+
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([
+      {
+        volunteerId: memberId,
+        displayName: 'Sam Member',
+        status: 'ACTIVE',
+      },
+    ]);
+    vi.mocked(membershipLifecycle.addMinistryMembership).mockResolvedValue({
+      volunteerId: memberId,
+      ministryId: ledMinistryId,
+      status: 'PENDING',
+    });
+    vi.mocked(membershipLifecycle.deactivateMinistryMembership).mockResolvedValue(
+      {},
+    );
+
+    render(
+      <I18nProvider>
+        <AuthSessionContext.Provider
+          value={{
+            ...authState,
+            volunteerId: leaderId,
+            displayName: 'Lee Leader',
+          }}
+        >
+          <OrganizationContextProvider enabled={true}>
+            <VolunteersPage />
+          </OrganizationContextProvider>
+        </AuthSessionContext.Provider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
+    });
+    expect(screen.queryByRole('option', { name: 'Band' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Add membership' })).toBeInTheDocument();
+
+    await user.selectOptions(screen.getByLabelText('Ministry'), ledMinistryId);
+    await user.type(screen.getByLabelText('Volunteer ID'), memberId);
+    await user.click(screen.getByRole('button', { name: 'Add to ministry' }));
+
+    await waitFor(() => {
+      expect(membershipLifecycle.addMinistryMembership).toHaveBeenCalledWith({
+        ministryId: ledMinistryId,
+        actingVolunteerId: leaderId,
+        volunteerId: memberId,
+        status: 'PENDING',
+      });
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Deactivate' }));
+
+    await waitFor(() => {
+      expect(membershipLifecycle.deactivateMinistryMembership).toHaveBeenCalledWith({
+        ministryId: ledMinistryId,
+        actingVolunteerId: leaderId,
+        volunteerId: memberId,
+        leaderMinistryId: ledMinistryId,
+      });
+    });
+  });
 });
