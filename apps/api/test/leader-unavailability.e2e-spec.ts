@@ -296,14 +296,14 @@ describe('Leader volunteer unavailability (e2e)', () => {
     );
   });
 
-  it('rejects listing ministry memberships without leader dev headers', async () => {
+  it('rejects listing ministry memberships when volunteer is not a steward', async () => {
     const { ledMinistry, member } = await seedLedMinistryFixture();
 
     const res = await request(app.getHttpServer())
       .get(`/ministries/${ledMinistry.id}/memberships`)
       .set('X-Volunteer-Id', member.id)
-      .expect(401);
+      .expect(403);
 
-    expect(res.body.code).toBe('AUTH_REQUIRED');
+    expect(res.body.code).toBe('LEADER_NOT_AUTHORIZED');
   });
 });
