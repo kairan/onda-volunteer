@@ -9,11 +9,20 @@ import { OrganizationContextProvider } from '@/organization/OrganizationContextP
 import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
 import * as fetchMembers from '@/organization/fetchMinistryMemberships';
 import * as membershipLifecycle from '@/organization/membershipLifecycle';
-import { ApiRequestError } from '@/apiError';
+import * as volunteerInvite from '@/organization/volunteerInvite';
 
 vi.mock('@/organization/fetchOrganizationContext');
 vi.mock('@/organization/fetchMinistryMemberships');
 vi.mock('@/organization/membershipLifecycle');
+vi.mock('@/organization/volunteerInvite', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/organization/volunteerInvite')>();
+  return {
+    ...actual,
+    searchVolunteers: vi.fn().mockResolvedValue([]),
+    sendVolunteerInvite: vi.fn().mockResolvedValue({ id: 'inv-1', email: 'x@y.com', sentAtUtc: '2026-06-06T00:00:00Z', expiresAtUtc: '2026-06-13T00:00:00Z', status: 'PENDING' }),
+    listVolunteerInvites: vi.fn().mockResolvedValue([]),
+  };
+});
 
 afterEach(() => {
   cleanup();
@@ -57,22 +66,24 @@ describe('VolunteersPage', () => {
     ],
   };
 
-  it('lists ministries where the admin is also a member', async () => {
-    await initI18n(undefined, 'en');
-    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(
-      orgContext as never,
-    );
-    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
-
-    render(
+  function renderPage(authOverrides = {}) {
+    return render(
       <I18nProvider>
-        <AuthSessionContext.Provider value={authState}>
+        <AuthSessionContext.Provider value={{ ...authState, ...authOverrides }}>
           <OrganizationContextProvider enabled={true}>
             <VolunteersPage />
           </OrganizationContextProvider>
         </AuthSessionContext.Provider>
       </I18nProvider>,
     );
+  }
+
+  it('lists ministries where the admin is also a member', async () => {
+    await initI18n(undefined, 'en');
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
+
+    renderPage();
 
     await waitFor(() => {
       expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
@@ -80,137 +91,211 @@ describe('VolunteersPage', () => {
     expect(screen.getByRole('option', { name: 'Band' })).toBeInTheDocument();
   });
 
-  it('shows action errors with alert styling', async () => {
+  it('debounces search and shows results', async () => {
     await initI18n(undefined, 'en');
     const user = userEvent.setup();
-    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(
-      orgContext as never,
-    );
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
     vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
-    vi.mocked(membershipLifecycle.addMinistryMembership).mockRejectedValue(
-      new ApiRequestError(
-        403,
-        'You are not accredited for this church.',
-        'ADMIN_NOT_ACCREDITED',
-      ),
-    );
+    vi.mocked(volunteerInvite.searchVolunteers).mockResolvedValue([
+      { id: 'vol-1', displayName: 'Alice Smith', email: 'alice@test.com' },
+      { id: 'vol-2', displayName: 'Bob Jones', email: 'bob@test.com' },
+    ]);
 
-    render(
-      <I18nProvider>
-        <AuthSessionContext.Provider value={authState}>
-          <OrganizationContextProvider enabled={true}>
-            <VolunteersPage />
-          </OrganizationContextProvider>
-        </AuthSessionContext.Provider>
-      </I18nProvider>,
-    );
+    renderPage();
 
     await waitFor(() => {
       expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
     });
 
     await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
-    await user.type(screen.getByLabelText('Volunteer ID'), 'vol-2');
-    await user.click(screen.getByRole('button', { name: 'Add to ministry' }));
+    const searchInput = screen.getByPlaceholderText(/search by name/i);
+    await user.type(searchInput, 'ali');
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(
-        /not accredited for this church/i,
+      expect(volunteerInvite.searchVolunteers).toHaveBeenCalledWith(
+        expect.objectContaining({ query: 'ali', ministryId: greetersId }),
       );
     });
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Alice Smith/)).toBeInTheDocument();
+    });
   });
 
-  it('lets a leader select a led ministry, add a member, and deactivate', async () => {
+  it('selects a search result and adds to ministry', async () => {
     await initI18n(undefined, 'en');
     const user = userEvent.setup();
-    const leaderId = 'leader-1';
-    const ledMinistryId = 'min-greeters';
-    const memberId = 'vol-member';
-
-    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
-      churches: [
-        {
-          id: churchId,
-          name: 'Test Church',
-          defaultTimezone: 'UTC',
-          isAccreditedAdmin: false,
-          campuses: [],
-          ministries: [
-            {
-              id: ledMinistryId,
-              name: 'Greeters',
-              isLeader: true,
-            },
-            {
-              id: 'min-band',
-              name: 'Band',
-              membershipStatus: 'ACTIVE' as const,
-            },
-          ],
-        },
-      ],
-    } as never);
-
-    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([
-      {
-        volunteerId: memberId,
-        displayName: 'Sam Member',
-        status: 'ACTIVE',
-      },
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
+    vi.mocked(volunteerInvite.searchVolunteers).mockResolvedValue([
+      { id: 'vol-1', displayName: 'Alice Smith', email: 'alice@test.com' },
     ]);
     vi.mocked(membershipLifecycle.addMinistryMembership).mockResolvedValue({
-      volunteerId: memberId,
-      ministryId: ledMinistryId,
+      volunteerId: 'vol-1',
+      ministryId: greetersId,
       status: 'PENDING',
     });
-    vi.mocked(membershipLifecycle.deactivateMinistryMembership).mockResolvedValue(
-      {},
-    );
 
-    render(
-      <I18nProvider>
-        <AuthSessionContext.Provider
-          value={{
-            ...authState,
-            volunteerId: leaderId,
-            displayName: 'Lee Leader',
-          }}
-        >
-          <OrganizationContextProvider enabled={true}>
-            <VolunteersPage />
-          </OrganizationContextProvider>
-        </AuthSessionContext.Provider>
-      </I18nProvider>,
-    );
+    renderPage();
 
     await waitFor(() => {
       expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
     });
-    expect(screen.queryByRole('option', { name: 'Band' })).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Add membership' })).toBeInTheDocument();
 
-    await user.selectOptions(screen.getByLabelText('Ministry'), ledMinistryId);
-    await user.type(screen.getByLabelText('Volunteer ID'), memberId);
-    await user.click(screen.getByRole('button', { name: 'Add to ministry' }));
+    await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
+    const searchInput = screen.getByPlaceholderText(/search by name/i);
+    await user.type(searchInput, 'alice');
+
+    await waitFor(() => {
+      expect(screen.getByText(/Alice Smith/)).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText(/Alice Smith/));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /add to ministry/i })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /add to ministry/i }));
 
     await waitFor(() => {
       expect(membershipLifecycle.addMinistryMembership).toHaveBeenCalledWith({
-        ministryId: ledMinistryId,
-        actingVolunteerId: leaderId,
-        volunteerId: memberId,
+        ministryId: greetersId,
+        actingVolunteerId: adminId,
+        volunteerId: 'vol-1',
         status: 'PENDING',
       });
+    });
+  });
+
+  it('shows no-results state and invite section', async () => {
+    await initI18n(undefined, 'en');
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
+    vi.mocked(volunteerInvite.searchVolunteers).mockResolvedValue([]);
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
+    });
+
+    await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
+    const searchInput = screen.getByPlaceholderText(/search by name/i);
+    await user.type(searchInput, 'nobody');
+
+    await waitFor(() => {
+      expect(screen.getByText(/no volunteers found/i)).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('heading', { name: /invite by email/i })).toBeInTheDocument();
+  });
+
+  it('sends invite and shows success', async () => {
+    await initI18n(undefined, 'en');
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
+    vi.mocked(volunteerInvite.sendVolunteerInvite).mockResolvedValue({
+      id: 'inv-1',
+      email: 'new@person.com',
+      sentAtUtc: '2026-06-06T00:00:00Z',
+      expiresAtUtc: '2026-06-13T00:00:00Z',
+      status: 'PENDING',
+    });
+    vi.mocked(volunteerInvite.listVolunteerInvites).mockResolvedValue([
+      { id: 'inv-1', email: 'new@person.com', sentAtUtc: '2026-06-06T00:00:00Z', expiresAtUtc: '2026-06-13T00:00:00Z', status: 'PENDING' },
+    ]);
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
+    });
+
+    await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
+
+    await user.click(screen.getByRole('button', { name: /invite by email/i }));
+
+    const emailInput = screen.getByPlaceholderText(/volunteer@example/i);
+    await user.type(emailInput, 'new@person.com');
+    await user.click(screen.getByRole('button', { name: /send invite/i }));
+
+    await waitFor(() => {
+      expect(volunteerInvite.sendVolunteerInvite).toHaveBeenCalledWith({
+        ministryId: greetersId,
+        email: 'new@person.com',
+        actingVolunteerId: adminId,
+      });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent(/invite sent/i);
+    });
+  });
+
+  it('handles VOLUNTEER_ALREADY_EXISTS by auto-populating search', async () => {
+    await initI18n(undefined, 'en');
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([]);
+    vi.mocked(volunteerInvite.sendVolunteerInvite).mockResolvedValue({
+      code: 'VOLUNTEER_ALREADY_EXISTS',
+      existingVolunteerId: 'vol-existing',
+      displayName: 'Existing Person',
+    });
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
+    });
+
+    await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
+
+    await user.click(screen.getByRole('button', { name: /invite by email/i }));
+    const emailInput = screen.getByPlaceholderText(/volunteer@example/i);
+    await user.type(emailInput, 'existing@person.com');
+    await user.click(screen.getByRole('button', { name: /send invite/i }));
+
+    await waitFor(() => {
+      const searchInput = screen.getByPlaceholderText(/search by name/i);
+      expect(searchInput).toHaveValue('Existing Person');
+    });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/already has an account/i);
+  });
+
+  it('shows deactivate button for active members', async () => {
+    await initI18n(undefined, 'en');
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as never);
+    vi.mocked(fetchMembers.fetchMinistryMemberships).mockResolvedValue([
+      { volunteerId: 'vol-1', displayName: 'Sam Member', status: 'ACTIVE' },
+    ]);
+    vi.mocked(membershipLifecycle.deactivateMinistryMembership).mockResolvedValue({});
+
+    renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Greeters' })).toBeInTheDocument();
+    });
+
+    await user.selectOptions(screen.getByLabelText('Ministry'), greetersId);
+
+    await waitFor(() => {
+      expect(screen.getByText('Sam Member')).toBeInTheDocument();
     });
 
     await user.click(screen.getByRole('button', { name: 'Deactivate' }));
 
     await waitFor(() => {
       expect(membershipLifecycle.deactivateMinistryMembership).toHaveBeenCalledWith({
-        ministryId: ledMinistryId,
-        actingVolunteerId: leaderId,
-        volunteerId: memberId,
-        leaderMinistryId: ledMinistryId,
+        ministryId: greetersId,
+        actingVolunteerId: adminId,
+        volunteerId: 'vol-1',
+        leaderMinistryId: greetersId,
       });
     });
   });
