@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -209,6 +210,17 @@ export class OrganizationService {
     return parsed;
   }
 
+  private parseCampusName(name: string | undefined): string {
+    const parsed = name?.trim();
+    if (!parsed) {
+      throw new BadRequestException({
+        code: 'CAMPUS_NAME_REQUIRED',
+        message: 'Campus name is required.',
+      });
+    }
+    return parsed;
+  }
+
   private async assertChurchAdminActor(
     auth: AuthenticatedRequestContext,
     churchId: string,
@@ -277,6 +289,64 @@ export class OrganizationService {
       id: updated.id,
       name: updated.name,
       defaultTimezone: updated.defaultTimezone,
+    };
+  }
+
+  async updateCampusMetadata(input: {
+    campusId: string;
+    name?: string;
+    timezone?: string;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const campusRef = await this.prisma.campus.findUnique({
+      where: { id: input.campusId },
+      select: { churchId: true },
+    });
+    if (!campusRef) {
+      const volunteer = await input.auth.requireVolunteer();
+      const accreditation = await this.prisma.adminAccreditation.findFirst({
+        where: { volunteerId: volunteer.id },
+        select: { id: true },
+      });
+      if (!accreditation) {
+        throw new ForbiddenException({
+          code: 'ADMIN_NOT_ACCREDITED',
+          message:
+            'Authenticated volunteer is not an Admin accredited for this Church.',
+        });
+      }
+      throw new NotFoundException({
+        code: 'CAMPUS_NOT_FOUND',
+        message: 'Campus not found.',
+      });
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(campusRef.churchId);
+
+    const data: { name?: string; timezone?: string } = {};
+    if (input.name !== undefined) {
+      data.name = this.parseCampusName(input.name);
+    }
+    if (input.timezone !== undefined) {
+      data.timezone = parseIanaTimezone(input.timezone, 'timezone');
+    }
+    if (Object.keys(data).length === 0) {
+      throw new BadRequestException({
+        code: 'CAMPUS_METADATA_EMPTY',
+        message: 'Provide at least one of name or timezone.',
+      });
+    }
+
+    const updated = await this.prisma.campus.update({
+      where: { id: input.campusId },
+      data,
+    });
+
+    return {
+      id: updated.id,
+      churchId: updated.churchId,
+      name: updated.name,
+      timezone: updated.timezone,
     };
   }
 

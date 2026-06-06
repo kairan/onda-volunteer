@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/organization-structure-administration/design.md`  
 **Spec**: `.specs/features/organization-structure-administration/spec.md`  
-**Status**: Approved — ready for Execute (P2 campus slice)
+**Status**: Execute complete (P2 campus slice + P1 tracker doc)
 
 ---
 
@@ -68,9 +68,9 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] Accredited **Admin** can PATCH `name` and/or `timezone` for a campus in their church
-- [ ] Stable codes: `CAMPUS_NOT_FOUND`, `CAMPUS_NAME_REQUIRED`, `CAMPUS_METADATA_EMPTY`, `INVALID_TIMEZONE`, `ADMIN_NOT_ACCREDITED`
-- [ ] No mutation of UTC scheduling rows
+- [x] Accredited **Admin** can PATCH `name` and/or `timezone` for a campus in their church
+- [x] Stable codes: `CAMPUS_NOT_FOUND`, `CAMPUS_NAME_REQUIRED`, `CAMPUS_METADATA_EMPTY`, `INVALID_TIMEZONE`, `ADMIN_NOT_ACCREDITED`
+- [x] No mutation of UTC scheduling rows
 
 **Tests**: none (covered in T-CAMPUS-02)  
 **Gate**: API typecheck
@@ -89,9 +89,9 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] Admin renames campus; organization context reflects new name
-- [ ] Admin changes campus timezone; existing event `startsAtUtc` / `endsAtUtc` unchanged in DB
-- [ ] Non-admin and invalid name/timezone/empty body rejected with stable codes
+- [x] Admin renames campus; organization context reflects new name
+- [x] Admin changes campus timezone; existing event `startsAtUtc` / `endsAtUtc` unchanged in DB
+- [x] Non-admin and invalid name/timezone/empty body rejected with stable codes
 
 **Tests**: API Jest e2e (co-located)  
 **Gate**: `export DATABASE_URL=... && pnpm test` (api campus spec)
@@ -110,9 +110,9 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] Form loads from `activeCampus`; save calls PATCH then `refresh()`
-- [ ] Church/Campus shell selectors remain separate (no merged control)
-- [ ] Errors map `ADMIN_NOT_ACCREDITED`, `INVALID_TIMEZONE`, `CAMPUS_NAME_REQUIRED`
+- [x] Form loads from `activeCampus`; save calls PATCH then `refresh()`
+- [x] Church/Campus shell selectors remain separate (no merged control)
+- [x] Errors map `ADMIN_NOT_ACCREDITED`, `INVALID_TIMEZONE`, `CAMPUS_NAME_REQUIRED`
 
 **Tests**: none (T-CAMPUS-04)  
 **Gate**: web `tsc --noEmit` if touched
@@ -131,9 +131,9 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] Save name + timezone mocks API and asserts `refresh` / context update
-- [ ] Timezone change shows confirm dialog before submit; name-only does not
-- [ ] Non-admin does not render section
+- [x] Save name + timezone mocks API and asserts `refresh` / context update
+- [x] Timezone change shows confirm dialog before submit; name-only does not
+- [x] Non-admin does not render section
 
 **Tests**: Vitest behavior (co-located)  
 **Gate**: `pnpm --filter @onda/web test`
@@ -153,7 +153,7 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] Title, labels, hints, confirm dialog, and error strings present in both locales
+- [x] Title, labels, hints, confirm dialog, and error strings present in both locales
 
 **Tests**: none  
 **Gate**: lint spot-check
@@ -172,8 +172,8 @@ T-ORG-P1-01
 
 **Done when**:
 
-- [ ] README index lists #109 as shipped (after PR merge) or active doc issue closed
-- [ ] Spec implementation notes cross-link issue #109
+- [x] README index lists #109 as shipped (after PR merge) or active doc issue closed
+- [x] Spec implementation notes cross-link issue #109
 
 **Tests**: none  
 **Gate**: doc review

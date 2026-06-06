@@ -1,7 +1,7 @@
 # 107 — Admin: campus metadata & timezone (ORG-STRUCT-05)
 
 **Type:** Feature  
-**Label:** `ready-for-agent`  
+**Label:** shipped (PR [#111](https://github.com/kairan/onda-volunteer/pull/111))  
 **Blocked by:** none  
 **TLC:** `.specs/features/organization-structure-administration/` (P2)
 
@@ -23,11 +23,11 @@ See `.specs/features/organization-structure-administration/tasks.md`.
 
 ## Acceptance criteria
 
-- [ ] Accredited **Admin** can rename **Campus** and change **Campus** IANA timezone (not church default timezone as multi-campus fix)
-- [ ] Shell **Church** (tenant) / **Campus** (locale) selectors stay separate (ADR 0001); presentation anchor = active campus TZ
-- [ ] Existing **Event** UTC instants unchanged when campus timezone changes
-- [ ] Organization context and shell campus labels/timezone cue refresh after save
-- [ ] Non-admin rejected with `ADMIN_NOT_ACCREDITED`
+- [x] Accredited **Admin** can rename **Campus** and change **Campus** IANA timezone (not church default timezone as multi-campus fix)
+- [x] Shell **Church** (tenant) / **Campus** (locale) selectors stay separate (ADR 0001); presentation anchor = active campus TZ
+- [x] Existing **Event** UTC instants unchanged when campus timezone changes
+- [x] Organization context and shell campus labels/timezone cue refresh after save
+- [x] Non-admin rejected with `ADMIN_NOT_ACCREDITED`
 
 ## Tracker
 

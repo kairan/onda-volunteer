@@ -14,6 +14,7 @@ import {
   retireMinistryRole,
 } from '@/organization/roleCatalog';
 import { ChurchSettingsSection } from '@/organization/ChurchSettingsSection';
+import { CampusSettingsSection } from '@/organization/CampusSettingsSection';
 import { Button } from '@/components/ui/button';
 
 export function MinistriesPage() {
@@ -210,6 +211,8 @@ export function MinistriesPage() {
       </div>
 
       <ChurchSettingsSection />
+
+      <CampusSettingsSection />
 
       {canManageStructure ? (
         <section className="flex flex-col gap-4 border-2 border-border bg-surface p-4">
