@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -297,17 +298,30 @@ export class OrganizationService {
     timezone?: string;
     auth: AuthenticatedRequestContext;
   }) {
-    const campus = await this.prisma.campus.findUnique({
+    const campusRef = await this.prisma.campus.findUnique({
       where: { id: input.campusId },
+      select: { churchId: true },
     });
-    if (!campus) {
+    if (!campusRef) {
+      const volunteer = await input.auth.requireVolunteer();
+      const accreditation = await this.prisma.adminAccreditation.findFirst({
+        where: { volunteerId: volunteer.id },
+        select: { id: true },
+      });
+      if (!accreditation) {
+        throw new ForbiddenException({
+          code: 'ADMIN_NOT_ACCREDITED',
+          message:
+            'Authenticated volunteer is not an Admin accredited for this Church.',
+        });
+      }
       throw new NotFoundException({
         code: 'CAMPUS_NOT_FOUND',
         message: 'Campus not found.',
       });
     }
 
-    await input.auth.assertAdminAccreditedForChurch(campus.churchId);
+    await input.auth.assertAdminAccreditedForChurch(campusRef.churchId);
 
     const data: { name?: string; timezone?: string } = {};
     if (input.name !== undefined) {

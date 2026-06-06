@@ -1,7 +1,7 @@
 # 107 — Admin: campus metadata & timezone (ORG-STRUCT-05)
 
 **Type:** Feature  
-**Label:** `ready-for-agent`  
+**Label:** shipped (PR [#111](https://github.com/kairan/onda-volunteer/pull/111))  
 **Blocked by:** none  
 **TLC:** `.specs/features/organization-structure-administration/` (P2)
 

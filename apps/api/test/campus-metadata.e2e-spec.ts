@@ -197,6 +197,15 @@ describe('Campus metadata self-service (e2e)', () => {
 
     await request(app.getHttpServer())
       .patch('/campuses/missing-campus-id')
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({ name: 'Ghost' })
+      .expect(403)
+      .expect(({ body }) => {
+        expect(body.code).toBe('ADMIN_NOT_ACCREDITED');
+      });
+
+    await request(app.getHttpServer())
+      .patch('/campuses/missing-campus-id')
       .set('X-Volunteer-Id', admin.id)
       .send({ name: 'Ghost' })
       .expect(404)
