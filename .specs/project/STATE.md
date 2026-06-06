@@ -14,6 +14,9 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 - **2026-05-31 (System Admin Chain 0 / #87):** ADR [0005](../../docs/adr/0005-system-admin-operator-role.md) accepted; `CONTEXT.md`, Platform PRD, Supabase/auth runbooks aligned (T-SYS-01–03). Implementation unblocks [#88](https://github.com/kairan/onda-volunteer/issues/88)+.
 - **2026-05-31:** Parallel execution guide + GitHub chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93); see `.specs/features/system-admin-platform/parallel-execution.md` and `docs/issues/README.md`.
 
+- **2026-06-04 (Org structure Design/Tasks):** P2 **Campus** metadata/timezone is next Execute ([#107](https://github.com/kairan/onda-volunteer/issues/107)); `PATCH /campuses/:id` + `/ministries` campus settings (mirror #93 church metadata). Ministry archive deferred ([#108](https://github.com/kairan/onda-volunteer/issues/108)) — no `Ministry.archived` in schema yet. P1 tracker doc [#109](https://github.com/kairan/onda-volunteer/issues/109). TLC: `.specs/features/organization-structure-administration/`.
+- **2026-06-04 (Church/Campus timezone model):** **Church** = tenant; only **Campus** has authoritative IANA timezone for ministry scheduling/presentation (e.g. Onda Dura + Campus Porto). Church `defaultTimezone` (#93) is organizational fallback, not multi-campus HQ clock. P2 #107 edits campus metadata only.
+
 ## Blockers
 
 _(none)_

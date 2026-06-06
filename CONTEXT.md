@@ -13,7 +13,7 @@ Public navigation label for experiences backed by **Availability** (that is, man
 _Avoid_: Treating **Time away** as a different concept from **Unavailability** rows; implying “availability” means “free.”
 
 **Church**:
-A distinct congregation using the product; carries a configured timezone used as the default frame for presenting that community’s schedules and printed rosters.
+The **tenant**-level organization using the product (one accredited community in **Organization** — e.g. **Onda Dura** with HQ in Joinville and other sites under the same church). **Church** metadata may include a `defaultTimezone` from provisioning or **Admin** self-service (#93) as an organizational default or fallback when no **Campus** is in play; it is **not** the authoritative clock for multi-campus ministry work.
 
 **Default UI language**:
 The interface defaults to **Brazilian Portuguese (`pt-BR`)** at first use, with **English** supported alongside it in the internationalization scaffold; saved personal preferences or future **Church** settings may override this default when introduced.
@@ -28,7 +28,7 @@ The application’s fixed public identity and wordmark in global chrome (for exa
 _Avoid_: Using the product brand interchangeably with a **Church** entity; the active **Church** name appears in context selectors and church-scoped workflows, not as a substitute for the global product wordmark unless a future white-label decision changes that.
 
 **Campus**:
-A site or regional subdivision of a **Church** when schedules differ by location; carries its own configured timezone when **Campuses** are used.
+A locale under a **Church** where local activities run (e.g. **Campus Joinville**, **Campus Porto**). Each **Campus** has an IANA timezone that is the **scheduling and presentation anchor** for ministry context while that **Campus** is active in the shell (ADR 0001 — separate **Church** / **Campus** selectors). Volunteers in Portugal remain under church **Onda Dura** (sede) but their active **Campus** **Porto** drives local schedule display, not “HQ timezone.”
 
 **Ministry**:
 A serving team or area within a **Church** that has its own volunteers and leaders.
@@ -99,8 +99,8 @@ A time-bounded commitment that a given **Volunteer** will fill a **Role** during
 - A **System Admin** is a separate platform grant on a **Volunteer** (see ADR [`docs/adr/0005-system-admin-operator-role.md`](docs/adr/0005-system-admin-operator-role.md)): cross-church onboarding, user stewardship, and read-only scheduling support — not a substitute for church **Admin** accreditation inside the shell.
 - A **Leader** may steward **Ministries** that belong to **more than one Church** when **Organization** assigns those ministries to them; their authority still attaches ministry-by-ministry, not church-wide by default.
 - Each **Volunteer** corresponds to exactly one authenticated person via **Identity** (current scope).
-- **Events**, **Assignments**, and **Unavailability** intervals are recorded as **UTC** instants so conflicts and reports compare one global timeline across **Churches**; each **Church** has a configured timezone used as the default for presenting that **Church**’s schedules, and a **Campus** may supply its own timezone when **Campuses** are used.
-- The product may present those instants in a viewer’s local timezone while keeping the canonical **UTC** record unchanged; when a **Volunteer** or **Leader** works across **more than one Church**, schedule screens default to the active **Church** context’s timezone unless the viewer opts into a personal local presentation.
+- **Events**, **Assignments**, and **Unavailability** intervals are recorded as **UTC** instants so conflicts and reports compare one global timeline across **Churches**. For presentation in the shell and ministry workflows, the active **Campus**’s IANA timezone is authoritative when a **Campus** is selected; **Church** `defaultTimezone` (if set) is an organizational fallback only (e.g. before campus selection or single-campus edge cases), not a substitute for per-campus clocks in a multi-campus church.
+- The product may present those instants in a viewer’s local timezone while keeping the canonical **UTC** record unchanged; when a **Volunteer** or **Leader** works across **more than one Church**, schedule screens use the active **Church** + **Campus** context (campus timezone when selected) unless the viewer opts into a personal local presentation.
 - A **Public event** always belongs to exactly one **Church** in the current scope (it never spans multiple **Churches** on one roster row).
 - **Scheduling** depends on **Availability** to know **Unavailability** when validating or creating assignments, using the **Ministry** attached to the assignment.
 - **Scheduling** treats time windows as **half-open**: if one window **ends** exactly when another **begins**, that is **not** overlap, including when comparing **Assignments** to **Unavailability** (comparisons use the canonical **UTC** instants).
@@ -123,9 +123,11 @@ A time-bounded commitment that a given **Volunteer** will fill a **Role** during
 > **Dev:** “Can we add **Unavailability** for someone who isn’t in **Band** yet?”  
 > **Domain expert:** “No — put them on **Band** as **Pending** in **Organization** first, then record **Unavailability** for **Band**.”  
 > **Dev:** “We’re multi-site — do we store service times in Eastern?”  
-> **Domain expert:** “We store **UTC** for every **Event** and **Assignment**; each **Church** or **Campus** picks its default timezone for display, and people away from home still see their own local time without corrupting the roster.”  
+> **Domain expert:** “We store **UTC** for every **Event** and **Assignment**; the active **Campus** timezone frames local display for that site. **Church** default timezone is organizational metadata, not the multi-campus clock.”  
+> **Dev:** “Portugal volunteers — still Onda Dura church, but Porto campus?”  
+> **Domain expert:** “Yes — **Church** is the tenant; **Campus Porto** owns the IANA zone for their schedules. Joinville HQ doesn’t override Porto presentation.”  
 > **Dev:** “Same login serves two congregations — is that allowed?”  
-> **Domain expert:** “Yes — one **Volunteer** can have **Ministry membership** in **Churches** A and B; whichever **Church** you’re working in drives the default clock on that screen, with personal local view still available.”
+> **Domain expert:** “Yes — one **Volunteer** can have **Ministry membership** in **Churches** A and B; active **Church** + **Campus** drive the default clock on that screen, with personal local view still available.”
 
 ## Flagged ambiguities
 

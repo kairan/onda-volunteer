@@ -34,7 +34,7 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Priority | Feature slug | Theme | Scope to specify next | Why it is missing |
 |---------:|--------------|-------|-----------------------|-------------------|
-| 1 | `organization-structure-administration` | **Organization** | Admin-managed Church/Campus/Ministry structure lifecycle: create/rename Ministries, maintain Campus metadata/timezones where applicable, and define whether Church metadata edits are in v1 scope. Include audit-friendly behavior for changes that affect schedules or shell context. | The Platform PRD story 21 says Admins manage **Ministries**, but shipped Organization slices focus on membership lifecycle, leader delegation, role catalogs, and context reads. The Prisma model has Church/Campus/Ministry entities, but the current documented slices do not define their admin lifecycle UX/API. |
+| 1 | `organization-structure-administration` | **Organization** | **Active:** P1 Ministry create/rename shipped; P2 **Campus** metadata/timezone ([#107](https://github.com/kairan/onda-volunteer/issues/107)). **Backlog:** Ministry archive ([#108](https://github.com/kairan/onda-volunteer/issues/108)). Church metadata shipped #93. TLC: `.specs/features/organization-structure-administration/`. | Platform PRD story 21; P1 Execute done; P2 Design/Tasks 2026-06-04. |
 
 **Specify notes for `organization-structure-administration`:**
 

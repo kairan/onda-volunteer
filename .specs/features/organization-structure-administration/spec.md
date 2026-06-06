@@ -2,7 +2,9 @@
 
 ## Status
 
-P1 implemented on branch `cursor/plan-missing-features-98df`. No GitHub issue has been assigned yet.
+- **P1** (ORG-STRUCT-01–04): Implemented — tracker parity [#109](https://github.com/kairan/onda-volunteer/issues/109).
+- **P2** (ORG-STRUCT-05): Design + Tasks approved — Execute via [#107](https://github.com/kairan/onda-volunteer/issues/107).
+- **P2** (ORG-STRUCT-06): Deferred — backlog [#108](https://github.com/kairan/onda-volunteer/issues/108).
 
 ## Source references
 
@@ -20,7 +22,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 - [x] Give accredited **Admins** a supported way to create and rename **Ministries** inside their accredited **Churches**.
 - [x] Keep structure mutations scoped to explicit **Church** accreditation; do not introduce global or network-wide authority.
 - [x] Preserve stable IDs and historical references so existing **Assignments**, **Unavailability**, memberships, and role history remain understandable after a rename.
-- [ ] Define whether Campus metadata/timezone maintenance belongs in this first slice or a follow-up.
+- [x] Campus metadata/timezone maintenance is **P2** ([#107](https://github.com/kairan/onda-volunteer/issues/107)); Ministry archive deferred ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
 
 ## Out of Scope
 
@@ -57,17 +59,19 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 ### P2: Campus metadata and timezone maintenance
 
-**User Story**: As an accredited **Admin**, I want to maintain **Campus** names and timezones for my accredited **Church**, so that context switching and schedule presentation stay accurate as church locations change.
+**User Story**: As an accredited **Admin**, I want to maintain **Campus** names and IANA timezones for campuses under my accredited **Church** (tenant), so that context switching and schedule presentation stay accurate per locale as sites are added or renamed — without treating **Church** HQ timezone as the clock for every campus.
 
-**Why P2**: `CONTEXT.md` gives **Campus** timezone presentation meaning, but timezone changes can surprise users; this may require human review and clearer copy than Ministry naming.
+**Why P2**: `CONTEXT.md` anchors ministry presentation on the **active Campus** timezone. Campus timezone changes can surprise users; this may require human review and clearer copy than Ministry naming. **Church** `defaultTimezone` (#93) remains organizational metadata, not the multi-campus scheduling model.
+
+**Domain note (multi-campus):** A **Church** is tenant-level (e.g. **Onda Dura**, sede in Joinville). **Campus Joinville** and **Campus Porto** are where local activities run; volunteers in Portugal stay under church Onda Dura but scheduling/presentation for their work uses **Campus Porto**’s timezone, not “church HQ timezone.” P2 Execute ([#107](https://github.com/kairan/onda-volunteer/issues/107)) edits **Campus** metadata only.
 
 **Acceptance Criteria**:
 
 1. WHEN an accredited **Admin** renames a **Campus** THEN the system SHALL update shell context labels without changing canonical scheduling instants.
-2. WHEN an accredited **Admin** changes a **Campus** timezone THEN the system SHALL preserve UTC **Event**, **Assignment**, and **Unavailability** records and use the new timezone only for future presentation.
-3. WHEN a **Church** has one or more **Campuses** THEN the UI SHALL keep **Church** and **Campus** selectors separate per ADR 0001.
+2. WHEN an accredited **Admin** changes a **Campus** timezone THEN the system SHALL preserve UTC **Event**, **Assignment**, and **Unavailability** records and use the new IANA zone only for future presentation for ministry context tied to that **Campus** (and when that **Campus** is active in the shell).
+3. WHEN a **Church** has one or more **Campuses** THEN the UI SHALL keep **Church** (tenant) and **Campus** (locale) selectors separate per ADR 0001; timezone maintenance for ministry operations SHALL be on the **Campus**, not by changing **Church** default timezone as a stand-in for remote campuses.
 
-**Independent Test**: Change a **Campus** timezone and verify an existing **Event** keeps the same UTC value while rendered local time follows the updated **Campus** timezone.
+**Independent Test**: With two campuses under one **Church**, change **Campus Porto** timezone and verify an existing **Event** keeps the same UTC value while rendered local time for that campus follows Porto’s zone; **Campus Joinville** presentation is unchanged.
 
 ---
 
@@ -100,7 +104,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | Capability | System Admin | Church-scoped Admin (existing) |
 |------------|--------------|--------------------------------|
 | Create **Church** (+ initial **Campus** / structure bootstrap) | Yes | No |
-| Edit **Church** metadata (name, default timezone, etc.) | Yes | TBD — likely read-only or limited |
+| Edit **Church** metadata (name, organizational `defaultTimezone`, etc.) | Yes | Church-scoped **Admin** via #93 — fallback metadata, not multi-campus presentation anchor |
 | Create/link user identity (**Volunteer** profile) | Yes | No (membership invite flows only) |
 | Grant/revoke **Admin** accreditation for a **Church** | Yes | No (cannot self-elevate across churches) |
 | Assign **Leader** for a **Ministry** | Yes | Yes (within accredited churches) |
@@ -112,14 +116,14 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 1. WHEN a user without **System Admin** attempts System Admin routes or APIs THEN the system SHALL reject with a stable authorization error.
 2. WHEN a **System Admin** creates a **Church** THEN the system SHALL persist the **Church** and minimum structure needed for shell context (at least one **Campus** per product rules).
 3. WHEN a **System Admin** edits a user THEN the system SHALL update the linked **Volunteer** identity and applicable **Organization** grants (accreditation, leadership, membership) with audit-friendly server truth.
-4. WHEN a **System Admin** changes **Church** default timezone THEN canonical UTC **Event**, **Assignment**, and **Unavailability** records SHALL remain unchanged; presentation rules SHALL match P2 campus timezone semantics.
+4. WHEN a **System Admin** changes **Church** organizational `defaultTimezone` THEN canonical UTC **Event**, **Assignment**, and **Unavailability** records SHALL remain unchanged; active **Campus** timezone SHALL remain the presentation anchor for ministry context per P2.
 5. WHEN a church-scoped **Admin** uses existing in-app flows THEN behavior SHALL be unchanged except where explicitly delegated to System Admin-only APIs.
 
 **Independent Test**: System Admin creates a new **Church**, provisions a user with **Admin** accreditation for that **Church**, signs in as that user, and completes one existing Organization read (e.g. ministry list) without seed scripts.
 
 **Out of scope for this slice** (unless Specify expands): impersonation (“act as user”), bulk import, billing, multi-tenant branding, network-wide combined **Public events**.
 
-**Specify answers (2026-05-31):** See [system-admin-platform](../system-admin-platform/spec.md). Church **Admin** may edit accredited **Church** name and default timezone — tracked as related slice `CHURCH-META-01`, not System Admin–exclusive.
+**Specify answers (2026-05-31):** See [system-admin-platform](../system-admin-platform/spec.md). Church **Admin** may edit accredited **Church** name and organizational `defaultTimezone` (`CHURCH-META-01`, shipped #93) — not System Admin–exclusive. Multi-campus ministry presentation is driven by **Campus** timezone (P2 / #107), not by retuning church default timezone for each locale.
 
 ---
 
@@ -140,11 +144,13 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | ORG-STRUCT-02 | P1: Rename Ministry | Execute | Verified |
 | ORG-STRUCT-03 | P1: Admin authorization boundary | Execute | Verified |
 | ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
-| ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Specify | Pending |
-| ORG-STRUCT-06 | P2: Ministry archive/retirement | Specify | Pending |
+| ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Execute | [#107](https://github.com/kairan/onda-volunteer/issues/107) |
+| ORG-STRUCT-06 | P2: Ministry archive/retirement | Backlog | [#108](https://github.com/kairan/onda-volunteer/issues/108) |
 | ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Pending — split to `system-admin-platform` |
 
-**Coverage:** 7 total, 4 implemented in P1, 3 unmapped until future Design/Tasks.
+**Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus ready (#107); archive backlog (#108); P3 in `system-admin-platform`.
+
+**Design / Tasks:** `.specs/features/organization-structure-administration/design.md`, `tasks.md`.
 
 ## Implementation Notes
 
@@ -170,9 +176,10 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 3. Should **Ministry** names be unique per **Church**, or only strongly warned for duplicates?
    - **Answered for P1:** unique per **Church**, case-insensitive, enforced in the service layer and by a PostgreSQL unique index on `(churchId, LOWER(name))`.
 4. If **Campus** timezone changes, does the UI need an explicit review dialog explaining that existing UTC schedules are unchanged but local presentation changes?
+   - **Answered for P2:** yes — confirm dialog before save when timezone changes (`design.md`).
 
 ## Success Criteria
 
 - [x] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
 - [x] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
-- [ ] The next Design phase has explicit answers for Campus scope, archive semantics, and first-admin setup.
+- [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107); archive deferred [#108](https://github.com/kairan/onda-volunteer/issues/108); first-admin setup in `system-admin-platform`.
