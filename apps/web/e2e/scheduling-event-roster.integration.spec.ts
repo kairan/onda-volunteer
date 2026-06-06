@@ -77,7 +77,7 @@ test.describe('scheduling event roster @integration', () => {
     ).toBeVisible();
   });
 
-  test('volunteer release and demo assign with post-release unavailability offer', async ({
+  test('volunteer release and production assign with post-release unavailability offer', async ({
     page,
   }) => {
     // 1. Go to the event roster detail page
@@ -107,9 +107,12 @@ test.describe('scheduling event roster @integration', () => {
     await noThanksBtn.click();
     await expect(offerSection).not.toBeVisible();
 
-    // 7. Verify the Assign Form is visible (since demo credentials are set in E2E environment)
-    const assignForm = page.getByRole('form', { name: 'Assign (demo)' });
+    // 7. Verify the production assign form is visible for the seeded leader
+    const assignForm = page.getByRole('form', { name: 'Assign volunteer' });
     await expect(assignForm).toBeVisible();
+    const volunteerSelect = assignForm.getByLabel(/^volunteer$/i);
+    await expect(volunteerSelect).toBeEnabled({ timeout: 15_000 });
+    await expect(volunteerSelect).toContainText('Demo Volunteer');
     const startInput = assignForm.getByLabel(/starts \(utc iso\)/i);
     const endInput = assignForm.getByLabel(/ends \(utc iso\)/i);
     await expect(startInput).toBeVisible();
