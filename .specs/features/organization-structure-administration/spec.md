@@ -226,5 +226,5 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 - [x] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
 - [x] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
 - [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107) ready for Execute.
-- [ ] Ministry archive: ORG-STRUCT-06 specified ([#108](https://github.com/kairan/onda-volunteer/issues/108)) — Execute after Tasks.
+- [x] Ministry archive: ORG-STRUCT-06 specified — ready for Execute ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
 - [ ] First-admin setup in `system-admin-platform`.

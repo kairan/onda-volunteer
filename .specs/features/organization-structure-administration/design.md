@@ -321,6 +321,8 @@ archivedAt: string | null; // ISO instant
 
 **Shell context switcher** (firm decision 2026-06-06):
 
+- **Current shell (pre–T-ARCHIVE-04):** Church + Campus selectors only — `apps/web/src/shell/OrganizationContextControls.tsx` (ADR 0001). There is **no** ministry switcher yet; per-route write pickers (table above) are the only ministry selectors today.
+- **T-ARCHIVE-04 deliverable:** Add a ministry selector to the shell and extend `OrganizationContextProvider` with `activeMinistryId` (+ `setActiveMinistryId` / persistence consistent with church/campus). Filter options per rules below; badge archived rows for admin viewers.
 - **Church-scoped Admin** and **System Admin**: show archived ministries the user can access, with archived badge.
 - **Everyone else** (leaders, volunteers): **hide** archived ministries from the switcher — history reads still work when context is already set; non-admins cannot switch into an archived ministry for new work.
 

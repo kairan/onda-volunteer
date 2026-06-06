@@ -240,8 +240,8 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 ### T-ARCHIVE-04: Web — archive UI + picker filters + shell switcher
 
-**What**: `archiveMinistry` client; structure section archive + confirm; filter archived from write pickers; admin/system-admin-only archived rows in shell ministry switcher (with badge).  
-**Where**: `apps/web/src/organization/`, routes listed in `design.md`  
+**What**: `archiveMinistry` client; structure section archive + confirm; filter archived from write pickers; **add** shell ministry selector (`OrganizationContextControls.tsx` + `OrganizationContextProvider` `activeMinistryId` — shell has Church/Campus only today); admin/system-admin-only archived rows in switcher (with badge).  
+**Where**: `apps/web/src/organization/`, `apps/web/src/shell/OrganizationContextControls.tsx`, routes listed in `design.md`  
 **Depends on**: T-ARCHIVE-02  
 **Requirement**: ORG-STRUCT-06
 
