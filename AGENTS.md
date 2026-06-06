@@ -26,6 +26,8 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 
 **Active:** [`tlc-spec-driven`](.cursor/skills/tlc-spec-driven/SKILL.md) — default for planning, implementation, tests, issue breakdown, and validation on this repo.
 
+**Delivery loop (explicit):** [`agent-delivery-loop`](.cursor/skills/agent-delivery-loop/SKILL.md) — when the user asks to "run the delivery loop", "ship ready issues", or work the `ready-for-agent` queue end-to-end. Orchestrates the pipeline as a gated state machine (update main → branch per issue → plan/execute → PR → wait CI → `ready-for-agent-review` → address feedback → merge → archive doc to `done/` + drop labels). Routes to `tlc-spec-driven` (plan/execute), `address-pr-comments` (review feedback + CI), and `babysit` (conflict-only) instead of reimplementing them. Repo-specific labels/paths live in [config.example.md](.cursor/skills/agent-delivery-loop/config.example.md). Not auto-selected.
+
 **PR review (explicit):** [`address-pr-comments`](.cursor/skills/address-pr-comments/SKILL.md) — when the user asks to address or answer PR comments: load linked TLC feature(s) (`spec.md`, `tasks.md` **Verify** lines), triage in scope, fix, push, reply on threads, summarize. See [tlc-context.md](.cursor/skills/address-pr-comments/tlc-context.md). Not auto-selected for feature work.
 
 **Legacy:** [`.cursor/skills/_legacy/`](.cursor/skills/_legacy/README.md) (`to-issues`, `to-prd`, `triage`, `tdd`, `grill-me`, `grill-with-docs`, `improve-codebase-architecture`). Do **not** load or follow legacy skills unless the user **explicitly** names one (e.g. “use the triage skill”). Otherwise always use **tlc-spec-driven** + `ONDA.md`.
