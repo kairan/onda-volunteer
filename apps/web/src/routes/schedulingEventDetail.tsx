@@ -14,6 +14,7 @@ import {
 } from '@/auth/authSession';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { cancelEvent } from '@/events/cancelEvent';
+import { editEvent } from '@/events/editEvent';
 import { DestructiveConfirmDialog } from '@/components/DestructiveConfirmDialog';
 import { ApiRequestError } from '@/apiError';
 import { createAssignment } from '@/events/createAssignment';
@@ -85,6 +86,32 @@ function mapAssignError(
       return t('detail.errors.ministryArchived');
     case 'LEADER_NOT_ASSIGNED':
       return t('detail.errors.notLeader');
+    default:
+      return err.message;
+  }
+}
+
+function mapEditError(
+  err: unknown,
+  t: (key: string) => string,
+): string {
+  if (!(err instanceof ApiRequestError)) {
+    return t('detail.edit.errors.failed');
+  }
+  switch (err.code) {
+    case 'EVENT_ALREADY_CANCELLED':
+      return t('detail.edit.errors.eventAlreadyCancelled');
+    case 'EVENT_EDIT_EMPTY':
+      return t('detail.edit.errors.eventEditEmpty');
+    case 'EVENT_TITLE_REQUIRED':
+      return t('detail.edit.errors.eventTitleRequired');
+    case 'EVENT_TITLE_TOO_LONG':
+      return t('detail.edit.errors.eventTitleTooLong');
+    case 'INVALID_EVENT_WINDOW':
+      return t('detail.edit.errors.invalidEventWindow');
+    case 'LEADER_CANNOT_EDIT_PUBLIC_EVENT':
+    case 'ADMIN_NOT_ACCREDITED':
+      return t('detail.edit.errors.leaderCannotEditPublic');
     default:
       return err.message;
   }
@@ -230,6 +257,67 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       cancelled = true;
     };
   }, [actingVolunteerId, canShowAssignForm, formMinistryId, t]);
+
+  const canEdit = useMemo(() => {
+    if (isCancelled || !actingVolunteerId) return false;
+    if (isAccreditedAdmin) return true;
+    if (data.event.kind === 'PRIVATE' && privateEventMinistryId) {
+      return ledMinistries.some((m) => m.id === privateEventMinistryId);
+    }
+    return false;
+  }, [
+    isCancelled,
+    actingVolunteerId,
+    isAccreditedAdmin,
+    data.event.kind,
+    privateEventMinistryId,
+    ledMinistries,
+  ]);
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState(data.event.title);
+  const [editStartsAtUtc, setEditStartsAtUtc] = useState(data.event.window.startsAtUtc);
+  const [editEndsAtUtc, setEditEndsAtUtc] = useState(data.event.window.endsAtUtc);
+  const [editBusy, setEditBusy] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  async function handleEditSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!actingVolunteerId) return;
+    setEditBusy(true);
+    setEditError(null);
+    try {
+      const patch: Record<string, string> = {};
+      if (editTitle !== data.event.title) patch.title = editTitle;
+      if (editStartsAtUtc !== data.event.window.startsAtUtc) patch.startsAtUtc = editStartsAtUtc;
+      if (editEndsAtUtc !== data.event.window.endsAtUtc) patch.endsAtUtc = editEndsAtUtc;
+
+      const result = await editEvent({
+        eventId: data.event.id,
+        actingVolunteerId,
+        ...patch,
+      });
+      setEditOpen(false);
+      if (result.voidedAssignmentCount > 0) {
+        toasts.push({
+          id: crypto.randomUUID(),
+          kind: 'info',
+          message: t('detail.edit.voidedWarning', { count: result.voidedAssignmentCount }),
+        });
+      } else {
+        toasts.push({
+          id: crypto.randomUUID(),
+          kind: 'success',
+          message: t('detail.edit.success'),
+        });
+      }
+      await router.invalidate();
+    } catch (err) {
+      setEditError(mapEditError(err, t));
+    } finally {
+      setEditBusy(false);
+    }
+  }
 
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelBusy, setCancelBusy] = useState(false);
@@ -494,6 +582,109 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           })}
         </p>
       </div>
+
+      {canEdit ? (
+        <section
+          className="border-2 border-border bg-surface p-6 shadow-[8px_8px_0_0_hsl(var(--border))]"
+          aria-labelledby="edit-event-heading"
+        >
+          {editOpen ? (
+            <form
+              className="flex flex-col gap-4"
+              onSubmit={(e) => void handleEditSubmit(e)}
+              noValidate
+            >
+              <h2
+                id="edit-event-heading"
+                className="font-display text-2xl font-bold uppercase tracking-tight"
+              >
+                {t('detail.edit.heading')}
+              </h2>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="editTitle" className="text-sm font-semibold uppercase tracking-wide">
+                  {t('detail.edit.titleLabel')}
+                </label>
+                <input
+                  id="editTitle"
+                  className="border-2 border-border bg-background px-3 py-2 text-sm"
+                  value={editTitle}
+                  onChange={(e) => {
+                    setEditTitle(e.target.value);
+                    setEditError(null);
+                  }}
+                  disabled={editBusy}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="editStartsAtUtc" className="text-sm font-semibold uppercase tracking-wide">
+                  {t('detail.edit.startsAtUtcLabel')}
+                </label>
+                <input
+                  id="editStartsAtUtc"
+                  className="border-2 border-border bg-background px-3 py-2 font-mono text-sm"
+                  value={editStartsAtUtc}
+                  onChange={(e) => {
+                    setEditStartsAtUtc(e.target.value);
+                    setEditError(null);
+                  }}
+                  disabled={editBusy}
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label htmlFor="editEndsAtUtc" className="text-sm font-semibold uppercase tracking-wide">
+                  {t('detail.edit.endsAtUtcLabel')}
+                </label>
+                <input
+                  id="editEndsAtUtc"
+                  className="border-2 border-border bg-background px-3 py-2 font-mono text-sm"
+                  value={editEndsAtUtc}
+                  onChange={(e) => {
+                    setEditEndsAtUtc(e.target.value);
+                    setEditError(null);
+                  }}
+                  disabled={editBusy}
+                />
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button type="submit" disabled={editBusy} className="self-start">
+                  {editBusy ? t('detail.saving') : t('detail.edit.submit')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={editBusy}
+                  onClick={() => {
+                    setEditOpen(false);
+                    setEditError(null);
+                    setEditTitle(data.event.title);
+                    setEditStartsAtUtc(data.event.window.startsAtUtc);
+                    setEditEndsAtUtc(data.event.window.endsAtUtc);
+                  }}
+                >
+                  {t('create.cancel')}
+                </Button>
+              </div>
+              {editError ? (
+                <p
+                  role="alert"
+                  className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+                >
+                  {editError}
+                </p>
+              ) : null}
+            </form>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setEditOpen(true)}
+            >
+              {t('detail.edit.heading')}
+            </Button>
+          )}
+        </section>
+      ) : null}
 
       {releasedOffer ? (
         <section

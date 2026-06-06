@@ -93,6 +93,24 @@
       "body": "Isso anula o compromisso do voluntário nesta escala. Ele não é notificado automaticamente.",
       "confirm": "Sim, remover"
     },
+    "edit": {
+      "heading": "Editar evento",
+      "titleLabel": "Título",
+      "startsAtUtcLabel": "Início (UTC ISO)",
+      "endsAtUtcLabel": "Fim (UTC ISO)",
+      "submit": "Salvar alterações",
+      "success": "Evento atualizado.",
+      "voidedWarning": "Evento reagendado. {{count}} designação(ões) foram anuladas porque ficaram fora da nova janela.",
+      "errors": {
+        "failed": "Não foi possível atualizar o evento.",
+        "eventAlreadyCancelled": "Este evento já está cancelado.",
+        "eventEditEmpty": "Altere pelo menos um campo.",
+        "eventTitleRequired": "O título do evento é obrigatório.",
+        "eventTitleTooLong": "O título do evento deve ter no máximo 200 caracteres.",
+        "invalidEventWindow": "O horário de início deve ser anterior ao de término.",
+        "leaderCannotEditPublic": "Apenas administradores podem editar eventos públicos."
+      }
+    },
     "cancel": {
       "action": "Cancelar evento",
       "dialogTitle": "Cancelar este evento?",
