@@ -39,16 +39,16 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 | **Organization** | `organization-structure-administration` (P2 — Campus metadata/timezone) | [#107](https://github.com/kairan/onda-volunteer/issues/107) | ✅ Shipped |
 | **Organization** | `organization-structure-administration` (Church metadata — CHURCH-META-01) | [#93](https://github.com/kairan/onda-volunteer/issues/93) | ✅ Shipped |
 | **Organization** | `system-admin-platform` (System Admin operator dashboard) | [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) | ✅ Shipped |
+| **Organization** | `organization-structure-administration` (Ministry archive — ORG-STRUCT-06) | [#108](https://github.com/kairan/onda-volunteer/issues/108) | ✅ Shipped |
 
 ### Active backlog (ready for agent / next Execute)
 
 | Priority | Feature slug | Theme | Issue | TLC Spec | Status |
 |---------:|--------------|-------|-------|----------|--------|
-| 1 | `organization-structure-administration` (Ministry archive — ORG-STRUCT-06) | **Organization** | [#108](https://github.com/kairan/onda-volunteer/issues/108) | `.specs/features/organization-structure-administration/` | `ready-for-agent` — design + tasks complete |
-| 2 | `org-structure-doc-closeout` | **Organization** (doc) | — | `.specs/features/org-structure-doc-closeout/` | Pre-Execute doc sync ready; post-Execute gated on #108 |
-| 3 | `leader-roster-assignment-ui` | **Scheduling** | TBD | `.specs/features/leader-roster-assignment-ui/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
-| 4 | `event-edit-reschedule` | **Scheduling** | TBD | `.specs/features/event-edit-reschedule/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
-| 5 | `volunteer-onboarding-invite` | **Organization / Identity** | TBD | `.specs/features/volunteer-onboarding-invite/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| 1 | `org-structure-doc-closeout` | **Organization** (doc) | [#118](https://github.com/kairan/onda-volunteer/issues/118) | `.specs/features/org-structure-doc-closeout/` | Phase 2 unblocked — run `T-DOC-04`–`T-DOC-10` |
+| 2 | `leader-roster-assignment-ui` | **Scheduling** | [#115](https://github.com/kairan/onda-volunteer/issues/115) | `.specs/features/leader-roster-assignment-ui/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| 3 | `event-edit-reschedule` | **Scheduling** | [#117](https://github.com/kairan/onda-volunteer/issues/117) | `.specs/features/event-edit-reschedule/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| 4 | `volunteer-onboarding-invite` | **Organization / Identity** | [#116](https://github.com/kairan/onda-volunteer/issues/116) | `.specs/features/volunteer-onboarding-invite/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
 
 ### Deferred or gated work, not active backlog
 

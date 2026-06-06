@@ -166,7 +166,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
 | ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Execute | Verified ([#107](https://github.com/kairan/onda-volunteer/issues/107)) |
 | ORG-STRUCT-06 | P2: Ministry archive | Specified | [#108](https://github.com/kairan/onda-volunteer/issues/108) — `design.md` § Ministry archive |
-| ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Pending — split to `system-admin-platform` |
+| ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Shipped — see `.specs/features/system-admin-platform/` ([#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93)) |
 
 **Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus shipped (#107); archive specified (#108); P3 in `system-admin-platform`.
 

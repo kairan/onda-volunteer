@@ -1,7 +1,7 @@
 # 108 — Ministry archive (ORG-STRUCT-06)
 
 **Type:** Feature  
-**Label:** `ready-for-agent`  
+**Shipped:** 2026-06-06 via [#113](https://github.com/kairan/onda-volunteer/pull/113)  
 **TLC:** `.specs/features/organization-structure-administration/` (`spec.md` ORG-STRUCT-06, `design.md` § Ministry archive, `tasks.md` T-ARCHIVE-*)
 
 ## Summary
@@ -25,7 +25,7 @@ Accredited **Admin** archives a **Ministry** so new scheduling, membership, role
 | **Shell ministry switcher** | Archived ministries visible **only** for church-scoped **Admin** and **System Admin** (with badge); **hidden** from non-admin switcher |
 | **Archive confirm i18n** | Agent drafts `en` + `pt-BR` in Execute (role retire #44 pattern); no HITL gate |
 
-## What to build
+## What was built
 
 See **design.md** § Ministry archive. High level:
 
@@ -37,19 +37,19 @@ See **design.md** § Ministry archive. High level:
 
 ## Acceptance criteria
 
-- [ ] Archive sets `archivedAt` and voids future **Assignments** for that **Ministry**
-- [ ] New writes return `MINISTRY_ARCHIVED` (events, assignments, memberships, roles, unavailability create/bulk)
-- [ ] Unavailability update/delete on existing rows succeeds on archived ministry (cleanup)
-- [ ] Historical rows still show **Ministry** name; context returns `archivedAt`
-- [ ] Archived **Ministries** hidden from active scheduling / Time away pickers; visible in admin structure with badge
-- [ ] Shell switcher: archived visible with badge for admin/system admin only; hidden for others
-- [ ] Rename on archived ministry still works for accredited **Admin**
-- [ ] No unarchive endpoint or UI in v1
+- [x] Archive sets `archivedAt` and voids future **Assignments** for that **Ministry**
+- [x] New writes return `MINISTRY_ARCHIVED` (events, assignments, memberships, roles, unavailability create/bulk)
+- [x] Unavailability update/delete on existing rows succeeds on archived ministry (cleanup)
+- [x] Historical rows still show **Ministry** name; context returns `archivedAt`
+- [x] Archived **Ministries** hidden from active scheduling / Time away pickers; visible in admin structure with badge
+- [x] Shell switcher: archived visible with badge for admin/system admin only; hidden for others
+- [x] Rename on archived ministry still works for accredited **Admin**
+- [x] No unarchive endpoint or UI in v1
 
 ## Depends on
 
 - P1 ministry structure shipped ([#109](https://github.com/kairan/onda-volunteer/issues/109))
-- P2 campus metadata ([#107](https://github.com/kairan/onda-volunteer/issues/107)) — execute on separate branch from this slice
+- P2 campus metadata ([#107](https://github.com/kairan/onda-volunteer/issues/107))
 
 ## Tracker
 

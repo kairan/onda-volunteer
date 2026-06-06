@@ -2,8 +2,8 @@
 
 ## Status
 
-- **Pre-Execute doc sync** (DOC-CLOSE-01–03): Ready to run now.
-- **Post-Execute doc sync** (DOC-CLOSE-04–10): Gated on [#108](https://github.com/kairan/onda-volunteer/issues/108) PR merge.
+- **Pre-Execute doc sync** (DOC-CLOSE-01–03): Done in this planning PR.
+- **Post-Execute doc sync** (DOC-CLOSE-04–10): **Unblocked** — [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped on `main` (merged via #113). Run `T-DOC-04`–`T-DOC-10`.
 
 ## Source references
 
@@ -18,7 +18,7 @@
 
 ## Problem Statement
 
-The organization-structure-administration TLC artifacts (`spec.md`, `design.md`, `tasks.md`) are complete and ready for Execute on [#108](https://github.com/kairan/onda-volunteer/issues/108). However, some cross-cutting doc surfaces are stale or incomplete _now_ (before #108 ships), and a second set of doc tasks must run _after_ #108 merges so the feature is closed correctly per the ONDA.md completion tracking order.
+The organization-structure-administration TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113). Some cross-cutting doc surfaces were stale before closeout; Phase 1 pre-Execute sync is largely complete; Phase 2 post-Execute tasks (`T-DOC-04`–`T-DOC-10`) are now unblocked.
 
 ### What is stale now (pre-Execute)
 
@@ -71,13 +71,13 @@ Follow ONDA.md closing order:
 
 | Requirement ID | Description | Phase | Status |
 |----------------|-------------|-------|--------|
-| DOC-CLOSE-01 | STATE.md 2026-06-06 ministry archive decisions | Pre-Execute | Pending |
-| DOC-CLOSE-02 | ROADMAP.md org-structure shipped vs backlog | Pre-Execute | Pending |
-| DOC-CLOSE-03 | org-structure spec.md ORG-STRUCT-07 shipped note | Pre-Execute | Pending |
-| DOC-CLOSE-04 | tasks.md T-ARCHIVE-* checkboxes | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-05 | spec.md ORG-STRUCT-06 → Verified | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-06 | spec.md status block ORG-STRUCT-06 → Implemented | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-07 | docs/issues/ archive move for #108 | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-08 | docs/issues/README.md index update | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-09 | ROADMAP.md org-structure theme fully complete | Post-Execute | Gated (#108 merge) |
-| DOC-CLOSE-10 | STATE.md org-structure closeout note | Post-Execute | Gated (#108 merge) |
+| DOC-CLOSE-01 | STATE.md 2026-06-06 ministry archive decisions | Pre-Execute | Done |
+| DOC-CLOSE-02 | ROADMAP.md org-structure shipped vs backlog | Pre-Execute | Done |
+| DOC-CLOSE-03 | org-structure spec.md ORG-STRUCT-07 shipped note | Pre-Execute | Done |
+| DOC-CLOSE-04 | tasks.md T-ARCHIVE-* checkboxes | Post-Execute | Unblocked |
+| DOC-CLOSE-05 | spec.md ORG-STRUCT-06 → Verified | Post-Execute | Unblocked |
+| DOC-CLOSE-06 | spec.md status block ORG-STRUCT-06 → Implemented | Post-Execute | Unblocked |
+| DOC-CLOSE-07 | docs/issues/ archive move for #108 | Post-Execute | Done (this PR) |
+| DOC-CLOSE-08 | docs/issues/README.md index update | Post-Execute | Done (this PR) |
+| DOC-CLOSE-09 | ROADMAP.md org-structure theme fully complete | Post-Execute | Unblocked |
+| DOC-CLOSE-10 | STATE.md org-structure closeout note | Post-Execute | Unblocked |

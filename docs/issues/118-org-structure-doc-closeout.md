@@ -1,12 +1,12 @@
 # 118 — Org structure doc closeout (pre- and post-#108)
 
 **Type:** Documentation / tracker hygiene
-**Blocked by (Phase 2):** [#108](https://github.com/kairan/onda-volunteer/issues/108) PR merge
+**Phase 2:** Unblocked — [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped on `main` (merged via #113; issue closed)
 **TLC:** `.specs/features/org-structure-doc-closeout/` (spec, tasks complete)
 
 ## Problem
 
-The `organization-structure-administration` TLC feature is fully designed and execute-ready for [#108](https://github.com/kairan/onda-volunteer/issues/108), but several cross-cutting docs are stale and need updating in two phases.
+The `organization-structure-administration` TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113), but several cross-cutting docs are stale and need updating in two phases.
 
 ## Phase 1 — Pre-Execute (doc-only, unblocked)
 
@@ -14,7 +14,7 @@ The `organization-structure-administration` TLC feature is fully designed and ex
 - **T-DOC-02** — `ROADMAP.md`: expand Organization theme to distinguish shipped slices (#109 P1, #107 P2 campus) from `ready-for-agent` backlog (#108); add system-admin-platform as shipped
 - **T-DOC-03** — `organization-structure-administration/spec.md`: ORG-STRUCT-07 row → "Shipped — see `.specs/features/system-admin-platform/` (#87–93)"
 
-## Phase 2 — Post-Execute (gated on #108 merge)
+## Phase 2 — Post-Execute (unblocked — run `T-DOC-04`–`T-DOC-10`)
 
 - **T-DOC-04** — `organization-structure-administration/tasks.md`: check T-ARCHIVE-01–05
 - **T-DOC-05 / T-DOC-06** — `spec.md`: ORG-STRUCT-06 → Verified; `design.md`: status → Verified

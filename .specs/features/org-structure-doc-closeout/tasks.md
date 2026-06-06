@@ -1,7 +1,7 @@
 # Org Structure Doc Closeout — Tasks
 
 **Spec**: `.specs/features/org-structure-doc-closeout/spec.md`  
-**Status**: Phase 1 (Pre-Execute) — Ready to run. Phase 2 — Gated on [#108](https://github.com/kairan/onda-volunteer/issues/108) PR merge.
+**Status**: Phase 1 (Pre-Execute) — Done. Phase 2 — Unblocked ([#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113); `T-DOC-07`/`T-DOC-08` done in planning PR #119.
 
 ---
 

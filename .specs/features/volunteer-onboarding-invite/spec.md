@@ -95,7 +95,7 @@ This feature closes both gaps with:
 
 - If a **VolunteerInvite** record exists but the person never signs in, the invite should not block a fresh re-invite after a configurable TTL. TTL is **7 days** (ONBOARD-A3, locked 2026-06-06). Leaders may also resend before expiry — resend resets `sentAtUtc` and `expiresAtUtc`, replacing any existing PENDING record for the same `(ministryId, email)` pair.
 - If a **Leader**'s Ministry is archived before the invited person signs in, the on-sign-in membership creation should be blocked; the invite acceptance page should explain the ministry is no longer active.
-- A single email address cannot have two pending invites for the same **Ministry** simultaneously (`INVITE_ALREADY_SENT`).
+- A single email address maintains one `VolunteerInvite` row per ministry; resend before expiry updates the existing PENDING record (no duplicate rows, no error).
 - If a **Volunteer** with a matching email exists but has an `INACTIVE` membership in the target **Ministry**, the search flow should allow the Leader to reactivate them directly (not re-invite).
 
 ---

@@ -45,7 +45,7 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 - [ ] Leader/Admin can send invite; Supabase invite dispatched; `VolunteerInvite` row created
 - [ ] Email match returns `VOLUNTEER_ALREADY_EXISTS` (200 with payload) instead of invite
-- [ ] Duplicate pending invite returns `INVITE_ALREADY_SENT` (400)
+- [ ] Duplicate pending invite (same ministry+email, not expired) resends Supabase invite and resets `sentAtUtc`/`expiresAtUtc` (200)
 - [ ] Archived ministry returns `MINISTRY_ARCHIVED` (400)
 - [ ] `GET /ministries/:id/invites` returns pending/accepted invites for the ministry
 
