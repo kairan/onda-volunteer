@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -90,6 +91,15 @@ export class EventsController {
     @AuthContext() auth: AuthenticatedRequestContext,
   ) {
     return this.events.getEventDetail({ id, auth });
+  }
+
+  @Patch(':id')
+  editEvent(
+    @Param('id') id: string,
+    @Body() body: { title?: string; startsAtUtc?: string; endsAtUtc?: string },
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    return this.events.editEvent({ eventId: id, ...body, auth });
   }
 
   @Post(':id/cancel')
