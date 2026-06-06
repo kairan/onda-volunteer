@@ -1,23 +1,55 @@
-# 108 — Backlog: ministry archive / retirement (ORG-STRUCT-06)
+# 108 — Ministry archive (ORG-STRUCT-06)
 
-**Type:** Feature (backlog — not ready for agent)  
-**Label:** _(none — do not apply `ready-for-agent` until Design/Tasks complete)_  
-**Blocked by:** schema + cross-module guard design  
-**TLC:** `.specs/features/organization-structure-administration/` (deferred P2 story)
+**Type:** Feature  
+**Label:** `ready-for-agent`  
+**TLC:** `.specs/features/organization-structure-administration/` (`spec.md` ORG-STRUCT-06, `design.md` § Ministry archive, `tasks.md` T-ARCHIVE-*)
 
-## What to build (future)
+## Summary
 
-Accredited **Admin** archives a **Ministry** so new scheduling/membership writes are blocked while history remains readable. Requires `Ministry` archive field + write guards across Organization, Scheduling, Availability.
+Accredited **Admin** archives a **Ministry** so new scheduling, membership, role-catalog, and unavailability **create** writes are blocked while history remains readable and existing unavailability rows can be cleaned up. Requires `Ministry.archivedAt` + shared `assertMinistryAcceptsWrites` across Organization, Events, and Scheduling.
 
-## Why deferred
+## Blockers cleared
 
-P2 Execute focuses on **Campus** metadata ([#107](https://github.com/kairan/onda-volunteer/issues/107)). Archive semantics are a separate slice (no `archived` on `Ministry` today).
+- [x] Schema decision: `archivedAt DateTime?` on `Ministry`
+- [x] Cross-module write guard inventory + shared helper pattern
+- [x] API contract: `POST /ministries/:ministryId/archive` (archive-only — no unarchive in v1)
+- [x] Organization context + web picker filtering rules
+- [x] Product decisions locked 2026-06-06 (see below)
 
-## Acceptance criteria (from spec — for future Specify/Design)
+## Product decisions (locked 2026-06-06)
 
-- [ ] Archive blocks new **Events**, **Assignments**, memberships, role changes, **Unavailability**
-- [ ] Historical rows still show **Ministry** name
-- [ ] Archived **Ministries** hidden from active scheduling selectors
+| Topic | Decision |
+|-------|----------|
+| **Unarchive** | **Not in v1** — archive-only; no unarchive endpoint or UI |
+| **Unavailability on archived ministries** | Create and bulk create blocked; **update/delete allowed** for cleanup of existing rows |
+| **Shell ministry switcher** | Archived ministries visible **only** for church-scoped **Admin** and **System Admin** (with badge); **hidden** from non-admin switcher |
+| **Archive confirm i18n** | Agent drafts `en` + `pt-BR` in Execute (role retire #44 pattern); no HITL gate |
+
+## What to build
+
+See **design.md** § Ministry archive. High level:
+
+1. Prisma migration — `Ministry.archivedAt`
+2. `ministry-write-guard.ts` + guards on listed write paths (unavailability update/delete exempt)
+3. `OrganizationService.archiveMinistry` (void future assignments in transaction)
+4. Web archive UI on `/ministries` structure section + picker filters + admin-only shell switcher visibility
+5. API e2e + web behavior tests
+
+## Acceptance criteria
+
+- [ ] Archive sets `archivedAt` and voids future **Assignments** for that **Ministry**
+- [ ] New writes return `MINISTRY_ARCHIVED` (events, assignments, memberships, roles, unavailability create/bulk)
+- [ ] Unavailability update/delete on existing rows succeeds on archived ministry (cleanup)
+- [ ] Historical rows still show **Ministry** name; context returns `archivedAt`
+- [ ] Archived **Ministries** hidden from active scheduling / Time away pickers; visible in admin structure with badge
+- [ ] Shell switcher: archived visible with badge for admin/system admin only; hidden for others
+- [ ] Rename on archived ministry still works for accredited **Admin**
+- [ ] No unarchive endpoint or UI in v1
+
+## Depends on
+
+- P1 ministry structure shipped ([#109](https://github.com/kairan/onda-volunteer/issues/109))
+- P2 campus metadata ([#107](https://github.com/kairan/onda-volunteer/issues/107)) — execute on separate branch from this slice
 
 ## Tracker
 
