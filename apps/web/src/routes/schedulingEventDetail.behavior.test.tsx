@@ -7,6 +7,7 @@ import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { SchedulingEventDetailView } from './schedulingEventDetail';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { ApiRequestError } from '@/apiError';
+import * as editEventModule from '@/events/editEvent';
 import * as releaseAssignmentModule from '@/events/releaseAssignment';
 import * as voidAssignmentModule from '@/events/voidAssignment';
 import * as fetchMembershipsModule from '@/organization/fetchMinistryMemberships';
@@ -30,6 +31,7 @@ vi.mock('@/auth/AuthSessionProvider', () => ({
   useAuthSession: () => ({ status: 'dev-bypass', volunteerId: mockVolunteerId }),
 }));
 
+vi.mock('@/events/editEvent');
 vi.mock('@/events/releaseAssignment');
 vi.mock('@/events/voidAssignment');
 vi.mock('@/organization/fetchMinistryMemberships');
@@ -42,8 +44,9 @@ vi.mock('@tanstack/react-router', () => ({
   useRouter: () => ({ invalidate: async () => {} }),
 }));
 
+const mockToastPush = vi.fn();
 vi.mock('@/feedback/ToastHost', () => ({
-  useToasts: () => ({ push: vi.fn() }),
+  useToasts: () => ({ push: mockToastPush }),
 }));
 
 vi.mock('@/organization/OrganizationContextProvider', () => ({
@@ -307,5 +310,193 @@ describe('SchedulingEventDetailView leader roster assignment', () => {
         actingVolunteerId: mockVolunteerId,
       });
     });
+  });
+});
+
+describe('SchedulingEventDetailView edit section', () => {
+  it('does not render edit button for non-editor role', async () => {
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(screen.queryByRole('button', { name: 'Edit event' })).toBeNull();
+  });
+
+  it('renders edit button for admin', async () => {
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(screen.getByRole('button', { name: 'Edit event' })).toBeInTheDocument();
+  });
+
+  it('renders edit form pre-filled when button is clicked', async () => {
+    const user = userEvent.setup();
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    await user.click(screen.getByRole('button', { name: 'Edit event' }));
+
+    expect(screen.getByRole('heading', { name: 'Edit event' })).toBeInTheDocument();
+
+    const titleInput = screen.getByLabelText('Title') as HTMLInputElement;
+    expect(titleInput.value).toBe('Sunday Service');
+
+    const startsInput = screen.getByLabelText('Starts (UTC ISO)') as HTMLInputElement;
+    expect(startsInput.value).toBe('2026-06-01T14:00:00.000Z');
+
+    const endsInput = screen.getByLabelText('Ends (UTC ISO)') as HTMLInputElement;
+    expect(endsInput.value).toBe('2026-06-01T16:00:00.000Z');
+  });
+
+  it('submit dispatches editEvent with changed fields', async () => {
+    const user = userEvent.setup();
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+    vi.mocked(editEventModule.editEvent).mockResolvedValue({
+      id: 'evt-1',
+      title: 'Updated Title',
+      kind: 'PUBLIC',
+      window: {
+        startsAtUtc: '2026-06-01T14:00:00.000Z',
+        endsAtUtc: '2026-06-01T16:00:00.000Z',
+      },
+      voidedAssignmentCount: 0,
+    });
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    await user.click(screen.getByRole('button', { name: 'Edit event' }));
+
+    const titleInput = screen.getByLabelText('Title');
+    await user.clear(titleInput);
+    await user.type(titleInput, 'Updated Title');
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() => {
+      expect(editEventModule.editEvent).toHaveBeenCalledWith({
+        eventId: 'evt-1',
+        actingVolunteerId: mockVolunteerId,
+        title: 'Updated Title',
+      });
+    });
+  });
+
+  it('shows voided count toast when voidedAssignmentCount > 0', async () => {
+    const user = userEvent.setup();
+    vi.mocked(editEventModule.editEvent).mockResolvedValue({
+      id: 'evt-1',
+      title: 'Sunday Service',
+      kind: 'PUBLIC',
+      window: {
+        startsAtUtc: '2026-06-01T15:00:00.000Z',
+        endsAtUtc: '2026-06-01T16:00:00.000Z',
+      },
+      voidedAssignmentCount: 2,
+    });
+
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    await user.click(screen.getByRole('button', { name: 'Edit event' }));
+
+    const startsInput = screen.getByLabelText('Starts (UTC ISO)');
+    await user.clear(startsInput);
+    await user.type(startsInput, '2026-06-01T15:00:00.000Z');
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() => {
+      expect(mockToastPush).toHaveBeenCalledWith(
+        expect.objectContaining({
+          kind: 'info',
+          message: expect.stringContaining('2'),
+        }),
+      );
+    });
+  });
+
+  it('does not render edit section for cancelled event', async () => {
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+
+    const cancelledPayload: EventDetailPayload = {
+      ...payload,
+      event: {
+        ...payload.event,
+        cancelledAtUtc: '2026-06-01T12:00:00.000Z',
+      },
+    };
+
+    await initI18n(undefined, 'en');
+    renderView(cancelledPayload);
+
+    expect(screen.queryByRole('button', { name: 'Edit event' })).toBeNull();
+  });
+
+  it('shows error message when API returns error', async () => {
+    const user = userEvent.setup();
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: true,
+      ministries: [],
+    };
+    vi.mocked(editEventModule.editEvent).mockRejectedValue(
+      new ApiRequestError(400, 'Start time must be before end time.', 'INVALID_EVENT_WINDOW'),
+    );
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    await user.click(screen.getByRole('button', { name: 'Edit event' }));
+
+    const startsInput = screen.getByLabelText('Starts (UTC ISO)');
+    await user.clear(startsInput);
+    await user.type(startsInput, '2026-06-01T18:00:00.000Z');
+
+    await user.click(screen.getByRole('button', { name: 'Save changes' }));
+
+    expect(
+      await screen.findByRole('alert'),
+    ).toHaveTextContent(/start time must be before end time/i);
+  });
+
+  it('renders edit button for leader on private event', async () => {
+    mockOrganization.activeChurch = {
+      isAccreditedAdmin: false,
+      ministries: [{ id: 'min-private', name: 'Worship', isLeader: true }],
+    };
+
+    const privatePayload: EventDetailPayload = {
+      ...payload,
+      event: {
+        ...payload.event,
+        kind: 'PRIVATE',
+      },
+      ministry: { id: 'min-private', name: 'Worship' },
+    };
+
+    await initI18n(undefined, 'en');
+    renderView(privatePayload);
+
+    expect(screen.getByRole('button', { name: 'Edit event' })).toBeInTheDocument();
   });
 });
