@@ -73,6 +73,7 @@
       "ministryArchived": "Este ministério está arquivado e não aceita novas designações.",
       "notLeader": "Você não está autorizado a gerenciar designações deste ministério.",
       "alreadyVoided": "Esta designação não está mais ativa.",
+      "pickerLoadFailed": "Não foi possível carregar voluntários e funções deste ministério.",
       "releaseFailed": "Não foi possível liberar a designação.",
       "removeFailed": "Não foi possível remover a designação.",
       "releaseNotOwned": "Você só pode liberar a sua própria designação.",

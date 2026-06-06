@@ -73,6 +73,7 @@
       "ministryArchived": "This ministry is archived and cannot accept new assignments.",
       "notLeader": "You are not authorized to manage assignments for this ministry.",
       "alreadyVoided": "This assignment is no longer active.",
+      "pickerLoadFailed": "Could not load volunteers and roles for this ministry.",
       "releaseFailed": "Could not release assignment.",
       "removeFailed": "Could not remove assignment.",
       "releaseNotOwned": "You can only release your own assignment.",

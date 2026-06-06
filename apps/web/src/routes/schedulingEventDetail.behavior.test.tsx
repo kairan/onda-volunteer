@@ -262,6 +262,23 @@ describe('SchedulingEventDetailView leader roster assignment', () => {
     expect(screen.queryByRole('option', { name: 'Retired Role' })).toBeNull();
   });
 
+  it('shows a load error when picker data fails to fetch', async () => {
+    mockOrganization.activeChurch.ministries = [
+      { id: leaderMinistryId, name: 'Band', isLeader: true },
+    ];
+    vi.mocked(fetchMembershipsModule.fetchMinistryMemberships).mockRejectedValue(
+      new ApiRequestError(403, 'Leader ministry scope mismatch.', 'LEADER_MINISTRY_MISMATCH'),
+    );
+    vi.mocked(fetchRolesModule.fetchMinistryRoles).mockResolvedValue([]);
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(
+      await screen.findByRole('alert'),
+    ).toHaveTextContent(/leader ministry scope mismatch/i);
+  });
+
   it('calls voidAssignment after confirming remove on another volunteer row', async () => {
     const user = userEvent.setup();
     mockOrganization.activeChurch.ministries = [

@@ -267,6 +267,17 @@ describe('Leader roster assignment (e2e)', () => {
     expect(res.body.code).toBe('ASSIGNMENT_ALREADY_VOIDED');
   });
 
+  it('void unknown assignment returns ASSIGNMENT_NOT_FOUND — 404', async () => {
+    const { leader } = await seedLeaderRosterFixture();
+
+    const res = await request(app.getHttpServer())
+      .post('/assignments/does-not-exist/void')
+      .set('X-Volunteer-Id', leader.id)
+      .expect(404);
+
+    expect(res.body.code).toBe('ASSIGNMENT_NOT_FOUND');
+  });
+
   it('unavailability block returns UNAVAILABILITY_BLOCKS_ASSIGN on create — 409', async () => {
     const { ledMinistry, leader, member, role, event } =
       await seedLeaderRosterFixture();

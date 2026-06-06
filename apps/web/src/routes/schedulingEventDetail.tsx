@@ -158,6 +158,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [memberships, setMemberships] = useState<MinistryMembershipRow[]>([]);
   const [roles, setRoles] = useState<MinistryRoleRow[]>([]);
   const [pickerLoading, setPickerLoading] = useState(false);
+  const [pickerError, setPickerError] = useState<string | null>(null);
   const [selectedVolunteerId, setSelectedVolunteerId] = useState('');
   const [selectedRoleId, setSelectedRoleId] = useState('');
 
@@ -167,11 +168,13 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       setRoles([]);
       setSelectedVolunteerId('');
       setSelectedRoleId('');
+      setPickerError(null);
       return;
     }
 
     let cancelled = false;
     setPickerLoading(true);
+    setPickerError(null);
     void Promise.all([
       fetchMinistryMemberships({
         ministryId: formMinistryId,
@@ -202,13 +205,19 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             ? current
             : (activeRoles[0]?.id ?? ''),
         );
+        setPickerError(null);
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
           setMemberships([]);
           setRoles([]);
           setSelectedVolunteerId('');
           setSelectedRoleId('');
+          setPickerError(
+            err instanceof ApiRequestError
+              ? err.message
+              : t('detail.errors.pickerLoadFailed'),
+          );
         }
       })
       .finally(() => {
@@ -220,7 +229,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     return () => {
       cancelled = true;
     };
-  }, [actingVolunteerId, canShowAssignForm, formMinistryId]);
+  }, [actingVolunteerId, canShowAssignForm, formMinistryId, t]);
 
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelBusy, setCancelBusy] = useState(false);
@@ -726,6 +735,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           </h2>
 
           <div className="flex flex-col gap-4">
+            {pickerError ? (
+              <p
+                role="alert"
+                className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+              >
+                {pickerError}
+              </p>
+            ) : null}
+
             {showMinistryPicker ? (
               <div className="flex flex-col gap-1">
                 <label
@@ -741,6 +759,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                   onChange={(e) => {
                     setSelectedMinistryId(e.target.value);
                     setAssignError(null);
+                    setPickerError(null);
                   }}
                   disabled={busy || pickerLoading}
                 >
