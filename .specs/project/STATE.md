@@ -17,6 +17,22 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 - **2026-06-04 (Org structure Design/Tasks):** P2 **Campus** metadata/timezone is next Execute ([#107](https://github.com/kairan/onda-volunteer/issues/107)); `PATCH /campuses/:id` + `/ministries` campus settings (mirror #93 church metadata). Ministry archive deferred ([#108](https://github.com/kairan/onda-volunteer/issues/108)) — no `Ministry.archived` in schema yet. P1 tracker doc [#109](https://github.com/kairan/onda-volunteer/issues/109). TLC: `.specs/features/organization-structure-administration/`.
 - **2026-06-04 (Church/Campus timezone model):** **Church** = tenant; only **Campus** has authoritative IANA timezone for ministry scheduling/presentation (e.g. Onda Dura + Campus Porto). Church `defaultTimezone` (#93) is organizational fallback, not multi-campus HQ clock. P2 #107 edits campus metadata only.
 
+- **2026-06-06 (Ministry archive #108 — product decisions locked):** Three decisions locked for Execute: (1) **Unarchive is not in v1** — archive-only, no unarchive endpoint or UI; (2) **Shell ministry switcher visibility** — archived ministries visible (with badge) for church-scoped Admin and System Admin only; hidden for Leaders, Volunteers, and other roles; (3) **Archive confirm dialog i18n** — agent drafts `en` + `pt-BR` strings in Execute (same pattern as role retire #44); no HITL gate. TLC: `.specs/features/organization-structure-administration/` (tasks.md Phase 4: T-ARCHIVE-01–05).
+
+- **2026-06-06 (Planning round — 4 new feature specs created):** TLC Specify + Design completed for three product features and one doc-closeout housekeeping feature. Execute order: (1) finish #118 Phase 1 (`T-DOC-03`) + Phase 2 doc closeout now unblocked (#108 shipped via #113); (2) `leader-roster-assignment-ui` ([#115](https://github.com/kairan/onda-volunteer/issues/115)); (3) `event-edit-reschedule` ([#117](https://github.com/kairan/onda-volunteer/issues/117)); (4) `volunteer-onboarding-invite` ([#116](https://github.com/kairan/onda-volunteer/issues/116)). See `.specs/features/` for all artifacts and ROADMAP.md for priority order.
+
+- **2026-06-06 (Assumption lockdown — all three feature specs execute-ready):** User confirmed all open assumptions across the three in-flight features. Locked decisions:
+  - **ROSTER-A1**: `POST /assignments/:id/void` is a new endpoint (not extending `/release`). Separates leader stewardship void from volunteer self-release.
+  - **ROSTER-A3**: No unavailability offer on leader-void. Offer remains only on volunteer self-release.
+  - **EVENT-EDIT-A1**: Auto-void orphaned assignments outside new event window (transaction: void + update event). Not reject-if-orphans.
+  - **EVENT-EDIT-A2**: Single `PATCH /events/:id` for both title and reschedule. At-least-one-field required (`EVENT_EDIT_EMPTY`).
+  - **EVENT-EDIT-A3**: Inline edit form on event detail page. No modal, no separate route.
+  - **ONBOARD-A1**: Invite mechanism reuses system-admin-platform Supabase Admin SDK invite path (`apps/api/src/identity/`). Fulfillment hook extended for `VolunteerInvite`.
+  - **ONBOARD-A2**: Leaders can read volunteer display names and emails within their accredited Church scope. Church-scoped search sufficient for v1.
+  - **ONBOARD-A3**: 7-day invite TTL. Leaders may resend before expiry — resend resets `sentAtUtc`/`expiresAtUtc` on the existing PENDING record (no `INVITE_ALREADY_SENT` error on resend).
+  - **ONBOARD-A4**: `VolunteerInvite` model in Organization bounded context (`apps/api/src/organization/`), not Identity.
+  - **ONBOARD-A5**: All pending invites fulfilled simultaneously on first sign-in. No selection screen. Each creates `MinistryMembership` with `status: PENDING`.
+
 ## Blockers
 
 _(none)_

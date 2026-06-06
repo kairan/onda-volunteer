@@ -14,7 +14,10 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 | Issue | Spec | Summary | Schedule |
 |------:|------|---------|----------|
-| [#108](https://github.com/kairan/onda-volunteer/issues/108) | `108-org-structure-ministry-archive-backlog.md` | **Admin** ministry archive (ORG-STRUCT-06) | `ready-for-agent` |
+| [#115](https://github.com/kairan/onda-volunteer/issues/115) | `115-leader-roster-assignment-ui.md` | **Leader** production roster assignment UI | `ready-for-agent` |
+| [#116](https://github.com/kairan/onda-volunteer/issues/116) | `116-volunteer-onboarding-invite.md` | **Volunteer** discovery & onboarding invite | `ready-for-agent` |
+| [#117](https://github.com/kairan/onda-volunteer/issues/117) | `117-event-edit-reschedule.md` | **Event** edit / reschedule | `ready-for-agent` |
+| [#118](https://github.com/kairan/onda-volunteer/issues/118) | `118-org-structure-doc-closeout.md` | Org structure doc closeout (pre- and post-#108) | Phase 2 unblocked — run `T-DOC-04`–`T-DOC-10` |
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -34,6 +37,7 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#108](https://github.com/kairan/onda-volunteer/issues/108) | `done/108-org-structure-ministry-archive.md` |
 | [#107](https://github.com/kairan/onda-volunteer/issues/107) | `done/107-admin-campus-metadata-timezone.md` |
 | [#93](https://github.com/kairan/onda-volunteer/issues/93) | `done/93-church-admin-church-metadata.md` |
 | [#109](https://github.com/kairan/onda-volunteer/issues/109) | `done/109-org-structure-p1-ministry-admin.md` |

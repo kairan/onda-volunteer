@@ -30,18 +30,25 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 | **Scheduling** | Event list/read/write tracer bullets, public event creation, private event creation/rostering, assignment release + optional Unavailability offer, event cancellation, and Scheduling invariant hardening (`done/36-*`, `done/37-*`, `done/38-*`, `done/42-*`, `done/43-*`, `done/45-*`, `done/54-*`, `done/57-*`). |
 | **Web shell & i18n** | Shell/routing/i18n foundation, HOPE migration, personal-local time closeout, WCAG/HOPE polish, Playwright e2e, and CI lint/coverage reporting (`done/legacy-08-*` through `legacy-14-*`, `done/48-*`, `done/49-*`, `done/60-*`, `done/61-*`). |
 
-### Candidate missing feature
 
-| Priority | Feature slug | Theme | Scope to specify next | Why it is missing |
-|---------:|--------------|-------|-----------------------|-------------------|
-| 1 | `organization-structure-administration` | **Organization** | **Active:** P1 Ministry create/rename shipped; P2 **Campus** metadata/timezone ([#107](https://github.com/kairan/onda-volunteer/issues/107)). **Backlog:** Ministry archive ([#108](https://github.com/kairan/onda-volunteer/issues/108)). Church metadata shipped #93. TLC: `.specs/features/organization-structure-administration/`. | Platform PRD story 21; P1 Execute done; P2 Design/Tasks 2026-06-04. |
+### Shipped features (as of 2026-06-06)
 
-**Specify notes for `organization-structure-administration`:**
+| Theme | Feature slug | Issues | Status |
+|-------|--------------|--------|--------|
+| **Organization** | `organization-structure-administration` (P1 — Ministry create/rename) | [#109](https://github.com/kairan/onda-volunteer/issues/109) | ✅ Shipped |
+| **Organization** | `organization-structure-administration` (P2 — Campus metadata/timezone) | [#107](https://github.com/kairan/onda-volunteer/issues/107) | ✅ Shipped |
+| **Organization** | `organization-structure-administration` (Church metadata — CHURCH-META-01) | [#93](https://github.com/kairan/onda-volunteer/issues/93) | ✅ Shipped |
+| **Organization** | `system-admin-platform` (System Admin operator dashboard) | [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) | ✅ Shipped |
+| **Organization** | `organization-structure-administration` (Ministry archive — ORG-STRUCT-06) | [#108](https://github.com/kairan/onda-volunteer/issues/108) | ✅ Shipped |
 
-- Start in **Specify** because the boundaries are not fully decided: Ministry-only management may be enough for the next slice, while Church/Campus setup and timezone changes carry higher risk.
-- Keep **Admin** accreditation scoped to explicitly accredited **Churches**; do not introduce network-wide super Admin authority.
-- Preserve existing context-switcher contracts: renamed entities should update shell context without changing canonical schedule instants.
-- Treat destructive structure changes conservatively. Prefer archive/disable semantics over hard delete where historical **Events**, **Assignments**, memberships, or **Unavailability** reference the structure.
+### Active backlog (ready for agent / next Execute)
+
+| Priority | Feature slug | Theme | Issue | TLC Spec | Status |
+|---------:|--------------|-------|-------|----------|--------|
+| 1 | `org-structure-doc-closeout` | **Organization** (doc) | [#118](https://github.com/kairan/onda-volunteer/issues/118) | `.specs/features/org-structure-doc-closeout/` | Phase 2 unblocked — run `T-DOC-04`–`T-DOC-10` |
+| 2 | `leader-roster-assignment-ui` | **Scheduling** | [#115](https://github.com/kairan/onda-volunteer/issues/115) | `.specs/features/leader-roster-assignment-ui/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| 3 | `event-edit-reschedule` | **Scheduling** | [#117](https://github.com/kairan/onda-volunteer/issues/117) | `.specs/features/event-edit-reschedule/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| 4 | `volunteer-onboarding-invite` | **Organization / Identity** | [#116](https://github.com/kairan/onda-volunteer/issues/116) | `.specs/features/volunteer-onboarding-invite/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
 
 ### Deferred or gated work, not active backlog
 
@@ -49,8 +56,6 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 |------|--------|
 | Household / non-sign-in Volunteers | Explicitly out of scope in `CONTEXT.md` and the Platform PRD. |
 | Public Events spanning multiple Churches | Explicitly deferred by `CONTEXT.md` and the Platform PRD. |
-| ~~Network-wide super Admin~~ **System Admin** | **In scope (2026-05-31):** `.specs/features/system-admin-platform/` — seed-granted operators, church create, Admin invite-by-email, user/role stewardship, read-only scheduling. |
-| Church **Admin** metadata self-service | **In scope (2026-05-31):** accredited **Admin** edits **Church** name + default timezone (`CHURCH-META-01` in system-admin spec; may ship as org-structure follow-up). |
 | Email templates, push notifications, advanced audit UI, reporting dashboards, mobile apps | Platform PRD production-hardening items; do not plan until product priority changes. |
 | Dark mode toggle | Token architecture supports it, but the web and HOPE PRDs defer the UI toggle. |
 | Optimistic roster mutations / concurrent editor merge UI | Deferred by ADR 0001; Scheduling mutations remain pessimistic by default. |
