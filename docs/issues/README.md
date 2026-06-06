@@ -12,9 +12,9 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-_No `ready-for-agent` slices in this table._
-
-**Backlog (not agent-ready):** [#108](https://github.com/kairan/onda-volunteer/issues/108) ministry archive (ORG-STRUCT-06) — `108-org-structure-ministry-archive-backlog.md`.
+| Issue | Spec | Summary | Schedule |
+|------:|------|---------|----------|
+| [#108](https://github.com/kairan/onda-volunteer/issues/108) | `108-org-structure-ministry-archive-backlog.md` | **Admin** ministry archive (ORG-STRUCT-06) | `ready-for-agent` |
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 

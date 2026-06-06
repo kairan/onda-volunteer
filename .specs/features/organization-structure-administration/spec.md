@@ -4,7 +4,7 @@
 
 - **P1** (ORG-STRUCT-01–04): Implemented — tracker parity [#109](https://github.com/kairan/onda-volunteer/issues/109).
 - **P2** (ORG-STRUCT-05): Implemented — Execute via [#107](https://github.com/kairan/onda-volunteer/issues/107).
-- **P2** (ORG-STRUCT-06): Deferred — backlog [#108](https://github.com/kairan/onda-volunteer/issues/108).
+- **P2** (ORG-STRUCT-06): Specified + designed — Execute [#108](https://github.com/kairan/onda-volunteer/issues/108).
 
 ## Source references
 
@@ -22,7 +22,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 - [x] Give accredited **Admins** a supported way to create and rename **Ministries** inside their accredited **Churches**.
 - [x] Keep structure mutations scoped to explicit **Church** accreditation; do not introduce global or network-wide authority.
 - [x] Preserve stable IDs and historical references so existing **Assignments**, **Unavailability**, memberships, and role history remain understandable after a rename.
-- [x] Campus metadata/timezone maintenance shipped ([#107](https://github.com/kairan/onda-volunteer/issues/107)); Ministry archive deferred ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
+- [x] Campus metadata/timezone maintenance shipped ([#107](https://github.com/kairan/onda-volunteer/issues/107)); Ministry archive specified ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
 
 ## Out of Scope
 
@@ -77,17 +77,37 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 ### P2: Safe Ministry retirement or archive
 
-**User Story**: As an accredited **Admin**, I want to retire or archive a **Ministry** that no longer serves, so that it stops being used for new work while past volunteer history remains intact.
+**User Story**: As an accredited **Admin**, I want to archive a **Ministry** that no longer serves, so that it stops being used for new work while past volunteer history remains intact.
 
-**Why P2**: The product already uses retirement semantics for **Roles**; structure retirement needs a separate decision because it affects memberships, leaders, **Unavailability**, and future scheduling.
+**Why P2**: The product already uses retirement semantics for **Roles** (`MinistryRole.retired`); **Ministry** archive is a stronger, structure-level retirement that affects memberships, leaders, **Unavailability**, and scheduling across **Organization**, **Scheduling**, and **Availability** (unavailability routes live under Scheduling today).
+
+**Terminology**: Use **archive** for **Ministries** (not “retire”) to distinguish from **Role** retirement. Archived ministries remain in the database with stable IDs; hard delete is out of scope.
 
 **Acceptance Criteria**:
 
-1. WHEN an accredited **Admin** archives a **Ministry** THEN the system SHALL prevent new **Events**, **Assignments**, memberships, role changes, and **Unavailability** for that **Ministry** unless a future spec explicitly allows exceptions.
-2. WHEN historical records reference an archived **Ministry** THEN the system SHALL continue to display the **Ministry** name for history and reporting.
-3. WHEN a user views Organization context THEN archived **Ministries** SHALL not appear as active choices for new scheduling workflows.
+1. WHEN an accredited **Admin** archives a **Ministry** THEN the system SHALL set `archivedAt` on that **Ministry** and SHALL void future **Assignments** for that **Ministry** (same rule as membership deactivation: **Event** `endsAtUtc` still in the future).
+2. WHEN a **Ministry** is archived THEN the system SHALL reject **new** writes scoped to that **Ministry** with stable code `MINISTRY_ARCHIVED`, including:
+   - private **Event** creation;
+   - **Assignment** creation;
+   - **Ministry membership** add, activate, and reactivation from **Inactive**;
+   - **Leader** grant;
+   - **Role** catalog create, rename, and retire;
+   - **Unavailability** create and bulk create.
+3. WHEN a **Ministry** is archived THEN the system SHALL still allow accredited **Admin** rename of that **Ministry**, **Leader** revoke, membership **deactivate**, **Assignment** release/decline, **Event** cancel, and **Unavailability** update/delete (cleanup of existing rows only) — wind-down and stewardship without opening new work.
+4. WHEN historical records reference an archived **Ministry** THEN the system SHALL continue to display the **Ministry** name (stable ID + current name).
+5. WHEN organization context is returned THEN each **Ministry** entry SHALL include `archivedAt` (ISO instant or `null`).
+6. WHEN a user opens a write workflow (scheduling, Time away, role catalog pickers, private event create) THEN archived **Ministries** SHALL be excluded from selectable lists; accredited **Admins** SHALL still see archived **Ministries** in the **Ministry structure** admin section with an archived badge.
+7. WHEN a user who is not church-scoped **Admin** or **System Admin** opens the shell **Ministry** switcher THEN archived **Ministries** SHALL be hidden; **Admin** and **System Admin** SHALL see archived **Ministries** in the switcher with an archived badge.
+8. WHEN archive is requested for an already-archived **Ministry** THEN the system SHALL reject with `MINISTRY_ALREADY_ARCHIVED`.
+9. WHEN a non-accredited user attempts archive THEN the system SHALL reject with `ADMIN_NOT_ACCREDITED`.
 
-**Independent Test**: Archive a **Ministry**, verify new scheduling/membership writes are blocked, and verify past **Assignments** still display that **Ministry**.
+**Out of scope (v1)**:
+
+- **Unarchive** / restore **Ministry** to active — **firm decision 2026-06-06**: v1 is archive-only; no unarchive endpoint or UI.
+- Auto-retire all **Roles** on archive (roles stay as-is; new role writes are blocked).
+- Hiding archived **Ministries** from organization context entirely (members with history still need read paths).
+
+**Independent Test**: Archive a **Ministry** with a future **Assignment**; assert the assignment is voided, `POST` private event / assignment / membership / unavailability create return `MINISTRY_ARCHIVED`, unavailability update/delete on existing rows succeed, past **Assignments** still show the **Ministry** name, scheduling pickers omit the archived row, and non-admin shell switcher hides the archived ministry.
 
 ---
 
@@ -145,10 +165,10 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | ORG-STRUCT-03 | P1: Admin authorization boundary | Execute | Verified |
 | ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
 | ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Execute | Verified ([#107](https://github.com/kairan/onda-volunteer/issues/107)) |
-| ORG-STRUCT-06 | P2: Ministry archive/retirement | Backlog | [#108](https://github.com/kairan/onda-volunteer/issues/108) |
+| ORG-STRUCT-06 | P2: Ministry archive | Specified | [#108](https://github.com/kairan/onda-volunteer/issues/108) — `design.md` § Ministry archive |
 | ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Pending — split to `system-admin-platform` |
 
-**Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus ready (#107); archive backlog (#108); P3 in `system-admin-platform`.
+**Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus shipped (#107); archive specified (#108); P3 in `system-admin-platform`.
 
 **Design / Tasks:** `.specs/features/organization-structure-administration/design.md`, `tasks.md`.
 
@@ -169,6 +189,10 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
   - Web: `CampusSettingsSection` on `/ministries`, `campusMetadata.ts`
   - Tests: `apps/api/test/campus-metadata.e2e-spec.ts`, `apps/web/src/organization/campusSettings.behavior.test.tsx`
 - P1 tracker: [#109](https://github.com/kairan/onda-volunteer/issues/109) → `docs/issues/done/109-org-structure-p1-ministry-admin.md`
+- P2 ministry archive ([#108](https://github.com/kairan/onda-volunteer/issues/108)) — designed, not yet implemented:
+  - API: `POST /ministries/:ministryId/archive` only (no unarchive in v1); shared `assertMinistryAcceptsWrites`, organization context `archivedAt`
+  - Web: archive action + confirm on `/ministries` structure section; filter archived from write pickers; admin-only shell switcher visibility
+  - Tests: `ministry-archive.e2e-spec.ts`, `ministryArchive.behavior.test.tsx`
 
 ---
 
@@ -182,9 +206,25 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
    - **Answered for P1:** unique per **Church**, case-insensitive, enforced in the service layer and by a PostgreSQL unique index on `(churchId, LOWER(name))`.
 4. If **Campus** timezone changes, does the UI need an explicit review dialog explaining that existing UTC schedules are unchanged but local presentation changes?
    - **Answered for P2:** yes — confirm dialog before save when timezone changes (`design.md`).
+5. Should **Ministry** archive use a boolean or timestamp field?
+   - **Answered for ORG-STRUCT-06:** `archivedAt DateTime?` (null = active); audit-friendly, distinct from **Role** `retired` boolean (`design.md`).
+6. Should archive void future **Assignments** for the whole **Ministry**?
+   - **Answered for ORG-STRUCT-06:** yes — mirror membership-deactivation void rule at archive time (`design.md`).
+7. Is unarchive in v1?
+   - **Answered 2026-06-06 (firm):** no — archive-only; no unarchive endpoint or UI in v1.
+8. May accredited **Admins** rename an archived **Ministry**?
+   - **Answered for ORG-STRUCT-06:** yes — stewardship without reopening scheduling writes.
+9. May **Unavailability** update/delete proceed on archived ministries?
+   - **Answered 2026-06-06:** yes — cleanup of existing rows only; create and bulk create remain blocked.
+10. Should archived ministries appear in the shell **Ministry** switcher?
+    - **Answered 2026-06-06:** visible with badge for church-scoped **Admin** and **System Admin** only; hidden for all other users.
+11. Who drafts archive confirm-dialog i18n?
+    - **Answered 2026-06-06:** agent drafts `en` + `pt-BR` in Execute (same pattern as role retire #44); no HITL gate.
 
 ## Success Criteria
 
 - [x] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
 - [x] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
-- [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107) shipped; archive deferred [#108](https://github.com/kairan/onda-volunteer/issues/108); first-admin setup in `system-admin-platform`.
+- [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107) shipped.
+- [x] Ministry archive: ORG-STRUCT-06 specified — ready for Execute ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
+- [ ] First-admin setup in `system-admin-platform`.

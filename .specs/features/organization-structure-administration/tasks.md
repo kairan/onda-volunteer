@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/organization-structure-administration/design.md`  
 **Spec**: `.specs/features/organization-structure-administration/spec.md`  
-**Status**: Execute complete (P2 campus slice + P1 tracker doc)
+**Status**: Execute complete (P2 campus slice #107 + P1 tracker doc); ORG-STRUCT-06 (#108) — Tasks below (not started)
 
 ---
 
@@ -26,9 +26,9 @@ T-CAMPUS-03 → T-CAMPUS-04 → T-CAMPUS-05 [P] i18n
 T-ORG-P1-01
 ```
 
-**Deferred:** ORG-STRUCT-06 Ministry archive — [#108](https://github.com/kairan/onda-volunteer/issues/108) (Specify/Design later).
+**Next:** ORG-STRUCT-06 Ministry archive — [#108](https://github.com/kairan/onda-volunteer/issues/108) (Specify/Design complete; product decisions locked 2026-06-06; Execute phases below).
 
-**GitHub:** [#107](https://github.com/kairan/onda-volunteer/issues/107) (P2 Execute) · [#108](https://github.com/kairan/onda-volunteer/issues/108) (backlog) · [#109](https://github.com/kairan/onda-volunteer/issues/109) (P1 tracker doc)
+**GitHub:** [#107](https://github.com/kairan/onda-volunteer/issues/107) (P2 Execute) · [#108](https://github.com/kairan/onda-volunteer/issues/108) (`ready-for-agent`) · [#109](https://github.com/kairan/onda-volunteer/issues/109) (P1 tracker doc)
 
 ---
 
@@ -182,9 +182,100 @@ T-ORG-P1-01
 
 ---
 
-## Deferred backlog (not in Execute above)
+## Phase 4: Ministry archive (ORG-STRUCT-06) — [#108](https://github.com/kairan/onda-volunteer/issues/108)
+
+```text
+T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
+```
+
+### T-ARCHIVE-01: Schema + write guard
+
+**What**: Add `Ministry.archivedAt`; create `ministry-write-guard.ts`; export from `OrganizationModule`.  
+**Where**: `apps/api/prisma/`, `apps/api/src/organization/`  
+**Depends on**: None  
+**Requirement**: ORG-STRUCT-06
+
+**Done when**:
+
+- [ ] Migration adds nullable `archivedAt` on `Ministry`
+- [ ] `assertMinistryAcceptsWrites` returns ministry or throws `MINISTRY_ARCHIVED`
+
+**Gate**: `pnpm --filter @onda/api typecheck`
+
+---
+
+### T-ARCHIVE-02: API — archive endpoint + guard wiring
+
+**What**: `archiveMinistry` + `POST /ministries/:id/archive` (archive-only — no unarchive endpoint); wire guard on write paths in design inventory.  
+**Where**: `organization.service.ts`, `roles.service.ts`, `events.service.ts`, `scheduling.service.ts`  
+**Depends on**: T-ARCHIVE-01  
+**Requirement**: ORG-STRUCT-06
+
+**Done when**:
+
+- [ ] Archive voids future assignments in transaction
+- [ ] Stable codes: `MINISTRY_ARCHIVED`, `MINISTRY_ALREADY_ARCHIVED`
+- [ ] Guarded writes reject archived ministries (unavailability create/bulk only — update/delete unguarded for cleanup)
+- [ ] E2e asserts unavailability update/delete succeed on archived ministry; create returns `MINISTRY_ARCHIVED`
+
+**Tests**: `ministry-archive.e2e-spec.ts` (co-located in T-ARCHIVE-02)  
+**Gate**: `pnpm test` (api archive spec)
+
+---
+
+### T-ARCHIVE-03: API — organization context `archivedAt`
+
+**What**: Extend `getAccessibleOrganizationContext` DTO with `archivedAt` per ministry.  
+**Where**: `organization.service.ts`, `stewardship.service.ts` selects  
+**Depends on**: T-ARCHIVE-01  
+**Requirement**: ORG-STRUCT-06
+
+**Done when**:
+
+- [ ] Context ministries include `archivedAt: string | null`
+
+**Gate**: covered by T-ARCHIVE-02 e2e
+
+---
+
+### T-ARCHIVE-04: Web — archive UI + picker filters + shell switcher
+
+**What**: `archiveMinistry` client; structure section archive + confirm; filter archived from write pickers; **add** shell ministry selector (`OrganizationContextControls.tsx` + `OrganizationContextProvider` `activeMinistryId` — shell has Church/Campus only today); admin/system-admin-only archived rows in switcher (with badge).  
+**Where**: `apps/web/src/organization/`, `apps/web/src/shell/OrganizationContextControls.tsx`, routes listed in `design.md`  
+**Depends on**: T-ARCHIVE-02  
+**Requirement**: ORG-STRUCT-06
+
+**Done when**:
+
+- [ ] Admin can archive from `/ministries` with confirm dialog
+- [ ] Write pickers exclude archived ministries
+- [ ] Archived badge on structure list
+- [ ] Non-admin shell switcher hides archived ministries; admin/system admin see them with badge
+
+**Tests**: `ministryArchive.behavior.test.tsx` (T-ARCHIVE-05)  
+**Gate**: web typecheck
+
+---
+
+### T-ARCHIVE-05: i18n + behavior tests
+
+**What**: Agent-draft `ministries.json` archive strings (`en`, `pt-BR`, role-retire #44 pattern); `ministryArchive.behavior.test.tsx` with `userEvent`.  
+**Where**: `apps/web/src/i18n/`, `apps/web/src/organization/`  
+**Depends on**: T-ARCHIVE-04  
+**Requirement**: ORG-STRUCT-06  
+**Parallel**: `[P]` with final e2e polish after T-ARCHIVE-04
+
+**Done when**:
+
+- [ ] Archive confirm dialog, badge, and error strings in both locales
+- [ ] Behavior tests cover confirm dialog, picker filter, and non-admin switcher hide
+
+**Gate**: `pnpm --filter @onda/web test`
+
+---
+
+## Other backlog
 
 | ID | Issue | Notes |
 |----|-------|-------|
-| ORG-STRUCT-06 | [#108](https://github.com/kairan/onda-volunteer/issues/108) | Ministry archive — needs schema + guards; separate Design/Tasks |
 | ORG-STRUCT-07 | `system-admin-platform` | Already tracked #87–93 |
