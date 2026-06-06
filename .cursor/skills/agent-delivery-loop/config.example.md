@@ -21,7 +21,7 @@ review:
 
 # --- Conflict-only resolution ------------------------------------------------
 conflict:
-  skill: babysit                 # routed for rebase/merge-conflict only (no thread triage)
+  skill: babysit                 # user-level Cursor skill (not in repo .cursor/skills/); routed for rebase/merge-conflict only (no thread triage)
 
 # --- Planning (PLAN + EXECUTE states) ---------------------------------------
 planning:

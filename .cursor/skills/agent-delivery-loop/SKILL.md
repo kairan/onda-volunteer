@@ -43,7 +43,8 @@ PREP → BRANCH → PLAN → EXECUTE → PR → WAIT_CI → REVIEW → ADDRESS �
 - **Gate:** new branch created from base HEAD; one issue/slice owns this branch.
 
 ### 3. PLAN — pick the phase by artifacts that exist
-- Route to `planning.skill` (this repo: see config). Pick the phase by what already exists under `paths.specs`:
+- Route to `planning.skill` (this repo: see config). If `planning.overlay` is set, read it first (this repo: brownfield doc mapping) before picking the phase.
+- Pick the phase by what already exists under `paths.specs`:
   - no spec → **Specify**; spec but no design and change is structural → **Design**; design but no tasks and >5 steps → **Tasks**; artifacts sufficient → **Execute**.
 - Do not re-run completed phases. Let the planning skill auto-size.
 - **Gate:** the artifacts needed to execute this slice exist and are committed.
