@@ -286,28 +286,26 @@ describe('Volunteer invite flow (e2e)', () => {
         .send({ email: 'invitee@example.com' })
         .expect(200);
 
-      await prisma.volunteer.create({
-        data: {
-          id: 'invitee-vol',
-          displayName: 'Invitee',
-          authSubjectId: 'auth-subject-invitee',
-          email: 'invitee@example.com',
-        },
-      });
-
       const token = signTestAccessToken('auth-subject-invitee', {
         email: 'invitee@example.com',
       });
 
-      await request(app.getHttpServer())
+      const res = await request(app.getHttpServer())
         .get('/identity/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
+      expect(res.body.volunteer.displayName).toBe('Invitee');
+
+      const volunteer = await prisma.volunteer.findUnique({
+        where: { authSubjectId: 'auth-subject-invitee' },
+      });
+      expect(volunteer?.email).toBe('invitee@example.com');
+
       const membership = await prisma.ministryMembership.findUnique({
         where: {
           volunteerId_ministryId: {
-            volunteerId: 'invitee-vol',
+            volunteerId: volunteer!.id,
             ministryId: ministry.id,
           },
         },
@@ -334,23 +332,21 @@ describe('Volunteer invite flow (e2e)', () => {
         data: { archivedAt: new Date() },
       });
 
-      await prisma.volunteer.create({
-        data: {
-          id: 'late-vol',
-          displayName: 'Late Person',
-          authSubjectId: 'auth-subject-late',
-          email: 'late@example.com',
-        },
-      });
-
       const token = signTestAccessToken('auth-subject-late', {
         email: 'late@example.com',
       });
 
-      await request(app.getHttpServer())
+      const res = await request(app.getHttpServer())
         .get('/identity/me')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
+
+      expect(res.body.volunteer.displayName).toBe('Late');
+
+      const volunteer = await prisma.volunteer.findUnique({
+        where: { authSubjectId: 'auth-subject-late' },
+      });
+      expect(volunteer).not.toBeNull();
 
       const invite = await prisma.volunteerInvite.findFirst({
         where: { email: 'late@example.com' },
@@ -360,7 +356,7 @@ describe('Volunteer invite flow (e2e)', () => {
       const membership = await prisma.ministryMembership.findUnique({
         where: {
           volunteerId_ministryId: {
-            volunteerId: 'late-vol',
+            volunteerId: volunteer!.id,
             ministryId: ministry.id,
           },
         },

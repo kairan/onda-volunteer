@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { VolunteerInviteStatus, type Volunteer } from '@prisma/client';
+import {
+  displayNameFromInviteEmail,
+  normalizeAdminInviteEmail,
+} from '../system-admin/admin-invite-email';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -7,12 +11,13 @@ export class VolunteerInviteFulfillmentService {
   constructor(private readonly prisma: PrismaService) {}
 
   async fulfillPendingInvites(input: {
+    authSubjectId: string;
     email: string;
-    volunteer: Volunteer;
-  }): Promise<{ ministryId: string; ministryName: string }[]> {
-    const email = input.email.trim().toLowerCase();
+    existingVolunteer?: Volunteer | null;
+  }): Promise<Volunteer | null> {
+    const email = normalizeAdminInviteEmail(input.email);
     if (!email) {
-      return [];
+      return input.existingVolunteer ?? null;
     }
 
     const now = new Date();
@@ -26,12 +31,35 @@ export class VolunteerInviteFulfillmentService {
     });
 
     if (pendingInvites.length === 0) {
-      return [];
+      return input.existingVolunteer ?? null;
     }
 
-    const fulfilled: { ministryId: string; ministryName: string }[] = [];
+    return this.prisma.$transaction(async (tx) => {
+      let volunteer = input.existingVolunteer ?? null;
+      if (!volunteer) {
+        volunteer = await tx.volunteer.create({
+          data: {
+            authSubjectId: input.authSubjectId,
+            displayName: displayNameFromInviteEmail(email),
+            email,
+          },
+        });
+      } else {
+        const updates: { authSubjectId?: string; email?: string } = {};
+        if (!volunteer.authSubjectId) {
+          updates.authSubjectId = input.authSubjectId;
+        }
+        if (!volunteer.email) {
+          updates.email = email;
+        }
+        if (Object.keys(updates).length > 0) {
+          volunteer = await tx.volunteer.update({
+            where: { id: volunteer.id },
+            data: updates,
+          });
+        }
+      }
 
-    await this.prisma.$transaction(async (tx) => {
       for (const invite of pendingInvites) {
         if (invite.ministry.archivedAt !== null) {
           await tx.volunteerInvite.update({
@@ -44,7 +72,7 @@ export class VolunteerInviteFulfillmentService {
         const existingMembership = await tx.ministryMembership.findUnique({
           where: {
             volunteerId_ministryId: {
-              volunteerId: input.volunteer.id,
+              volunteerId: volunteer.id,
               ministryId: invite.ministryId,
             },
           },
@@ -53,7 +81,7 @@ export class VolunteerInviteFulfillmentService {
         if (!existingMembership) {
           await tx.ministryMembership.create({
             data: {
-              volunteerId: input.volunteer.id,
+              volunteerId: volunteer.id,
               ministryId: invite.ministryId,
               status: 'PENDING',
             },
@@ -67,14 +95,9 @@ export class VolunteerInviteFulfillmentService {
             acceptedAtUtc: now,
           },
         });
-
-        fulfilled.push({
-          ministryId: invite.ministry.id,
-          ministryName: invite.ministry.name,
-        });
       }
-    });
 
-    return fulfilled;
+      return volunteer;
+    });
   }
 }

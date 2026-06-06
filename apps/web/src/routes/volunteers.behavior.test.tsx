@@ -190,6 +190,7 @@ describe('VolunteersPage', () => {
     });
 
     expect(screen.getByRole('heading', { name: /invite by email/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/volunteer@example/i)).toBeInTheDocument();
   });
 
   it('sends invite and shows success', async () => {

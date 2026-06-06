@@ -56,6 +56,7 @@ export function VolunteersPage() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [selectedVolunteer, setSelectedVolunteer] = useState<VolunteerSearchResult | null>(null);
+  const [addStatus, setAddStatus] = useState<'PENDING' | 'ACTIVE'>('PENDING');
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Invite state
@@ -127,6 +128,9 @@ export function VolunteersPage() {
         });
         setSearchResults(results);
         setSearchError(null);
+        if (results.length === 0) {
+          setShowInviteSection(true);
+        }
       } catch {
         setSearchError(t('errors.searchFailed'));
         setSearchResults([]);
@@ -156,10 +160,11 @@ export function VolunteersPage() {
         ministryId,
         actingVolunteerId,
         volunteerId: selectedVolunteer.id,
-        status: 'PENDING',
+        status: addStatus,
       });
       setSelectedVolunteer(null);
       setSearchQuery('');
+      setAddStatus('PENDING');
       setSuccessMessage(t('messages.added'));
       await loadRows();
     } catch (err) {
@@ -327,9 +332,23 @@ export function VolunteersPage() {
               <p className="text-xs text-muted-foreground">{t('noResults')}</p>
             )}
             {selectedVolunteer && (
-              <Button type="submit" disabled={!ministryId || submitting} className="self-start">
-                {submitting ? t('saving') : t('addSelectedSubmit')}
-              </Button>
+              <>
+                <label className="flex flex-col gap-1 text-sm font-semibold uppercase tracking-wide">
+                  {t('statusLabel')}
+                  <select
+                    className="border-2 border-border bg-background px-3 py-2 normal-case"
+                    value={addStatus}
+                    onChange={(e) => setAddStatus(e.target.value as 'PENDING' | 'ACTIVE')}
+                    disabled={!ministryId || submitting}
+                  >
+                    <option value="PENDING">{t('status.pending')}</option>
+                    <option value="ACTIVE">{t('status.active')}</option>
+                  </select>
+                </label>
+                <Button type="submit" disabled={!ministryId || submitting} className="self-start">
+                  {submitting ? t('saving') : t('addSelectedSubmit')}
+                </Button>
+              </>
             )}
           </form>
         </div>

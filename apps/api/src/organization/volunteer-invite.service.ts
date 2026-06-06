@@ -213,9 +213,23 @@ export class VolunteerInviteService {
             ],
           },
           {
-            memberships: {
-              some: { ministry: { churchId: input.churchId } },
-            },
+            OR: [
+              {
+                memberships: {
+                  some: { ministry: { churchId: input.churchId } },
+                },
+              },
+              {
+                ministryLeaderships: {
+                  some: { ministry: { churchId: input.churchId } },
+                },
+              },
+              {
+                adminAccreditations: {
+                  some: { churchId: input.churchId },
+                },
+              },
+            ],
           },
           ...(excludeVolunteerIds.length > 0
             ? [{ id: { notIn: excludeVolunteerIds } }]

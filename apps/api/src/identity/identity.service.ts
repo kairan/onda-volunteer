@@ -92,19 +92,22 @@ export class IdentityService {
         where: { authSubjectId: sub },
       });
       if (email) {
-        const fulfilled = await this.adminInvites.fulfillPendingInvites({
+        const adminFulfilled = await this.adminInvites.fulfillPendingInvites({
           authSubjectId: sub,
           email,
           existingVolunteer: volunteer,
         });
-        if (fulfilled) {
-          volunteer = fulfilled;
+        if (adminFulfilled) {
+          volunteer = adminFulfilled;
         }
-        if (volunteer) {
+        const inviteFulfilled =
           await this.volunteerInviteFulfillment.fulfillPendingInvites({
+            authSubjectId: sub,
             email,
-            volunteer,
+            existingVolunteer: volunteer,
           });
+        if (inviteFulfilled) {
+          volunteer = inviteFulfilled;
         }
       }
       if (!volunteer && options.attemptAutoLink) {
