@@ -3,7 +3,7 @@
 ## Status
 
 - **P1** (ORG-STRUCT-01–04): Implemented — tracker parity [#109](https://github.com/kairan/onda-volunteer/issues/109).
-- **P2** (ORG-STRUCT-05): Design + Tasks approved — Execute via [#107](https://github.com/kairan/onda-volunteer/issues/107).
+- **P2** (ORG-STRUCT-05): Implemented — Execute via [#107](https://github.com/kairan/onda-volunteer/issues/107).
 - **P2** (ORG-STRUCT-06): Specified + designed — Execute [#108](https://github.com/kairan/onda-volunteer/issues/108).
 
 ## Source references
@@ -22,7 +22,7 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 - [x] Give accredited **Admins** a supported way to create and rename **Ministries** inside their accredited **Churches**.
 - [x] Keep structure mutations scoped to explicit **Church** accreditation; do not introduce global or network-wide authority.
 - [x] Preserve stable IDs and historical references so existing **Assignments**, **Unavailability**, memberships, and role history remain understandable after a rename.
-- [x] Campus metadata/timezone maintenance ([#107](https://github.com/kairan/onda-volunteer/issues/107)); Ministry archive specified ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
+- [x] Campus metadata/timezone maintenance shipped ([#107](https://github.com/kairan/onda-volunteer/issues/107)); Ministry archive specified ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
 
 ## Out of Scope
 
@@ -164,11 +164,11 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 | ORG-STRUCT-02 | P1: Rename Ministry | Execute | Verified |
 | ORG-STRUCT-03 | P1: Admin authorization boundary | Execute | Verified |
 | ORG-STRUCT-04 | P1: Validation and server-truth refresh | Execute | Verified |
-| ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Execute | [#107](https://github.com/kairan/onda-volunteer/issues/107) |
+| ORG-STRUCT-05 | P2: Campus metadata/timezone maintenance | Execute | Verified ([#107](https://github.com/kairan/onda-volunteer/issues/107)) |
 | ORG-STRUCT-06 | P2: Ministry archive | Specified | [#108](https://github.com/kairan/onda-volunteer/issues/108) — `design.md` § Ministry archive |
 | ORG-STRUCT-07 | P3: System Admin platform (church + users) | Specify | Pending — split to `system-admin-platform` |
 
-**Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus ready (#107); archive specified (#108); P3 in `system-admin-platform`.
+**Coverage:** 7 total — P1 shipped (01–04, tracker #109); P2 campus shipped (#107); archive specified (#108); P3 in `system-admin-platform`.
 
 **Design / Tasks:** `.specs/features/organization-structure-administration/design.md`, `tasks.md`.
 
@@ -225,6 +225,6 @@ Onda now has shipped flows for membership, leader delegation, role catalogs, Tim
 
 - [x] Accredited **Admins** can manage basic **Ministry** structure without direct database access.
 - [x] Existing Organization, Availability, and Scheduling reads continue to work against stable structure IDs after renames.
-- [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107) ready for Execute.
+- [x] Campus scope: P2 [#107](https://github.com/kairan/onda-volunteer/issues/107) shipped.
 - [x] Ministry archive: ORG-STRUCT-06 specified — ready for Execute ([#108](https://github.com/kairan/onda-volunteer/issues/108)).
 - [ ] First-admin setup in `system-admin-platform`.

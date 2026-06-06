@@ -45,6 +45,29 @@
       "invalidTimezone": "Enter a valid IANA timezone."
     }
   },
+  "campusSettings": {
+    "title": "Campus settings",
+    "body": "Update the active campus name and IANA timezone. Event times stay stored in UTC; changing timezone only affects how times are shown for this campus.",
+    "nameLabel": "Campus name",
+    "timezoneLabel": "Campus timezone",
+    "timezoneHint": "Use an IANA timezone such as America/Sao_Paulo or UTC.",
+    "save": "Save campus settings",
+    "saving": "Saving…",
+    "messages": {
+      "saved": "Campus settings saved."
+    },
+    "errors": {
+      "notAccredited": "You are not accredited for this church.",
+      "nameRequired": "Campus name is required.",
+      "invalidTimezone": "Enter a valid IANA timezone."
+    },
+    "confirm": {
+      "title": "Change campus timezone?",
+      "body": "Existing event and assignment times in UTC are unchanged. Local display for this campus will use the new timezone.",
+      "cancel": "Cancel",
+      "confirm": "Save timezone change"
+    }
+  },
   "structure": {
     "title": "Ministry structure",
     "body": "Create and rename ministries for the active church. Renames keep the same ministry ID so memberships, roles, assignments, and time away history stay connected.",

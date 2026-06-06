@@ -14,9 +14,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 | Issue | Spec | Summary | Schedule |
 |------:|------|---------|----------|
-| [#107](https://github.com/kairan/onda-volunteer/issues/107) | `107-admin-campus-metadata-timezone.md` | **Admin** campus name + timezone (ORG-STRUCT-05) | `ready-for-agent` |
 | [#108](https://github.com/kairan/onda-volunteer/issues/108) | `108-org-structure-ministry-archive-backlog.md` | **Admin** ministry archive (ORG-STRUCT-06) | `ready-for-agent` |
-| [#109](https://github.com/kairan/onda-volunteer/issues/109) | `109-org-structure-p1-ministry-tracker.md` | P1 ministry structure tracker doc (ORG-STRUCT-01–04) | `ready-for-agent` |
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -36,7 +34,9 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#107](https://github.com/kairan/onda-volunteer/issues/107) | `done/107-admin-campus-metadata-timezone.md` |
 | [#93](https://github.com/kairan/onda-volunteer/issues/93) | `done/93-church-admin-church-metadata.md` |
+| [#109](https://github.com/kairan/onda-volunteer/issues/109) | `done/109-org-structure-p1-ministry-admin.md` |
 | [#92](https://github.com/kairan/onda-volunteer/issues/92) | `done/92-system-admin-chain-5-scheduling-readonly.md` |
 | [#91](https://github.com/kairan/onda-volunteer/issues/91) | `done/91-system-admin-chain-4-stewardship.md` |
 | [#89](https://github.com/kairan/onda-volunteer/issues/89) | `done/89-system-admin-chain-2-church-provisioning.md` |
