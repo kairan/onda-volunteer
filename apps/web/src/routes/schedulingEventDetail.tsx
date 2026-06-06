@@ -281,9 +281,24 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [editBusy, setEditBusy] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
 
+  const editHasChanges = useMemo(
+    () =>
+      editTitle !== data.event.title ||
+      editStartsAtUtc !== data.event.window.startsAtUtc ||
+      editEndsAtUtc !== data.event.window.endsAtUtc,
+    [
+      editTitle,
+      editStartsAtUtc,
+      editEndsAtUtc,
+      data.event.title,
+      data.event.window.startsAtUtc,
+      data.event.window.endsAtUtc,
+    ],
+  );
+
   async function handleEditSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!actingVolunteerId) return;
+    if (!actingVolunteerId || !editHasChanges) return;
     setEditBusy(true);
     setEditError(null);
     try {
@@ -301,7 +316,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       if (result.voidedAssignmentCount > 0) {
         toasts.push({
           id: crypto.randomUUID(),
-          kind: 'info',
+          kind: 'warning',
           message: t('detail.edit.voidedWarning', { count: result.voidedAssignmentCount }),
         });
       } else {
@@ -646,7 +661,11 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                 />
               </div>
               <div className="flex flex-wrap gap-3">
-                <Button type="submit" disabled={editBusy} className="self-start">
+                <Button
+                  type="submit"
+                  disabled={editBusy || !editHasChanges}
+                  className="self-start"
+                >
                   {editBusy ? t('detail.saving') : t('detail.edit.submit')}
                 </Button>
                 <Button

@@ -426,7 +426,7 @@ describe('SchedulingEventDetailView edit section', () => {
     await waitFor(() => {
       expect(mockToastPush).toHaveBeenCalledWith(
         expect.objectContaining({
-          kind: 'info',
+          kind: 'warning',
           message: expect.stringContaining('2'),
         }),
       );

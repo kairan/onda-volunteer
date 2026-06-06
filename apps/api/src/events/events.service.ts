@@ -421,7 +421,30 @@ export class EventsService {
     }
 
     if (event.kind === 'PUBLIC') {
-      await input.auth.assertAdminAccreditedForChurch(event.churchId);
+      try {
+        await input.auth.assertAdminAccreditedForChurch(event.churchId);
+      } catch (err) {
+        if (
+          err instanceof ForbiddenException &&
+          (err.getResponse() as { code?: string }).code === 'ADMIN_NOT_ACCREDITED'
+        ) {
+          const volunteer = await input.auth.requireVolunteer();
+          const leadership = await this.prisma.ministryLeader.findFirst({
+            where: {
+              volunteerId: volunteer.id,
+              ministry: { churchId: event.churchId },
+            },
+          });
+          if (leadership) {
+            throw new ForbiddenException({
+              code: 'LEADER_CANNOT_EDIT_PUBLIC_EVENT',
+              message:
+                'Only an Admin accredited for this Church may edit a Public event.',
+            });
+          }
+        }
+        throw err;
+      }
     } else {
       try {
         await input.auth.assertLeaderCanActOnMinistry(event.ministryId!);

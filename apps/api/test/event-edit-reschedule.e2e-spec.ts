@@ -192,7 +192,7 @@ describe('PATCH /events/:id (e2e)', () => {
       .expect(403);
 
     expect(res.body).toMatchObject({
-      code: 'ADMIN_NOT_ACCREDITED',
+      code: 'LEADER_CANNOT_EDIT_PUBLIC_EVENT',
     });
   });
 
