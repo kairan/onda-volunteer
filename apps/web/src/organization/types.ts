@@ -7,6 +7,7 @@ export type Campus = {
 export type MinistrySummary = {
   id: string;
   name: string;
+  archivedAt?: string | null;
   membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
   isLeader?: boolean;
   isChurchAdmin?: boolean;

@@ -59,6 +59,15 @@ export class OrganizationController {
     return this.organization.listMinistryLeaders({ ministryId, auth });
   }
 
+  @Post(':ministryId/archive')
+  @HttpCode(HttpStatus.OK)
+  archiveMinistry(
+    @Param('ministryId') ministryId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    return this.organization.archiveMinistry({ ministryId, auth });
+  }
+
   @Patch(':ministryId')
   renameMinistry(
     @Param('ministryId') ministryId: string,

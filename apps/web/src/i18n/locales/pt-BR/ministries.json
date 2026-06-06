@@ -81,14 +81,21 @@
     "renameNameLabel": "Nome do ministério {{name}}",
     "saveRename": "Salvar ministério",
     "cancelRename": "Cancelar",
+    "archive": "Arquivar ministério",
+    "archivedBadge": "Arquivado",
+    "archivedOption": "{{name}} (arquivado)",
+    "archiveConfirm": "Arquivar \"{{name}}\"? Novas operações de agenda, membros, funções e ausências serão bloqueadas. Designações futuras deste ministério serão anuladas. O histórico permanece legível.",
     "messages": {
       "created": "Ministério criado.",
-      "renamed": "Ministério renomeado."
+      "renamed": "Ministério renomeado.",
+      "archived": "Ministério arquivado."
     },
     "errors": {
       "notAccredited": "Você não está credenciado para esta igreja.",
       "nameRequired": "O nome do ministério é obrigatório.",
-      "nameConflict": "Já existe um ministério com esse nome nesta igreja."
+      "nameConflict": "Já existe um ministério com esse nome nesta igreja.",
+      "alreadyArchived": "Este ministério já está arquivado.",
+      "archived": "Este ministério está arquivado e não aceita novas alterações."
     }
   },
   "delegation": {

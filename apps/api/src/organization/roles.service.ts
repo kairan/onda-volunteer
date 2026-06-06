@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { assertMinistryAcceptsWrites } from './ministry-write-guard';
 
 @Injectable()
 export class RolesService {
@@ -34,6 +35,7 @@ export class RolesService {
     auth: AuthenticatedRequestContext;
   }) {
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const name = input.name?.trim();
     if (!name) {
@@ -67,6 +69,7 @@ export class RolesService {
     auth: AuthenticatedRequestContext;
   }) {
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const name = input.name?.trim();
     if (!name) {
@@ -111,6 +114,7 @@ export class RolesService {
     auth: AuthenticatedRequestContext;
   }) {
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const role = await this.prisma.ministryRole.findUnique({
       where: { id: input.roleId },

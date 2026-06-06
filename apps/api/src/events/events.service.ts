@@ -8,6 +8,7 @@ import { CLOCK, type Clock } from '../common/clock';
 import { DateTime } from 'luxon';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { assertMinistryAcceptsWrites } from '../organization/ministry-write-guard';
 import { StewardshipService } from '../organization/stewardship.service';
 import { assertSchedulingWriteAllowed } from '../scheduling/scheduling-write-guard';
 
@@ -175,6 +176,7 @@ export class EventsService {
   }) {
     await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const { title, startsAtUtc, endsAtUtc } = this.validateEventWindow(
       input.title,

@@ -11,6 +11,7 @@ import {
   fetchMinistryMemberships,
   type MinistryMembershipRow,
 } from '@/organization/fetchMinistryMemberships';
+import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { Button } from '@/components/ui/button';
 
@@ -26,8 +27,10 @@ export function VolunteersPage() {
 
   const stewardshipMinistries = useMemo(
     () =>
-      activeChurch?.ministries.filter((m) => m.isLeader || m.isChurchAdmin) ??
-      [],
+      ministriesForWritePickers(
+        activeChurch?.ministries.filter((m) => m.isLeader || m.isChurchAdmin) ??
+          [],
+      ),
     [activeChurch?.ministries],
   );
 

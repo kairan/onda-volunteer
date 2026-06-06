@@ -4,6 +4,7 @@ import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { fetchMinistryRoles, type MinistryRoleRow } from '@/organization/fetchMinistryRoles';
+import { archiveMinistry, ministriesForWritePickers } from '@/organization/ministryArchive';
 import {
   createMinistry,
   renameMinistry,
@@ -31,8 +32,10 @@ export function MinistriesPage() {
 
   const roleCatalogMinistries = useMemo(
     () =>
-      activeChurch?.ministries.filter((m) => m.isLeader || m.isChurchAdmin) ??
-      [],
+      ministriesForWritePickers(
+        activeChurch?.ministries.filter((m) => m.isLeader || m.isChurchAdmin) ??
+          [],
+      ),
     [activeChurch?.ministries],
   );
 
@@ -68,6 +71,12 @@ export function MinistriesPage() {
       }
       if (err.code === 'MINISTRY_NAME_CONFLICT') {
         return t('structure.errors.nameConflict');
+      }
+      if (err.code === 'MINISTRY_ALREADY_ARCHIVED') {
+        return t('structure.errors.alreadyArchived');
+      }
+      if (err.code === 'MINISTRY_ARCHIVED') {
+        return t('structure.errors.archived');
       }
     }
     return err instanceof Error ? err.message : t('errorGeneric');
@@ -109,6 +118,26 @@ export function MinistriesPage() {
       });
       setNewMinistryName('');
       setStructureMessage(t('structure.messages.created'));
+      await refresh();
+    } catch (err) {
+      setStructureError(structureErrorMessage(err));
+    } finally {
+      setStructureBusy(false);
+    }
+  }
+
+  async function handleArchiveMinistry(ministryIdToArchive: string, ministryName: string) {
+    if (!actingVolunteerId) return;
+    if (!window.confirm(t('structure.archiveConfirm', { name: ministryName }))) return;
+    setStructureBusy(true);
+    setStructureError(null);
+    setStructureMessage(null);
+    try {
+      await archiveMinistry({
+        ministryId: ministryIdToArchive,
+        actingVolunteerId,
+      });
+      setStructureMessage(t('structure.messages.archived'));
       await refresh();
     } catch (err) {
       setStructureError(structureErrorMessage(err));
@@ -296,22 +325,44 @@ export function MinistriesPage() {
                       </div>
                     ) : (
                       <>
-                        <p className="font-medium">{ministry.name}</p>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          aria-label={t('structure.renameAria', {
-                            name: ministry.name,
-                          })}
-                          onClick={() => {
-                            setMinistryRenameId(ministry.id);
-                            setMinistryRenameName(ministry.name);
-                          }}
-                          disabled={structureBusy}
-                        >
-                          {t('structure.rename')}
-                        </Button>
+                        <div>
+                          <p className="font-medium">{ministry.name}</p>
+                          {ministry.archivedAt ? (
+                            <p className="text-xs uppercase text-muted-foreground">
+                              {t('structure.archivedBadge')}
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            aria-label={t('structure.renameAria', {
+                              name: ministry.name,
+                            })}
+                            onClick={() => {
+                              setMinistryRenameId(ministry.id);
+                              setMinistryRenameName(ministry.name);
+                            }}
+                            disabled={structureBusy}
+                          >
+                            {t('structure.rename')}
+                          </Button>
+                          {!ministry.archivedAt ? (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="destructive"
+                              onClick={() =>
+                                void handleArchiveMinistry(ministry.id, ministry.name)
+                              }
+                              disabled={structureBusy}
+                            >
+                              {t('structure.archive')}
+                            </Button>
+                          ) : null}
+                        </div>
                       </>
                     )}
                   </li>

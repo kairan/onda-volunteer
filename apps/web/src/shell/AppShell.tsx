@@ -28,25 +28,6 @@ export function AppShell({ children }: { children?: ReactNode }) {
     auth.status === 'authenticated' || auth.status === 'dev-bypass';
   const devVolunteerIdForOrg =
     auth.status === 'dev-bypass' ? auth.volunteerId : demoVolunteerId();
-
-  return (
-    <OrganizationContextProvider
-      enabled={orgReady}
-      devVolunteerId={devVolunteerIdForOrg}
-    >
-      <LocalTimeProvider>
-        <AppShellContent>{children}</AppShellContent>
-      </LocalTimeProvider>
-    </OrganizationContextProvider>
-  );
-}
-
-function AppShellContent({ children }: { children?: ReactNode }) {
-  const { t } = useTranslation(['shell', 'common', 'systemAdmin']);
-  const auth = useAuthSession();
-  const toasts = useToasts();
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   const [isSystemAdmin, setIsSystemAdmin] = useState(false);
 
   useEffect(() => {
@@ -79,6 +60,32 @@ function AppShellContent({ children }: { children?: ReactNode }) {
     };
   }, [auth]);
 
+  return (
+    <OrganizationContextProvider
+      enabled={orgReady}
+      devVolunteerId={devVolunteerIdForOrg}
+      isSystemAdmin={isSystemAdmin}
+    >
+      <LocalTimeProvider>
+        <AppShellContent isSystemAdmin={isSystemAdmin}>{children}</AppShellContent>
+      </LocalTimeProvider>
+    </OrganizationContextProvider>
+  );
+}
+
+function AppShellContent({
+  children,
+  isSystemAdmin,
+}: {
+  children?: ReactNode;
+  isSystemAdmin: boolean;
+}) {
+  const { t } = useTranslation(['shell', 'common', 'systemAdmin']);
+  const auth = useAuthSession();
+  const toasts = useToasts();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+
   useEffect(() => {
     if (!consumeSystemAdminAccessDenied()) {
       return;
@@ -96,8 +103,10 @@ function AppShellContent({ children }: { children?: ReactNode }) {
     error,
     activeChurchId,
     activeCampusId,
+    activeMinistryId,
     onChurchChange,
     onCampusChange,
+    onMinistryChange,
   } = useOrganization();
 
   return (
@@ -128,8 +137,11 @@ function AppShellContent({ children }: { children?: ReactNode }) {
               churches={churches}
               activeChurchId={activeChurchId}
               activeCampusId={activeCampusId}
+              activeMinistryId={activeMinistryId}
+              isSystemAdmin={isSystemAdmin}
               onChurchChange={onChurchChange}
               onCampusChange={onCampusChange}
+              onMinistryChange={onMinistryChange}
             />
           ) : null}
           <nav className="flex flex-1 flex-col gap-3 px-3 py-4" aria-label="Primary">

@@ -12,6 +12,7 @@ import {
 import { updateVolunteerUnavailability } from '@/identity/updateVolunteerUnavailability';
 import { fetchMinistryMemberships } from '@/organization/fetchMinistryMemberships';
 import type { MinistryMembershipRow } from '@/organization/fetchMinistryMemberships';
+import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import {
   datetimeLocalToUtcIso,
@@ -41,7 +42,10 @@ export function LeaderVolunteerTimeAwayPage() {
       : null;
 
   const ledMinistries = useMemo(
-    () => activeChurch?.ministries.filter((m) => m.isLeader) ?? [],
+    () =>
+      ministriesForWritePickers(
+        activeChurch?.ministries.filter((m) => m.isLeader) ?? [],
+      ),
     [activeChurch?.ministries],
   );
 

@@ -3,6 +3,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { createPrivateEvent } from '@/events/createPrivateEvent';
+import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { datetimeLocalToUtcIso } from '@/settings/datetimeLocalUtc';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,10 @@ export function SchedulingCreatePrivateEventPage() {
       : null;
 
   const ledMinistries = useMemo(
-    () => activeChurch?.ministries.filter((m) => m.isLeader) ?? [],
+    () =>
+      ministriesForWritePickers(
+        activeChurch?.ministries.filter((m) => m.isLeader) ?? [],
+      ),
     [activeChurch?.ministries],
   );
 

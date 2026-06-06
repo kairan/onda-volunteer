@@ -23,8 +23,10 @@ describe('OrganizationContextControls', () => {
             churches={DEMO_CHURCHES}
             activeChurchId="church-a"
             activeCampusId="campus-a1"
+            activeMinistryId="ministry-a"
             onChurchChange={onChurchChange}
             onCampusChange={() => {}}
+            onMinistryChange={() => {}}
           />
         </LocalTimeProvider>
       </I18nProvider>,
@@ -46,8 +48,10 @@ describe('OrganizationContextControls', () => {
             churches={DEMO_CHURCHES}
             activeChurchId="church-b"
             activeCampusId="campus-b1"
+            activeMinistryId="ministry-b"
             onChurchChange={() => {}}
             onCampusChange={() => {}}
+            onMinistryChange={() => {}}
           />
         </LocalTimeProvider>
       </I18nProvider>,
@@ -61,8 +65,10 @@ describe('OrganizationContextControls', () => {
             churches={DEMO_CHURCHES}
             activeChurchId="church-a"
             activeCampusId="campus-a1"
+            activeMinistryId="ministry-a"
             onChurchChange={() => {}}
             onCampusChange={() => {}}
+            onMinistryChange={() => {}}
           />
         </LocalTimeProvider>
       </I18nProvider>,

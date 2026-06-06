@@ -16,6 +16,7 @@
   "organizationLoading": "Loading churches…",
   "churchLabel": "Church",
   "campusLabel": "Campus",
+  "ministryLabel": "Ministry",
   "timezoneCue": "TZ: {{short}}",
   "timezoneDetails": "IANA timezone: {{iana}}",
   "showLocalTime": "Also show my local time",
