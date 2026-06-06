@@ -65,6 +65,11 @@ export type ReleaseAssignmentInput = {
   auth: AuthenticatedRequestContext;
 };
 
+export type VoidAssignmentInput = {
+  assignmentId: string;
+  auth: AuthenticatedRequestContext;
+};
+
 export type CreateUnavailabilityInput = {
   volunteerId: string;
   auth: AuthenticatedRequestContext;
@@ -454,6 +459,67 @@ export class SchedulingService {
         startsAtUtc: created.startsAtUtc.toISOString(),
         endsAtUtc: created.endsAtUtc.toISOString(),
       },
+    };
+  }
+
+  async voidAssignment(input: VoidAssignmentInput) {
+    await assertSchedulingWriteAllowed(input.auth);
+
+    const assignment = await this.prisma.assignment.findUnique({
+      where: { id: input.assignmentId },
+      include: {
+        event: { select: { churchId: true } },
+      },
+    });
+    if (!assignment) {
+      throw new NotFoundException({
+        code: 'ASSIGNMENT_NOT_FOUND',
+        message: 'Assignment not found.',
+      });
+    }
+    if (assignment.voidedAtUtc !== null) {
+      throw new BadRequestException({
+        code: 'ASSIGNMENT_ALREADY_VOIDED',
+        message: 'This assignment is no longer an active commitment.',
+      });
+    }
+
+    let authorized = false;
+    try {
+      await input.auth.assertLeaderCanActOnMinistry(assignment.ministryId);
+      authorized = true;
+    } catch (err) {
+      if (!(err instanceof ForbiddenException)) {
+        throw err;
+      }
+    }
+    if (!authorized) {
+      try {
+        await input.auth.assertAdminAccreditedForChurch(
+          assignment.event.churchId,
+        );
+        authorized = true;
+      } catch (err) {
+        if (err instanceof ForbiddenException) {
+          throw new ForbiddenException({
+            code: 'LEADER_NOT_ASSIGNED',
+            message:
+              'You are not authorized to void assignments for this ministry.',
+          });
+        }
+        throw err;
+      }
+    }
+
+    const now = this.clock.now();
+    const updated = await this.prisma.assignment.update({
+      where: { id: assignment.id },
+      data: { voidedAtUtc: now },
+    });
+
+    return {
+      id: updated.id,
+      voidedAtUtc: updated.voidedAtUtc!.toISOString(),
     };
   }
 

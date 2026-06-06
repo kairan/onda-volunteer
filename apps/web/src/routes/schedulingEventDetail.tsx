@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useRouter } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import type { EventDetailPayload } from '@/eventDetailPayload';
@@ -18,7 +18,17 @@ import { DestructiveConfirmDialog } from '@/components/DestructiveConfirmDialog'
 import { ApiRequestError } from '@/apiError';
 import { createAssignment } from '@/events/createAssignment';
 import { releaseAssignment } from '@/events/releaseAssignment';
+import { voidAssignment } from '@/events/voidAssignment';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
+import {
+  fetchMinistryMemberships,
+  type MinistryMembershipRow,
+} from '@/organization/fetchMinistryMemberships';
+import {
+  fetchMinistryRoles,
+  type MinistryRoleRow,
+} from '@/organization/fetchMinistryRoles';
+import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { Button } from '@/components/ui/button';
 import { useToasts } from '@/feedback/ToastHost';
 import { cn } from '@/lib/utils';
@@ -57,6 +67,29 @@ function defaultAssignmentWindow(payload: EventDetailPayload): {
   };
 }
 
+function mapAssignError(
+  err: unknown,
+  t: (key: string) => string,
+): string {
+  if (!(err instanceof ApiRequestError)) {
+    return t('detail.errors.assignFailed');
+  }
+  switch (err.code) {
+    case 'UNAVAILABILITY_BLOCKS_ASSIGN':
+      return t('detail.errors.unavailabilityBlocksAssign');
+    case 'ASSIGNMENT_OVERLAP':
+      return t('detail.errors.assignmentOverlap');
+    case 'OUTSIDE_EVENT_WINDOW':
+      return t('detail.errors.outsideEventWindow');
+    case 'MINISTRY_ARCHIVED':
+      return t('detail.errors.ministryArchived');
+    case 'LEADER_NOT_ASSIGNED':
+      return t('detail.errors.notLeader');
+    default:
+      return err.message;
+  }
+}
+
 export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }) {
   const { t, i18n } = useTranslation('scheduling');
   const { buildDualInterval } = useLocalTimeContext();
@@ -69,7 +102,125 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
   const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
 
+  const ledMinistries = useMemo(
+    () =>
+      ministriesForWritePickers(
+        activeChurch?.ministries?.filter((m) => m.isLeader) ?? [],
+      ),
+    [activeChurch?.ministries],
+  );
+
+  const isLeaderForMinistry = useCallback(
+    (ministryId: string) =>
+      ledMinistries.some((ministry) => ministry.id === ministryId),
+    [ledMinistries],
+  );
+
   const isCancelled = Boolean(data.event.cancelledAtUtc);
+
+  const privateEventMinistryId =
+    data.event.kind === 'PRIVATE' ? (data.ministry?.id ?? null) : null;
+
+  const canShowAssignForm = useMemo(() => {
+    if (isCancelled || !actingVolunteerId) {
+      return false;
+    }
+    if (data.event.kind === 'PRIVATE') {
+      return (
+        privateEventMinistryId !== null &&
+        ledMinistries.some((ministry) => ministry.id === privateEventMinistryId)
+      );
+    }
+    return ledMinistries.length > 0;
+  }, [
+    actingVolunteerId,
+    data.event.kind,
+    isCancelled,
+    ledMinistries,
+    privateEventMinistryId,
+  ]);
+
+  const [selectedMinistryId, setSelectedMinistryId] = useState('');
+
+  useEffect(() => {
+    if (data.event.kind === 'PUBLIC' && ledMinistries.length === 1 && !selectedMinistryId) {
+      setSelectedMinistryId(ledMinistries[0].id);
+    }
+  }, [data.event.kind, ledMinistries, selectedMinistryId]);
+
+  const formMinistryId =
+    data.event.kind === 'PRIVATE'
+      ? privateEventMinistryId
+      : ledMinistries.length === 1
+        ? ledMinistries[0].id
+        : selectedMinistryId || null;
+
+  const [memberships, setMemberships] = useState<MinistryMembershipRow[]>([]);
+  const [roles, setRoles] = useState<MinistryRoleRow[]>([]);
+  const [pickerLoading, setPickerLoading] = useState(false);
+  const [selectedVolunteerId, setSelectedVolunteerId] = useState('');
+  const [selectedRoleId, setSelectedRoleId] = useState('');
+
+  useEffect(() => {
+    if (!formMinistryId || !actingVolunteerId || !canShowAssignForm) {
+      setMemberships([]);
+      setRoles([]);
+      setSelectedVolunteerId('');
+      setSelectedRoleId('');
+      return;
+    }
+
+    let cancelled = false;
+    setPickerLoading(true);
+    void Promise.all([
+      fetchMinistryMemberships({
+        ministryId: formMinistryId,
+        actingVolunteerId,
+      }),
+      fetchMinistryRoles({
+        ministryId: formMinistryId,
+        actingVolunteerId,
+      }),
+    ])
+      .then(([membershipRows, roleRows]) => {
+        if (cancelled) {
+          return;
+        }
+        const activeMembers = membershipRows.filter(
+          (row) => row.status === 'ACTIVE',
+        );
+        const activeRoles = roleRows.filter((row) => !row.retired);
+        setMemberships(activeMembers);
+        setRoles(activeRoles);
+        setSelectedVolunteerId((current) =>
+          activeMembers.some((row) => row.volunteerId === current)
+            ? current
+            : (activeMembers[0]?.volunteerId ?? ''),
+        );
+        setSelectedRoleId((current) =>
+          activeRoles.some((row) => row.id === current)
+            ? current
+            : (activeRoles[0]?.id ?? ''),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setMemberships([]);
+          setRoles([]);
+          setSelectedVolunteerId('');
+          setSelectedRoleId('');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setPickerLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [actingVolunteerId, canShowAssignForm, formMinistryId]);
 
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelBusy, setCancelBusy] = useState(false);
@@ -79,16 +230,6 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     null,
   );
 
-  const demoMinistry = import.meta.env.VITE_DEMO_MINISTRY_ID as string | undefined;
-  const demoVolunteer = import.meta.env.VITE_DEMO_VOLUNTEER_ID as string | undefined;
-  const demoRole = import.meta.env.VITE_DEMO_ROLE_ID as string | undefined;
-
-  const canAssign =
-    !isCancelled &&
-    Boolean(demoMinistry && demoVolunteer && demoRole) &&
-    (data.event.kind === 'PUBLIC' ||
-      (data.event.kind === 'PRIVATE' && data.ministry?.id === demoMinistry));
-
   const initialWindow = defaultAssignmentWindow(data);
   const [startsAtUtc, setStartsAtUtc] = useState(initialWindow.startsAtUtc);
   const [endsAtUtc, setEndsAtUtc] = useState(initialWindow.endsAtUtc);
@@ -97,6 +238,10 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [assignError, setAssignError] = useState<string | null>(null);
   const [releaseError, setReleaseError] = useState<string | null>(null);
   const [offerError, setOfferError] = useState<string | null>(null);
+
+  const [removeTargetId, setRemoveTargetId] = useState<string | null>(null);
+  const [removeBusy, setRemoveBusy] = useState(false);
+  const [removeError, setRemoveError] = useState<string | null>(null);
 
   const [releasedOffer, setReleasedOffer] = useState<{
     ministryId: string;
@@ -154,28 +299,22 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
   async function handleAssignSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!demoMinistry || !demoVolunteer || !demoRole) return;
+    if (!formMinistryId || !selectedVolunteerId || !selectedRoleId) return;
     setBusy(true);
     setAssignError(null);
     try {
       await createAssignment({
         eventId: data.event.id,
-        volunteerId: demoVolunteer,
-        ministryId: demoMinistry,
-        roleId: demoRole,
+        volunteerId: selectedVolunteerId,
+        ministryId: formMinistryId,
+        roleId: selectedRoleId,
         startsAtUtc,
         endsAtUtc,
       });
       await router.invalidate();
       pushSuccessToast(t('detail.assignSuccess'));
     } catch (err) {
-      if (err instanceof ApiRequestError && err.code === 'UNAVAILABILITY_BLOCKS_ASSIGN') {
-        setAssignError(t('detail.errors.unavailabilityBlocksAssign'));
-      } else if (err instanceof ApiRequestError) {
-        setAssignError(err.message);
-      } else {
-        setAssignError(t('detail.errors.assignFailed'));
-      }
+      setAssignError(mapAssignError(err, t));
     } finally {
       setBusy(false);
     }
@@ -222,6 +361,38 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     }
   }
 
+  async function handleRemoveConfirm() {
+    if (!removeTargetId || !actingVolunteerId) return;
+    setRemoveBusy(true);
+    setRemoveError(null);
+    try {
+      await voidAssignment({
+        assignmentId: removeTargetId,
+        actingVolunteerId,
+      });
+      setRemoveTargetId(null);
+      await router.invalidate();
+      pushSuccessToast(t('detail.removeSuccess'));
+    } catch (err) {
+      if (err instanceof ApiRequestError && err.code === 'ASSIGNMENT_ALREADY_VOIDED') {
+        setRemoveError(t('detail.errors.alreadyVoided'));
+      } else if (err instanceof ApiRequestError && err.code === 'LEADER_NOT_ASSIGNED') {
+        setRemoveError(t('detail.errors.notLeader'));
+      } else if (
+        err instanceof ApiRequestError &&
+        err.code === 'SYSTEM_ADMIN_READ_ONLY'
+      ) {
+        setRemoveError(t('detail.errors.releaseReadOnly'));
+      } else if (err instanceof ApiRequestError) {
+        setRemoveError(err.message);
+      } else {
+        setRemoveError(t('detail.errors.removeFailed'));
+      }
+    } finally {
+      setRemoveBusy(false);
+    }
+  }
+
   async function handleConfirmOffer() {
     if (!volunteerId || !releasedOffer) return;
     setOfferBusy(true);
@@ -235,12 +406,28 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       });
       setOfferDone(true);
       setReleasedOffer(null);
-    } catch (err) {
+    } catch {
       setOfferError(t('detail.errors.unavailabilityFailed'));
     } finally {
       setOfferBusy(false);
     }
   }
+
+  function canRemoveAssignment(
+    assignment: EventDetailPayload['assignments'][number],
+  ): boolean {
+    if (assignment.volunteer.id === volunteerId) {
+      return false;
+    }
+    return (
+      isLeaderForMinistry(assignment.ministry.id) || isAccreditedAdmin
+    );
+  }
+
+  const showMinistryPicker =
+    canShowAssignForm &&
+    data.event.kind === 'PUBLIC' &&
+    ledMinistries.length > 1;
 
   return (
     <section className="flex flex-col gap-8">
@@ -373,6 +560,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           </p>
         ) : null}
 
+        {removeError ? (
+          <p
+            role="alert"
+            className="border-2 border-destructive bg-surface p-3 text-sm text-destructive font-semibold"
+          >
+            {removeError}
+          </p>
+        ) : null}
+
         {data.assignments.length === 0 ? (
           <div className="flex flex-col items-center justify-center border-2 border-border bg-surface p-12 text-center text-muted-foreground">
             <p className="max-w-xs text-sm">{t('detail.emptyRoster')}</p>
@@ -404,6 +600,8 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
               <tbody>
                 {data.assignments.map((assignment) => {
                   const selected = selectedAssignmentId === assignment.id;
+                  const showRelease = assignment.volunteer.id === volunteerId;
+                  const showRemove = canRemoveAssignment(assignment);
                   return (
                     <tr
                       key={assignment.id}
@@ -437,20 +635,37 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                       </td>
                       {volunteerId ? (
                         <td className="px-4 py-3 text-right">
-                          {assignment.volunteer.id === volunteerId ? (
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              disabled={busy}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                void handleRelease(assignment.id);
-                              }}
-                            >
-                              {t('detail.release')}
-                            </Button>
-                          ) : null}
+                          <div className="flex justify-end gap-2">
+                            {showRelease ? (
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                disabled={busy}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  void handleRelease(assignment.id);
+                                }}
+                              >
+                                {t('detail.release')}
+                              </Button>
+                            ) : null}
+                            {showRemove ? (
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                disabled={busy || removeBusy}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setRemoveError(null);
+                                  setRemoveTargetId(assignment.id);
+                                }}
+                              >
+                                {t('detail.remove')}
+                              </Button>
+                            ) : null}
+                          </div>
                         </td>
                       ) : null}
                     </tr>
@@ -481,22 +696,122 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
         </p>
       ) : null}
 
-      {canAssign ? (
+      <DestructiveConfirmDialog
+        open={removeTargetId !== null}
+        title={t('detail.removeDialog.title')}
+        description={t('detail.removeDialog.body')}
+        confirmLabel={
+          removeBusy ? t('detail.saving') : t('detail.removeDialog.confirm')
+        }
+        onConfirm={() => void handleRemoveConfirm()}
+        onCancel={() => {
+          if (!removeBusy) {
+            setRemoveTargetId(null);
+          }
+        }}
+      />
+
+      {canShowAssignForm ? (
         <form
           className="flex flex-col gap-4 border-2 border-border bg-surface p-6 shadow-[8px_8px_0_0_hsl(var(--border))]"
           onSubmit={(e) => void handleAssignSubmit(e)}
           noValidate
-          aria-labelledby="assign-demo-heading"
+          aria-labelledby="assign-heading"
         >
           <h2
-            id="assign-demo-heading"
+            id="assign-heading"
             className="font-display text-2xl font-bold uppercase tracking-tight"
           >
             {t('detail.assignHeading')}
           </h2>
-          <p className="text-sm text-muted-foreground">{t('detail.assignDemoHelp')}</p>
 
           <div className="flex flex-col gap-4">
+            {showMinistryPicker ? (
+              <div className="flex flex-col gap-1">
+                <label
+                  htmlFor="assignMinistryId"
+                  className="text-sm font-semibold uppercase tracking-wide"
+                >
+                  {t('detail.ministryLabel')}
+                </label>
+                <select
+                  id="assignMinistryId"
+                  className="border-2 border-border bg-background px-3 py-2 text-sm"
+                  value={selectedMinistryId}
+                  onChange={(e) => {
+                    setSelectedMinistryId(e.target.value);
+                    setAssignError(null);
+                  }}
+                  disabled={busy || pickerLoading}
+                >
+                  <option value="">{t('detail.ministryPlaceholder')}</option>
+                  {ledMinistries.map((ministry) => (
+                    <option key={ministry.id} value={ministry.id}>
+                      {ministry.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : null}
+
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="assignVolunteerId"
+                className="text-sm font-semibold uppercase tracking-wide"
+              >
+                {t('detail.volunteerLabel')}
+              </label>
+              <select
+                id="assignVolunteerId"
+                className="border-2 border-border bg-background px-3 py-2 text-sm"
+                value={selectedVolunteerId}
+                onChange={(e) => {
+                  setSelectedVolunteerId(e.target.value);
+                  setAssignError(null);
+                }}
+                disabled={busy || pickerLoading || !formMinistryId || memberships.length === 0}
+              >
+                {memberships.length === 0 ? (
+                  <option value="">{t('detail.noActiveVolunteers')}</option>
+                ) : (
+                  memberships.map((row) => (
+                    <option key={row.volunteerId} value={row.volunteerId}>
+                      {row.displayName}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="assignRoleId"
+                className="text-sm font-semibold uppercase tracking-wide"
+              >
+                {t('detail.roleLabel')}
+              </label>
+              <select
+                id="assignRoleId"
+                className="border-2 border-border bg-background px-3 py-2 text-sm"
+                value={selectedRoleId}
+                onChange={(e) => {
+                  setSelectedRoleId(e.target.value);
+                  setAssignError(null);
+                }}
+                disabled={busy || pickerLoading || !formMinistryId || roles.length === 0}
+              >
+                {roles.length === 0 ? (
+                  <option value="">{t('detail.noActiveRoles')}</option>
+                ) : (
+                  roles.map((row) => (
+                    <option key={row.id} value={row.id}>
+                      {row.name}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+
             <div className="flex flex-col gap-1">
               <label htmlFor="startsAtUtc" className="text-sm font-semibold uppercase tracking-wide">
                 {t('detail.startsAtUtcLabel')}
@@ -529,7 +844,17 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
               />
             </div>
 
-            <Button type="submit" disabled={busy} className="self-start mt-2">
+            <Button
+              type="submit"
+              disabled={
+                busy ||
+                pickerLoading ||
+                !formMinistryId ||
+                !selectedVolunteerId ||
+                !selectedRoleId
+              }
+              className="self-start mt-2"
+            >
               {busy ? t('detail.saving') : t('detail.createAssignment')}
             </Button>
 
