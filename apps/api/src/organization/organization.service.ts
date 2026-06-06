@@ -88,9 +88,7 @@ export class OrganizationService {
       const archivedAt = ministry.archivedAt?.toISOString() ?? null;
       const existing = entry.ministries.get(ministry.id);
       if (existing) {
-        if (archivedAt) {
-          existing.archivedAt = archivedAt;
-        }
+        existing.archivedAt = archivedAt;
         if (membershipStatus) {
           existing.membershipStatus = membershipStatus;
         }

@@ -92,6 +92,7 @@ describe('Ministry structure administration (e2e)', () => {
       id: created.body.id,
       name: 'Welcome Team',
       isChurchAdmin: true,
+      archivedAt: null,
     });
   });
 
