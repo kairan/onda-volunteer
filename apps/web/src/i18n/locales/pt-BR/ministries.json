@@ -45,6 +45,29 @@
       "invalidTimezone": "Informe um fuso horário IANA válido."
     }
   },
+  "campusSettings": {
+    "title": "Configurações do campus",
+    "body": "Atualize o nome e o fuso horário IANA do campus ativo. Os horários dos eventos continuam em UTC; alterar o fuso afeta apenas a exibição deste campus.",
+    "nameLabel": "Nome do campus",
+    "timezoneLabel": "Fuso horário do campus",
+    "timezoneHint": "Use um fuso IANA como America/Sao_Paulo ou UTC.",
+    "save": "Salvar configurações do campus",
+    "saving": "Salvando…",
+    "messages": {
+      "saved": "Configurações do campus salvas."
+    },
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "nameRequired": "O nome do campus é obrigatório.",
+      "invalidTimezone": "Informe um fuso horário IANA válido."
+    },
+    "confirm": {
+      "title": "Alterar fuso horário do campus?",
+      "body": "Horários de eventos e designações em UTC não mudam. A exibição local deste campus usará o novo fuso horário.",
+      "cancel": "Cancelar",
+      "confirm": "Salvar alteração de fuso"
+    }
+  },
   "structure": {
     "title": "Estrutura dos ministérios",
     "body": "Crie e renomeie ministérios da igreja ativa. Renomeações mantêm o mesmo ID do ministério para preservar vínculos com membros, funções, designações e histórico de ausências.",
