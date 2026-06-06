@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { changeLocale, initI18n } from '@/i18n/controller';
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
@@ -8,14 +8,32 @@ import { SchedulingEventDetailView } from './schedulingEventDetail';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { ApiRequestError } from '@/apiError';
 import * as releaseAssignmentModule from '@/events/releaseAssignment';
+import * as voidAssignmentModule from '@/events/voidAssignment';
+import * as fetchMembershipsModule from '@/organization/fetchMinistryMemberships';
+import * as fetchRolesModule from '@/organization/fetchMinistryRoles';
 
 const mockVolunteerId = 'seed-volunteer-demo';
+const leaderMinistryId = 'min-leader';
+
+const mockOrganization = {
+  activeChurch: {
+    isAccreditedAdmin: false,
+    ministries: [] as Array<{
+      id: string;
+      name: string;
+      isLeader?: boolean;
+    }>,
+  },
+};
 
 vi.mock('@/auth/AuthSessionProvider', () => ({
   useAuthSession: () => ({ status: 'dev-bypass', volunteerId: mockVolunteerId }),
 }));
 
 vi.mock('@/events/releaseAssignment');
+vi.mock('@/events/voidAssignment');
+vi.mock('@/organization/fetchMinistryMemberships');
+vi.mock('@/organization/fetchMinistryRoles');
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
@@ -29,9 +47,7 @@ vi.mock('@/feedback/ToastHost', () => ({
 }));
 
 vi.mock('@/organization/OrganizationContextProvider', () => ({
-  useOrganization: () => ({
-    activeChurch: { isAccreditedAdmin: false },
-  }),
+  useOrganization: () => mockOrganization,
 }));
 
 vi.mock('@/auth/authSession', async (importOriginal) => {
@@ -44,7 +60,11 @@ vi.mock('@/auth/authSession', async (importOriginal) => {
 });
 
 const payload: EventDetailPayload = {
-  church: { name: 'Demo Church', defaultTimezone: 'America/New_York' },
+  church: {
+    id: 'church-1',
+    name: 'Demo Church',
+    defaultTimezone: 'America/New_York',
+  },
   event: {
     id: 'evt-1',
     kind: 'PUBLIC',
@@ -53,15 +73,30 @@ const payload: EventDetailPayload = {
       startsAtUtc: '2026-06-01T14:00:00.000Z',
       endsAtUtc: '2026-06-01T16:00:00.000Z',
     },
+    framing: {
+      churchDefaultTimezone: 'America/New_York',
+      startsDisplayInChurchTz: 'Sun, Jun 1, 10:00 AM',
+      endsDisplayInChurchTz: '12:00 PM',
+    },
     cancelledAtUtc: null,
   },
   ministry: null,
   assignments: [
     {
       id: 'asg-1',
-      ministry: { id: 'min-1', name: 'Band' },
+      ministry: { id: leaderMinistryId, name: 'Band' },
       volunteer: { id: mockVolunteerId, displayName: 'Demo Volunteer' },
       role: { id: 'role-1', name: 'Guitar' },
+      window: {
+        startsAtUtc: '2026-06-01T14:30:00.000Z',
+        endsAtUtc: '2026-06-01T15:30:00.000Z',
+      },
+    },
+    {
+      id: 'asg-2',
+      ministry: { id: leaderMinistryId, name: 'Band' },
+      volunteer: { id: 'other-volunteer', displayName: 'Other Volunteer' },
+      role: { id: 'role-2', name: 'Drums' },
       window: {
         startsAtUtc: '2026-06-01T14:30:00.000Z',
         endsAtUtc: '2026-06-01T15:30:00.000Z',
@@ -70,10 +105,27 @@ const payload: EventDetailPayload = {
   ],
 };
 
+function renderView(data: EventDetailPayload = payload) {
+  return render(
+    <I18nProvider>
+      <LocalTimeProvider>
+        <SchedulingEventDetailView data={data} />
+      </LocalTimeProvider>
+    </I18nProvider>,
+  );
+}
+
+beforeEach(() => {
+  mockOrganization.activeChurch = {
+    isAccreditedAdmin: false,
+    ministries: [],
+  };
+});
+
 afterEach(() => {
   cleanup();
   sessionStorage.clear();
-  vi.restoreAllMocks();
+  vi.clearAllMocks();
 });
 
 describe('SchedulingEventDetailView dual time', () => {
@@ -86,13 +138,7 @@ describe('SchedulingEventDetailView dual time', () => {
     await initI18n();
     sessionStorage.setItem('onda.useLocalTime', 'true');
 
-    render(
-      <I18nProvider>
-        <LocalTimeProvider>
-          <SchedulingEventDetailView data={payload} />
-        </LocalTimeProvider>
-      </I18nProvider>,
-    );
+    renderView();
 
     expect(screen.getAllByText(/Seu horário:/i).length).toBeGreaterThan(0);
   });
@@ -107,13 +153,7 @@ describe('SchedulingEventDetailView dual time', () => {
     await changeLocale('en');
     sessionStorage.setItem('onda.useLocalTime', 'true');
 
-    render(
-      <I18nProvider>
-        <LocalTimeProvider>
-          <SchedulingEventDetailView data={payload} />
-        </LocalTimeProvider>
-      </I18nProvider>,
-    );
+    renderView();
 
     expect(screen.getAllByText(/Your time:/i).length).toBeGreaterThan(0);
   });
@@ -122,13 +162,7 @@ describe('SchedulingEventDetailView dual time', () => {
     await initI18n();
     sessionStorage.setItem('onda.useLocalTime', 'false');
 
-    render(
-      <I18nProvider>
-        <LocalTimeProvider>
-          <SchedulingEventDetailView data={payload} />
-        </LocalTimeProvider>
-      </I18nProvider>,
-    );
+    renderView();
 
     expect(screen.queryByText(/Seu horário:/i)).toBeNull();
     expect(screen.getByText('Sunday Service')).toBeInTheDocument();
@@ -139,7 +173,7 @@ describe('SchedulingEventDetailView release assignment', () => {
   it('releases the volunteer own assignment when Liberar is clicked', async () => {
     const user = userEvent.setup();
     vi.mocked(releaseAssignmentModule.releaseAssignment).mockResolvedValue({
-      ministryId: 'min-1',
+      ministryId: leaderMinistryId,
       window: {
         startsAtUtc: '2026-06-01T14:30:00.000Z',
         endsAtUtc: '2026-06-01T15:30:00.000Z',
@@ -148,13 +182,7 @@ describe('SchedulingEventDetailView release assignment', () => {
 
     await initI18n();
     await changeLocale('pt-BR');
-    render(
-      <I18nProvider>
-        <LocalTimeProvider>
-          <SchedulingEventDetailView data={payload} />
-        </LocalTimeProvider>
-      </I18nProvider>,
-    );
+    renderView();
 
     await user.click(screen.getByRole('button', { name: 'Liberar' }));
 
@@ -178,18 +206,106 @@ describe('SchedulingEventDetailView release assignment', () => {
 
     await initI18n();
     await changeLocale('pt-BR');
-    render(
-      <I18nProvider>
-        <LocalTimeProvider>
-          <SchedulingEventDetailView data={payload} />
-        </LocalTimeProvider>
-      </I18nProvider>,
-    );
+    renderView();
 
     await user.click(screen.getByRole('button', { name: 'Liberar' }));
 
     expect(
       await screen.findByRole('alert'),
     ).toHaveTextContent(/só pode liberar a sua própria designação/i);
+  });
+});
+
+describe('SchedulingEventDetailView leader roster assignment', () => {
+  it('does not render the assignment form for non-leaders', async () => {
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(screen.queryByRole('heading', { name: 'Assign volunteer' })).toBeNull();
+  });
+
+  it('renders production pickers for a leader', async () => {
+    mockOrganization.activeChurch.ministries = [
+      { id: leaderMinistryId, name: 'Band', isLeader: true },
+    ];
+    vi.mocked(fetchMembershipsModule.fetchMinistryMemberships).mockResolvedValue([
+      {
+        volunteerId: 'vol-active',
+        displayName: 'Active Member',
+        status: 'ACTIVE',
+      },
+      {
+        volunteerId: 'vol-pending',
+        displayName: 'Pending Member',
+        status: 'PENDING',
+      },
+    ]);
+    vi.mocked(fetchRolesModule.fetchMinistryRoles).mockResolvedValue([
+      { id: 'role-active', name: 'Keys', retired: false },
+      { id: 'role-retired', name: 'Retired Role', retired: true },
+    ]);
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(
+      await screen.findByRole('heading', { name: 'Assign volunteer' }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Volunteer')).toBeInTheDocument();
+    expect(screen.getByLabelText('Role')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByRole('option', { name: 'Active Member' })).toBeInTheDocument();
+    });
+    expect(screen.queryByRole('option', { name: 'Pending Member' })).toBeNull();
+    expect(screen.getByRole('option', { name: 'Keys' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'Retired Role' })).toBeNull();
+  });
+
+  it('shows a load error when picker data fails to fetch', async () => {
+    mockOrganization.activeChurch.ministries = [
+      { id: leaderMinistryId, name: 'Band', isLeader: true },
+    ];
+    vi.mocked(fetchMembershipsModule.fetchMinistryMemberships).mockRejectedValue(
+      new ApiRequestError(403, 'Leader ministry scope mismatch.', 'LEADER_MINISTRY_MISMATCH'),
+    );
+    vi.mocked(fetchRolesModule.fetchMinistryRoles).mockResolvedValue([]);
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    expect(
+      await screen.findByRole('alert'),
+    ).toHaveTextContent(/leader ministry scope mismatch/i);
+  });
+
+  it('calls voidAssignment after confirming remove on another volunteer row', async () => {
+    const user = userEvent.setup();
+    mockOrganization.activeChurch.ministries = [
+      { id: leaderMinistryId, name: 'Band', isLeader: true },
+    ];
+    vi.mocked(fetchMembershipsModule.fetchMinistryMemberships).mockResolvedValue([]);
+    vi.mocked(fetchRolesModule.fetchMinistryRoles).mockResolvedValue([]);
+    vi.mocked(voidAssignmentModule.voidAssignment).mockResolvedValue({
+      id: 'asg-2',
+      voidedAtUtc: '2026-06-01T15:00:00.000Z',
+    });
+
+    await initI18n(undefined, 'en');
+    renderView();
+
+    await user.click(await screen.findByRole('button', { name: 'Remove' }));
+    expect(
+      screen.getByRole('dialog', { name: 'Remove this assignment?' }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Yes, remove' }));
+
+    await waitFor(() => {
+      expect(voidAssignmentModule.voidAssignment).toHaveBeenCalledWith({
+        assignmentId: 'asg-2',
+        actingVolunteerId: mockVolunteerId,
+      });
+    });
   });
 });

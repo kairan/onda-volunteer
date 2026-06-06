@@ -77,11 +77,20 @@ test.describe('scheduling event roster @integration', () => {
     ).toBeVisible();
   });
 
-  test('volunteer release and demo assign with post-release unavailability offer', async ({
+  test('volunteer release and production assign with post-release unavailability offer', async ({
     page,
   }) => {
-    // 1. Go to the event roster detail page
-    await page.goto('/scheduling/events/seed-event-public');
+    // 1. Load org context and open the event roster with the seeded church selected
+    await Promise.all([
+      page.waitForResponse(
+        (res) =>
+          res.url().includes('/organization/context') && res.status() === 200,
+      ),
+      page.goto('/scheduling'),
+    ]);
+    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central');
+    await page.getByRole('link', { name: 'Sunday Gathering' }).click();
+    await expect(page).toHaveURL(/\/scheduling\/events\/seed-event-public$/);
     await expect(page.getByRole('heading', { name: 'Sunday Gathering', level: 1 })).toBeVisible();
 
     // 2. We should see the existing seeded assignment: Demo Volunteer / Greeter
@@ -107,9 +116,12 @@ test.describe('scheduling event roster @integration', () => {
     await noThanksBtn.click();
     await expect(offerSection).not.toBeVisible();
 
-    // 7. Verify the Assign Form is visible (since demo credentials are set in E2E environment)
-    const assignForm = page.getByRole('form', { name: 'Assign (demo)' });
-    await expect(assignForm).toBeVisible();
+    // 7. Verify the production assign form is visible for the seeded leader
+    const assignForm = page.getByRole('form', { name: 'Assign volunteer' });
+    await expect(assignForm).toBeVisible({ timeout: 15_000 });
+    const volunteerSelect = assignForm.getByLabel(/^volunteer$/i);
+    await expect(volunteerSelect).toBeEnabled({ timeout: 15_000 });
+    await expect(volunteerSelect).toContainText('Demo Volunteer');
     const startInput = assignForm.getByLabel(/starts \(utc iso\)/i);
     const endInput = assignForm.getByLabel(/ends \(utc iso\)/i);
     await expect(startInput).toBeVisible();

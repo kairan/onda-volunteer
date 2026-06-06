@@ -141,6 +141,18 @@ export class AssignmentsController {
     });
   }
 
+  @Post('assignments/:assignmentId/void')
+  @HttpCode(HttpStatus.OK)
+  voidAssignment(
+    @Param('assignmentId') assignmentId: string,
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    return this.scheduling.voidAssignment({
+      assignmentId,
+      auth,
+    });
+  }
+
   @Post('volunteers/:volunteerId/unavailability')
   @HttpCode(HttpStatus.CREATED)
   createUnavailability(
