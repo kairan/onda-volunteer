@@ -8,6 +8,7 @@ import {
 import type { Volunteer } from '@prisma/client';
 import { AdminInviteService } from '../system-admin/admin-invite.service';
 import { StewardshipService } from '../organization/stewardship.service';
+import { VolunteerInviteFulfillmentService } from '../organization/volunteer-invite-fulfillment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthHeaders } from './authenticated-request-context';
 import { SupabaseJwtVerifier } from './supabase-jwt-verifier';
@@ -28,6 +29,7 @@ export class IdentityService {
     private readonly adminInvites: AdminInviteService,
     @Inject(forwardRef(() => StewardshipService))
     private readonly stewardship: StewardshipService,
+    private readonly volunteerInviteFulfillment: VolunteerInviteFulfillmentService,
   ) {}
 
   async getMe(auth: AuthHeaders) {
@@ -97,6 +99,12 @@ export class IdentityService {
         });
         if (fulfilled) {
           volunteer = fulfilled;
+        }
+        if (volunteer) {
+          await this.volunteerInviteFulfillment.fulfillPendingInvites({
+            email,
+            volunteer,
+          });
         }
       }
       if (!volunteer && options.attemptAutoLink) {
