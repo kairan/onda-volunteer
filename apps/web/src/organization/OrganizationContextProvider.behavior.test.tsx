@@ -53,8 +53,10 @@ function OrgControlsFromContext() {
       churches={loaded}
       activeChurchId={activeChurchId}
       activeCampusId={activeCampusId}
+      activeMinistryId={null}
       onChurchChange={onChurchChange}
       onCampusChange={onCampusChange}
+      onMinistryChange={() => {}}
     />
   );
 }

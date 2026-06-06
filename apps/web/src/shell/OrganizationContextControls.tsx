@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { ministriesForShellSwitcher } from '@/organization/ministryArchive';
 import type { Church } from '@/organization/types';
 import { shortTimezoneLabel } from '@/organization/timezoneCue';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
@@ -7,20 +8,26 @@ type Props = {
   churches: Church[];
   activeChurchId: string;
   activeCampusId: string | null;
+  activeMinistryId: string | null;
+  isSystemAdmin?: boolean;
   onChurchChange: (churchId: string) => void;
   onCampusChange: (campusId: string) => void;
+  onMinistryChange: (ministryId: string) => void;
 };
 
 export function OrganizationContextControls({
   churches,
   activeChurchId,
   activeCampusId,
+  activeMinistryId,
+  isSystemAdmin = false,
   onChurchChange,
   onCampusChange,
+  onMinistryChange,
 }: Props) {
-  const { t } = useTranslation('shell');
+  const { t } = useTranslation(['shell', 'ministries']);
   const { useLocalTime, setUseLocalTime } = useLocalTimeContext();
-  
+
   const activeChurch =
     churches.find((church) => church.id === activeChurchId) ?? churches[0];
   const campuses = activeChurch?.campuses ?? [];
@@ -28,15 +35,24 @@ export function OrganizationContextControls({
     campuses.find((campus) => campus.id === activeCampusId) ?? campuses[0];
   const timezone = activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
   const shortTz = shortTimezoneLabel(timezone);
+  const canSeeArchived =
+    Boolean(activeChurch?.isAccreditedAdmin) || isSystemAdmin;
+  const ministries = ministriesForShellSwitcher(
+    activeChurch?.ministries ?? [],
+    canSeeArchived,
+  );
+  const activeMinistry =
+    ministries.find((ministry) => ministry.id === activeMinistryId) ??
+    ministries[0];
 
   return (
     <div className="flex flex-col gap-2 px-4 pb-3">
       <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        {t('churchLabel')}
+        {t('shell:churchLabel')}
         <select
           className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm normal-case tracking-normal text-foreground"
           value={activeChurch?.id}
-          aria-label={t('churchLabel')}
+          aria-label={t('shell:churchLabel')}
           onChange={(event) => onChurchChange(event.target.value)}
         >
           {churches.map((church) => (
@@ -49,11 +65,11 @@ export function OrganizationContextControls({
 
       {campuses.length > 1 ? (
         <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {t('campusLabel')}
+          {t('shell:campusLabel')}
           <select
             className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm normal-case tracking-normal text-foreground"
             value={activeCampus?.id}
-            aria-label={t('campusLabel')}
+            aria-label={t('shell:campusLabel')}
             onChange={(event) => onCampusChange(event.target.value)}
           >
             {campuses.map((campus) => (
@@ -65,22 +81,47 @@ export function OrganizationContextControls({
         </label>
       ) : campuses.length === 1 ? (
         <p className="text-xs text-muted-foreground">
-          {t('campusLabel')}: {campuses[0].name}
+          {t('shell:campusLabel')}: {campuses[0].name}
         </p>
       ) : null}
 
-      <div className="flex flex-col gap-1 mt-1">
-        <p className="text-xs text-muted-foreground" title={t('timezoneDetails', { iana: timezone })}>
-          {t('timezoneCue', { short: shortTz })}
+      {ministries.length > 0 ? (
+        <label className="block text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          {t('shell:ministryLabel')}
+          <select
+            className="mt-1 w-full border border-border bg-background px-2 py-2 text-sm normal-case tracking-normal text-foreground"
+            value={activeMinistry?.id ?? ''}
+            aria-label={t('shell:ministryLabel')}
+            onChange={(event) => onMinistryChange(event.target.value)}
+          >
+            {ministries.map((ministry) => (
+              <option key={ministry.id} value={ministry.id}>
+                {ministry.archivedAt
+                  ? t('ministries:structure.archivedOption', {
+                      name: ministry.name,
+                    })
+                  : ministry.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : null}
+
+      <div className="mt-1 flex flex-col gap-1">
+        <p
+          className="text-xs text-muted-foreground"
+          title={t('shell:timezoneDetails', { iana: timezone })}
+        >
+          {t('shell:timezoneCue', { short: shortTz })}
         </p>
-        <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer mt-1">
+        <label className="mt-1 flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
           <input
             type="checkbox"
             className="size-3 accent-primary"
             checked={useLocalTime}
             onChange={(e) => setUseLocalTime(e.target.checked)}
           />
-          {t('showLocalTime')}
+          {t('shell:showLocalTime')}
         </label>
       </div>
     </div>

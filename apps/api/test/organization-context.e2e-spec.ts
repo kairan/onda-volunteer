@@ -138,7 +138,9 @@ describe('GET /organization/context (e2e)', () => {
               timezone: 'America/Sao_Paulo',
             },
           ],
-          ministries: [{ id: ministryAlpha.id, name: 'Greeters', membershipStatus: 'ACTIVE' }],
+          ministries: [
+            { id: ministryAlpha.id, name: 'Greeters', membershipStatus: 'ACTIVE', archivedAt: null },
+          ],
         },
         {
           id: churchBeta.id,
@@ -152,7 +154,7 @@ describe('GET /organization/context (e2e)', () => {
               timezone: 'America/Manaus',
             },
           ],
-          ministries: [{ id: ministryBeta.id, name: 'Band', membershipStatus: 'ACTIVE' }],
+          ministries: [{ id: ministryBeta.id, name: 'Band', membershipStatus: 'ACTIVE', archivedAt: null }],
         },
       ],
     });
@@ -199,12 +201,14 @@ describe('GET /organization/context (e2e)', () => {
             id: band.id,
             name: 'Band',
             isChurchAdmin: true,
+            archivedAt: null,
           },
           {
             id: greeters.id,
             name: 'Greeters',
             membershipStatus: 'ACTIVE',
             isChurchAdmin: true,
+            archivedAt: null,
           },
         ],
       },

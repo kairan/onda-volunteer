@@ -8,15 +8,35 @@ import {
   useMemo,
 } from 'react';
 import { fetchOrganizationContext } from './fetchOrganizationContext';
+import { ministriesForShellSwitcher } from './ministryArchive';
 import {
   readStoredActiveCampusId,
   readStoredActiveChurchId,
+  readStoredActiveMinistryId,
   setStoredOrganizationSelection,
 } from './organizationContextStorage';
-import type { Church } from './types';
+import type { Church, MinistrySummary } from './types';
 
 function firstCampusId(church: Church | undefined): string | null {
   return church?.campuses[0]?.id ?? null;
+}
+
+function resolveMinistryId(
+  church: Church | undefined,
+  preferredMinistryId: string | null | undefined,
+  canSeeArchived: boolean,
+): string | null {
+  const ministries = ministriesForShellSwitcher(
+    church?.ministries ?? [],
+    canSeeArchived,
+  );
+  if (preferredMinistryId) {
+    const match = ministries.find((ministry) => ministry.id === preferredMinistryId);
+    if (match) {
+      return match.id;
+    }
+  }
+  return ministries[0]?.id ?? null;
 }
 
 type OrganizationContextValue = {
@@ -25,10 +45,13 @@ type OrganizationContextValue = {
   error: string | null;
   activeChurchId: string | null;
   activeCampusId: string | null;
+  activeMinistryId: string | null;
   activeChurch: Church | null;
   activeCampus: { id: string; name: string; timezone: string } | null;
+  activeMinistry: MinistrySummary | null;
   onChurchChange: (churchId: string) => void;
   onCampusChange: (campusId: string) => void;
+  onMinistryChange: (ministryId: string) => void;
   refresh: () => Promise<void>;
 };
 
@@ -38,21 +61,25 @@ export function OrganizationContextProvider({
   children,
   enabled,
   devVolunteerId,
+  isSystemAdmin = false,
 }: {
   children: ReactNode;
   enabled: boolean;
   devVolunteerId?: string;
+  isSystemAdmin?: boolean;
 }) {
   const [churches, setChurches] = useState<Church[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeChurchId, setActiveChurchId] = useState<string | null>(null);
   const [activeCampusId, setActiveCampusId] = useState<string | null>(null);
+  const [activeMinistryId, setActiveMinistryId] = useState<string | null>(null);
 
   const loadContext = useCallback(
     async (input?: {
       preferredChurchId?: string | null;
       preferredCampusId?: string | null;
+      preferredMinistryId?: string | null;
       isCancelled?: () => boolean;
     }) => {
       if (!enabled) {
@@ -80,9 +107,17 @@ export function OrganizationContextProvider({
           selectedChurch?.campuses.find(
             (campus) => campus.id === input?.preferredCampusId,
           )?.id ?? firstCampusId(selectedChurch);
+        const canSeeArchived =
+          Boolean(selectedChurch?.isAccreditedAdmin) || isSystemAdmin;
+        const ministryId = resolveMinistryId(
+          selectedChurch,
+          input?.preferredMinistryId ?? readStoredActiveMinistryId(),
+          canSeeArchived,
+        );
         setActiveChurchId(churchId);
         setActiveCampusId(campusId);
-        setStoredOrganizationSelection(churchId, campusId);
+        setActiveMinistryId(ministryId);
+        setStoredOrganizationSelection(churchId, campusId, ministryId);
       } catch (err) {
         if (cancelled()) {
           return;
@@ -90,6 +125,7 @@ export function OrganizationContextProvider({
         setChurches([]);
         setActiveChurchId(null);
         setActiveCampusId(null);
+        setActiveMinistryId(null);
         setError(
           err instanceof Error
             ? err.message
@@ -101,7 +137,7 @@ export function OrganizationContextProvider({
         }
       }
     },
-    [devVolunteerId, enabled],
+    [devVolunteerId, enabled, isSystemAdmin],
   );
 
   useEffect(() => {
@@ -114,24 +150,12 @@ export function OrganizationContextProvider({
       isCancelled: () => cancelled,
       preferredChurchId: readStoredActiveChurchId(),
       preferredCampusId: readStoredActiveCampusId(),
+      preferredMinistryId: readStoredActiveMinistryId(),
     });
     return () => {
       cancelled = true;
     };
   }, [enabled, loadContext]);
-
-  function handleChurchChange(churchId: string) {
-    const church = churches.find((item) => item.id === churchId);
-    const campusId = firstCampusId(church);
-    setActiveChurchId(churchId);
-    setActiveCampusId(campusId);
-    setStoredOrganizationSelection(churchId, campusId);
-  }
-
-  function handleCampusChange(campusId: string) {
-    setActiveCampusId(campusId);
-    setStoredOrganizationSelection(activeChurchId, campusId);
-  }
 
   const activeChurch = useMemo(
     () => churches.find((c) => c.id === activeChurchId) ?? null,
@@ -143,13 +167,41 @@ export function OrganizationContextProvider({
     [activeChurch, activeCampusId],
   );
 
+  const activeMinistry = useMemo(
+    () =>
+      activeChurch?.ministries?.find((m) => m.id === activeMinistryId) ?? null,
+    [activeChurch, activeMinistryId],
+  );
+
+  function handleChurchChange(churchId: string) {
+    const church = churches.find((item) => item.id === churchId);
+    const campusId = firstCampusId(church);
+    const canSeeArchived = Boolean(church?.isAccreditedAdmin) || isSystemAdmin;
+    const ministryId = resolveMinistryId(church, null, canSeeArchived);
+    setActiveChurchId(churchId);
+    setActiveCampusId(campusId);
+    setActiveMinistryId(ministryId);
+    setStoredOrganizationSelection(churchId, campusId, ministryId);
+  }
+
+  function handleCampusChange(campusId: string) {
+    setActiveCampusId(campusId);
+    setStoredOrganizationSelection(activeChurchId, campusId, activeMinistryId);
+  }
+
+  function handleMinistryChange(ministryId: string) {
+    setActiveMinistryId(ministryId);
+    setStoredOrganizationSelection(activeChurchId, activeCampusId, ministryId);
+  }
+
   const refresh = useCallback(
     () =>
       loadContext({
         preferredChurchId: activeChurchId,
         preferredCampusId: activeCampusId,
+        preferredMinistryId: activeMinistryId,
       }),
-    [activeCampusId, activeChurchId, loadContext],
+    [activeCampusId, activeChurchId, activeMinistryId, loadContext],
   );
 
   const value = useMemo(
@@ -159,10 +211,13 @@ export function OrganizationContextProvider({
       error,
       activeChurchId,
       activeCampusId,
+      activeMinistryId,
       activeChurch,
       activeCampus,
+      activeMinistry,
       onChurchChange: handleChurchChange,
       onCampusChange: handleCampusChange,
+      onMinistryChange: handleMinistryChange,
       refresh,
     }),
     [
@@ -171,8 +226,10 @@ export function OrganizationContextProvider({
       error,
       activeChurchId,
       activeCampusId,
+      activeMinistryId,
       activeChurch,
       activeCampus,
+      activeMinistry,
       refresh,
     ],
   );

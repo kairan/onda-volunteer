@@ -50,6 +50,7 @@ model Ministry {
   churchId         String
   church           Church                 @relation(fields: [churchId], references: [id], onDelete: Cascade)
   name             String
+  archivedAt       DateTime?              @db.Timestamptz
   events           Event[]
   roles            MinistryRole[]
   memberships      MinistryMembership[]

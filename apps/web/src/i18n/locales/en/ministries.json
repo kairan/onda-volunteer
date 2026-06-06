@@ -81,14 +81,21 @@
     "renameNameLabel": "Ministry name for {{name}}",
     "saveRename": "Save ministry",
     "cancelRename": "Cancel",
+    "archive": "Archive ministry",
+    "archivedBadge": "Archived",
+    "archivedOption": "{{name}} (archived)",
+    "archiveConfirm": "Archive \"{{name}}\"? New scheduling, membership, role, and time-away writes will be blocked. Future assignments for this ministry will be voided. Historical records stay readable.",
     "messages": {
       "created": "Ministry created.",
-      "renamed": "Ministry renamed."
+      "renamed": "Ministry renamed.",
+      "archived": "Ministry archived."
     },
     "errors": {
       "notAccredited": "You are not accredited for this church.",
       "nameRequired": "Ministry name is required.",
-      "nameConflict": "A ministry with this name already exists in this church."
+      "nameConflict": "A ministry with this name already exists in this church.",
+      "alreadyArchived": "This ministry is already archived.",
+      "archived": "This ministry is archived and cannot accept new writes."
     }
   },
   "delegation": {

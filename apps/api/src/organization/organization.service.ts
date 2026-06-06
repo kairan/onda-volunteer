@@ -10,6 +10,7 @@ import { CLOCK, type Clock } from '../common/clock';
 import { parseIanaTimezone } from '../common/iana-timezone';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
 import { PrismaService } from '../prisma/prisma.service';
+import { assertMinistryAcceptsWrites } from './ministry-write-guard';
 import { StewardshipService } from './stewardship.service';
 
 type OrganizationActorOptions = {
@@ -32,6 +33,7 @@ export class OrganizationService {
     type MinistryEntry = {
       id: string;
       name: string;
+      archivedAt: string | null;
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE';
       isLeader?: boolean;
       isChurchAdmin?: boolean;
@@ -78,13 +80,15 @@ export class OrganizationService {
 
     const addMinistry = (
       entry: ChurchAccumulator,
-      ministry: { id: string; name: string },
+      ministry: { id: string; name: string; archivedAt?: Date | null },
       membershipStatus?: 'PENDING' | 'ACTIVE' | 'INACTIVE',
       isLeader = false,
       isChurchAdmin = false,
     ) => {
+      const archivedAt = ministry.archivedAt?.toISOString() ?? null;
       const existing = entry.ministries.get(ministry.id);
       if (existing) {
+        existing.archivedAt = archivedAt;
         if (membershipStatus) {
           existing.membershipStatus = membershipStatus;
         }
@@ -99,6 +103,7 @@ export class OrganizationService {
       entry.ministries.set(ministry.id, {
         id: ministry.id,
         name: ministry.name,
+        archivedAt,
         membershipStatus,
         ...(isLeader ? { isLeader: true } : {}),
         ...(isChurchAdmin ? { isChurchAdmin: true } : {}),
@@ -420,6 +425,62 @@ export class OrganizationService {
     };
   }
 
+  async archiveMinistry(input: {
+    ministryId: string;
+    auth: AuthenticatedRequestContext;
+  }) {
+    const ministry = await this.prisma.ministry.findUnique({
+      where: { id: input.ministryId },
+    });
+    if (!ministry) {
+      throw new NotFoundException();
+    }
+
+    await input.auth.assertAdminAccreditedForChurch(ministry.churchId);
+
+    if (ministry.archivedAt !== null) {
+      throw new BadRequestException({
+        code: 'MINISTRY_ALREADY_ARCHIVED',
+        message: 'Ministry is already archived.',
+      });
+    }
+
+    const now = this.clock.now();
+
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const row = await tx.ministry.update({
+        where: { id: ministry.id },
+        data: { archivedAt: now },
+      });
+
+      const assignments = await tx.assignment.findMany({
+        where: {
+          ministryId: ministry.id,
+          voidedAtUtc: null,
+        },
+        include: { event: true },
+      });
+
+      for (const assignment of assignments) {
+        if (assignment.event.endsAtUtc > now) {
+          await tx.assignment.update({
+            where: { id: assignment.id },
+            data: { voidedAtUtc: now },
+          });
+        }
+      }
+
+      return row;
+    });
+
+    return {
+      id: updated.id,
+      churchId: updated.churchId,
+      name: updated.name,
+      archivedAt: updated.archivedAt!.toISOString(),
+    };
+  }
+
   async addMinistryMembership(input: {
     ministryId: string;
     volunteerId: string;
@@ -430,6 +491,7 @@ export class OrganizationService {
     await this.assertLeaderOrSystemAdmin(input.auth, input.ministryId, {
       asSystemAdmin: input.asSystemAdmin,
     });
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },
@@ -491,6 +553,7 @@ export class OrganizationService {
     await this.assertLeaderOrSystemAdmin(input.auth, input.ministryId, {
       asSystemAdmin: input.asSystemAdmin,
     });
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const membership = await this.prisma.ministryMembership.findUnique({
       where: {
@@ -593,6 +656,7 @@ export class OrganizationService {
     await this.assertChurchAdminActor(input.auth, ministry.churchId, {
       asSystemAdmin: input.asSystemAdmin,
     });
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const volunteer = await this.prisma.volunteer.findUnique({
       where: { id: input.volunteerId },

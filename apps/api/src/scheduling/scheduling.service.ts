@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
 import type { AuthenticatedRequestContext } from '../identity/authenticated-request-context';
+import { assertMinistryAcceptsWrites } from '../organization/ministry-write-guard';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   bulkUnavailabilityMembershipFailure,
@@ -156,6 +157,23 @@ export class SchedulingService {
       if (membershipFailure) {
         failed.push(membershipFailure);
         continue;
+      }
+
+      try {
+        await assertMinistryAcceptsWrites(this.prisma, ministryId);
+      } catch (err) {
+        if (
+          err instanceof BadRequestException &&
+          (err.getResponse() as { code?: string }).code === 'MINISTRY_ARCHIVED'
+        ) {
+          failed.push({
+            ministryId,
+            code: 'MINISTRY_ARCHIVED',
+            message: 'This ministry is archived and cannot accept new writes.',
+          });
+          continue;
+        }
+        throw err;
       }
 
       try {
@@ -337,6 +355,7 @@ export class SchedulingService {
   async createAssignment(input: CreateAssignmentInput) {
     await assertSchedulingWriteAllowed(input.auth);
     await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const event = await this.prisma.event.findUnique({
       where: { id: input.eventId },
@@ -487,6 +506,7 @@ export class SchedulingService {
     if (caller.id !== input.volunteerId) {
       await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
     }
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const u1 = parseInstant('endsAtUtc', input.endsAtUtc);

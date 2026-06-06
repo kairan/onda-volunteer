@@ -382,8 +382,8 @@ describe('Volunteer unavailability (e2e)', () => {
       a.name.localeCompare(b.name),
     );
     expect(ministries).toEqual([
-      { id: pendingMinistry.id, name: 'Band', membershipStatus: 'PENDING' },
-      { id: activeMinistry.id, name: 'Greeters', membershipStatus: 'ACTIVE' },
+      { id: pendingMinistry.id, name: 'Band', membershipStatus: 'PENDING', archivedAt: null },
+      { id: activeMinistry.id, name: 'Greeters', membershipStatus: 'ACTIVE', archivedAt: null },
     ]);
   });
 });

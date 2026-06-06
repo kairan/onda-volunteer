@@ -16,6 +16,7 @@
   "organizationLoading": "Carregando igrejas…",
   "churchLabel": "Igreja",
   "campusLabel": "Campus",
+  "ministryLabel": "Ministério",
   "timezoneCue": "Fuso: {{short}}",
   "timezoneDetails": "Fuso horário IANA: {{iana}}",
   "showLocalTime": "Mostrar também meu horário local",

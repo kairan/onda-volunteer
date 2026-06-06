@@ -9,6 +9,7 @@ import {
   fetchVolunteerUnavailability,
   type VolunteerUnavailability,
 } from '@/identity/fetchVolunteerUnavailability';
+import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
 import { SchedulingTimeDisplay } from '@/settings/SchedulingTimeDisplay';
@@ -72,7 +73,7 @@ export function TimeAwayPage() {
       : null;
 
   const ministries = useMemo(
-    () => activeChurch?.ministries ?? [],
+    () => ministriesForWritePickers(activeChurch?.ministries ?? []),
     [activeChurch?.ministries],
   );
   const hasLedMinistries = useMemo(
