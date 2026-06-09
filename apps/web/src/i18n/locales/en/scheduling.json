@@ -93,6 +93,24 @@
       "body": "This voids the volunteer's commitment on this roster. They are not notified automatically.",
       "confirm": "Yes, remove"
     },
+    "edit": {
+      "heading": "Edit event",
+      "titleLabel": "Title",
+      "startsAtUtcLabel": "Starts (UTC ISO)",
+      "endsAtUtcLabel": "Ends (UTC ISO)",
+      "submit": "Save changes",
+      "success": "Event updated.",
+      "voidedWarning": "Event rescheduled. {{count}} assignment(s) were voided because they fell outside the new window.",
+      "errors": {
+        "failed": "Could not update event.",
+        "eventAlreadyCancelled": "This event is already cancelled.",
+        "eventEditEmpty": "Please change at least one field.",
+        "eventTitleRequired": "Event title is required.",
+        "eventTitleTooLong": "Event title must be 200 characters or fewer.",
+        "invalidEventWindow": "Start time must be before end time.",
+        "leaderCannotEditPublic": "Only admins can edit public events."
+      }
+    },
     "cancel": {
       "action": "Cancel event",
       "dialogTitle": "Cancel this event?",

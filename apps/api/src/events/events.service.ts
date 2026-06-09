@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CLOCK, type Clock } from '../common/clock';
 import { DateTime } from 'luxon';
@@ -379,6 +380,168 @@ export class EventsService {
           endsAtUtc: a.endsAtUtc.toISOString(),
         },
       })),
+    };
+  }
+
+  async editEvent(input: {
+    eventId: string;
+    title?: string;
+    startsAtUtc?: string;
+    endsAtUtc?: string;
+    auth: AuthenticatedRequestContext;
+  }) {
+    await assertSchedulingWriteAllowed(input.auth);
+
+    const hasTitle = input.title !== undefined;
+    const hasStart = input.startsAtUtc !== undefined;
+    const hasEnd = input.endsAtUtc !== undefined;
+    if (!hasTitle && !hasStart && !hasEnd) {
+      throw new BadRequestException({
+        code: 'EVENT_EDIT_EMPTY',
+        message: 'At least one field (title, startsAtUtc, endsAtUtc) is required.',
+      });
+    }
+
+    const event = await this.prisma.event.findUnique({
+      where: { id: input.eventId },
+      include: { ministry: true, church: true },
+    });
+    if (!event) {
+      throw new NotFoundException({
+        code: 'EVENT_NOT_FOUND',
+        message: 'Event not found.',
+      });
+    }
+
+    if (event.cancelledAtUtc) {
+      throw new BadRequestException({
+        code: 'EVENT_ALREADY_CANCELLED',
+        message: 'Event is already cancelled.',
+      });
+    }
+
+    if (event.kind === 'PUBLIC') {
+      try {
+        await input.auth.assertAdminAccreditedForChurch(event.churchId);
+      } catch (err) {
+        if (
+          err instanceof ForbiddenException &&
+          (err.getResponse() as { code?: string }).code === 'ADMIN_NOT_ACCREDITED'
+        ) {
+          const volunteer = await input.auth.requireVolunteer();
+          const leadership = await this.prisma.ministryLeader.findFirst({
+            where: {
+              volunteerId: volunteer.id,
+              ministry: { churchId: event.churchId },
+            },
+          });
+          if (leadership) {
+            throw new ForbiddenException({
+              code: 'LEADER_CANNOT_EDIT_PUBLIC_EVENT',
+              message:
+                'Only an Admin accredited for this Church may edit a Public event.',
+            });
+          }
+        }
+        throw err;
+      }
+    } else {
+      try {
+        await input.auth.assertLeaderCanActOnMinistry(event.ministryId!);
+      } catch {
+        await input.auth.assertAdminAccreditedForChurch(event.churchId);
+      }
+    }
+
+    let trimmedTitle: string | undefined;
+    if (hasTitle) {
+      trimmedTitle = input.title!.trim();
+      if (!trimmedTitle) {
+        throw new BadRequestException({
+          code: 'EVENT_TITLE_REQUIRED',
+          message: 'Event title is required.',
+        });
+      }
+      if (trimmedTitle.length > 200) {
+        throw new BadRequestException({
+          code: 'EVENT_TITLE_TOO_LONG',
+          message: 'Event title must be 200 characters or fewer.',
+        });
+      }
+    }
+
+    let newStart: Date | undefined;
+    let newEnd: Date | undefined;
+    const isReschedule = hasStart || hasEnd;
+    if (isReschedule) {
+      newStart = hasStart
+        ? this.parseInstant('startsAtUtc', input.startsAtUtc!)
+        : event.startsAtUtc;
+      newEnd = hasEnd
+        ? this.parseInstant('endsAtUtc', input.endsAtUtc!)
+        : event.endsAtUtc;
+      if (!(newStart < newEnd)) {
+        throw new BadRequestException({
+          code: 'INVALID_EVENT_WINDOW',
+          message: 'Event window must have startsAtUtc strictly before endsAtUtc.',
+        });
+      }
+    }
+
+    const now = this.clock.now();
+    let voidedAssignmentCount = 0;
+
+    const updateData: Record<string, unknown> = {};
+    if (trimmedTitle !== undefined) updateData.title = trimmedTitle;
+    if (newStart !== undefined) updateData.startsAtUtc = newStart;
+    if (newEnd !== undefined) updateData.endsAtUtc = newEnd;
+
+    if (isReschedule) {
+      await this.prisma.$transaction(async (tx) => {
+        const orphaned = await tx.assignment.findMany({
+          where: {
+            eventId: event.id,
+            voidedAtUtc: null,
+            OR: [
+              { startsAtUtc: { lt: newStart } },
+              { endsAtUtc: { gt: newEnd } },
+            ],
+          },
+          select: { id: true },
+        });
+        if (orphaned.length > 0) {
+          await tx.assignment.updateMany({
+            where: { id: { in: orphaned.map((a) => a.id) } },
+            data: { voidedAtUtc: now },
+          });
+          voidedAssignmentCount = orphaned.length;
+        }
+        await tx.event.update({
+          where: { id: event.id },
+          data: updateData,
+        });
+      });
+    } else {
+      await this.prisma.event.update({
+        where: { id: event.id },
+        data: updateData,
+      });
+    }
+
+    const updated = await this.prisma.event.findUniqueOrThrow({
+      where: { id: event.id },
+    });
+
+    return {
+      id: updated.id,
+      title: updated.title,
+      kind: updated.kind,
+      window: {
+        startsAtUtc: updated.startsAtUtc.toISOString(),
+        endsAtUtc: updated.endsAtUtc.toISOString(),
+      },
+      cancelledAtUtc: updated.cancelledAtUtc?.toISOString() ?? null,
+      voidedAssignmentCount,
     };
   }
 
