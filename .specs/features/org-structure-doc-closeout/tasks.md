@@ -1,7 +1,7 @@
 # Org Structure Doc Closeout — Tasks
 
 **Spec**: `.specs/features/org-structure-doc-closeout/spec.md`  
-**Status**: Phase 1 (Pre-Execute) — Done. Phase 2 — Unblocked ([#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113); `T-DOC-07`/`T-DOC-08` done in planning PR #119.
+**Status**: Complete — Phase 1 done (planning PR #119, incl. `T-DOC-07`/`T-DOC-08`); Phase 2 (`T-DOC-04`–`T-DOC-10`) executed 2026-06-09 after [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113. Closes [#118](https://github.com/kairan/onda-volunteer/issues/118).
 
 ---
 
@@ -57,8 +57,8 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] Decisions section has entry dated 2026-06-06 referencing #108 ministry archive
-- [ ] Three locked decisions (unarchive, shell switcher, i18n) are recorded
+- [x] Decisions section has entry dated 2026-06-06 referencing #108 ministry archive
+- [x] Three locked decisions (unarchive, shell switcher, i18n) are recorded
 
 **Gate**: doc review — grep STATE.md for "Ministry archive" and "HITL"
 
@@ -75,9 +75,9 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] ROADMAP.md Organization theme row shows P1 and P2 as shipped with issue links
-- [ ] Ministry archive (#108) shown as `ready-for-agent` backlog
-- [ ] System Admin (#87–93) shown as shipped
+- [x] ROADMAP.md Organization theme row shows P1 and P2 as shipped with issue links
+- [x] Ministry archive (#108) shown as `ready-for-agent` backlog *(superseded by T-DOC-09: now shipped)*
+- [x] System Admin (#87–93) shown as shipped
 
 **Gate**: doc review
 
@@ -94,7 +94,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] ORG-STRUCT-07 row status reads "Shipped" with link to system-admin-platform and issue range
+- [x] ORG-STRUCT-07 row status reads "Shipped" with link to system-admin-platform and issue range
 
 **Gate**: doc review
 
@@ -113,7 +113,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] All five T-ARCHIVE-* tasks show `[x]`
+- [x] All five T-ARCHIVE-* tasks show `[x]`
 
 **Gate**: doc review — all checkboxes complete
 
@@ -130,8 +130,8 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] Traceability row ORG-STRUCT-06 status = "Verified"
-- [ ] Status block P2 ORG-STRUCT-06 line updated
+- [x] Traceability row ORG-STRUCT-06 status = "Verified"
+- [x] Status block P2 ORG-STRUCT-06 line updated
 
 **Gate**: doc review
 
@@ -147,7 +147,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] Design.md status line reflects verified Execute for ORG-STRUCT-06
+- [x] Design.md status line reflects verified Execute for ORG-STRUCT-06
 
 **Gate**: doc review
 
@@ -162,8 +162,8 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] File lives at `docs/issues/done/108-org-structure-ministry-archive.md`
-- [ ] All acceptance criteria in the moved file are checked `[x]`
+- [x] File lives at `docs/issues/done/108-org-structure-ministry-archive.md`
+- [x] All acceptance criteria in the moved file are checked `[x]`
 
 **Gate**: `ls docs/issues/done/ | grep 108`
 
@@ -180,8 +180,8 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] Active backlog table has no #108 row
-- [ ] Recently archived table has `| [#108](…) | done/108-org-structure-ministry-archive.md |`
+- [x] Active backlog table has no #108 row
+- [x] Recently archived table has `| [#108](…) | done/108-org-structure-ministry-archive.md |`
 
 **Gate**: doc review
 
@@ -196,7 +196,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] ROADMAP.md Organization theme lists no open backlog items
+- [x] ROADMAP.md Organization theme lists no open backlog items
 
 **Gate**: doc review
 
@@ -211,7 +211,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 **Done when**:
 
-- [ ] Decisions section has an org-structure closeout entry with date and links to #107, #108, #109
+- [x] Decisions section has an org-structure closeout entry with date and links to #107, #108, #109
 
 **Gate**: doc review
 

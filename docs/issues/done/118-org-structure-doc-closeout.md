@@ -1,7 +1,7 @@
 # 118 — Org structure doc closeout (pre- and post-#108)
 
 **Type:** Documentation / tracker hygiene
-**Phase 2:** Unblocked — [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped on `main` (merged via #113; issue closed)
+**Status:** Shipped — Phase 1 in planning PR #119; Phase 2 executed 2026-06-09 after [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113
 **TLC:** `.specs/features/org-structure-doc-closeout/` (spec, tasks complete)
 
 ## Problem
@@ -25,18 +25,18 @@ The `organization-structure-administration` TLC feature shipped ([#108](https://
 
 ## Acceptance criteria (Phase 1)
 
-- [ ] STATE.md Decisions section includes `2026-06-06 (Ministry archive #108)` with all 3 policy points (DOC-CLOSE-01)
-- [ ] ROADMAP.md Organization theme distinguishes shipped (#109, #107) from backlog (#108 `ready-for-agent`) and includes system-admin-platform as shipped (DOC-CLOSE-02)
-- [ ] `organization-structure-administration/spec.md` ORG-STRUCT-07 row reads "Shipped — see system-admin-platform (#87–93)" (DOC-CLOSE-03)
+- [x] STATE.md Decisions section includes `2026-06-06 (Ministry archive #108)` with all 3 policy points (DOC-CLOSE-01)
+- [x] ROADMAP.md Organization theme distinguishes shipped (#109, #107) from backlog (#108 `ready-for-agent`) and includes system-admin-platform as shipped (DOC-CLOSE-02)
+- [x] `organization-structure-administration/spec.md` ORG-STRUCT-07 row reads "Shipped — see system-admin-platform (#87–93)" (DOC-CLOSE-03)
 
 ## Acceptance criteria (Phase 2, after #108 merges)
 
-- [ ] All T-ARCHIVE-* tasks marked `[x]` in `organization-structure-administration/tasks.md` (DOC-CLOSE-04)
-- [ ] `spec.md` ORG-STRUCT-06 status = "Verified"; status block = "Implemented — Execute verified (#108)" (DOC-CLOSE-05, DOC-CLOSE-06)
-- [ ] `docs/issues/done/108-org-structure-ministry-archive.md` exists with all criteria `[x]` (DOC-CLOSE-07)
-- [ ] `docs/issues/README.md` #108 row moved from Active to Recently archived (DOC-CLOSE-08)
-- [ ] ROADMAP.md Organization theme shows no remaining open backlog items (DOC-CLOSE-09)
-- [ ] STATE.md has org-structure closeout note referencing #107, #108, #109 (DOC-CLOSE-10)
+- [x] All T-ARCHIVE-* tasks marked `[x]` in `organization-structure-administration/tasks.md` (DOC-CLOSE-04)
+- [x] `spec.md` ORG-STRUCT-06 status = "Verified"; status block = "Implemented — Execute verified (#108)" (DOC-CLOSE-05, DOC-CLOSE-06)
+- [x] `docs/issues/done/108-org-structure-ministry-archive.md` exists with all criteria `[x]` (DOC-CLOSE-07)
+- [x] `docs/issues/README.md` #108 row moved from Active to Recently archived (DOC-CLOSE-08)
+- [x] ROADMAP.md Organization theme shows no remaining open backlog items (DOC-CLOSE-09)
+- [x] STATE.md has org-structure closeout note referencing #107, #108, #109 (DOC-CLOSE-10)
 
 ## Specification links
 

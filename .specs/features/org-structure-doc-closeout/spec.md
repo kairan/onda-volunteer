@@ -2,15 +2,15 @@
 
 ## Status
 
-- **Pre-Execute doc sync** (DOC-CLOSE-01–03): Done in this planning PR.
-- **Post-Execute doc sync** (DOC-CLOSE-04–10): **Unblocked** — [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped on `main` (merged via #113). Run `T-DOC-04`–`T-DOC-10`.
+- **Pre-Execute doc sync** (DOC-CLOSE-01–03): Done (planning PR #119).
+- **Post-Execute doc sync** (DOC-CLOSE-04–10): **Done** — `T-DOC-04`–`T-DOC-10` executed 2026-06-09 after [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113. Feature complete; closes [#118](https://github.com/kairan/onda-volunteer/issues/118).
 
 ## Source references
 
 - Feature spec: `.specs/features/organization-structure-administration/spec.md`
 - Feature design: `.specs/features/organization-structure-administration/design.md`
 - Feature tasks: `.specs/features/organization-structure-administration/tasks.md`
-- Open issue spec: `docs/issues/108-org-structure-ministry-archive-backlog.md`
+- Archived issue spec: `docs/issues/done/108-org-structure-ministry-archive.md`
 - Tracker index: `docs/issues/README.md`
 - Domain glossary: `CONTEXT.md`
 - Project state: `.specs/project/STATE.md`
@@ -18,7 +18,7 @@
 
 ## Problem Statement
 
-The organization-structure-administration TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113). Some cross-cutting doc surfaces were stale before closeout; Phase 1 pre-Execute sync is largely complete; Phase 2 post-Execute tasks (`T-DOC-04`–`T-DOC-10`) are now unblocked.
+The organization-structure-administration TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113). Some cross-cutting doc surfaces were stale before closeout; Phase 1 pre-Execute sync completed in #119; Phase 2 post-Execute tasks (`T-DOC-04`–`T-DOC-10`) executed 2026-06-09 — doc closeout complete ([#118](https://github.com/kairan/onda-volunteer/issues/118)).
 
 ### What is stale now (pre-Execute)
 
@@ -40,8 +40,8 @@ Follow ONDA.md closing order:
 
 ## Goals
 
-- [ ] Pre-Execute: resolve three known stale items in STATE.md, ROADMAP.md, and spec.md before #108 Execute begins.
-- [ ] Post-Execute: complete the ONDA.md closing checklist for the full `organization-structure-administration` feature when #108 merges.
+- [x] Pre-Execute: resolve three known stale items in STATE.md, ROADMAP.md, and spec.md before #108 Execute begins.
+- [x] Post-Execute: complete the ONDA.md closing checklist for the full `organization-structure-administration` feature when #108 merges.
 
 ## Acceptance Criteria
 
@@ -74,10 +74,10 @@ Follow ONDA.md closing order:
 | DOC-CLOSE-01 | STATE.md 2026-06-06 ministry archive decisions | Pre-Execute | Done |
 | DOC-CLOSE-02 | ROADMAP.md org-structure shipped vs backlog | Pre-Execute | Done |
 | DOC-CLOSE-03 | org-structure spec.md ORG-STRUCT-07 shipped note | Pre-Execute | Done |
-| DOC-CLOSE-04 | tasks.md T-ARCHIVE-* checkboxes | Post-Execute | Unblocked |
-| DOC-CLOSE-05 | spec.md ORG-STRUCT-06 → Verified | Post-Execute | Unblocked |
-| DOC-CLOSE-06 | spec.md status block ORG-STRUCT-06 → Implemented | Post-Execute | Unblocked |
-| DOC-CLOSE-07 | docs/issues/ archive move for #108 | Post-Execute | Done (this PR) |
-| DOC-CLOSE-08 | docs/issues/README.md index update | Post-Execute | Done (this PR) |
-| DOC-CLOSE-09 | ROADMAP.md org-structure theme fully complete | Post-Execute | Unblocked |
-| DOC-CLOSE-10 | STATE.md org-structure closeout note | Post-Execute | Unblocked |
+| DOC-CLOSE-04 | tasks.md T-ARCHIVE-* checkboxes | Post-Execute | Done |
+| DOC-CLOSE-05 | spec.md ORG-STRUCT-06 → Verified | Post-Execute | Done |
+| DOC-CLOSE-06 | spec.md status block ORG-STRUCT-06 → Implemented | Post-Execute | Done |
+| DOC-CLOSE-07 | docs/issues/ archive move for #108 | Post-Execute | Done (PR #119) |
+| DOC-CLOSE-08 | docs/issues/README.md index update | Post-Execute | Done (PR #119) |
+| DOC-CLOSE-09 | ROADMAP.md org-structure theme fully complete | Post-Execute | Done |
+| DOC-CLOSE-10 | STATE.md org-structure closeout note | Post-Execute | Done |

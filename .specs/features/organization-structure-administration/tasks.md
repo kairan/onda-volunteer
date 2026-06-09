@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/organization-structure-administration/design.md`  
 **Spec**: `.specs/features/organization-structure-administration/spec.md`  
-**Status**: Execute complete (P2 campus slice #107 + P1 tracker doc); ORG-STRUCT-06 (#108) — Tasks below (not started)
+**Status**: Execute complete — P2 campus slice #107, P1 tracker doc, and ORG-STRUCT-06 ministry archive ([#108](https://github.com/kairan/onda-volunteer/issues/108), shipped via PR #113)
 
 ---
 
@@ -26,9 +26,9 @@ T-CAMPUS-03 → T-CAMPUS-04 → T-CAMPUS-05 [P] i18n
 T-ORG-P1-01
 ```
 
-**Next:** ORG-STRUCT-06 Ministry archive — [#108](https://github.com/kairan/onda-volunteer/issues/108) (Specify/Design complete; product decisions locked 2026-06-06; Execute phases below).
+**Next:** none — all phases shipped. Closeout tracked in `.specs/features/org-structure-doc-closeout/` ([#118](https://github.com/kairan/onda-volunteer/issues/118)).
 
-**GitHub:** [#107](https://github.com/kairan/onda-volunteer/issues/107) (P2 Execute) · [#108](https://github.com/kairan/onda-volunteer/issues/108) (`ready-for-agent`) · [#109](https://github.com/kairan/onda-volunteer/issues/109) (P1 tracker doc)
+**GitHub:** [#107](https://github.com/kairan/onda-volunteer/issues/107) (P2 Execute) · [#108](https://github.com/kairan/onda-volunteer/issues/108) (shipped via PR #113) · [#109](https://github.com/kairan/onda-volunteer/issues/109) (P1 tracker doc)
 
 ---
 
@@ -197,8 +197,8 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 **Done when**:
 
-- [ ] Migration adds nullable `archivedAt` on `Ministry`
-- [ ] `assertMinistryAcceptsWrites` returns ministry or throws `MINISTRY_ARCHIVED`
+- [x] Migration adds nullable `archivedAt` on `Ministry`
+- [x] `assertMinistryAcceptsWrites` returns ministry or throws `MINISTRY_ARCHIVED`
 
 **Gate**: `pnpm --filter @onda/api typecheck`
 
@@ -213,10 +213,10 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 **Done when**:
 
-- [ ] Archive voids future assignments in transaction
-- [ ] Stable codes: `MINISTRY_ARCHIVED`, `MINISTRY_ALREADY_ARCHIVED`
-- [ ] Guarded writes reject archived ministries (unavailability create/bulk only — update/delete unguarded for cleanup)
-- [ ] E2e asserts unavailability update/delete succeed on archived ministry; create returns `MINISTRY_ARCHIVED`
+- [x] Archive voids future assignments in transaction
+- [x] Stable codes: `MINISTRY_ARCHIVED`, `MINISTRY_ALREADY_ARCHIVED`
+- [x] Guarded writes reject archived ministries (unavailability create/bulk only — update/delete unguarded for cleanup)
+- [x] E2e asserts unavailability update/delete succeed on archived ministry; create returns `MINISTRY_ARCHIVED`
 
 **Tests**: `ministry-archive.e2e-spec.ts` (co-located in T-ARCHIVE-02)  
 **Gate**: `pnpm test` (api archive spec)
@@ -232,7 +232,7 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 **Done when**:
 
-- [ ] Context ministries include `archivedAt: string | null`
+- [x] Context ministries include `archivedAt: string | null`
 
 **Gate**: covered by T-ARCHIVE-02 e2e
 
@@ -247,10 +247,10 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 **Done when**:
 
-- [ ] Admin can archive from `/ministries` with confirm dialog
-- [ ] Write pickers exclude archived ministries
-- [ ] Archived badge on structure list
-- [ ] Non-admin shell switcher hides archived ministries; admin/system admin see them with badge
+- [x] Admin can archive from `/ministries` with confirm dialog
+- [x] Write pickers exclude archived ministries
+- [x] Archived badge on structure list
+- [x] Non-admin shell switcher hides archived ministries; admin/system admin see them with badge
 
 **Tests**: `ministryArchive.behavior.test.tsx` (T-ARCHIVE-05)  
 **Gate**: web typecheck
@@ -267,8 +267,8 @@ T-ARCHIVE-01 → T-ARCHIVE-02 → T-ARCHIVE-03 → T-ARCHIVE-04 [P] T-ARCHIVE-05
 
 **Done when**:
 
-- [ ] Archive confirm dialog, badge, and error strings in both locales
-- [ ] Behavior tests cover confirm dialog, picker filter, and non-admin switcher hide
+- [x] Archive confirm dialog, badge, and error strings in both locales
+- [x] Behavior tests cover confirm dialog, picker filter, and non-admin switcher hide
 
 **Gate**: `pnpm --filter @onda/web test`
 
