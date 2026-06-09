@@ -10,7 +10,7 @@
 - Feature spec: `.specs/features/organization-structure-administration/spec.md`
 - Feature design: `.specs/features/organization-structure-administration/design.md`
 - Feature tasks: `.specs/features/organization-structure-administration/tasks.md`
-- Open issue spec: `docs/issues/108-org-structure-ministry-archive-backlog.md`
+- Archived issue spec: `docs/issues/done/108-org-structure-ministry-archive.md`
 - Tracker index: `docs/issues/README.md`
 - Domain glossary: `CONTEXT.md`
 - Project state: `.specs/project/STATE.md`
@@ -18,7 +18,7 @@
 
 ## Problem Statement
 
-The organization-structure-administration TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113). Some cross-cutting doc surfaces were stale before closeout; Phase 1 pre-Execute sync is largely complete; Phase 2 post-Execute tasks (`T-DOC-04`–`T-DOC-10`) are now unblocked.
+The organization-structure-administration TLC feature shipped ([#108](https://github.com/kairan/onda-volunteer/issues/108) via #113). Some cross-cutting doc surfaces were stale before closeout; Phase 1 pre-Execute sync completed in #119; Phase 2 post-Execute tasks (`T-DOC-04`–`T-DOC-10`) executed 2026-06-09 — doc closeout complete ([#118](https://github.com/kairan/onda-volunteer/issues/118)).
 
 ### What is stale now (pre-Execute)
 

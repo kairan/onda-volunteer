@@ -31,7 +31,7 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 | **Web shell & i18n** | Shell/routing/i18n foundation, HOPE migration, personal-local time closeout, WCAG/HOPE polish, Playwright e2e, and CI lint/coverage reporting (`done/legacy-08-*` through `legacy-14-*`, `done/48-*`, `done/49-*`, `done/60-*`, `done/61-*`). |
 
 
-### Shipped features (as of 2026-06-06)
+### Shipped features (as of 2026-06-09)
 
 | Theme | Feature slug | Issues | Status |
 |-------|--------------|--------|--------|
