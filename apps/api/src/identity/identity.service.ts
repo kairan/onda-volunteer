@@ -8,6 +8,7 @@ import {
 import type { Volunteer } from '@prisma/client';
 import { AdminInviteService } from '../system-admin/admin-invite.service';
 import { StewardshipService } from '../organization/stewardship.service';
+import { VolunteerInviteFulfillmentService } from '../organization/volunteer-invite-fulfillment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthHeaders } from './authenticated-request-context';
 import { SupabaseJwtVerifier } from './supabase-jwt-verifier';
@@ -28,6 +29,7 @@ export class IdentityService {
     private readonly adminInvites: AdminInviteService,
     @Inject(forwardRef(() => StewardshipService))
     private readonly stewardship: StewardshipService,
+    private readonly volunteerInviteFulfillment: VolunteerInviteFulfillmentService,
   ) {}
 
   async getMe(auth: AuthHeaders) {
@@ -90,13 +92,22 @@ export class IdentityService {
         where: { authSubjectId: sub },
       });
       if (email) {
-        const fulfilled = await this.adminInvites.fulfillPendingInvites({
+        const adminFulfilled = await this.adminInvites.fulfillPendingInvites({
           authSubjectId: sub,
           email,
           existingVolunteer: volunteer,
         });
-        if (fulfilled) {
-          volunteer = fulfilled;
+        if (adminFulfilled) {
+          volunteer = adminFulfilled;
+        }
+        const inviteFulfilled =
+          await this.volunteerInviteFulfillment.fulfillPendingInvites({
+            authSubjectId: sub,
+            email,
+            existingVolunteer: volunteer,
+          });
+        if (inviteFulfilled) {
+          volunteer = inviteFulfilled;
         }
       }
       if (!volunteer && options.attemptAutoLink) {

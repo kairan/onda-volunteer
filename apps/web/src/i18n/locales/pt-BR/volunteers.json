@@ -1,10 +1,33 @@
 {
   "title": "Voluntários",
-  "body": "Gerencie vínculos nos ministérios que você lidera ou administra. Adicione voluntários como Pendente ou Ativo, ative pendentes e desative ativos (escalas futuras são anuladas automaticamente).",
+  "body": "Gerencie vínculos nos ministérios que você lidera ou administra. Busque voluntários existentes ou convide novos por e-mail.",
   "signInRequired": "Entre para gerenciar vínculos de ministério.",
   "notSteward": "É necessário ser Líder ou administrador da igreja em um ministério para gerenciar vínculos aqui.",
   "ministryLabel": "Ministério",
   "ministryPlaceholder": "Selecione um ministério",
+  "searchHeading": "Encontrar um voluntário",
+  "searchPlaceholder": "Buscar por nome ou e-mail (mín. 2 caracteres)",
+  "searchHelp": "Busque voluntários existentes da igreja para adicioná-los a este ministério.",
+  "searching": "Buscando…",
+  "noResults": "Nenhum voluntário encontrado.",
+  "addSelectedSubmit": "Adicionar ao ministério",
+  "inviteHeading": "Convidar por e-mail",
+  "inviteHelp": "Não encontrou? Convide uma nova pessoa por e-mail.",
+  "inviteEmailLabel": "Endereço de e-mail",
+  "inviteEmailPlaceholder": "voluntario@exemplo.com",
+  "inviteSubmit": "Enviar convite",
+  "inviteSending": "Enviando…",
+  "inviteSuccess": "Convite enviado!",
+  "volunteerExistsHint": "Esta pessoa já tem uma conta — use a busca acima para adicioná-la.",
+  "pendingInvitesHeading": "Convites pendentes",
+  "noPendingInvites": "Nenhum convite pendente para este ministério.",
+  "inviteStatus": {
+    "PENDING": "Pendente",
+    "ACCEPTED": "Aceito",
+    "EXPIRED": "Expirado"
+  },
+  "inviteExpires": "Expira",
+  "inviteSent": "Enviado",
   "addHeading": "Adicionar vínculo",
   "addHelp": "Informe o ID do perfil do voluntário (identidade ou dados de seed).",
   "volunteerIdLabel": "ID do voluntário",
@@ -31,6 +54,8 @@
   "errors": {
     "loadFailed": "Não foi possível carregar os vínculos.",
     "actionFailed": "Ação falhou. Tente novamente.",
-    "notAccredited": "Você não está credenciado para esta igreja."
+    "notAccredited": "Você não está credenciado para esta igreja.",
+    "searchFailed": "Busca falhou. Tente novamente.",
+    "inviteFailed": "Não foi possível enviar o convite. Tente novamente."
   }
 }
