@@ -115,7 +115,6 @@ function AppShellContent({
   isSystemAdmin: boolean;
 }) {
   const { t } = useTranslation(['shell', 'common', 'systemAdmin']);
-  const auth = useAuthSession();
   const toasts = useToasts();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
