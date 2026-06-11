@@ -8,7 +8,10 @@ import {
 import type { Volunteer } from '@prisma/client';
 import { AdminInviteService } from '../system-admin/admin-invite.service';
 import { StewardshipService } from '../organization/stewardship.service';
-import { VolunteerInviteFulfillmentService } from '../organization/volunteer-invite-fulfillment.service';
+import {
+  VolunteerInviteFulfillmentService,
+  type FulfilledVolunteerInviteSummary,
+} from '../organization/volunteer-invite-fulfillment.service';
 import { PrismaService } from '../prisma/prisma.service';
 import type { AuthHeaders } from './authenticated-request-context';
 import { SupabaseJwtVerifier } from './supabase-jwt-verifier';
@@ -33,9 +36,10 @@ export class IdentityService {
   ) {}
 
   async getMe(auth: AuthHeaders) {
-    const volunteer = await this.requireVolunteer(auth, {
-      attemptAutoLink: true,
-    });
+    const { volunteer, newlyFulfilledInvites } = await this.resolveVolunteer(
+      auth,
+      { attemptAutoLink: true },
+    );
     const systemAdmin = await this.prisma.systemAdministrator.findUnique({
       where: { volunteerId: volunteer.id },
     });
@@ -47,6 +51,7 @@ export class IdentityService {
       },
       authSubjectId: volunteer.authSubjectId,
       isSystemAdmin: systemAdmin !== null,
+      newlyFulfilledInvites,
     };
   }
 
@@ -64,9 +69,10 @@ export class IdentityService {
     auth: AuthHeaders,
     options: { attemptAutoLink?: boolean } = {},
   ): Promise<Volunteer> {
-    return this.resolveVolunteer(auth, {
+    const { volunteer } = await this.resolveVolunteer(auth, {
       attemptAutoLink: options.attemptAutoLink ?? false,
     });
+    return volunteer;
   }
 
   /** @deprecated Use AuthenticatedRequestContext at controller/service boundaries. */
@@ -83,7 +89,10 @@ export class IdentityService {
   private async resolveVolunteer(
     auth: AuthHeaders,
     options: { attemptAutoLink: boolean },
-  ): Promise<Volunteer> {
+  ): Promise<{
+    volunteer: Volunteer;
+    newlyFulfilledInvites: FulfilledVolunteerInviteSummary[];
+  }> {
     if (auth.authorization?.startsWith('Bearer ')) {
       const { sub, email } = await this.jwtVerifier.verifyBearerToken(
         auth.authorization,
@@ -91,6 +100,7 @@ export class IdentityService {
       let volunteer = await this.prisma.volunteer.findUnique({
         where: { authSubjectId: sub },
       });
+      let newlyFulfilledInvites: FulfilledVolunteerInviteSummary[] = [];
       if (email) {
         const adminFulfilled = await this.adminInvites.fulfillPendingInvites({
           authSubjectId: sub,
@@ -106,9 +116,10 @@ export class IdentityService {
             email,
             existingVolunteer: volunteer,
           });
-        if (inviteFulfilled) {
-          volunteer = inviteFulfilled;
+        if (inviteFulfilled.volunteer) {
+          volunteer = inviteFulfilled.volunteer;
         }
+        newlyFulfilledInvites = inviteFulfilled.newlyFulfilledInvites;
       }
       if (!volunteer && options.attemptAutoLink) {
         volunteer = await this.tryAutoLinkSeedVolunteer(sub);
@@ -120,7 +131,7 @@ export class IdentityService {
             'No Volunteer profile is linked to this authenticated subject.',
         });
       }
-      return volunteer;
+      return { volunteer, newlyFulfilledInvites };
     }
 
     if (devHeadersAllowed() && auth.volunteerId?.trim()) {
@@ -133,7 +144,7 @@ export class IdentityService {
           message: 'Volunteer profile not found for dev header identity.',
         });
       }
-      return volunteer;
+      return { volunteer, newlyFulfilledInvites: [] };
     }
 
     throw new UnauthorizedException({

@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/volunteer-onboarding-invite/design.md`  
 **Spec**: `.specs/features/volunteer-onboarding-invite/spec.md`  
-**Status**: Ready for Execute — all assumptions locked 2026-06-06 (user-confirmed: ONBOARD-A1 through ONBOARD-A5). See `spec.md` Decisions section.
+**Status**: Shipped — validated 2026-06-11 (#116). ONBOARD-A5 invite toast deferred to follow-up slice.
 
 ---
 
@@ -25,9 +25,9 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] Migration adds `VolunteerInvite` table with `(ministryId, email)` unique index
-- [ ] `VolunteerInviteStatus` enum: PENDING, ACCEPTED, EXPIRED
-- [ ] No changes to existing Volunteer or MinistryMembership tables
+- [x] Migration adds `VolunteerInvite` table with `(ministryId, email)` unique index
+- [x] `VolunteerInviteStatus` enum: PENDING, ACCEPTED, EXPIRED
+- [x] No changes to existing Volunteer or MinistryMembership tables
 
 **Gate**: `pnpm --filter @onda/api exec prisma migrate dev` succeeds; `pnpm --filter @onda/api typecheck`
 
@@ -43,11 +43,11 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] Leader/Admin can send invite; Supabase invite dispatched; `VolunteerInvite` row created
-- [ ] Email match returns `VOLUNTEER_ALREADY_EXISTS` (200 with payload) instead of invite
-- [ ] Duplicate pending invite (same ministry+email, not expired) resends Supabase invite and resets `sentAtUtc`/`expiresAtUtc` (200)
-- [ ] Archived ministry returns `MINISTRY_ARCHIVED` (400)
-- [ ] `GET /ministries/:id/invites` returns pending/accepted invites for the ministry
+- [x] Leader/Admin can send invite; Supabase invite dispatched; `VolunteerInvite` row created
+- [x] Email match returns `VOLUNTEER_ALREADY_EXISTS` (200 with payload) instead of invite
+- [x] Duplicate pending invite (same ministry+email, not expired) resends Supabase invite and resets `sentAtUtc`/`expiresAtUtc` (200)
+- [x] Archived ministry returns `MINISTRY_ARCHIVED` (400)
+- [x] `GET /ministries/:id/invites` returns pending/accepted invites for the ministry
 
 **Tests**: none (covered in T-ONBOARD-05)  
 **Gate**: `pnpm --filter @onda/api typecheck`
@@ -64,9 +64,9 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] `q` ≥2 chars required; returns ≤20 results; case-insensitive match on displayName and email
-- [ ] Results exclude Volunteers with ACTIVE or PENDING membership in provided `ministryId`
-- [ ] Leader auth scoped to their Church; Admin auth scoped to accredited Church
+- [x] `q` ≥2 chars required; returns ≤20 results; case-insensitive match on displayName and email
+- [x] Results exclude Volunteers with ACTIVE or PENDING membership in provided `ministryId`
+- [x] Leader auth scoped to their Church; Admin auth scoped to accredited Church
 
 **Tests**: none (covered in T-ONBOARD-05)  
 **Gate**: `pnpm --filter @onda/api typecheck`
@@ -82,9 +82,9 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] On first sign-in, `VolunteerInvite` rows matching email fulfilled: Volunteer record created, Pending memberships created
-- [ ] Archived ministry at fulfillment time: invite marked EXPIRED, no membership created
-- [ ] Fulfilled invites returned in auth context for web acceptance screen
+- [x] On first sign-in, `VolunteerInvite` rows matching email fulfilled: Volunteer record created, Pending memberships created
+- [x] Archived ministry at fulfillment time: invite marked EXPIRED, no membership created
+- [x] Fulfilled invites returned in auth context for web acceptance screen
 
 **Tests**: none (covered in T-ONBOARD-05)  
 **Gate**: `pnpm --filter @onda/api typecheck`
@@ -100,11 +100,11 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] Invite sent to new email → `VolunteerInvite` row created; Supabase call mocked
-- [ ] Resend to same ministry+email before expiry → resets TTL, re-dispatches Supabase invite (no error)
-- [ ] Email matches existing Volunteer → `VOLUNTEER_ALREADY_EXISTS` with payload
-- [ ] Search returns matching volunteers excluding already-members
-- [ ] Fulfillment on sign-in creates Pending membership; archived ministry produces EXPIRED invite
+- [x] Invite sent to new email → `VolunteerInvite` row created; Supabase call mocked
+- [x] Resend to same ministry+email before expiry → resets TTL, re-dispatches Supabase invite (no error)
+- [x] Email matches existing Volunteer → `VOLUNTEER_ALREADY_EXISTS` with payload
+- [x] Search returns matching volunteers excluding already-members
+- [x] Fulfillment on sign-in creates Pending membership; archived ministry produces EXPIRED invite
 
 **Gate**: `export DATABASE_URL=... && pnpm test` (api — volunteer-invite spec green)
 
@@ -120,9 +120,9 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] `searchVolunteers` debounced fetch wrapping `GET /churches/:id/volunteers/search`
-- [ ] `sendVolunteerInvite` calls `POST /ministries/:id/invites`; handles `VOLUNTEER_ALREADY_EXISTS`
-- [ ] `listVolunteerInvites` calls `GET /ministries/:id/invites`
+- [x] `searchVolunteers` debounced fetch wrapping `GET /churches/:id/volunteers/search`
+- [x] `sendVolunteerInvite` calls `POST /ministries/:id/invites`; handles `VOLUNTEER_ALREADY_EXISTS`
+- [x] `listVolunteerInvites` calls `GET /ministries/:id/invites`
 
 **Gate**: `pnpm --filter @onda/web exec tsc --noEmit`
 
@@ -138,12 +138,12 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] Search field (≥2 chars) shows volunteer dropdown; selection pre-fills add-membership
-- [ ] "Can't find them? Invite by email" section with email input
-- [ ] `VOLUNTEER_ALREADY_EXISTS` response auto-populates search field
-- [ ] Pending invite list visible per selected ministry
-- [ ] No raw `volunteerId` input visible in normal flow
-- [ ] Error state shown when API unavailable
+- [x] Search field (≥2 chars) shows volunteer dropdown; selection pre-fills add-membership
+- [x] "Can't find them? Invite by email" section with email input
+- [x] `VOLUNTEER_ALREADY_EXISTS` response auto-populates search field
+- [x] Pending invite list visible per selected ministry
+- [x] No raw `volunteerId` input visible in normal flow
+- [x] Error state shown when API unavailable
 
 **Gate**: web typecheck
 
@@ -158,10 +158,10 @@ T-ONBOARD-01 → T-ONBOARD-02 [P] T-ONBOARD-03 → T-ONBOARD-04 → T-ONBOARD-05
 
 **Done when**:
 
-- [ ] Search field debounce test (mock API returns results)
-- [ ] Result selection pre-fills form; submit calls `addMinistryMembership`
-- [ ] No-results state shows invite by email option
-- [ ] Invite form submit calls `sendVolunteerInvite`; success shows invite in list
-- [ ] i18n strings for search/invite in both locales
+- [x] Search field debounce test (mock API returns results)
+- [x] Result selection pre-fills form; submit calls `addMinistryMembership`
+- [x] No-results state shows invite by email option
+- [x] Invite form submit calls `sendVolunteerInvite`; success shows invite in list
+- [x] i18n strings for search/invite in both locales
 
 **Gate**: `pnpm --filter @onda/web test`

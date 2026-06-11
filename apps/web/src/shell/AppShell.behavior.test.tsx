@@ -47,6 +47,7 @@ beforeEach(() => {
     },
     authSubjectId: null,
     isSystemAdmin: false,
+    newlyFulfilledInvites: [],
   });
 });
 
@@ -185,6 +186,32 @@ describe('App shell routing', () => {
     expect(
       within(primaryNav).queryByRole('link', { name: /system admin|admin do sistema/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows a success toast for each newly fulfilled volunteer invite', async () => {
+    await initI18n();
+    fetchIdentityMeMock.mockResolvedValue({
+      volunteer: {
+        id: 'seed-volunteer-demo',
+        displayName: 'Invitee',
+        uiLocale: null,
+      },
+      authSubjectId: 'auth-subject-invitee',
+      isSystemAdmin: false,
+      newlyFulfilledInvites: [
+        { ministryId: 'ministry-worship', ministryName: 'Worship' },
+      ],
+    });
+
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(shellTestProviders(<RouterProvider router={routed} />));
+
+    expect(
+      await screen.findByText(/adicionado\(a\) ao ministério Worship como membro pendente/i),
+    ).toBeInTheDocument();
   });
 
   it('redirects legacy /events/:id to shell scheduling detail', async () => {

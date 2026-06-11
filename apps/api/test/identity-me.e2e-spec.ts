@@ -110,6 +110,7 @@ describe('GET /identity/me (e2e)', () => {
       },
       authSubjectId,
       isSystemAdmin: false,
+      newlyFulfilledInvites: [],
     });
   });
 

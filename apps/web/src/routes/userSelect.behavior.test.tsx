@@ -21,6 +21,7 @@ vi.mock('@/identity/fetchIdentityMe', () => ({
     volunteer: { id: 'seed-volunteer-demo', displayName: 'Demo', uiLocale: null },
     authSubjectId: null,
     isSystemAdmin: false,
+    newlyFulfilledInvites: [],
   })),
 }));
 

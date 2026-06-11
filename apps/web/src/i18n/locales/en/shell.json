@@ -13,6 +13,7 @@
   "supabaseNotConfigured": "Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, or enable dev headers with VITE_DEMO_VOLUNTEER_ID for local bypass.",
   "profileNotLinkedTitle": "Profile not linked",
   "profileNotLinkedBody": "Your account is signed in but no volunteer profile is linked yet. Ask an admin to link your account, or run the local link script documented in the runbook.",
+  "inviteFulfilled": "You've been added to {{ministryName}} as a pending member.",
   "organizationLoading": "Loading churches…",
   "churchLabel": "Church",
   "campusLabel": "Campus",

@@ -1,3 +1,8 @@
+export type FulfilledVolunteerInviteSummary = {
+  ministryId: string;
+  ministryName: string;
+};
+
 export type IdentityMePayload = {
   volunteer: {
     id: string;
@@ -6,4 +11,5 @@ export type IdentityMePayload = {
   };
   authSubjectId: string | null;
   isSystemAdmin: boolean;
+  newlyFulfilledInvites: FulfilledVolunteerInviteSummary[];
 };

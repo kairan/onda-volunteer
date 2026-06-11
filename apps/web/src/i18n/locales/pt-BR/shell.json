@@ -13,6 +13,7 @@
   "supabaseNotConfigured": "Supabase não configurado. Adicione VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY, ou habilite cabeçalhos de desenvolvimento com VITE_DEMO_VOLUNTEER_ID.",
   "profileNotLinkedTitle": "Perfil não vinculado",
   "profileNotLinkedBody": "Sua conta está autenticada, mas ainda não há um perfil de voluntário vinculado. Peça a um administrador ou use o script local descrito no runbook.",
+  "inviteFulfilled": "Você foi adicionado(a) ao ministério {{ministryName}} como membro pendente.",
   "organizationLoading": "Carregando igrejas…",
   "churchLabel": "Igreja",
   "campusLabel": "Campus",

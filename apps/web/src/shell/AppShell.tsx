@@ -23,7 +23,9 @@ const CHROME_ICON_HIT =
   'inline-flex size-11 min-h-11 min-w-11 items-center justify-center';
 
 export function AppShell({ children }: { children?: ReactNode }) {
+  const { t } = useTranslation('shell');
   const auth = useAuthSession();
+  const toasts = useToasts();
   const orgReady =
     auth.status === 'authenticated' || auth.status === 'dev-bypass';
   const devVolunteerIdForOrg =
@@ -46,6 +48,15 @@ export function AppShell({ children }: { children?: ReactNode }) {
           const me = await fetchIdentityMe({ volunteerId });
           if (!cancelled) {
             setIsSystemAdmin(me.isSystemAdmin);
+            for (const invite of me.newlyFulfilledInvites ?? []) {
+              toasts.push({
+                id: crypto.randomUUID(),
+                kind: 'success',
+                message: t('inviteFulfilled', {
+                  ministryName: invite.ministryName,
+                }),
+              });
+            }
           }
           return;
         } catch {
@@ -58,7 +69,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [auth]);
+  }, [auth, t, toasts]);
 
   return (
     <OrganizationContextProvider

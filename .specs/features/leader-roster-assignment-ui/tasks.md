@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/leader-roster-assignment-ui/design.md`  
 **Spec**: `.specs/features/leader-roster-assignment-ui/spec.md`  
-**Status**: Ready for Execute — all product decisions locked.
+**Status**: Shipped — validated 2026-06-11 (#115).
 
 ---
 
@@ -59,9 +59,9 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] `voidAssignment` calls `assertSchedulingWriteAllowed`, loads assignment, asserts Leader or Admin auth, rejects if already voided, sets `voidedAtUtc`
-- [ ] Stable error codes: `ASSIGNMENT_NOT_FOUND` (404), `ASSIGNMENT_ALREADY_VOIDED` (400), `LEADER_NOT_ASSIGNED` (403), `SYSTEM_ADMIN_READ_ONLY` (403)
-- [ ] Controller route `POST /assignments/:id/void` registered
+- [x] `voidAssignment` calls `assertSchedulingWriteAllowed`, loads assignment, asserts Leader or Admin auth, rejects if already voided, sets `voidedAtUtc`
+- [x] Stable error codes: `ASSIGNMENT_NOT_FOUND` (404), `ASSIGNMENT_ALREADY_VOIDED` (400), `LEADER_NOT_ASSIGNED` (403), `SYSTEM_ADMIN_READ_ONLY` (403)
+- [x] Controller route `POST /assignments/:id/void` registered
 
 **Gate**: `pnpm --filter @onda/api typecheck`
 
@@ -78,12 +78,12 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] Leader creates assignment for their ministry member — 201
-- [ ] Leader voids another volunteer's assignment in their ministry — 200 with `voidedAtUtc`
-- [ ] Leader cannot void assignment for a ministry they do not lead — 403 `LEADER_NOT_ASSIGNED`
-- [ ] System Admin cannot void (write blocked) — 403 `SYSTEM_ADMIN_READ_ONLY`
-- [ ] Double-void returns `ASSIGNMENT_ALREADY_VOIDED` — 400
-- [ ] Unavailability block returns `UNAVAILABILITY_BLOCKS_ASSIGN` on create — 409
+- [x] Leader creates assignment for their ministry member — 201
+- [x] Leader voids another volunteer's assignment in their ministry — 200 with `voidedAtUtc`
+- [x] Leader cannot void assignment for a ministry they do not lead — 403 `LEADER_NOT_ASSIGNED`
+- [x] System Admin cannot void (write blocked) — 403 `SYSTEM_ADMIN_READ_ONLY`
+- [x] Double-void returns `ASSIGNMENT_ALREADY_VOIDED` — 400
+- [x] Unavailability block returns `UNAVAILABILITY_BLOCKS_ASSIGN` on create — 409
 
 **Tests**: API Jest e2e (co-located)  
 **Gate**: `export DATABASE_URL=... && pnpm test` (api — new spec file passes)
@@ -101,9 +101,9 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] `voidAssignment({ assignmentId, actingVolunteerId })` calls `POST /assignments/:id/void` and returns `{ id, voidedAtUtc }`
-- [ ] `fetchMinistryRoles({ ministryId, actingVolunteerId })` calls `GET /ministries/:id/roles` and returns `{ id, name, retiredAt }`
-- [ ] Both functions throw `ApiRequestError` on non-2xx responses (matching existing helper pattern)
+- [x] `voidAssignment({ assignmentId, actingVolunteerId })` calls `POST /assignments/:id/void` and returns `{ id, voidedAtUtc }`
+- [x] `fetchMinistryRoles({ ministryId, actingVolunteerId })` calls `GET /ministries/:id/roles` and returns `{ id, name, retiredAt }`
+- [x] Both functions throw `ApiRequestError` on non-2xx responses (matching existing helper pattern)
 
 **Tests**: none (covered in T-ROSTER-06)  
 **Gate**: `pnpm --filter @onda/web exec tsc --noEmit`
@@ -121,13 +121,13 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] `canAssign` block and all `VITE_DEMO_*` references removed from `schedulingEventDetail.tsx`
-- [ ] Assignment form visible when `isLeader` on ≥1 accessible ministry AND event not cancelled
-- [ ] Volunteer picker lists `fetchMinistryMemberships` (ACTIVE only) for selected ministry
-- [ ] Role picker lists `fetchMinistryRoles` (non-retired) for selected ministry
-- [ ] Ministry picker shown for Public events when leader stewards >1 ministry; auto-bound for exactly 1
-- [ ] Remove button appears on active assignment rows for leader's ministry (or accredited admin); opens confirm dialog; calls `voidAssignment`; roster refreshes
-- [ ] No functional regression for volunteers and non-leaders (they see only the read-only roster table)
+- [x] `canAssign` block and all `VITE_DEMO_*` references removed from `schedulingEventDetail.tsx`
+- [x] Assignment form visible when `isLeader` on ≥1 accessible ministry AND event not cancelled
+- [x] Volunteer picker lists `fetchMinistryMemberships` (ACTIVE only) for selected ministry
+- [x] Role picker lists `fetchMinistryRoles` (non-retired) for selected ministry
+- [x] Ministry picker shown for Public events when leader stewards >1 ministry; auto-bound for exactly 1
+- [x] Remove button appears on active assignment rows for leader's ministry (or accredited admin); opens confirm dialog; calls `voidAssignment`; roster refreshes
+- [x] No functional regression for volunteers and non-leaders (they see only the read-only roster table)
 
 **Tests**: none (covered in T-ROSTER-06)  
 **Gate**: web typecheck
@@ -146,8 +146,8 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] Form labels, placeholders, and confirm dialog strings present in both locales
-- [ ] Error code messages for `ASSIGNMENT_OVERLAP`, `OUTSIDE_EVENT_WINDOW`, `MINISTRY_ARCHIVED`, `LEADER_NOT_ASSIGNED`, `ASSIGNMENT_ALREADY_VOIDED` present in both locales
+- [x] Form labels, placeholders, and confirm dialog strings present in both locales
+- [x] Error code messages for `ASSIGNMENT_OVERLAP`, `OUTSIDE_EVENT_WINDOW`, `MINISTRY_ARCHIVED`, `LEADER_NOT_ASSIGNED`, `ASSIGNMENT_ALREADY_VOIDED` present in both locales
 
 **Gate**: lint spot-check
 
@@ -164,12 +164,12 @@ T-ROSTER-01 → T-ROSTER-02 → T-ROSTER-03 → T-ROSTER-04 [P] T-ROSTER-05 → 
 
 **Done when**:
 
-- [ ] Non-leader: assignment form is not rendered
-- [ ] Leader: form renders with ministry/volunteer/role pickers (mocked data)
-- [ ] Active-only filter: volunteer picker shows Active members; Pending/Inactive absent
-- [ ] Non-retired filter: role picker excludes `retiredAt !== null` entries
-- [ ] Remove button on leader's ministry assignment row; confirm dialog visible on click; `voidAssignment` called on confirm; roster updates
-- [ ] Demo env var gate: no reference to `VITE_DEMO_*` in component or tests
+- [x] Non-leader: assignment form is not rendered
+- [x] Leader: form renders with ministry/volunteer/role pickers (mocked data)
+- [x] Active-only filter: volunteer picker shows Active members; Pending/Inactive absent
+- [x] Non-retired filter: role picker excludes `retiredAt !== null` entries
+- [x] Remove button on leader's ministry assignment row; confirm dialog visible on click; `voidAssignment` called on confirm; roster updates
+- [x] Demo env var gate: no reference to `VITE_DEMO_*` in component or tests
 
 **Tests**: Vitest + `@testing-library/user-event` (co-located)  
 **Gate**: `pnpm --filter @onda/web test`
