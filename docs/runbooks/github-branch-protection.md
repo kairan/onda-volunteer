@@ -8,7 +8,10 @@ Enable required status checks **after** the new [`.github/workflows/ci.yml`](../
 |------------|----------|-----|
 | `CI / build` | [ci.yml](../../.github/workflows/ci.yml) | `build` |
 | `CI / lint` | [ci.yml](../../.github/workflows/ci.yml) | `lint` |
+| `CI / typecheck-api` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-api` |
+| `CI / typecheck-web` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web` |
 | `CI / test` | [ci.yml](../../.github/workflows/ci.yml) | `test` |
+| `CI / coverage` | [ci.yml](../../.github/workflows/ci.yml) | `coverage` |
 | `Web Playwright e2e / playwright` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright` |
 
 ## UI (recommended)
@@ -18,7 +21,7 @@ Use this path when `main` **already** has branch protection (required PR reviews
 1. Repo **Settings → Branches → Branch protection rules → Add rule** (or edit `main`).
 2. Branch name pattern: `main`.
 3. Enable **Require status checks to pass before merging**.
-4. Search and select the four checks above.
+4. Search and select the checks above (at minimum: build, lint, test, playwright; add typecheck jobs after #128; add coverage after #129).
 5. Save.
 
 ## CLI (after first green CI run)
@@ -45,7 +48,10 @@ gh api --method PUT repos/kairan/onda-volunteer/branches/main/protection \
     "contexts": [
       "CI / build",
       "CI / lint",
+      "CI / typecheck-api",
+      "CI / typecheck-web",
       "CI / test",
+      "CI / coverage",
       "Web Playwright e2e / playwright"
     ]
   },
@@ -58,12 +64,12 @@ If GitHub rejects unknown contexts, merge a PR that runs the workflows first, th
 
 ### Merge status checks into existing rule
 
-When protection already exists, read the current rule, union the four CI contexts with any existing ones, and `PUT` the merged payload (preserves review requirements and restrictions):
+When protection already exists, read the current rule, union the CI contexts below with any existing ones, and `PUT` the merged payload (preserves review requirements and restrictions):
 
 ```bash
 REPO=kairan/onda-volunteer
 BRANCH=main
-NEW_CHECKS='["CI / build","CI / lint","CI / test","Web Playwright e2e / playwright"]'
+NEW_CHECKS='["CI / build","CI / lint","CI / typecheck-api","CI / typecheck-web","CI / test","CI / coverage","Web Playwright e2e / playwright"]'
 
 gh api "repos/$REPO/branches/$BRANCH/protection" > /tmp/protection.json
 

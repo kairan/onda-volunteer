@@ -10,7 +10,8 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:integration": "PLAYWRIGHT_WITH_API=true playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",

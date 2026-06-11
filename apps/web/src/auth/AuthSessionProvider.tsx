@@ -25,7 +25,7 @@ import {
   setStoredDevVolunteerId,
 } from './devVolunteerStorage';
 
-type AuthSessionContextValue = AuthSessionState & {
+export type AuthSessionContextValue = AuthSessionState & {
   refresh: () => Promise<void>;
   selectDevVolunteer: (volunteerId: string) => void;
 };

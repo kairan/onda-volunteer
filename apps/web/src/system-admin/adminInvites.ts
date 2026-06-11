@@ -15,6 +15,7 @@ export async function fetchAdminInvites(input: {
 }): Promise<AdminInviteSummary[]> {
   const page = await fetchJsonWithProtectedHeaders<{ items: AdminInviteSummary[] }>(
     `${base()}/system-admin/churches/${encodeURIComponent(input.churchId)}/admin-invites`,
+    {},
   );
   return page.items;
 }
@@ -25,7 +26,7 @@ export async function revokeAdminInvite(input: {
 }): Promise<AdminInviteSummary> {
   return fetchJsonWithProtectedHeaders<AdminInviteSummary>(
     `${base()}/system-admin/churches/${encodeURIComponent(input.churchId)}/admin-invites/${encodeURIComponent(input.inviteId)}`,
-    undefined,
+    {},
     { method: 'DELETE' },
   );
 }

@@ -4,6 +4,9 @@ dist
 *.tsbuildinfo
 .DS_Store
 
+# Test coverage (Jest / Vitest local output)
+coverage/
+
 # Playwright (apps/web)
 playwright-report/
 test-results/

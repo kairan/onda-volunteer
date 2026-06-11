@@ -8,6 +8,7 @@ import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { buildTestRouteTree } from '@/router.testUtils';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { identityMeFixture } from '@/identity/testFixtures';
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
   fetchIdentityMe: vi.fn(),
@@ -41,16 +42,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  fetchIdentityMeMock.mockResolvedValue({
-    volunteer: {
-      id: 'seed-volunteer-demo',
-      displayName: 'Demo',
-      uiLocale: null,
-    },
-    authSubjectId: null,
-    isSystemAdmin: false,
-    newlyFulfilledInvites: [],
-  });
+  fetchIdentityMeMock.mockResolvedValue(identityMeFixture());
 });
 
 describe('App shell routing', () => {
@@ -127,15 +119,11 @@ describe('App shell routing', () => {
 
   it('shows System Admin nav link when identity reports operator', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-demo',
-        displayName: 'Demo',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
+    fetchIdentityMeMock.mockResolvedValue(
+      identityMeFixture({
+        isSystemAdmin: true,
+      }),
+    );
     const { routeTree } = buildTestRouteTree();
     const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
     const routed = createRouter({ routeTree, history });
@@ -152,15 +140,11 @@ describe('App shell routing', () => {
     await initI18n();
     fetchIdentityMeMock
       .mockRejectedValueOnce(new Error('network'))
-      .mockResolvedValueOnce({
-        volunteer: {
-          id: 'seed-volunteer-demo',
-          displayName: 'Demo',
-          uiLocale: null,
-        },
-        authSubjectId: null,
-        isSystemAdmin: true,
-      });
+      .mockResolvedValueOnce(
+        identityMeFixture({
+          isSystemAdmin: true,
+        }),
+      );
     const { routeTree } = buildTestRouteTree();
     const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
     const routed = createRouter({ routeTree, history });
@@ -192,18 +176,19 @@ describe('App shell routing', () => {
 
   it('shows a success toast for each newly fulfilled volunteer invite', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-demo',
-        displayName: 'Invitee',
-        uiLocale: null,
-      },
-      authSubjectId: 'auth-subject-invitee',
-      isSystemAdmin: false,
-      newlyFulfilledInvites: [
-        { ministryId: 'ministry-worship', ministryName: 'Worship' },
-      ],
-    });
+    fetchIdentityMeMock.mockResolvedValue(
+      identityMeFixture({
+        volunteer: {
+          id: 'seed-volunteer-demo',
+          displayName: 'Invitee',
+          uiLocale: null,
+        },
+        authSubjectId: 'auth-subject-invitee',
+        newlyFulfilledInvites: [
+          { ministryId: 'ministry-worship', ministryName: 'Worship' },
+        ],
+      }),
+    );
 
     const { routeTree } = buildTestRouteTree();
     const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
@@ -245,7 +230,11 @@ describe('App shell routing', () => {
     await initI18n();
     const { routeTree, schedulingEventDetailLoader } = buildTestRouteTree();
     schedulingEventDetailLoader.mockImplementation(async () => ({
-      church: { name: 'Demo Church', defaultTimezone: 'America/Sao_Paulo' },
+      church: {
+        id: 'church-demo',
+        name: 'Demo Church',
+        defaultTimezone: 'America/Sao_Paulo',
+      },
       event: {
         id: 'evt-1',
         title: 'Sunday',
@@ -256,6 +245,7 @@ describe('App shell routing', () => {
           startsDisplayInChurchTz: '07:00',
           endsDisplayInChurchTz: '09:00',
         },
+        cancelledAtUtc: null,
       },
       ministry: null,
       assignments: [],

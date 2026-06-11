@@ -5,7 +5,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { LeaderVolunteerTimeAwayPage } from './leaderVolunteerTimeAway';
-import { AuthSessionContext } from '@/auth/AuthSessionProvider';
+import {
+  AuthSessionContext,
+  authSessionContextFixture,
+} from '@/auth/AuthSessionProvider';
 import { OrganizationContextProvider } from '@/organization/OrganizationContextProvider';
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
@@ -49,7 +52,6 @@ describe('LeaderVolunteerTimeAwayPage', () => {
     uiLocale: 'en',
     isSystemAdmin: false,
     newlyFulfilledInvites: [],
-    refresh: async () => {},
   };
 
   const orgContext = {
@@ -77,7 +79,7 @@ describe('LeaderVolunteerTimeAwayPage', () => {
     render(
       <I18nProvider>
         <LocalTimeProvider>
-          <AuthSessionContext.Provider value={authState}>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
             <OrganizationContextProvider enabled={true}>
               <LeaderVolunteerTimeAwayPage />
             </OrganizationContextProvider>
@@ -122,7 +124,7 @@ describe('LeaderVolunteerTimeAwayPage', () => {
     render(
       <I18nProvider>
         <LocalTimeProvider>
-          <AuthSessionContext.Provider value={authState}>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
             <OrganizationContextProvider enabled={true}>
               <LeaderVolunteerTimeAwayPage />
             </OrganizationContextProvider>

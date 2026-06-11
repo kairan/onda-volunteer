@@ -19,11 +19,11 @@
 
 Promote to **required** CI checks when:
 
-1. **Lint:** `pnpm lint` reports zero warnings on `main` for two consecutive weeks (or after a focused cleanup PR).
-2. **Coverage:** Baseline percentages recorded from `coverage` job artifacts; team agrees minimum thresholds per package in a follow-up issue.
-3. **Web typecheck:** Enable full monorepo `tsc --noEmit` only after web strict debt is cleared (see `AGENTS.md`).
+1. **Lint:** ✅ Shipped — #126 (`pnpm lint --max-warnings 0`, required CI gate).
+2. **Coverage:** ✅ Shipped — #129 (threshold floors in Jest/Vitest; CI `coverage` job blocking).
+3. **Web typecheck:** ✅ Shipped — #128 (`pnpm typecheck:web`, CI `typecheck-web` job).
 
-Until then, `lint` and `coverage` jobs use `continue-on-error: true`.
+All T61-06 promotion criteria met as of 2026-06-11.
 
 ## Parallelization notes
 

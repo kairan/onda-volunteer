@@ -7,6 +7,7 @@ import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { systemAdminIdentityMeFixture } from '@/identity/testFixtures';
 import { buildTestRouteTree } from '@/router.testUtils';
 import { fetchAdminInvites } from './adminInvites';
 import { createAdminInvite } from './createAdminInvite';
@@ -64,20 +65,12 @@ afterEach(() => {
 
 describe('System Admin admin invite form', () => {
   beforeEach(() => {
+    fetchIdentityMeMock.mockResolvedValue(systemAdminIdentityMeFixture());
     fetchAdminInvitesMock.mockResolvedValue([]);
   });
 
   it('submits an invite and shows success feedback', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
     fetchSystemAdminChurchMock.mockResolvedValue({
       id: 'ch-1',
       name: 'Test Church',
@@ -120,15 +113,6 @@ describe('System Admin admin invite form', () => {
 
   it('shows invalid email copy from API errors', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
     fetchSystemAdminChurchMock.mockResolvedValue({
       id: 'ch-1',
       name: 'Test Church',
@@ -158,15 +142,6 @@ describe('System Admin admin invite form', () => {
     const { revokeAdminInvite } = await import('./adminInvites');
     const revokeMock = vi.mocked(revokeAdminInvite);
 
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
     fetchSystemAdminChurchMock.mockResolvedValue({
       id: 'ch-1',
       name: 'Test Church',
@@ -207,15 +182,6 @@ describe('System Admin admin invite form', () => {
 
   it('shows invite list load error instead of empty state', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
     fetchSystemAdminChurchMock.mockResolvedValue({
       id: 'ch-1',
       name: 'Test Church',

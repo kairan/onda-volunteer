@@ -2,19 +2,24 @@
 
 ## Completed this session
 
-1. **Closeout #124** — Archived invite fulfillment toast spec; README + ROADMAP synced.
-2. **Specify #126** — `.specs/features/eslint-baseline-clean/` + GitHub issue.
-3. **Execute** — Fixed 13 ESLint unused-var warnings; promoted lint to required CI gate (`--max-warnings 0`, removed `continue-on-error`).
-4. **Validate** — `pnpm lint` + `pnpm test` green (158 API e2e + 134 web unit).
-5. **Closeout #126** — Archived to `docs/issues/done/126-eslint-baseline-clean.md`; tasks.md, README, ROADMAP, STATE updated.
+1. **#128 web typecheck strict clean** — 59 `tsc` errors fixed; `pnpm typecheck:web` + CI `typecheck-web` job; test fixtures + explicit shell routes.
+2. **#129 coverage threshold gates** — API jest-e2e `rootDir` fix; Jest/Vitest global floors; CI `coverage` job blocking (no `continue-on-error`).
+3. **#61 T61-06 complete** — Lint (#126), web typecheck (#128), and coverage (#129) promotion criteria all shipped.
+4. **Validate** — `pnpm lint`, `pnpm typecheck:web`, `pnpm test:coverage`, `pnpm test` green.
 
 ## HITL follow-up
 
-Add `CI / lint` to branch protection on `main` per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md) after PR merge and first green CI run.
+After PR merge and first green CI on `main`, add to branch protection per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md):
+
+- `CI / typecheck-api`
+- `CI / typecheck-web`
+- `CI / coverage` (optional but recommended)
+
+(`CI / lint` already enabled.)
 
 ## Next agent action
 
-No active TLC slice. Ranked backlog: web typecheck strict debt → coverage thresholds → production hardening (deferred).
+No active TLC slice. PRD v1 + #61 CI hygiene complete. Deferred: production hardening (email, notifications, reporting per ROADMAP).
 
 ## Blockers
 

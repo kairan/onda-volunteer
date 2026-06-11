@@ -4,7 +4,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { SchedulingPage } from './scheduling';
-import { AuthSessionContext } from '@/auth/AuthSessionProvider';
+import {
+  AuthSessionContext,
+  authSessionContextFixture,
+} from '@/auth/AuthSessionProvider';
 import { OrganizationContextProvider } from '@/organization/OrganizationContextProvider';
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import * as fetchEvents from '@/events/fetchEvents';
@@ -54,7 +57,6 @@ describe('SchedulingPage', () => {
     uiLocale: 'pt-BR',
     isSystemAdmin: false,
     newlyFulfilledInvites: [],
-    refresh: async () => {},
   };
 
   const orgContext = {
@@ -108,7 +110,7 @@ describe('SchedulingPage', () => {
     render(
       <I18nProvider>
         <LocalTimeProvider>
-          <AuthSessionContext.Provider value={authState}>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
             <OrganizationContextProvider enabled={true}>
               <SchedulingPage />
             </OrganizationContextProvider>
@@ -159,7 +161,7 @@ describe('SchedulingPage', () => {
     render(
       <I18nProvider>
         <LocalTimeProvider>
-          <AuthSessionContext.Provider value={authState}>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
             <OrganizationContextProvider enabled={true}>
               <SchedulingPage />
             </OrganizationContextProvider>
@@ -183,7 +185,7 @@ describe('SchedulingPage', () => {
     render(
       <I18nProvider>
         <LocalTimeProvider>
-          <AuthSessionContext.Provider value={authState}>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
             <OrganizationContextProvider enabled={true}>
               <SchedulingPage />
             </OrganizationContextProvider>

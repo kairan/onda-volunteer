@@ -32,7 +32,11 @@ vi.mock('@/feedback/ToastHost', () => ({
 }));
 
 const payload: EventDetailPayload = {
-  church: { name: 'Demo Church', defaultTimezone: 'America/Sao_Paulo' },
+  church: {
+    id: 'church-demo',
+    name: 'Demo Church',
+    defaultTimezone: 'America/Sao_Paulo',
+  },
   event: {
     id: 'evt-1',
     title: 'Sunday Gathering',
@@ -46,6 +50,7 @@ const payload: EventDetailPayload = {
       startsDisplayInChurchTz: '11:00',
       endsDisplayInChurchTz: '13:00',
     },
+    cancelledAtUtc: null,
   },
   ministry: null,
   assignments: [

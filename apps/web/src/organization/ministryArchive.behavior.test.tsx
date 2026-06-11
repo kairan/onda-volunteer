@@ -1,7 +1,10 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AuthSessionContext } from '@/auth/AuthSessionProvider';
+import {
+  AuthSessionContext,
+  authSessionContextFixture,
+} from '@/auth/AuthSessionProvider';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { OrganizationContextProvider } from '@/organization/OrganizationContextProvider';
@@ -46,7 +49,6 @@ describe('Ministry archive UI', () => {
     uiLocale: 'en',
     isSystemAdmin: false,
     newlyFulfilledInvites: [],
-    refresh: async () => {},
   };
 
   const churchContext = {
@@ -104,7 +106,7 @@ describe('Ministry archive UI', () => {
 
     render(
       <I18nProvider>
-        <AuthSessionContext.Provider value={authState}>
+        <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
           <OrganizationContextProvider enabled={true}>
             <MinistriesPage />
           </OrganizationContextProvider>
@@ -135,7 +137,7 @@ describe('Ministry archive UI', () => {
 
     render(
       <I18nProvider>
-        <AuthSessionContext.Provider value={authState}>
+        <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
           <OrganizationContextProvider enabled={true}>
             <MinistriesPage />
           </OrganizationContextProvider>

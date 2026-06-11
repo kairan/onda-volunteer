@@ -75,17 +75,19 @@ export function LeaderVolunteerTimeAwayPage() {
   useEffect(() => {
     setVolunteerId('');
     setMembers([]);
-    if (!ministryId || !actingVolunteerId) {
+    if (!ministryId || actingVolunteerId === null) {
       return;
     }
+    const loadMinistryId = ministryId;
+    const loadActingVolunteerId = actingVolunteerId;
 
     let cancelled = false;
     async function loadMembers() {
       setMembersLoading(true);
       try {
         const data = await fetchMinistryMemberships({
-          ministryId,
-          actingVolunteerId,
+          ministryId: loadMinistryId,
+          actingVolunteerId: loadActingVolunteerId,
         });
         if (!cancelled) {
           setMembers(data.filter((row) => row.volunteerId !== actingVolunteerId));
