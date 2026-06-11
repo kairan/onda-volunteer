@@ -79,6 +79,29 @@ jobs:
       - name: Typecheck API
         run: pnpm --filter @onda/api typecheck
 
+  typecheck-web:
+    name: typecheck-web
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck Web
+        run: pnpm typecheck:web
+
   test:
     name: test
     runs-on: ubuntu-latest
@@ -131,7 +154,6 @@ jobs:
     name: coverage
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    continue-on-error: true
 
     services:
       postgres:

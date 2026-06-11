@@ -7,6 +7,7 @@ import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { identityMeFixture, systemAdminIdentityMeFixture } from '@/identity/testFixtures';
 import { buildTestRouteTree } from '@/router.testUtils';
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
@@ -46,15 +47,7 @@ afterEach(() => {
 describe('System Admin shell routing', () => {
   it('renders the operator dashboard for a system admin', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
+    fetchIdentityMeMock.mockResolvedValue(systemAdminIdentityMeFixture());
 
     renderSystemAdminRoute({
       status: 'dev-bypass',
@@ -83,16 +76,7 @@ describe('System Admin shell routing', () => {
 
   it('redirects a non-operator volunteer to the dashboard', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-demo',
-        displayName: 'Demo Volunteer',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: false,
-      newlyFulfilledInvites: [],
-    });
+    fetchIdentityMeMock.mockResolvedValue(identityMeFixture());
 
     const { history } = renderSystemAdminRoute({
       status: 'dev-bypass',

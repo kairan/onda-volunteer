@@ -6,6 +6,7 @@ import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n, resetI18nForTests } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { systemAdminIdentityMeFixture } from '@/identity/testFixtures';
 import { buildTestRouteTree } from '@/router.testUtils';
 import { fetchSystemAdminEvents } from './systemAdminScheduling';
 
@@ -55,15 +56,7 @@ afterEach(() => {
 describe('System Admin scheduling page', () => {
   it('lists events read-only without write actions', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
+    fetchIdentityMeMock.mockResolvedValue(systemAdminIdentityMeFixture());
 
     fetchEventsMock.mockResolvedValue([
       {

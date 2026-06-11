@@ -65,6 +65,9 @@ export function AuthPanel({
 
   async function sendOtp(e: React.FormEvent) {
     e.preventDefault();
+    if (!supabase) {
+      return;
+    }
     setBusy(true);
     setError(null);
     setMessage(null);
@@ -83,6 +86,9 @@ export function AuthPanel({
 
   async function verifyOtp(e: React.FormEvent) {
     e.preventDefault();
+    if (!supabase) {
+      return;
+    }
     setBusy(true);
     setError(null);
     const { error: err } = await supabase.auth.verifyOtp({
@@ -103,6 +109,9 @@ export function AuthPanel({
   }
 
   async function signOut() {
+    if (!supabase) {
+      return;
+    }
     await supabase.auth.signOut();
     setMessage(null);
     setError(null);

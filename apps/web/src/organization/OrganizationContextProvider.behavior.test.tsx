@@ -24,6 +24,7 @@ const churches = [
     defaultTimezone: 'UTC',
     isAccreditedAdmin: false,
     campuses: [{ id: 'campus-a1', name: 'Main', timezone: 'UTC' }],
+    ministries: [],
   },
   {
     id: 'church-b',
@@ -31,6 +32,7 @@ const churches = [
     defaultTimezone: 'UTC',
     isAccreditedAdmin: false,
     campuses: [{ id: 'campus-b1', name: 'Downtown', timezone: 'UTC' }],
+    ministries: [],
   },
 ];
 

@@ -12,7 +12,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-_(empty — PRD v1 shipped; #126 ESLint baseline clean in PR)_
+_(empty — PRD v1 shipped; #61 CI promotion criteria complete)_
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -32,6 +32,8 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#129](https://github.com/kairan/onda-volunteer/issues/129) | `done/129-coverage-threshold-gates.md` |
+| [#128](https://github.com/kairan/onda-volunteer/issues/128) | `done/128-web-typecheck-strict-clean.md` |
 | [#126](https://github.com/kairan/onda-volunteer/issues/126) | `done/126-eslint-baseline-clean.md` |
 | [#124](https://github.com/kairan/onda-volunteer/issues/124) | `done/124-invite-fulfillment-toast.md` |
 | [#117](https://github.com/kairan/onda-volunteer/issues/117) | `done/117-event-edit-reschedule.md` |

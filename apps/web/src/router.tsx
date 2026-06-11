@@ -12,9 +12,7 @@ import { loadSchedulingEventDetail } from "./events/loadSchedulingEventDetail";
 import { Button } from "./components/ui/button";
 import type { EventDetailPayload } from "./eventDetailPayload";
 import { DesignFoundationPreview } from "./routes/designFoundationPreview";
-import { PRIMARY_NAV_MANIFEST } from "./navigation/manifest";
 import { DashboardPage } from "./routes/dashboard";
-import { PlaceholderPage } from "./routes/placeholderPage";
 import { MinistriesPage } from "./routes/ministries";
 import { MinistryLeadersPage } from "./routes/ministryLeaders";
 import { VolunteersPage } from "./routes/volunteers";
@@ -262,34 +260,48 @@ function createSystemAdminSchedulingEventDetailRoute(
 }
 
 
-const shellRoutes = PRIMARY_NAV_MANIFEST.map((item) =>
-  createRoute({
-    getParentRoute: () => rootRoute,
-    path: item.path,
-    component: shellPage(() => {
-      if (item.id === "dashboard") {
-        return <DashboardPage />;
-      }
-      if (item.id === "scheduling") {
-        return <SchedulingPage />;
-      }
-      if (item.id === "timeAway") {
-        return <TimeAwayPage />;
-      }
-      if (item.id === "ministries") {
-        return <MinistriesPage />;
-      }
-      if (item.id === "volunteers") {
-        return <VolunteersPage />;
-      }
-      if (item.placeholder) {
-        return <PlaceholderPage namespace={item.namespace} />;
-      }
-      return <DashboardPage />;
-    }),
-    errorComponent: shellErrorComponent,
-  }),
-);
+const dashboardRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/dashboard",
+  component: shellPage(() => <DashboardPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const schedulingHubRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/scheduling",
+  component: shellPage(() => <SchedulingPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const ministriesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ministries",
+  component: shellPage(() => <MinistriesPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const volunteersRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/volunteers",
+  component: shellPage(() => <VolunteersPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const timeAwayRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/time-away",
+  component: shellPage(() => <TimeAwayPage />),
+  errorComponent: shellErrorComponent,
+});
+
+const shellRoutes = [
+  dashboardRoute,
+  schedulingHubRoute,
+  ministriesRoute,
+  volunteersRoute,
+  timeAwayRoute,
+];
 
 async function defaultSchedulingEventDetailLoader({
   params,

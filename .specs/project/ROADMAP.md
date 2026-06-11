@@ -48,6 +48,8 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature slug | Issues | Status |
 |-------|--------------|--------|--------|
+| **Hygiene / CI** | `coverage-threshold-gates` | [#129](https://github.com/kairan/onda-volunteer/issues/129) | ✅ Shipped |
+| **Hygiene / CI** | `web-typecheck-strict-clean` | [#128](https://github.com/kairan/onda-volunteer/issues/128) | ✅ Shipped |
 | **Hygiene / CI** | `eslint-baseline-clean` | [#126](https://github.com/kairan/onda-volunteer/issues/126) | ✅ Shipped |
 | **Scheduling** | `leader-roster-assignment-ui` | [#115](https://github.com/kairan/onda-volunteer/issues/115) | ✅ Shipped |
 | **Scheduling** | `event-edit-reschedule` | [#117](https://github.com/kairan/onda-volunteer/issues/117) | ✅ Shipped |

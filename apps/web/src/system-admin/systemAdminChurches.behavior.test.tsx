@@ -1,12 +1,13 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { systemAdminIdentityMeFixture } from '@/identity/testFixtures';
 import { buildTestRouteTree } from '@/router.testUtils';
 import {
   createSystemAdminChurch,
@@ -57,19 +58,13 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+beforeEach(() => {
+  fetchIdentityMeMock.mockResolvedValue(systemAdminIdentityMeFixture());
+});
+
 describe('System Admin churches page', () => {
   it('lists churches and refreshes after create', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
-
     fetchChurchesMock
       .mockResolvedValueOnce({ items: [], nextCursor: null })
       .mockResolvedValueOnce({
@@ -121,16 +116,6 @@ describe('System Admin churches page', () => {
 
   it('loads additional pages when nextCursor is present', async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
-
     fetchChurchesMock
       .mockResolvedValueOnce({
         items: [

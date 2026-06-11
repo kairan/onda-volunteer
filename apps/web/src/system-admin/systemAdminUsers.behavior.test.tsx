@@ -11,6 +11,7 @@ import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { systemAdminIdentityMeFixture } from '@/identity/testFixtures';
 import { buildTestRouteTree } from '@/router.testUtils';
 import {
   addSystemAdminMinistryMembership,
@@ -90,15 +91,7 @@ afterEach(() => {
 describe('System Admin users pages', () => {
   beforeEach(async () => {
     await initI18n();
-    fetchIdentityMeMock.mockResolvedValue({
-      volunteer: {
-        id: 'seed-volunteer-system-admin',
-        displayName: 'System Operator',
-        uiLocale: null,
-      },
-      authSubjectId: null,
-      isSystemAdmin: true,
-    });
+    fetchIdentityMeMock.mockResolvedValue(systemAdminIdentityMeFixture());
   });
 
   it('lists volunteers from search results', async () => {
