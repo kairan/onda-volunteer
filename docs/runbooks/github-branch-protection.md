@@ -64,12 +64,12 @@ If GitHub rejects unknown contexts, merge a PR that runs the workflows first, th
 
 ### Merge status checks into existing rule
 
-When protection already exists, read the current rule, union the four CI contexts with any existing ones, and `PUT` the merged payload (preserves review requirements and restrictions):
+When protection already exists, read the current rule, union the CI contexts below with any existing ones, and `PUT` the merged payload (preserves review requirements and restrictions):
 
 ```bash
 REPO=kairan/onda-volunteer
 BRANCH=main
-NEW_CHECKS='["CI / build","CI / lint","CI / test","Web Playwright e2e / playwright"]'
+NEW_CHECKS='["CI / build","CI / lint","CI / typecheck-api","CI / typecheck-web","CI / test","CI / coverage","Web Playwright e2e / playwright"]'
 
 gh api "repos/$REPO/branches/$BRANCH/protection" > /tmp/protection.json
 
