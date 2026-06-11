@@ -19,15 +19,17 @@ vi.mock('@/organization/fetchOrganizationContext', () => ({
 
 const fetchIdentityMeMock = vi.mocked(fetchIdentityMe);
 
-function shellTestProviders(ui: ReactElement) {
+function shellTestProviders(
+  ui: ReactElement,
+  authState: Parameters<typeof AuthSessionTestProvider>[0]['state'] = {
+    status: 'dev-bypass',
+    volunteerId: 'seed-volunteer-demo',
+  },
+) {
   return (
     <I18nProvider>
       <ToastProvider>
-        <AuthSessionTestProvider
-          state={{ status: 'dev-bypass', volunteerId: 'seed-volunteer-demo' }}
-        >
-          {ui}
-        </AuthSessionTestProvider>
+        <AuthSessionTestProvider state={authState}>{ui}</AuthSessionTestProvider>
       </ToastProvider>
     </I18nProvider>
   );
@@ -212,6 +214,31 @@ describe('App shell routing', () => {
     expect(
       await screen.findByText(/adicionado\(a\) ao ministério Worship como membro pendente/i),
     ).toBeInTheDocument();
+  });
+
+  it('shows fulfilled-invite toasts from auth refresh payload without a duplicate identity fetch', async () => {
+    await initI18n();
+    const { routeTree } = buildTestRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
+    const routed = createRouter({ routeTree, history });
+
+    render(
+      shellTestProviders(<RouterProvider router={routed} />, {
+        status: 'authenticated',
+        volunteerId: 'vol-invitee',
+        displayName: 'Invitee',
+        uiLocale: null,
+        isSystemAdmin: false,
+        newlyFulfilledInvites: [
+          { ministryId: 'ministry-worship', ministryName: 'Worship' },
+        ],
+      }),
+    );
+
+    expect(
+      await screen.findByText(/adicionado\(a\) ao ministério Worship como membro pendente/i),
+    ).toBeInTheDocument();
+    expect(fetchIdentityMeMock).not.toHaveBeenCalled();
   });
 
   it('redirects legacy /events/:id to shell scheduling detail', async () => {

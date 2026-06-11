@@ -30,6 +30,8 @@ describe('MinistriesPage structure administration', () => {
     volunteerId: adminId,
     displayName: 'Pat Admin',
     uiLocale: 'en',
+    isSystemAdmin: false,
+    newlyFulfilledInvites: [],
     refresh: async () => {},
   };
 

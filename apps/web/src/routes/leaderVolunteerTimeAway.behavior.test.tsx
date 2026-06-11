@@ -47,6 +47,8 @@ describe('LeaderVolunteerTimeAwayPage', () => {
     volunteerId: leaderId,
     displayName: 'Lee',
     uiLocale: 'en',
+    isSystemAdmin: false,
+    newlyFulfilledInvites: [],
     refresh: async () => {},
   };
 

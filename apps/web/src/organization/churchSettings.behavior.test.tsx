@@ -26,6 +26,8 @@ describe('ChurchSettingsSection', () => {
     volunteerId: adminId,
     displayName: 'Pat Admin',
     uiLocale: 'en',
+    isSystemAdmin: false,
+    newlyFulfilledInvites: [],
     refresh: async () => {},
   };
 

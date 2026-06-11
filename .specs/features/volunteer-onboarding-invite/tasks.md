@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/volunteer-onboarding-invite/design.md`  
 **Spec**: `.specs/features/volunteer-onboarding-invite/spec.md`  
-**Status**: Shipped — validated 2026-06-11 (#116). ONBOARD-A5 invite toast deferred to follow-up slice.
+**Status**: Shipped — validated 2026-06-11 (#116). ONBOARD-A5 completed via `invite-fulfillment-toast` (#124).
 
 ---
 

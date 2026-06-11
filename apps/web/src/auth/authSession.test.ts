@@ -81,6 +81,8 @@ describe('shouldForceDevHeadersForApi', () => {
       volunteerId: 'seed-volunteer-demo',
       displayName: 'Demo',
       uiLocale: null,
+      isSystemAdmin: false,
+      newlyFulfilledInvites: [],
     });
     expect(
       shouldForceDevHeadersForApi({
