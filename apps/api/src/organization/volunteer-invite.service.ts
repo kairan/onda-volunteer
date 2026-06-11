@@ -189,8 +189,6 @@ export class VolunteerInviteService {
       await input.auth.assertAdminAccreditedForChurch(input.churchId);
     }
 
-    const query = `%${input.query}%`;
-
     let excludeVolunteerIds: string[] = [];
     if (input.ministryId) {
       const existingMembers = await this.prisma.ministryMembership.findMany({

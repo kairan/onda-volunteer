@@ -18,7 +18,6 @@ jest.mock('../src/identity/supabase-jwt-verifier', () => ({
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { signTestAccessToken } from './support/sign-test-access-token';
-import { SupabaseJwtVerifier } from '../src/identity/supabase-jwt-verifier';
 
 describe('GET /identity/me (e2e)', () => {
   let app: INestApplication;

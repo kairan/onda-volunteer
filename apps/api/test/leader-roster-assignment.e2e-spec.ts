@@ -184,7 +184,6 @@ describe('Leader roster assignment (e2e)', () => {
       otherMinistry,
       leader,
       member,
-      role,
       otherRole,
       event,
     } = await seedLeaderRosterFixture();
