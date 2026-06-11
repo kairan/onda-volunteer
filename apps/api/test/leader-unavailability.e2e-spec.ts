@@ -134,7 +134,7 @@ describe('Leader volunteer unavailability (e2e)', () => {
   });
 
   it('rejects Leader viewing a member without stewardship in that church', async () => {
-    const { church, leader, member } = await seedLedMinistryFixture();
+    const { church, member } = await seedLedMinistryFixture();
     const outsider = await prisma.volunteer.create({
       data: { displayName: 'No Stewardship' },
     });

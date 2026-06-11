@@ -69,7 +69,7 @@ describe('Volunteer Assignments (e2e)', () => {
     const church = await prisma.church.create({
       data: { name: 'Test Church', defaultTimezone: 'UTC' },
     });
-    const otherChurch = await prisma.church.create({
+    await prisma.church.create({
       data: { name: 'Other Church', defaultTimezone: 'UTC' },
     });
     
@@ -150,7 +150,7 @@ describe('Volunteer Assignments (e2e)', () => {
 
   it('rejects requesting assignments for another volunteer', async () => {
     const authSubjectId = '11111111-1111-1111-1111-111111111111';
-    const volunteer = await prisma.volunteer.create({
+    await prisma.volunteer.create({
       data: { displayName: 'Sam', authSubjectId },
     });
     const otherVolunteer = await prisma.volunteer.create({

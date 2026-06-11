@@ -19,7 +19,6 @@ import { AppModule } from '../src/app.module';
 import { CLOCK } from '../src/common/clock';
 import { PrismaService } from '../src/prisma/prisma.service';
 import { signTestAccessToken } from './support/sign-test-access-token';
-import { SupabaseJwtVerifier } from '../src/identity/supabase-jwt-verifier';
 
 const FIXED_NOW = new Date('2026-05-15T12:00:00.000Z');
 

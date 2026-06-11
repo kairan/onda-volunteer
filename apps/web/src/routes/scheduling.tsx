@@ -43,7 +43,7 @@ export function SchedulingPage() {
         if (!cancelled) {
           setEvents(data);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setError(t('errors.loadFailed'));
         }

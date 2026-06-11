@@ -127,7 +127,7 @@ describe('POST /events private create + assign (e2e)', () => {
   });
 
   it('rejects private event create when volunteer is not a leader for the ministry', async () => {
-    const { ledMinistry, member } = await seedLedMinistryFixture();
+    const { ledMinistry } = await seedLedMinistryFixture();
     const token = signTestAccessToken('member-auth-subject');
 
     const res = await request(app.getHttpServer())
@@ -165,7 +165,7 @@ describe('POST /events private create + assign (e2e)', () => {
   });
 
   it('rejects assignment when ministryId does not match a private event ministry', async () => {
-    const { ledMinistry, otherMinistry, leader, member, role } =
+    const { ledMinistry, otherMinistry, leader, member } =
       await seedLedMinistryFixture();
     await prisma.ministryLeader.create({
       data: { volunteerId: leader.id, ministryId: otherMinistry.id },

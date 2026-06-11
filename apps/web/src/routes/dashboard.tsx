@@ -42,7 +42,7 @@ export function DashboardPage() {
         if (!cancelled) {
           setAssignments(data);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setError(t('errors.loadFailed'));
         }

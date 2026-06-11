@@ -2,24 +2,19 @@
 
 ## Completed this session
 
-1. **Validate** — `pnpm test` + web Vitest green (158 API e2e + 132 web). #115, #117 fully pass acceptance. #116 passes listed criteria; ONBOARD-A5 web toast gap confirmed.
-2. **Closeout** — #115–#117: `tasks.md` checked, specs archived to `docs/issues/done/`, README + ROADMAP + STATE updated.
-3. **Sync** — Removed stale `ready-for-agent` labels from closed #116, #117. No open issues in queue.
-4. **Audit** — Platform PRD v1 tracer bullets largely **Shipped**. Ranked next slices (see below).
-5. **Ship** — `.specs/features/invite-fulfillment-toast/` merged via [#125](https://github.com/kairan/onda-volunteer/pull/125) (closes #124).
+1. **Closeout #124** — Archived invite fulfillment toast spec; README + ROADMAP synced.
+2. **Specify #126** — `.specs/features/eslint-baseline-clean/` + GitHub issue.
+3. **Execute** — Fixed 13 ESLint unused-var warnings; promoted lint to required CI gate (`--max-warnings 0`, removed `continue-on-error`).
+4. **Validate** — `pnpm lint` + `pnpm test` green (158 API e2e + 134 web unit).
+5. **Closeout #126** — Archived to `docs/issues/done/126-eslint-baseline-clean.md`; tasks.md, README, ROADMAP, STATE updated.
 
-## Missing-feature audit (2026-06-11)
+## HITL follow-up
 
-| Rank | Slice | Theme | Scope | Rationale |
-|------|-------|-------|-------|-----------|
-| 1 | ESLint baseline clean | Hygiene / CI | **Large** | CI lint report-only (`done/61-*`); not product-facing |
-| 2 | Production hardening (email templates, notifications, audit UI) | Platform | **Epic** | PRD out-of-scope until product reprioritizes |
-
-**PRD coverage:** User stories 1–42 in `docs/prd/volunteer-management-platform.md` are **Shipped** or **Deferred** (household volunteers, multi-church public events, production hardening). Scheduling + Organization themes complete after #115–#117 and #124.
+Add `CI / lint` to branch protection on `main` per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md) after PR merge and first green CI run.
 
 ## Next agent action
 
-Pick from roadmap / issue queue — no active TLC slice in flight. Consider ESLint baseline or next product slice from `.specs/project/ROADMAP.md`.
+No active TLC slice. Ranked backlog: web typecheck strict debt → coverage thresholds → production hardening (deferred).
 
 ## Blockers
 
