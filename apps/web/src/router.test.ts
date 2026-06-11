@@ -3,24 +3,14 @@ import { describe, expect, it } from 'vitest';
 import { PRIMARY_NAV_MANIFEST } from './navigation/manifest';
 import { buildRouteTree } from './router';
 
-function collectRoutePaths(route: AnyRoute, parentPath = ''): string[] {
-  const segment = route.options.path ?? '';
-  const fullPath =
-    segment === '/'
-      ? parentPath || '/'
-      : segment.startsWith('/')
-        ? segment
-        : parentPath
-          ? `${parentPath.replace(/\/$/, '')}/${segment}`
-          : `/${segment}`;
-
+function collectRoutePaths(route: AnyRoute): string[] {
   const paths: string[] = [];
-  if (segment && segment !== '/') {
-    paths.push(fullPath);
+  if (route.fullPath && route.fullPath !== '/') {
+    paths.push(route.fullPath);
   }
 
   for (const child of route.children ?? []) {
-    paths.push(...collectRoutePaths(child, fullPath === '/' ? '' : fullPath));
+    paths.push(...collectRoutePaths(child));
   }
 
   return paths;
