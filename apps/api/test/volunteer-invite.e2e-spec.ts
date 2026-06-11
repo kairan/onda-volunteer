@@ -296,6 +296,15 @@ describe('Volunteer invite flow (e2e)', () => {
         .expect(200);
 
       expect(res.body.volunteer.displayName).toBe('Invitee');
+      expect(res.body.newlyFulfilledInvites).toEqual([
+        { ministryId: ministry.id, ministryName: ministry.name },
+      ]);
+
+      const secondMe = await request(app.getHttpServer())
+        .get('/identity/me')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+      expect(secondMe.body.newlyFulfilledInvites).toEqual([]);
 
       const volunteer = await prisma.volunteer.findUnique({
         where: { authSubjectId: 'auth-subject-invitee' },
@@ -342,6 +351,7 @@ describe('Volunteer invite flow (e2e)', () => {
         .expect(200);
 
       expect(res.body.volunteer.displayName).toBe('Late');
+      expect(res.body.newlyFulfilledInvites).toEqual([]);
 
       const volunteer = await prisma.volunteer.findUnique({
         where: { authSubjectId: 'auth-subject-late' },

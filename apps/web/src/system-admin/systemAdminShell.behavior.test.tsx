@@ -91,6 +91,7 @@ describe('System Admin shell routing', () => {
       },
       authSubjectId: null,
       isSystemAdmin: false,
+      newlyFulfilledInvites: [],
     });
 
     const { history } = renderSystemAdminRoute({

@@ -6,6 +6,16 @@ import {
 } from '../system-admin/admin-invite-email';
 import { PrismaService } from '../prisma/prisma.service';
 
+export type FulfilledVolunteerInviteSummary = {
+  ministryId: string;
+  ministryName: string;
+};
+
+export type VolunteerInviteFulfillmentResult = {
+  volunteer: Volunteer | null;
+  newlyFulfilledInvites: FulfilledVolunteerInviteSummary[];
+};
+
 @Injectable()
 export class VolunteerInviteFulfillmentService {
   constructor(private readonly prisma: PrismaService) {}
@@ -14,10 +24,13 @@ export class VolunteerInviteFulfillmentService {
     authSubjectId: string;
     email: string;
     existingVolunteer?: Volunteer | null;
-  }): Promise<Volunteer | null> {
+  }): Promise<VolunteerInviteFulfillmentResult> {
     const email = normalizeAdminInviteEmail(input.email);
     if (!email) {
-      return input.existingVolunteer ?? null;
+      return {
+        volunteer: input.existingVolunteer ?? null,
+        newlyFulfilledInvites: [],
+      };
     }
 
     const now = new Date();
@@ -31,10 +44,14 @@ export class VolunteerInviteFulfillmentService {
     });
 
     if (pendingInvites.length === 0) {
-      return input.existingVolunteer ?? null;
+      return {
+        volunteer: input.existingVolunteer ?? null,
+        newlyFulfilledInvites: [],
+      };
     }
 
     return this.prisma.$transaction(async (tx) => {
+      const newlyFulfilledInvites: FulfilledVolunteerInviteSummary[] = [];
       let volunteer = input.existingVolunteer ?? null;
       if (!volunteer) {
         volunteer = await tx.volunteer.create({
@@ -86,6 +103,10 @@ export class VolunteerInviteFulfillmentService {
               status: 'PENDING',
             },
           });
+          newlyFulfilledInvites.push({
+            ministryId: invite.ministryId,
+            ministryName: invite.ministry.name,
+          });
         }
 
         await tx.volunteerInvite.update({
@@ -97,7 +118,7 @@ export class VolunteerInviteFulfillmentService {
         });
       }
 
-      return volunteer;
+      return { volunteer, newlyFulfilledInvites };
     });
   }
 }

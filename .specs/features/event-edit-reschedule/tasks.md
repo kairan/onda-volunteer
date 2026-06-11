@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/event-edit-reschedule/design.md`  
 **Spec**: `.specs/features/event-edit-reschedule/spec.md`  
-**Status**: Ready for Execute — all assumptions locked 2026-06-06 (user-confirmed: EVENT-EDIT-A1 auto-void, EVENT-EDIT-A2 single PATCH, EVENT-EDIT-A3 inline form).
+**Status**: Shipped — validated 2026-06-11 (#117).
 
 ---
 
@@ -57,14 +57,14 @@ T-EDIT-01 → T-EDIT-02 → T-EDIT-03 [P] T-EDIT-04 → T-EDIT-05
 
 **Done when**:
 
-- [ ] `editEvent` validates at least one field provided (`EVENT_EDIT_EMPTY`)
-- [ ] Auth check: Admin for Public or Private; Leader for Private only; `LEADER_CANNOT_EDIT_PUBLIC_EVENT` for Public
-- [ ] Cancelled event rejected: `EVENT_ALREADY_CANCELLED`
-- [ ] Title validated (non-empty after trim, ≤200 chars): `EVENT_TITLE_REQUIRED`, `EVENT_TITLE_TOO_LONG`
-- [ ] Time window validated (`startsAtUtc < endsAtUtc`): `INVALID_EVENT_WINDOW`
-- [ ] Orphan void loop: in transaction, void assignments outside new window; return `voidedAssignmentCount`
-- [ ] Title-only edit skips orphan check entirely
-- [ ] `PATCH /events/:id` route registered on `EventsController`
+- [x] `editEvent` validates at least one field provided (`EVENT_EDIT_EMPTY`)
+- [x] Auth check: Admin for Public or Private; Leader for Private only; `LEADER_CANNOT_EDIT_PUBLIC_EVENT` for Public
+- [x] Cancelled event rejected: `EVENT_ALREADY_CANCELLED`
+- [x] Title validated (non-empty after trim, ≤200 chars): `EVENT_TITLE_REQUIRED`, `EVENT_TITLE_TOO_LONG`
+- [x] Time window validated (`startsAtUtc < endsAtUtc`): `INVALID_EVENT_WINDOW`
+- [x] Orphan void loop: in transaction, void assignments outside new window; return `voidedAssignmentCount`
+- [x] Title-only edit skips orphan check entirely
+- [x] `PATCH /events/:id` route registered on `EventsController`
 
 **Gate**: `pnpm --filter @onda/api typecheck`
 
@@ -81,14 +81,14 @@ T-EDIT-01 → T-EDIT-02 → T-EDIT-03 [P] T-EDIT-04 → T-EDIT-05
 
 **Done when**:
 
-- [ ] Admin title edit — 200 with updated title; `voidedAssignmentCount: 0`
-- [ ] Leader edits own Private event title — 200
-- [ ] Leader attempts Public event edit — 403 `LEADER_CANNOT_EDIT_PUBLIC_EVENT`
-- [ ] Reschedule narrows window — orphaned assignment voided; `voidedAssignmentCount: 1`
-- [ ] Reschedule keeps assignments in window — `voidedAssignmentCount: 0`; assignments intact
-- [ ] Cancelled event edit — 400 `EVENT_ALREADY_CANCELLED`
-- [ ] Empty body — 400 `EVENT_EDIT_EMPTY`
-- [ ] `startsAtUtc >= endsAtUtc` — 400 `INVALID_EVENT_WINDOW`
+- [x] Admin title edit — 200 with updated title; `voidedAssignmentCount: 0`
+- [x] Leader edits own Private event title — 200
+- [x] Leader attempts Public event edit — 403 `LEADER_CANNOT_EDIT_PUBLIC_EVENT`
+- [x] Reschedule narrows window — orphaned assignment voided; `voidedAssignmentCount: 1`
+- [x] Reschedule keeps assignments in window — `voidedAssignmentCount: 0`; assignments intact
+- [x] Cancelled event edit — 400 `EVENT_ALREADY_CANCELLED`
+- [x] Empty body — 400 `EVENT_EDIT_EMPTY`
+- [x] `startsAtUtc >= endsAtUtc` — 400 `INVALID_EVENT_WINDOW`
 
 **Tests**: API Jest e2e (co-located)  
 **Gate**: `export DATABASE_URL=... && pnpm test` (api — event-edit spec green)
@@ -106,9 +106,9 @@ T-EDIT-01 → T-EDIT-02 → T-EDIT-03 [P] T-EDIT-04 → T-EDIT-05
 
 **Done when**:
 
-- [ ] `editEvent({ eventId, title?, startsAtUtc?, endsAtUtc?, actingVolunteerId })` calls `PATCH /events/:id`
-- [ ] Returns `{ id, title, window, voidedAssignmentCount }`
-- [ ] Throws `ApiRequestError` on non-2xx (matching existing helper pattern)
+- [x] `editEvent({ eventId, title?, startsAtUtc?, endsAtUtc?, actingVolunteerId })` calls `PATCH /events/:id`
+- [x] Returns `{ id, title, window, voidedAssignmentCount }`
+- [x] Throws `ApiRequestError` on non-2xx (matching existing helper pattern)
 
 **Gate**: `pnpm --filter @onda/web exec tsc --noEmit`
 
@@ -123,12 +123,12 @@ T-EDIT-01 → T-EDIT-02 → T-EDIT-03 [P] T-EDIT-04 → T-EDIT-05
 
 **Done when**:
 
-- [ ] Edit section visible for accredited Admin and eligible Leader; hidden for others and for cancelled events
-- [ ] Form pre-fills title, `startsAtUtc`, `endsAtUtc` from loaded event data
-- [ ] Submit calls `editEvent`; `router.invalidate()` on success
-- [ ] `voidedAssignmentCount > 0` → warning toast with count; `0` → success toast
-- [ ] Error codes mapped to user-readable messages in both locales
-- [ ] `en` + `pt-BR` i18n strings for edit section labels, confirm, and voided-count notice
+- [x] Edit section visible for accredited Admin and eligible Leader; hidden for others and for cancelled events
+- [x] Form pre-fills title, `startsAtUtc`, `endsAtUtc` from loaded event data
+- [x] Submit calls `editEvent`; `router.invalidate()` on success
+- [x] `voidedAssignmentCount > 0` → warning toast with count; `0` → success toast
+- [x] Error codes mapped to user-readable messages in both locales
+- [x] `en` + `pt-BR` i18n strings for edit section labels, confirm, and voided-count notice
 
 **Gate**: web typecheck
 
@@ -145,12 +145,12 @@ T-EDIT-01 → T-EDIT-02 → T-EDIT-03 [P] T-EDIT-04 → T-EDIT-05
 
 **Done when**:
 
-- [ ] Edit section not rendered for non-editor role
-- [ ] Edit section rendered for admin; form pre-filled
-- [ ] Submit dispatches `editEvent` with correct payload
-- [ ] `voidedAssignmentCount: 2` response triggers warning toast with count
-- [ ] Cancelled event — edit section absent
-- [ ] Error response surfaces error message in form
+- [x] Edit section not rendered for non-editor role
+- [x] Edit section rendered for admin; form pre-filled
+- [x] Submit dispatches `editEvent` with correct payload
+- [x] `voidedAssignmentCount: 2` response triggers warning toast with count
+- [x] Cancelled event — edit section absent
+- [x] Error response surfaces error message in form
 
 **Gate**: `pnpm --filter @onda/web test`
 

@@ -1,6 +1,6 @@
 import { Link, Outlet } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToasts } from '@/feedback/ToastHost';
 import { consumeSystemAdminAccessDenied } from '@/system-admin/accessDenied';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
@@ -23,22 +23,47 @@ const CHROME_ICON_HIT =
   'inline-flex size-11 min-h-11 min-w-11 items-center justify-center';
 
 export function AppShell({ children }: { children?: ReactNode }) {
+  const { t } = useTranslation('shell');
   const auth = useAuthSession();
+  const toasts = useToasts();
   const orgReady =
     auth.status === 'authenticated' || auth.status === 'dev-bypass';
   const devVolunteerIdForOrg =
     auth.status === 'dev-bypass' ? auth.volunteerId : demoVolunteerId();
   const [isSystemAdmin, setIsSystemAdmin] = useState(false);
+  const fulfilledInviteToastKeyRef = useRef('');
 
   useEffect(() => {
-    const volunteerId =
-      auth.status === 'authenticated' || auth.status === 'dev-bypass'
-        ? auth.volunteerId
-        : undefined;
-    if (!volunteerId) {
+    if (auth.status === 'authenticated') {
+      setIsSystemAdmin(auth.isSystemAdmin);
+      const toastKey = auth.newlyFulfilledInvites
+        .map((invite) => invite.ministryId)
+        .join(',');
+      if (
+        toastKey &&
+        fulfilledInviteToastKeyRef.current !==
+          `${auth.volunteerId}:${toastKey}`
+      ) {
+        fulfilledInviteToastKeyRef.current = `${auth.volunteerId}:${toastKey}`;
+        for (const invite of auth.newlyFulfilledInvites) {
+          toasts.push({
+            id: crypto.randomUUID(),
+            kind: 'success',
+            message: t('inviteFulfilled', {
+              ministryName: invite.ministryName,
+            }),
+          });
+        }
+      }
+      return;
+    }
+
+    if (auth.status !== 'dev-bypass') {
       setIsSystemAdmin(false);
       return;
     }
+
+    const volunteerId = auth.volunteerId;
     let cancelled = false;
     void (async () => {
       for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -46,6 +71,15 @@ export function AppShell({ children }: { children?: ReactNode }) {
           const me = await fetchIdentityMe({ volunteerId });
           if (!cancelled) {
             setIsSystemAdmin(me.isSystemAdmin);
+            for (const invite of me.newlyFulfilledInvites ?? []) {
+              toasts.push({
+                id: crypto.randomUUID(),
+                kind: 'success',
+                message: t('inviteFulfilled', {
+                  ministryName: invite.ministryName,
+                }),
+              });
+            }
           }
           return;
         } catch {
@@ -58,7 +92,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [auth]);
+  }, [auth, t, toasts]);
 
   return (
     <OrganizationContextProvider

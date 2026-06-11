@@ -1,3 +1,4 @@
+import type { FulfilledVolunteerInviteSummary } from '@/identity/types';
 import { readStoredDevVolunteerId } from './devVolunteerStorage';
 
 export type AuthSessionState =
@@ -9,6 +10,8 @@ export type AuthSessionState =
       volunteerId: string;
       displayName: string;
       uiLocale: string | null;
+      isSystemAdmin: boolean;
+      newlyFulfilledInvites: FulfilledVolunteerInviteSummary[];
     }
   | { status: 'profile-not-linked' }
   | { status: 'error'; message: string };

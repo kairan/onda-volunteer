@@ -12,11 +12,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-| Issue | Spec | Summary | Schedule |
-|------:|------|---------|----------|
-| [#115](https://github.com/kairan/onda-volunteer/issues/115) | `115-leader-roster-assignment-ui.md` | **Leader** production roster assignment UI | `ready-for-agent` |
-| [#116](https://github.com/kairan/onda-volunteer/issues/116) | `116-volunteer-onboarding-invite.md` | **Volunteer** discovery & onboarding invite | `ready-for-agent` |
-| [#117](https://github.com/kairan/onda-volunteer/issues/117) | `117-event-edit-reschedule.md` | **Event** edit / reschedule | `ready-for-agent` |
+| [#124](https://github.com/kairan/onda-volunteer/issues/124) | `124-invite-fulfillment-toast.md` | **Volunteer** invite fulfillment toast (ONBOARD-A5) | `ready-for-agent` |
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -36,6 +32,9 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#117](https://github.com/kairan/onda-volunteer/issues/117) | `done/117-event-edit-reschedule.md` |
+| [#116](https://github.com/kairan/onda-volunteer/issues/116) | `done/116-volunteer-onboarding-invite.md` |
+| [#115](https://github.com/kairan/onda-volunteer/issues/115) | `done/115-leader-roster-assignment-ui.md` |
 | [#118](https://github.com/kairan/onda-volunteer/issues/118) | `done/118-org-structure-doc-closeout.md` |
 | [#108](https://github.com/kairan/onda-volunteer/issues/108) | `done/108-org-structure-ministry-archive.md` |
 | [#107](https://github.com/kairan/onda-volunteer/issues/107) | `done/107-admin-campus-metadata-timezone.md` |

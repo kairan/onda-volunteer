@@ -136,6 +136,8 @@ export function AuthSessionProvider({ children }: { children: ReactNode }) {
         volunteerId: me.volunteer.id,
         displayName: me.volunteer.displayName,
         uiLocale: me.volunteer.uiLocale,
+        isSystemAdmin: me.isSystemAdmin,
+        newlyFulfilledInvites: me.newlyFulfilledInvites ?? [],
       });
     } catch (err) {
       if (err instanceof ApiRequestError && err.code === 'PROFILE_NOT_LINKED') {

@@ -44,13 +44,20 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 **Organization theme:** fully shipped — all `organization-structure-administration` slices (ORG-STRUCT-01–06) verified ([#107](https://github.com/kairan/onda-volunteer/issues/107), [#108](https://github.com/kairan/onda-volunteer/issues/108), [#109](https://github.com/kairan/onda-volunteer/issues/109)) and `system-admin-platform` shipped ([#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93)). No open org-structure backlog.
 
+### Shipped features (2026-06-11 closeout)
+
+| Theme | Feature slug | Issues | Status |
+|-------|--------------|--------|--------|
+| **Scheduling** | `leader-roster-assignment-ui` | [#115](https://github.com/kairan/onda-volunteer/issues/115) | ✅ Shipped |
+| **Scheduling** | `event-edit-reschedule` | [#117](https://github.com/kairan/onda-volunteer/issues/117) | ✅ Shipped |
+| **Organization / Identity** | `volunteer-onboarding-invite` | [#116](https://github.com/kairan/onda-volunteer/issues/116) | ✅ Shipped |
+| **Organization / Identity** | `invite-fulfillment-toast` (ONBOARD-A5) | [#124](https://github.com/kairan/onda-volunteer/issues/124) | ✅ Shipped (pending PR) |
+
 ### Active backlog (ready for agent / next Execute)
 
 | Priority | Feature slug | Theme | Issue | TLC Spec | Status |
 |---------:|--------------|-------|-------|----------|--------|
-| 1 | `leader-roster-assignment-ui` | **Scheduling** | [#115](https://github.com/kairan/onda-volunteer/issues/115) | `.specs/features/leader-roster-assignment-ui/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
-| 2 | `event-edit-reschedule` | **Scheduling** | [#117](https://github.com/kairan/onda-volunteer/issues/117) | `.specs/features/event-edit-reschedule/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
-| 3 | `volunteer-onboarding-invite` | **Organization / Identity** | [#116](https://github.com/kairan/onda-volunteer/issues/116) | `.specs/features/volunteer-onboarding-invite/` | `ready-for-agent` — all assumptions locked 2026-06-06 |
+| _(empty — audit 2026-06-11 complete; PRD v1 shipped)_ | | | | | |
 
 ### Deferred or gated work, not active backlog
 

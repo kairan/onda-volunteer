@@ -51,6 +51,8 @@ describe('DashboardPage', () => {
     volunteerId: mockVolunteerId,
     displayName: 'Sam',
     uiLocale: 'pt-BR',
+    isSystemAdmin: false,
+    newlyFulfilledInvites: [],
     refresh: async () => {},
   };
 

@@ -35,13 +35,16 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
   - **ONBOARD-A4**: `VolunteerInvite` model in Organization bounded context (`apps/api/src/organization/`), not Identity.
   - **ONBOARD-A5**: All pending invites fulfilled simultaneously on first sign-in. No selection screen. Each creates `MinistryMembership` with `status: PENDING`.
 
+- **2026-06-11 (#115–#117 TLC closeout):** Validated and archived all three ready-for-agent slices: leader roster UI ([#115](https://github.com/kairan/onda-volunteer/issues/115)), volunteer onboarding invite ([#116](https://github.com/kairan/onda-volunteer/issues/116)), event edit/reschedule ([#117](https://github.com/kairan/onda-volunteer/issues/117)). `tasks.md` synced, issue specs moved to `docs/issues/done/`. Platform PRD v1 tracer bullets largely complete; missing-feature audit ranks **invite fulfillment toast** (ONBOARD-A5 web gap) as next slice.
+- **2026-06-11 (#124 invite fulfillment toast):** Shipped ONBOARD-A5 — `GET /identity/me` returns `newlyFulfilledInvites`; `AppShell` shows per-ministry success toast on bootstrap. TLC: `.specs/features/invite-fulfillment-toast/`.
+
 ## Blockers
 
 _(none)_
 
 ## Deferred ideas
 
-_(none — System Admin operator path promoted to Decisions 2026-05-31.)_
+_(none — ONBOARD-A5 toast promoted to active slice #124.)_
 
 ## TLC completion tracking (canonical order)
 
