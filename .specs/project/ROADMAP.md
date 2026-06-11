@@ -48,10 +48,11 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature slug | Issues | Status |
 |-------|--------------|--------|--------|
+| **Hygiene / CI** | `eslint-baseline-clean` | [#126](https://github.com/kairan/onda-volunteer/issues/126) | ✅ Shipped |
 | **Scheduling** | `leader-roster-assignment-ui` | [#115](https://github.com/kairan/onda-volunteer/issues/115) | ✅ Shipped |
 | **Scheduling** | `event-edit-reschedule` | [#117](https://github.com/kairan/onda-volunteer/issues/117) | ✅ Shipped |
 | **Organization / Identity** | `volunteer-onboarding-invite` | [#116](https://github.com/kairan/onda-volunteer/issues/116) | ✅ Shipped |
-| **Organization / Identity** | `invite-fulfillment-toast` (ONBOARD-A5) | [#124](https://github.com/kairan/onda-volunteer/issues/124) | ✅ Shipped (pending PR) |
+| **Organization / Identity** | `invite-fulfillment-toast` (ONBOARD-A5) | [#124](https://github.com/kairan/onda-volunteer/issues/124) | ✅ Shipped |
 
 ### Active backlog (ready for agent / next Execute)
 

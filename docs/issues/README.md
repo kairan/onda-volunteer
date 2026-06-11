@@ -12,7 +12,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-| [#124](https://github.com/kairan/onda-volunteer/issues/124) | `124-invite-fulfillment-toast.md` | **Volunteer** invite fulfillment toast (ONBOARD-A5) | `ready-for-agent` |
+_(empty — PRD v1 shipped; #126 ESLint baseline clean in PR)_
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -32,6 +32,8 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#126](https://github.com/kairan/onda-volunteer/issues/126) | `done/126-eslint-baseline-clean.md` |
+| [#124](https://github.com/kairan/onda-volunteer/issues/124) | `done/124-invite-fulfillment-toast.md` |
 | [#117](https://github.com/kairan/onda-volunteer/issues/117) | `done/117-event-edit-reschedule.md` |
 | [#116](https://github.com/kairan/onda-volunteer/issues/116) | `done/116-volunteer-onboarding-invite.md` |
 | [#115](https://github.com/kairan/onda-volunteer/issues/115) | `done/115-leader-roster-assignment-ui.md` |
