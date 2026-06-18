@@ -11,7 +11,8 @@
   "create": {
     "link": "Create public event",
     "title": "New public event",
-    "timezoneHint": "Times below are in church timezone ({{tz}}) for {{church}}. Stored as UTC.",
+    "timezoneHintCampus": "Times below are in campus timezone ({{tz}}) for {{church}}. Stored as UTC.",
+    "timezoneHintChurchDefault": "Times below use church default timezone ({{tz}}) for {{church}}. Stored as UTC.",
     "titleLabel": "Title",
     "startsLabel": "Starts",
     "endsLabel": "Ends",
@@ -45,7 +46,8 @@
   },
   "detail": {
     "loading": "Loading event roster...",
-    "timezoneLabel": "Church timezone {{tz}}",
+    "timezoneLabelCampus": "Campus timezone {{tz}}",
+    "timezoneLabelChurchDefault": "Church default timezone {{tz}}",
     "utcWindow": "UTC {{start}} → {{end}}",
     "rosterHeading": "Roster",
     "backToList": "← Back to events",

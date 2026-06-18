@@ -12,6 +12,7 @@ import {
   devAuthBypassAllowed,
   volunteerIdForProtectedRequests,
 } from '@/auth/authSession';
+import { resolveSchedulingPresentationTimezone } from '@/organization/timezoneCue';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { cancelEvent } from '@/events/cancelEvent';
 import { editEvent } from '@/events/editEvent';
@@ -123,7 +124,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const router = useRouter();
   const toasts = useToasts();
   const auth = useAuthSession();
-  const { activeChurch } = useOrganization();
+  const { activeChurch, activeCampus } = useOrganization();
 
   const actingVolunteerId = resolveActingVolunteerId(auth);
 
@@ -365,7 +366,13 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
   const volunteerId = actingVolunteerId;
 
-  const timezone = data.church.defaultTimezone;
+  const timezone = resolveSchedulingPresentationTimezone({
+    activeCampus,
+    activeChurch,
+  });
+  const timezoneLabelKey = activeCampus
+    ? 'detail.timezoneLabelCampus'
+    : 'detail.timezoneLabelChurchDefault';
 
   const intervalStartOptions = {
     weekday: 'short' as const,
@@ -545,7 +552,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     <section className="flex flex-col gap-8">
       <div className="border-2 border-border bg-surface p-6 shadow-[8px_8px_0_0_hsl(var(--border))]">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          {data.church.name} · {t('detail.timezoneLabel', { tz: data.church.defaultTimezone })}
+          {data.church.name} · {t(timezoneLabelKey, { tz: timezone })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <p className="inline-block border-2 border-border bg-background px-2 py-1 text-xs font-semibold uppercase tracking-[0.24em]">
