@@ -1,8 +1,8 @@
 {
   "eyebrow": "Apoio de líder",
-  "title": "Tempo livre do voluntário",
-  "body": "Registre ou ajuste indisponibilidade em nome de um voluntário em um ministério que você lidera. Isso é separado do autoatendimento Tempo livre do voluntário.",
-  "selfServiceLink": "← Voltar ao seu tempo livre",
+  "title": "Ausências do voluntário",
+  "body": "Registre ou ajuste indisponibilidade em nome de um voluntário em um ministério que você lidera. Isso é separado do autoatendimento Ausências do voluntário.",
+  "selfServiceLink": "← Voltar às suas ausências",
   "ministry": "Ministério que você lidera",
   "volunteer": "Voluntário",
   "selectVolunteer": "Selecione um voluntário",

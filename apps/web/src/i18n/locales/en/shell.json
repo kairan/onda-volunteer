@@ -39,12 +39,12 @@
     "unavailableTitle": "Not available",
     "unavailableBody": "Dev volunteer switching is only available in local development with dev auth headers enabled.",
     "goDashboard": "Dashboard",
-    "goSystemAdmin": "System admin",
+    "goSystemAdmin": "System Admin",
     "capabilities": {
       "leader": "Ministry leader",
       "volunteer": "Volunteer",
       "churchAdmin": "Church admin",
-      "systemAdmin": "System operator"
+      "systemAdmin": "System Admin"
     }
   }
 }

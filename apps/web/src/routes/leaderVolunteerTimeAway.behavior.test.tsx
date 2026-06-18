@@ -90,13 +90,13 @@ describe('LeaderVolunteerTimeAwayPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('heading', { name: 'Tempo livre do voluntário' }),
+        screen.getByRole('heading', { name: 'Ausências do voluntário' }),
       ).toBeInTheDocument();
     });
     expect(
-      screen.getByText(/autoatendimento Tempo livre/i),
+      screen.getByText(/autoatendimento Ausências/i),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /seu tempo livre/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /suas ausências/i })).toHaveAttribute(
       'href',
       '/time-away',
     );

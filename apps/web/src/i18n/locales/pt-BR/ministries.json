@@ -15,18 +15,6 @@
   "saveRename": "Salvar",
   "cancelRename": "Cancelar",
   "errorGeneric": "Algo deu errado. Tente novamente.",
-  "churchSettings": {
-    "title": "Configurações da igreja",
-    "intro": "Atualize o nome de exibição e o fuso padrão da igreja acreditada. Horários dos eventos em UTC não mudam.",
-    "nameLabel": "Nome da igreja",
-    "timezoneLabel": "Fuso padrão (IANA)",
-    "save": "Salvar configurações",
-    "saving": "Salvando…",
-    "saved": "Configurações da igreja salvas.",
-    "errors": {
-      "generic": "Não foi possível salvar as configurações."
-    }
-  },
   "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja.",
   "churchSettings": {
     "title": "Configurações da igreja",
@@ -70,7 +58,7 @@
   },
   "structure": {
     "title": "Estrutura dos ministérios",
-    "body": "Crie e renomeie ministérios da igreja ativa. Renomeações mantêm o mesmo ID do ministério para preservar vínculos com membros, funções, designações e histórico de ausências.",
+    "body": "Crie e renomeie ministérios da igreja ativa. Renomeações mantêm o mesmo ID do ministério para preservar vínculos com membros, funções, designações e histórico de indisponibilidades.",
     "newNameLabel": "Nome do novo ministério",
     "newNamePlaceholder": "Hospitalidade",
     "create": "Criar ministério",
@@ -84,7 +72,7 @@
     "archive": "Arquivar ministério",
     "archivedBadge": "Arquivado",
     "archivedOption": "{{name}} (arquivado)",
-    "archiveConfirm": "Arquivar \"{{name}}\"? Novas operações de agenda, membros, funções e ausências serão bloqueadas. Designações futuras deste ministério serão anuladas. O histórico permanece legível.",
+    "archiveConfirm": "Arquivar \"{{name}}\"? Novas operações de agenda, membros, funções e indisponibilidades serão bloqueadas. Designações futuras deste ministério serão anuladas. O histórico permanece legível.",
     "messages": {
       "created": "Ministério criado.",
       "renamed": "Ministério renomeado.",

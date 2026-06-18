@@ -75,7 +75,7 @@ describe('UserSelectPage', () => {
     expect(screen.getByText('seed-volunteer-system-admin')).toBeInTheDocument();
 
     await user.click(
-      screen.getByRole('button', { name: /system operator/i }),
+      screen.getByRole('button', { name: /system admin/i }),
     );
 
     expect(selectDevVolunteer).toHaveBeenCalledWith('seed-volunteer-system-admin');

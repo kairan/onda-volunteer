@@ -7,7 +7,7 @@
     "title": "Painel do operador",
     "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
     "links": {
-      "users": "Usuários e papéis",
+      "users": "Usuários e permissões",
       "churches": "Igrejas",
       "scheduling": "Agenda (somente leitura)"
     },

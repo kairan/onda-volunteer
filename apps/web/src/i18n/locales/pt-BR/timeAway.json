@@ -1,7 +1,7 @@
 {
-  "title": "Tempo livre",
+  "title": "Ausências",
   "body": "Registre quando você não pode servir em um ministério.",
-  "eyebrow": "Disponibilidade",
+  "eyebrow": "Indisponibilidade",
   "listHeading": "Suas indisponibilidades",
   "loading": "Carregando indisponibilidades...",
   "emptyState": "Nenhuma indisponibilidade futura registrada para esta igreja.",
@@ -28,7 +28,7 @@
   "mirrorPartial": "{{count}} indisponibilidades criadas. Estes ministérios não puderam ser atualizados: {{failed}}.",
   "mirrorAllFailed": "Estes ministérios não puderam ser atualizados: {{failed}}.",
   "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
-  "leaderSupportLink": "Gerenciar tempo livre de voluntários (apoio de líder)",
+  "leaderSupportLink": "Gerenciar ausências de voluntários (apoio de líder)",
   "errors": {
     "mirrorMinistriesRequired": "Selecione pelo menos um ministério para espelhar.",
     "ministryRequired": "Selecione um ministério.",

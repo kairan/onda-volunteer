@@ -26,7 +26,7 @@
     "scheduling": "Agenda",
     "ministries": "Ministérios",
     "volunteers": "Voluntários",
-    "timeAway": "Tempo livre",
+    "timeAway": "Ausências",
     "systemAdmin": "Admin do sistema"
   },
   "devPersona": {
@@ -44,7 +44,7 @@
       "leader": "Líder de ministério",
       "volunteer": "Voluntário",
       "churchAdmin": "Admin da igreja",
-      "systemAdmin": "Operador do sistema"
+      "systemAdmin": "Admin do sistema"
     }
   }
 }
