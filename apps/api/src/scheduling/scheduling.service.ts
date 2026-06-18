@@ -623,10 +623,13 @@ export class SchedulingService {
     auth: AuthenticatedRequestContext,
     row: { volunteerId: string; ministryId: string },
   ) {
-    const caller = await auth.requireVolunteer();
-    if (caller.id !== row.volunteerId) {
-      await auth.assertLeaderCanActOnMinistry(row.ministryId);
+    if (auth.headers.volunteerId) {
+      const caller = await auth.requireVolunteer();
+      if (caller.id === row.volunteerId) {
+        return;
+      }
     }
+    await auth.assertLeaderCanActOnMinistry(row.ministryId);
   }
 
   async updateUnavailability(input: UpdateUnavailabilityInput) {
@@ -640,7 +643,6 @@ export class SchedulingService {
     }
 
     await this.assertCanMutateUnavailability(input.auth, row);
-    await assertMinistryAcceptsWrites(this.prisma, row.ministryId);
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
