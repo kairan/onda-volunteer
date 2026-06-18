@@ -1,3 +1,14 @@
+export function resolveSchedulingPresentationTimezone(input: {
+  activeCampus?: { timezone: string } | null;
+  activeChurch?: { defaultTimezone: string } | null;
+}): string {
+  return (
+    input.activeCampus?.timezone ??
+    input.activeChurch?.defaultTimezone ??
+    'UTC'
+  );
+}
+
 export function shortTimezoneLabel(iana: string): string {
   try {
     const parts = new Intl.DateTimeFormat('pt-BR', {

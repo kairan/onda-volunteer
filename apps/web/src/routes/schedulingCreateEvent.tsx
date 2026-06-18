@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { createPublicEvent } from '@/events/createPublicEvent';
+import { resolveSchedulingPresentationTimezone } from '@/organization/timezoneCue';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { datetimeLocalToUtcIso } from '@/settings/datetimeLocalUtc';
 import { Button } from '@/components/ui/button';
@@ -21,8 +22,13 @@ export function SchedulingCreateEventPage() {
 
   const isAccreditedAdmin = activeChurch?.isAccreditedAdmin ?? false;
 
-  const timezone =
-    activeCampus?.timezone ?? activeChurch?.defaultTimezone ?? 'UTC';
+  const timezone = resolveSchedulingPresentationTimezone({
+    activeCampus,
+    activeChurch,
+  });
+  const timezoneHintKey = activeCampus
+    ? 'create.timezoneHintCampus'
+    : 'create.timezoneHintChurchDefault';
 
   const [title, setTitle] = useState('');
   const [startsAt, setStartsAt] = useState('');
@@ -83,7 +89,7 @@ export function SchedulingCreateEventPage() {
       <div>
         <h1 className="font-display text-3xl font-bold uppercase">{t('create.title')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {t('create.timezoneHint', { tz: timezone, church: activeChurch?.name })}
+          {t(timezoneHintKey, { tz: timezone, church: activeChurch?.name })}
         </p>
       </div>
 

@@ -18,13 +18,17 @@ const leaderMinistryId = 'min-leader';
 
 const mockOrganization = {
   activeChurch: {
-    isAccreditedAdmin: false,
+    id: 'church-1',
+    name: 'Demo Church',
+    isAccreditedAdmin: true,
+    defaultTimezone: 'America/New_York',
     ministries: [] as Array<{
       id: string;
       name: string;
       isLeader?: boolean;
     }>,
   },
+  activeCampus: null as { id: string; name: string; timezone: string } | null,
 };
 
 vi.mock('@/auth/AuthSessionProvider', () => ({
@@ -120,15 +124,52 @@ function renderView(data: EventDetailPayload = payload) {
 
 beforeEach(() => {
   mockOrganization.activeChurch = {
+    id: 'church-1',
+    name: 'Demo Church',
     isAccreditedAdmin: false,
+    defaultTimezone: 'America/New_York',
     ministries: [],
   };
+  mockOrganization.activeCampus = null;
 });
 
 afterEach(() => {
   cleanup();
   sessionStorage.clear();
   vi.clearAllMocks();
+});
+
+describe('SchedulingEventDetailView campus timezone', () => {
+  it('uses active campus zone for label and event time display', async () => {
+    await initI18n();
+    await changeLocale('en');
+    sessionStorage.setItem('onda.useLocalTime', 'false');
+
+    mockOrganization.activeCampus = {
+      id: 'campus-porto',
+      name: 'Campus Porto',
+      timezone: 'Europe/Lisbon',
+    };
+
+    renderView();
+
+    expect(screen.getByText(/Campus timezone Europe\/Lisbon/i)).toBeInTheDocument();
+    expect(screen.getByText(/3:00\s*PM/i)).toBeInTheDocument();
+    expect(screen.queryByText(/10:00\s*AM/i)).not.toBeInTheDocument();
+  });
+
+  it('falls back to church default label when no campus is active', async () => {
+    await initI18n();
+    await changeLocale('en');
+    sessionStorage.setItem('onda.useLocalTime', 'false');
+
+    renderView();
+
+    expect(
+      screen.getByText(/Church default timezone America\/New_York/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/10:00\s*AM/i)).toBeInTheDocument();
+  });
 });
 
 describe('SchedulingEventDetailView dual time', () => {
@@ -139,6 +180,7 @@ describe('SchedulingEventDetailView dual time', () => {
     });
 
     await initI18n();
+    await changeLocale('pt-BR');
     sessionStorage.setItem('onda.useLocalTime', 'true');
 
     renderView();
@@ -163,6 +205,7 @@ describe('SchedulingEventDetailView dual time', () => {
 
   it('hides personal-local line when toggle is off', async () => {
     await initI18n();
+    await changeLocale('pt-BR');
     sessionStorage.setItem('onda.useLocalTime', 'false');
 
     renderView();

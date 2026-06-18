@@ -87,6 +87,9 @@ describe('System Admin scheduling page', () => {
     ).toBeInTheDocument();
 
     expect(await screen.findByText('Sunday Service')).toBeInTheDocument();
+    expect(
+      screen.getByText(/organizational default timezone|fuso padrão organizacional/i),
+    ).toBeInTheDocument();
     expect(screen.getAllByText(/read-only|somente leitura/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('link', { name: /create|criar/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /assign|designar/i })).not.toBeInTheDocument();

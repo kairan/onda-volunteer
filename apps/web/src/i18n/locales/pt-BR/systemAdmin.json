@@ -19,6 +19,7 @@
     "eyebrow": "Suporte",
     "title": "Suporte à agenda",
     "intro": "Visualização somente leitura de eventos em todas as igrejas. Alterações na agenda estão desabilitadas para operadores.",
+    "presentationNotice": "Horários usam o fuso padrão organizacional de cada igreja, não o fuso local do campus.",
     "readOnlyNotice": "Somente leitura — ações de escrita estão desativadas para Admin do sistema.",
     "listHeading": "Eventos",
     "churchFilter": "Igreja",
@@ -33,7 +34,8 @@
       "assignmentsHeading": "Designações",
       "noAssignments": "Nenhuma designação ativa.",
       "cancelled": "Este evento está cancelado.",
-      "backToList": "Voltar à lista da agenda"
+      "backToList": "Voltar à lista da agenda",
+      "churchDefaultTimezoneLabel": "Fuso padrão da igreja {{tz}}"
     },
     "loadError": "Não foi possível carregar os eventos."
   },
