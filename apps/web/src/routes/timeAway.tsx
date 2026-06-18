@@ -86,6 +86,7 @@ export function TimeAwayPage() {
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [rowStatusMessage, setRowStatusMessage] = useState<string | null>(null);
+  const [rowFailureMessage, setRowFailureMessage] = useState<string | null>(null);
 
   const volunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
@@ -242,6 +243,7 @@ export function TimeAwayPage() {
     setEditEndsAt(utcIsoToDatetimeLocalInput(row.endsAtUtc));
     setEditFieldErrors({});
     setRowStatusMessage(null);
+    setRowFailureMessage(null);
   }
 
   function cancelEdit() {
@@ -256,6 +258,7 @@ export function TimeAwayPage() {
     if (!volunteerId || !editingId) return;
 
     setRowStatusMessage(null);
+    setRowFailureMessage(null);
     const nextErrors = validateEditForm();
     if (Object.keys(nextErrors).length > 0) {
       if (Object.keys(nextErrors).length > 1) {
@@ -303,6 +306,7 @@ export function TimeAwayPage() {
 
     setDeletingId(rowId);
     setRowStatusMessage(null);
+    setRowFailureMessage(null);
     try {
       await deleteVolunteerUnavailability({
         unavailabilityId: rowId,
@@ -314,7 +318,9 @@ export function TimeAwayPage() {
       setRowStatusMessage(t('successDelete'));
       await loadRows({ silent: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete unavailability');
+      setRowFailureMessage(
+        err instanceof Error ? err.message : t('errors.deleteFailed'),
+      );
     } finally {
       setDeletingId(null);
     }
@@ -694,6 +700,15 @@ export function TimeAwayPage() {
         {rowStatusMessage ? (
           <p role="status" className="border-2 border-primary bg-primary/10 p-3 text-sm">
             {rowStatusMessage}
+          </p>
+        ) : null}
+
+        {rowFailureMessage ? (
+          <p
+            role="alert"
+            className="border-2 border-destructive bg-surface p-3 text-sm text-destructive"
+          >
+            {rowFailureMessage}
           </p>
         ) : null}
 

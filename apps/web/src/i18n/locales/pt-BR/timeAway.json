@@ -45,6 +45,7 @@
     "startsAtRequired": "Informe o horário de início.",
     "endsAtRequired": "Informe o horário de fim.",
     "invalidWindow": "O fim deve ser depois do início.",
-    "summary": "Corrija os campos destacados e tente novamente."
+    "summary": "Corrija os campos destacados e tente novamente.",
+    "deleteFailed": "Não foi possível remover esta indisponibilidade. Tente novamente."
   }
 }

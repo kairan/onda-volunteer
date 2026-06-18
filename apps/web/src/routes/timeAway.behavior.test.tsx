@@ -454,4 +454,44 @@ describe('TimeAwayPage', () => {
 
     expect(await screen.findByText(/indisponibilidade removida/i)).toBeInTheDocument();
   });
+
+  it('shows inline delete failure without hiding the list', async () => {
+    await initI18n();
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as any);
+    vi.mocked(fetchUnavailability.fetchVolunteerUnavailability).mockResolvedValue([
+      {
+        id: 'unavail-1',
+        startsAtUtc: '2026-06-01T10:00:00Z',
+        endsAtUtc: '2026-06-01T12:00:00Z',
+        ministry: { id: 'min-1', name: 'Greeters' },
+      },
+    ]);
+    vi.mocked(deleteUnavailability.deleteVolunteerUnavailability).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
+            <OrganizationContextProvider enabled={true}>
+              <TimeAwayPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Remover' })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Remover' }));
+
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('Network error');
+    expect(screen.getByRole('heading', { name: 'Greeters', level: 3 })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remover' })).toBeInTheDocument();
+  });
 });
