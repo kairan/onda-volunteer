@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
@@ -13,11 +13,15 @@ import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import * as fetchUnavailability from '@/identity/fetchVolunteerUnavailability';
 import * as createUnavailability from '@/identity/createVolunteerUnavailability';
 import * as createBulkUnavailability from '@/identity/createBulkVolunteerUnavailability';
+import * as updateUnavailability from '@/identity/updateVolunteerUnavailability';
+import * as deleteUnavailability from '@/identity/deleteVolunteerUnavailability';
 import * as fetchOrgContext from '@/organization/fetchOrganizationContext';
 
 vi.mock('@/identity/fetchVolunteerUnavailability');
 vi.mock('@/identity/createVolunteerUnavailability');
 vi.mock('@/identity/createBulkVolunteerUnavailability');
+vi.mock('@/identity/updateVolunteerUnavailability');
+vi.mock('@/identity/deleteVolunteerUnavailability');
 vi.mock('@/organization/fetchOrganizationContext');
 
 afterEach(() => {
@@ -329,5 +333,125 @@ describe('TimeAwayPage', () => {
 
     expect(await screen.findByText('Selecione um ministério.')).toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('updates own unavailability from the list and refreshes rows', async () => {
+    await initI18n();
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as any);
+    vi.mocked(fetchUnavailability.fetchVolunteerUnavailability)
+      .mockResolvedValueOnce([
+        {
+          id: 'unavail-1',
+          startsAtUtc: '2026-06-01T10:00:00Z',
+          endsAtUtc: '2026-06-01T12:00:00Z',
+          ministry: { id: 'min-1', name: 'Greeters' },
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: 'unavail-1',
+          startsAtUtc: '2026-06-01T11:00:00Z',
+          endsAtUtc: '2026-06-01T13:00:00Z',
+          ministry: { id: 'min-1', name: 'Greeters' },
+        },
+      ]);
+    vi.mocked(updateUnavailability.updateVolunteerUnavailability).mockResolvedValue({
+      id: 'unavail-1',
+      ministryId: 'min-1',
+      window: {
+        startsAtUtc: '2026-06-01T11:00:00Z',
+        endsAtUtc: '2026-06-01T13:00:00Z',
+      },
+    });
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
+            <OrganizationContextProvider enabled={true}>
+              <TimeAwayPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Editar' })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Editar' }));
+    const editForm = screen
+      .getByRole('heading', { name: 'Editar indisponibilidade' })
+      .closest('form');
+    expect(editForm).not.toBeNull();
+    const startsInput = within(editForm!).getByLabelText('Início');
+    const endsInput = within(editForm!).getByLabelText('Fim');
+    await waitFor(() => {
+      expect(startsInput).toHaveValue('2026-06-01T10:00');
+    });
+    await user.clear(startsInput);
+    await user.type(startsInput, '2026-06-01T11:00');
+    await user.clear(endsInput);
+    await user.type(endsInput, '2026-06-01T13:00');
+    await user.click(screen.getByRole('button', { name: /salvar alterações/i }));
+
+    await waitFor(() => {
+      expect(updateUnavailability.updateVolunteerUnavailability).toHaveBeenCalledWith({
+        unavailabilityId: 'unavail-1',
+        actingVolunteerId: mockVolunteerId,
+        startsAtUtc: '2026-06-01T11:00:00.000Z',
+        endsAtUtc: '2026-06-01T13:00:00.000Z',
+      });
+    });
+
+    expect(await screen.findByText(/indisponibilidade atualizada/i)).toBeInTheDocument();
+  });
+
+  it('deletes own unavailability from the list and refreshes rows', async () => {
+    await initI18n();
+    const user = userEvent.setup();
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue(orgContext as any);
+    vi.mocked(fetchUnavailability.fetchVolunteerUnavailability)
+      .mockResolvedValueOnce([
+        {
+          id: 'unavail-1',
+          startsAtUtc: '2026-06-01T10:00:00Z',
+          endsAtUtc: '2026-06-01T12:00:00Z',
+          ministry: { id: 'min-1', name: 'Greeters' },
+        },
+      ])
+      .mockResolvedValueOnce([]);
+    vi.mocked(deleteUnavailability.deleteVolunteerUnavailability).mockResolvedValue({
+      id: 'unavail-1',
+    });
+
+    render(
+      <I18nProvider>
+        <LocalTimeProvider>
+          <AuthSessionContext.Provider value={authSessionContextFixture(authState)}>
+            <OrganizationContextProvider enabled={true}>
+              <TimeAwayPage />
+            </OrganizationContextProvider>
+          </AuthSessionContext.Provider>
+        </LocalTimeProvider>
+      </I18nProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Remover' })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Remover' }));
+
+    await waitFor(() => {
+      expect(deleteUnavailability.deleteVolunteerUnavailability).toHaveBeenCalledWith({
+        unavailabilityId: 'unavail-1',
+        actingVolunteerId: mockVolunteerId,
+      });
+    });
+
+    expect(await screen.findByText(/indisponibilidade removida/i)).toBeInTheDocument();
   });
 });

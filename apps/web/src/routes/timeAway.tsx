@@ -5,10 +5,12 @@ import { ApiRequestError } from '@/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { createBulkVolunteerUnavailability } from '@/identity/createBulkVolunteerUnavailability';
 import { createVolunteerUnavailability } from '@/identity/createVolunteerUnavailability';
+import { deleteVolunteerUnavailability } from '@/identity/deleteVolunteerUnavailability';
 import {
   fetchVolunteerUnavailability,
   type VolunteerUnavailability,
 } from '@/identity/fetchVolunteerUnavailability';
+import { updateVolunteerUnavailability } from '@/identity/updateVolunteerUnavailability';
 import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationContextProvider';
 import { useLocalTimeContext } from '@/settings/LocalTimeProvider';
@@ -28,6 +30,16 @@ type MirrorFieldErrors = {
   endsAt?: string;
   summary?: string;
 };
+
+type EditFieldErrors = {
+  startsAt?: string;
+  endsAt?: string;
+  summary?: string;
+};
+
+function utcIsoToDatetimeLocalInput(isoUtc: string): string {
+  return isoUtc.slice(0, 16);
+}
 
 function datetimeLocalToUtcIso(value: string): string {
   if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
@@ -66,6 +78,14 @@ export function TimeAwayPage() {
   const [mirrorSubmitting, setMirrorSubmitting] = useState(false);
   const [mirrorStatusMessage, setMirrorStatusMessage] = useState<string | null>(null);
   const [mirrorFailureMessage, setMirrorFailureMessage] = useState<string | null>(null);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editStartsAt, setEditStartsAt] = useState('');
+  const [editEndsAt, setEditEndsAt] = useState('');
+  const [editFieldErrors, setEditFieldErrors] = useState<EditFieldErrors>({});
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [rowStatusMessage, setRowStatusMessage] = useState<string | null>(null);
 
   const volunteerId =
     auth.status === 'authenticated' || auth.status === 'dev-bypass'
@@ -196,6 +216,108 @@ export function TimeAwayPage() {
       }
       return current.filter((id) => id !== ministryId);
     });
+  }
+
+  function validateEditForm(): EditFieldErrors {
+    const next: EditFieldErrors = {};
+    if (!editStartsAt) {
+      next.startsAt = t('errors.startsAtRequired');
+    }
+    if (!editEndsAt) {
+      next.endsAt = t('errors.endsAtRequired');
+    }
+    if (editStartsAt && editEndsAt) {
+      const start = new Date(datetimeLocalToUtcIso(editStartsAt)).getTime();
+      const end = new Date(datetimeLocalToUtcIso(editEndsAt)).getTime();
+      if (!(start < end)) {
+        next.endsAt = t('errors.invalidWindow');
+      }
+    }
+    return next;
+  }
+
+  function beginEdit(row: VolunteerUnavailability) {
+    setEditingId(row.id);
+    setEditStartsAt(utcIsoToDatetimeLocalInput(row.startsAtUtc));
+    setEditEndsAt(utcIsoToDatetimeLocalInput(row.endsAtUtc));
+    setEditFieldErrors({});
+    setRowStatusMessage(null);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditStartsAt('');
+    setEditEndsAt('');
+    setEditFieldErrors({});
+  }
+
+  async function handleEditSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!volunteerId || !editingId) return;
+
+    setRowStatusMessage(null);
+    const nextErrors = validateEditForm();
+    if (Object.keys(nextErrors).length > 0) {
+      if (Object.keys(nextErrors).length > 1) {
+        nextErrors.summary = t('errors.summary');
+      }
+      setEditFieldErrors(nextErrors);
+      return;
+    }
+
+    setEditFieldErrors({});
+    setEditSubmitting(true);
+    try {
+      await updateVolunteerUnavailability({
+        unavailabilityId: editingId,
+        actingVolunteerId: volunteerId,
+        startsAtUtc: datetimeLocalToUtcIso(editStartsAt),
+        endsAtUtc: datetimeLocalToUtcIso(editEndsAt),
+      });
+      setRowStatusMessage(t('successUpdate'));
+      cancelEdit();
+      await loadRows({ silent: true });
+    } catch (err) {
+      if (err instanceof ApiRequestError) {
+        const apiErrors: EditFieldErrors = { summary: err.message };
+        if (err.code === 'INVALID_UNAVAILABILITY_WINDOW') {
+          apiErrors.endsAt = err.message;
+          delete apiErrors.summary;
+        }
+        if (Object.keys(apiErrors).length > 1 || apiErrors.summary) {
+          apiErrors.summary = apiErrors.summary ?? t('errors.summary');
+        }
+        setEditFieldErrors(apiErrors);
+      } else {
+        setEditFieldErrors({
+          summary: err instanceof Error ? err.message : t('errors.summary'),
+        });
+      }
+    } finally {
+      setEditSubmitting(false);
+    }
+  }
+
+  async function handleDelete(rowId: string) {
+    if (!volunteerId) return;
+
+    setDeletingId(rowId);
+    setRowStatusMessage(null);
+    try {
+      await deleteVolunteerUnavailability({
+        unavailabilityId: rowId,
+        actingVolunteerId: volunteerId,
+      });
+      if (editingId === rowId) {
+        cancelEdit();
+      }
+      setRowStatusMessage(t('successDelete'));
+      await loadRows({ silent: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete unavailability');
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function handleMirrorSubmit(event: FormEvent) {
@@ -569,6 +691,12 @@ export function TimeAwayPage() {
           {t('listHeading')}
         </h2>
 
+        {rowStatusMessage ? (
+          <p role="status" className="border-2 border-primary bg-primary/10 p-3 text-sm">
+            {rowStatusMessage}
+          </p>
+        ) : null}
+
         {loading ? (
           <div className="flex flex-col gap-4">
             {[1, 2].map((i) => (
@@ -601,18 +729,103 @@ export function TimeAwayPage() {
                       key={row.id}
                       className="border-2 border-border bg-surface p-4 text-sm"
                     >
-                      <p className="font-medium">
-                        <SchedulingTimeDisplay
-                          labels={buildDualInterval(
-                            row.startsAtUtc,
-                            row.endsAtUtc,
-                            timezone,
-                            i18n.language,
-                            intervalStartOptions,
-                            intervalEndOptions,
-                          )}
-                        />
-                      </p>
+                      {editingId === row.id ? (
+                        <form
+                          className="flex flex-col gap-3"
+                          onSubmit={(event) => void handleEditSubmit(event)}
+                          noValidate
+                        >
+                          <h4 className="font-display text-sm font-bold uppercase tracking-tight">
+                            {t('editHeading')}
+                          </h4>
+
+                          {editFieldErrors.summary ? (
+                            <p
+                              role="alert"
+                              className="border-2 border-destructive bg-surface p-3 text-sm text-destructive"
+                            >
+                              {editFieldErrors.summary}
+                            </p>
+                          ) : null}
+
+                          <label className="flex flex-col gap-1">
+                            <span className="font-semibold uppercase tracking-wide">
+                              {t('form.startsAt')}
+                            </span>
+                            <input
+                              type="datetime-local"
+                              className="border-2 border-border bg-background px-3 py-2"
+                              value={editStartsAt}
+                              aria-label={t('form.startsAt')}
+                              aria-invalid={Boolean(editFieldErrors.startsAt)}
+                              onChange={(event) => setEditStartsAt(event.target.value)}
+                            />
+                            {editFieldErrors.startsAt ? (
+                              <span className="text-destructive">{editFieldErrors.startsAt}</span>
+                            ) : null}
+                          </label>
+
+                          <label className="flex flex-col gap-1">
+                            <span className="font-semibold uppercase tracking-wide">
+                              {t('form.endsAt')}
+                            </span>
+                            <input
+                              type="datetime-local"
+                              className="border-2 border-border bg-background px-3 py-2"
+                              value={editEndsAt}
+                              aria-label={t('form.endsAt')}
+                              aria-invalid={Boolean(editFieldErrors.endsAt)}
+                              onChange={(event) => setEditEndsAt(event.target.value)}
+                            />
+                            {editFieldErrors.endsAt ? (
+                              <span className="text-destructive">{editFieldErrors.endsAt}</span>
+                            ) : null}
+                          </label>
+
+                          <div className="flex flex-wrap gap-2">
+                            <Button type="submit" disabled={editSubmitting}>
+                              {editSubmitting ? t('form.submitting') : t('form.saveEdit')}
+                            </Button>
+                            <Button type="button" variant="outline" onClick={cancelEdit}>
+                              {t('form.cancelEdit')}
+                            </Button>
+                          </div>
+                        </form>
+                      ) : (
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                          <p className="font-medium">
+                            <SchedulingTimeDisplay
+                              labels={buildDualInterval(
+                                row.startsAtUtc,
+                                row.endsAtUtc,
+                                timezone,
+                                i18n.language,
+                                intervalStartOptions,
+                                intervalEndOptions,
+                              )}
+                            />
+                          </p>
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => beginEdit(row)}
+                            >
+                              {t('actions.edit')}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              disabled={deletingId === row.id}
+                              onClick={() => void handleDelete(row.id)}
+                            >
+                              {deletingId === row.id
+                                ? t('actions.deleting')
+                                : t('actions.delete')}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>

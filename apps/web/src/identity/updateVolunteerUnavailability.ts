@@ -4,10 +4,11 @@ import type { CreateUnavailabilityResult } from './createVolunteerUnavailability
 
 export async function updateVolunteerUnavailability(input: {
   unavailabilityId: string;
-  leaderMinistryId: string;
   actingVolunteerId: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  /** Required when a leader updates on behalf of a volunteer. */
+  leaderMinistryId?: string;
 }): Promise<CreateUnavailabilityResult> {
   const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
   const res = await fetchWithProtectedHeaders(

@@ -619,6 +619,16 @@ export class SchedulingService {
     };
   }
 
+  private async assertCanMutateUnavailability(
+    auth: AuthenticatedRequestContext,
+    row: { volunteerId: string; ministryId: string },
+  ) {
+    const caller = await auth.requireVolunteer();
+    if (caller.id !== row.volunteerId) {
+      await auth.assertLeaderCanActOnMinistry(row.ministryId);
+    }
+  }
+
   async updateUnavailability(input: UpdateUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
 
@@ -629,7 +639,8 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
+    await this.assertCanMutateUnavailability(input.auth, row);
+    await assertMinistryAcceptsWrites(this.prisma, row.ministryId);
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
@@ -669,7 +680,7 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
+    await this.assertCanMutateUnavailability(input.auth, row);
 
     await this.prisma.unavailability.delete({
       where: { id: row.id },
