@@ -366,7 +366,10 @@ describe('SchedulingEventDetailView edit section', () => {
 
   it('renders edit button for admin', async () => {
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
 
@@ -379,7 +382,10 @@ describe('SchedulingEventDetailView edit section', () => {
   it('renders edit form pre-filled when button is clicked', async () => {
     const user = userEvent.setup();
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
 
@@ -403,7 +409,10 @@ describe('SchedulingEventDetailView edit section', () => {
   it('submit dispatches editEvent with changed fields', async () => {
     const user = userEvent.setup();
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
     vi.mocked(editEventModule.editEvent).mockResolvedValue({
@@ -451,7 +460,10 @@ describe('SchedulingEventDetailView edit section', () => {
     });
 
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
 
@@ -478,7 +490,10 @@ describe('SchedulingEventDetailView edit section', () => {
 
   it('does not render edit section for cancelled event', async () => {
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
 
@@ -499,7 +514,10 @@ describe('SchedulingEventDetailView edit section', () => {
   it('shows error message when API returns error', async () => {
     const user = userEvent.setup();
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: true,
+      defaultTimezone: 'America/New_York',
       ministries: [],
     };
     vi.mocked(editEventModule.editEvent).mockRejectedValue(
@@ -524,7 +542,10 @@ describe('SchedulingEventDetailView edit section', () => {
 
   it('renders edit button for leader on private event', async () => {
     mockOrganization.activeChurch = {
+      id: 'church-1',
+      name: 'Demo Church',
       isAccreditedAdmin: false,
+      defaultTimezone: 'America/New_York',
       ministries: [{ id: 'min-private', name: 'Worship', isLeader: true }],
     };
 
