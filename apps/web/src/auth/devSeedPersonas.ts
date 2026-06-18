@@ -26,7 +26,7 @@ export const DEV_SEED_PERSONAS: readonly DevSeedPersona[] = [
   },
   {
     id: 'seed-volunteer-system-admin',
-    displayName: 'System Operator',
+    displayName: 'System Admin',
     capabilityKeys: ['shell:devPersona.capabilities.systemAdmin'],
   },
 ] as const;

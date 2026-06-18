@@ -15,18 +15,6 @@
   "saveRename": "Save",
   "cancelRename": "Cancel",
   "errorGeneric": "Something went wrong. Try again.",
-  "churchSettings": {
-    "title": "Church settings",
-    "intro": "Update your accredited church display name and default timezone. Event times in UTC are unchanged.",
-    "nameLabel": "Church name",
-    "timezoneLabel": "Default timezone (IANA)",
-    "save": "Save settings",
-    "saving": "Saving…",
-    "saved": "Church settings saved.",
-    "errors": {
-      "generic": "Could not save church settings."
-    }
-  },
   "retireConfirm": "Retire \"{{name}}\"? Retired roles stay on past assignments but cannot be used for new ones. To restore a retired role, contact your church administrator.",
   "churchSettings": {
     "title": "Church settings",
