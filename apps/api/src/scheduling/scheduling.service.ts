@@ -592,11 +592,14 @@ export class SchedulingService {
         },
       },
     });
-    if (!membership) {
+    const membershipFailure = bulkUnavailabilityMembershipFailure(
+      input.ministryId,
+      membership ?? undefined,
+    );
+    if (membershipFailure) {
       throw new BadRequestException({
-        code: 'MEMBERSHIP_REQUIRED',
-        message:
-          'Volunteer must have ministry membership before recording unavailability.',
+        code: membershipFailure.code,
+        message: membershipFailure.message,
       });
     }
 
