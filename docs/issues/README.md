@@ -12,7 +12,15 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-_(empty — PRD v1 shipped; #61 CI promotion criteria complete)_
+| Priority | Issue | Spec | Summary | Label |
+|---------:|------:|------|---------|-------|
+| 1 | [#131](https://github.com/kairan/onda-volunteer/issues/131) | `131-glossary-inactive-membership.md` | Glossary: **Inactive** membership | `ready-for-agent` |
+| 2 | [#132](https://github.com/kairan/onda-volunteer/issues/132) | `132-api-unavailability-inactive-membership-guard.md` | API: reject **Unavailability** for inactive membership | `ready-for-agent` |
+| 2 | [#133](https://github.com/kairan/onda-volunteer/issues/133) | `133-volunteer-unavailability-edit-delete.md` | Volunteer edit/delete own **Unavailability** | `ready-for-agent` |
+| 2 | [#134](https://github.com/kairan/onda-volunteer/issues/134) | `134-campus-event-time-display.md` | Campus-authoritative event time display | `ready-for-agent` |
+| 3 | [#135](https://github.com/kairan/onda-volunteer/issues/135) | `135-web-i18n-language-alignment.md` | Web i18n language alignment | `ready-for-agent` |
+
+TLC feature: [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/) (audit 2026-06-18). Issues **#132–#135** may run in parallel; **#131** is doc-only and unblocks glossary consistency.
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 

@@ -41,6 +41,8 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 - **2026-06-11 (#128 web typecheck strict clean):** Cleared 59 web `tsc` errors; added `pnpm typecheck:web` + CI `typecheck-web` job. TLC: `.specs/features/web-typecheck-strict-clean/`.
 - **2026-06-11 (#129 coverage threshold gates):** Fixed API jest-e2e coverage collection; enforced Jest/Vitest global floors; CI `coverage` job blocking. #61 T61-06 promotion criteria complete. TLC: `.specs/features/coverage-threshold-gates/`.
 
+- **2026-06-18 (Ubiquitous language drift audit — Specify/Tasks):** Code vs `CONTEXT.md` audit found 2 HIGH behavioral gaps and several i18n/terminology drifts. Quick-reference card added to `CONTEXT.md`. Five tracer bullets filed as GitHub **#131–#135** with TLC `.specs/features/ubiquitous-language-drift/` (GLOSS-01, AVAIL-01/02, SCHED-01, I18N-01). All labeled `ready-for-agent`.
+
 ## Blockers
 
 _(none)_
