@@ -421,4 +421,110 @@ describe('Volunteer unavailability (e2e)', () => {
       { id: activeMinistry.id, name: 'Greeters', membershipStatus: 'ACTIVE', archivedAt: null },
     ]);
   });
+
+  it('lets a volunteer update and delete their own unavailability', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Self Service Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Greeters', churchId: church.id },
+    });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Self Service Volunteer' },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: volunteer.id,
+        ministryId: ministry.id,
+        status: 'ACTIVE',
+      },
+    });
+    const row = await prisma.unavailability.create({
+      data: {
+        volunteerId: volunteer.id,
+        ministryId: ministry.id,
+        startsAtUtc: new Date('2026-06-07T10:00:00.000Z'),
+        endsAtUtc: new Date('2026-06-07T12:00:00.000Z'),
+      },
+    });
+
+    const updated = await request(app.getHttpServer())
+      .patch(`/unavailability/${row.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({
+        startsAtUtc: '2026-06-07T11:00:00.000Z',
+        endsAtUtc: '2026-06-07T13:00:00.000Z',
+      })
+      .expect(200);
+
+    expect(updated.body.window).toEqual({
+      startsAtUtc: '2026-06-07T11:00:00.000Z',
+      endsAtUtc: '2026-06-07T13:00:00.000Z',
+    });
+
+    await request(app.getHttpServer())
+      .delete(`/unavailability/${row.id}`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .expect(200);
+
+    const remaining = await prisma.unavailability.findMany({
+      where: { volunteerId: volunteer.id },
+    });
+    expect(remaining).toHaveLength(0);
+  });
+
+  it('rejects volunteer update and delete for another volunteer unavailability', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Cross Volunteer Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Greeters', churchId: church.id },
+    });
+    const owner = await prisma.volunteer.create({
+      data: { displayName: 'Owner Volunteer' },
+    });
+    const other = await prisma.volunteer.create({
+      data: { displayName: 'Other Volunteer' },
+    });
+    await prisma.ministryMembership.createMany({
+      data: [
+        {
+          volunteerId: owner.id,
+          ministryId: ministry.id,
+          status: 'ACTIVE',
+        },
+        {
+          volunteerId: other.id,
+          ministryId: ministry.id,
+          status: 'ACTIVE',
+        },
+      ],
+    });
+    const row = await prisma.unavailability.create({
+      data: {
+        volunteerId: owner.id,
+        ministryId: ministry.id,
+        startsAtUtc: new Date('2026-06-08T10:00:00.000Z'),
+        endsAtUtc: new Date('2026-06-08T12:00:00.000Z'),
+      },
+    });
+
+    const patchRes = await request(app.getHttpServer())
+      .patch(`/unavailability/${row.id}`)
+      .set('X-Volunteer-Id', other.id)
+      .send({
+        startsAtUtc: '2026-06-08T11:00:00.000Z',
+        endsAtUtc: '2026-06-08T13:00:00.000Z',
+      })
+      .expect(403);
+
+    expect(patchRes.body.code).toBe('LEADER_NOT_AUTHORIZED');
+
+    const deleteRes = await request(app.getHttpServer())
+      .delete(`/unavailability/${row.id}`)
+      .set('X-Volunteer-Id', other.id)
+      .expect(403);
+
+    expect(deleteRes.body.code).toBe('LEADER_NOT_AUTHORIZED');
+  });
 });

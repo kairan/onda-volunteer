@@ -6,14 +6,24 @@
   "loading": "Carregando indisponibilidades...",
   "emptyState": "Nenhuma indisponibilidade futura registrada para esta igreja.",
   "createHeading": "Adicionar indisponibilidade",
+  "editHeading": "Editar indisponibilidade",
   "form": {
     "ministry": "Ministério",
     "startsAt": "Início",
     "endsAt": "Fim",
     "submit": "Salvar indisponibilidade",
-    "submitting": "Salvando..."
+    "submitting": "Salvando...",
+    "saveEdit": "Salvar alterações",
+    "cancelEdit": "Cancelar edição"
   },
   "success": "Indisponibilidade salva.",
+  "successUpdate": "Indisponibilidade atualizada.",
+  "successDelete": "Indisponibilidade removida.",
+  "actions": {
+    "edit": "Editar",
+    "delete": "Remover",
+    "deleting": "Removendo..."
+  },
   "mirrorHeading": "Espelhar entre ministérios",
   "mirrorBody": "Aplique as mesmas datas em registros separados de indisponibilidade—um por ministério selecionado. Isso não cria uma ausência para toda a igreja.",
   "mirrorScope": "Estes ministérios receberão indisponibilidade espelhada:",
@@ -35,6 +45,7 @@
     "startsAtRequired": "Informe o horário de início.",
     "endsAtRequired": "Informe o horário de fim.",
     "invalidWindow": "O fim deve ser depois do início.",
-    "summary": "Corrija os campos destacados e tente novamente."
+    "summary": "Corrija os campos destacados e tente novamente.",
+    "deleteFailed": "Não foi possível remover esta indisponibilidade. Tente novamente."
   }
 }
