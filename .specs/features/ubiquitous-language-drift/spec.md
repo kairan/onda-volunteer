@@ -2,18 +2,18 @@
 
 ## Status
 
-Specified — audit 2026-06-18 (code vs `CONTEXT.md` glossary).
+Shipped — validated 2026-06-18 ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)).
 
 ## Problem Statement
 
-A read-only audit of `apps/api` and `apps/web` against `CONTEXT.md` found **behavioral gaps** (invariants not enforced, campus timezone not used on some surfaces) and **terminology drift** (UI copy and API field names that contradict the glossary). The glossary quick-reference card was added to `CONTEXT.md`; remaining work is tracked as GitHub issues **#131–#135**.
+A read-only audit of `apps/api` and `apps/web` against `CONTEXT.md` found **behavioral gaps** (invariants not enforced, campus timezone not used on some surfaces) and **terminology drift** (UI copy and API field names that contradict the glossary). The glossary quick-reference card was added to `CONTEXT.md`; gaps closed via GitHub issues **#131–#135** (specs in `docs/issues/done/`).
 
 ## Goals
 
-- [ ] Close **HIGH** invariant gaps (inactive membership on Unavailability create; campus-authoritative event display where the shell already selects a Campus).
-- [ ] Ship missing **Volunteer** self-service for changing own **Unavailability** (glossary: "establish or change").
+- [x] Close **HIGH** invariant gaps (inactive membership on Unavailability create; campus-authoritative event display where the shell already selects a Campus).
+- [x] Ship missing **Volunteer** self-service for changing own **Unavailability** (glossary: "establish or change").
 - [x] Document **Inactive** membership status in `CONTEXT.md` (used in schema/UI but undefined in glossary).
-- [ ] Align web i18n and dev-only labels with glossary terms (`Time away`, **System Admin**, permission levels vs catalog **Role**).
+- [x] Align web i18n and dev-only labels with glossary terms (`Time away`, **System Admin**, permission levels vs catalog **Role**).
 
 ## Out of Scope
 

@@ -1,16 +1,16 @@
 # 131 — Glossary: document Inactive ministry membership status
 
 **Type:** AFK  
-**Label when unblocked:** `ready-for-agent`  
-**Normative refs:** `CONTEXT.md`
+**Status:** Shipped (validated 2026-06-18)  
+**TLC:** `.specs/features/ubiquitous-language-drift/` (GLOSS-01)
 
 ## Parent
 
 - TLC feature: `.specs/features/ubiquitous-language-drift/spec.md` (GLOSS-01)
 
-## What to build
+## What was built
 
-Define **Inactive** **Ministry membership** status in `CONTEXT.md` (schema/UI already use `INACTIVE`). Update quick reference and **Relationships** so the glossary matches code and voiding behavior.
+Defined **Inactive** **Ministry membership** status in `CONTEXT.md` (schema/UI already use `INACTIVE`). Updated quick reference and **Relationships** so the glossary matches code and voiding behavior.
 
 ## Acceptance criteria
 
@@ -19,9 +19,10 @@ Define **Inactive** **Ministry membership** status in `CONTEXT.md` (schema/UI al
 - [x] **Relationships** clarify inactive vs pending/active (no new **Assignments**; link to voiding on deactivation).
 - [x] No application code changes.
 
-## Blocked by
+## Specification links
 
-None
+- Spec: `.specs/features/ubiquitous-language-drift/spec.md`
+- Tasks: `.specs/features/ubiquitous-language-drift/tasks.md`
 
 ## Tracker
 

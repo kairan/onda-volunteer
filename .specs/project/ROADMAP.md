@@ -56,13 +56,17 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 | **Organization / Identity** | `volunteer-onboarding-invite` | [#116](https://github.com/kairan/onda-volunteer/issues/116) | ✅ Shipped |
 | **Organization / Identity** | `invite-fulfillment-toast` (ONBOARD-A5) | [#124](https://github.com/kairan/onda-volunteer/issues/124) | ✅ Shipped |
 
+### Shipped features (2026-06-18 closeout)
+
+| Theme | Feature slug | Issues | Status |
+|-------|--------------|--------|--------|
+| **Domain / Availability / Scheduling / i18n** | `ubiquitous-language-drift` | [#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135) | ✅ Shipped |
+
+Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability create (AVAIL-01), volunteer edit/delete own Unavailability (AVAIL-02), campus-authoritative event time display (SCHED-01), web i18n alignment (I18N-01). TLC: `.specs/features/ubiquitous-language-drift/`.
+
 ### Active backlog (ready for agent / next Execute)
 
-| Priority | Feature slug | Theme | Issue | TLC Spec | Status |
-|---------:|--------------|-------|-------|----------|--------|
-| 1 | `ubiquitous-language-drift` | Domain / Availability / Scheduling / i18n | [#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135) | `.specs/features/ubiquitous-language-drift/` | Ready — glossary + drift fixes from 2026-06-18 audit |
-
-Execute order: **#131** (doc) optional first; **#132–#135** parallel when unblocked. See `docs/issues/README.md`.
+_(none — all open slices shipped as of 2026-06-18.)_
 
 ### Deferred or gated work, not active backlog
 
