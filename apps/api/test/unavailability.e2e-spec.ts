@@ -103,6 +103,41 @@ describe('Volunteer unavailability (e2e)', () => {
     });
   });
 
+  it('rejects creating unavailability when ministry membership is Inactive', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Inactive Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Alumni', churchId: church.id },
+    });
+    const volunteer = await prisma.volunteer.create({
+      data: { displayName: 'Inactive Volunteer' },
+    });
+    await prisma.ministryMembership.create({
+      data: {
+        volunteerId: volunteer.id,
+        ministryId: ministry.id,
+        status: 'INACTIVE',
+      },
+    });
+
+    const res = await request(app.getHttpServer())
+      .post(`/volunteers/${volunteer.id}/unavailability`)
+      .set('X-Volunteer-Id', volunteer.id)
+      .send({
+        ministryId: ministry.id,
+        startsAtUtc: '2026-06-03T14:00:00.000Z',
+        endsAtUtc: '2026-06-03T16:00:00.000Z',
+      })
+      .expect(400);
+
+    expect(res.body).toMatchObject({
+      code: 'MEMBERSHIP_NOT_ACTIVE',
+      message:
+        'Volunteer must have Active or Pending ministry membership before recording unavailability.',
+    });
+  });
+
   it('allows creating unavailability when ministry membership is Pending', async () => {
     const church = await prisma.church.create({
       data: { name: 'Pending Church', defaultTimezone: 'UTC' },
