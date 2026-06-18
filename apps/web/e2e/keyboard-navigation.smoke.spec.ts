@@ -63,7 +63,7 @@ test.describe('keyboard navigation @smoke @a11y', () => {
     await expect(
       page.getByRole('heading', {
         level: 1,
-        name: /volunteer time away|tempo livre do voluntário/i,
+        name: /volunteer time away|ausências do voluntário/i,
       }),
     ).toBeVisible({ timeout: 30_000 });
 
