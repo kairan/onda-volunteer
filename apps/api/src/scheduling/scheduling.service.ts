@@ -592,11 +592,14 @@ export class SchedulingService {
         },
       },
     });
-    if (!membership) {
+    const membershipFailure = bulkUnavailabilityMembershipFailure(
+      input.ministryId,
+      membership ?? undefined,
+    );
+    if (membershipFailure) {
       throw new BadRequestException({
-        code: 'MEMBERSHIP_REQUIRED',
-        message:
-          'Volunteer must have ministry membership before recording unavailability.',
+        code: membershipFailure.code,
+        message: membershipFailure.message,
       });
     }
 
@@ -619,6 +622,19 @@ export class SchedulingService {
     };
   }
 
+  private async assertCanMutateUnavailability(
+    auth: AuthenticatedRequestContext,
+    row: { volunteerId: string; ministryId: string },
+  ) {
+    if (auth.headers.volunteerId) {
+      const caller = await auth.requireVolunteer();
+      if (caller.id === row.volunteerId) {
+        return;
+      }
+    }
+    await auth.assertLeaderCanActOnMinistry(row.ministryId);
+  }
+
   async updateUnavailability(input: UpdateUnavailabilityInput) {
     await assertSchedulingWriteAllowed(input.auth);
 
@@ -629,7 +645,7 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
+    await this.assertCanMutateUnavailability(input.auth, row);
 
     const u0 = parseInstant('startsAtUtc', input.startsAtUtc);
     const u1 = parseInstant('endsAtUtc', input.endsAtUtc);
@@ -669,7 +685,7 @@ export class SchedulingService {
       throw new NotFoundException();
     }
 
-    await input.auth.assertLeaderCanActOnMinistry(row.ministryId);
+    await this.assertCanMutateUnavailability(input.auth, row);
 
     await this.prisma.unavailability.delete({
       where: { id: row.id },

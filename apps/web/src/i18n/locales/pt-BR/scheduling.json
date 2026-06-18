@@ -11,7 +11,8 @@
   "create": {
     "link": "Criar evento público",
     "title": "Novo evento público",
-    "timezoneHint": "Horários abaixo no fuso da igreja ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "timezoneHintCampus": "Horários abaixo no fuso do campus ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "timezoneHintChurchDefault": "Horários abaixo no fuso padrão da igreja ({{tz}}) — {{church}}. Persistidos em UTC.",
     "titleLabel": "Título",
     "startsLabel": "Início",
     "endsLabel": "Fim",
@@ -45,7 +46,8 @@
   },
   "detail": {
     "loading": "Carregando escala do evento...",
-    "timezoneLabel": "Fuso da igreja {{tz}}",
+    "timezoneLabelCampus": "Fuso do campus {{tz}}",
+    "timezoneLabelChurchDefault": "Fuso padrão da igreja {{tz}}",
     "utcWindow": "UTC {{start}} → {{end}}",
     "rosterHeading": "Escala",
     "backToList": "← Voltar aos eventos",

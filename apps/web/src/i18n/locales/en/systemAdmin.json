@@ -19,6 +19,7 @@
     "eyebrow": "Support",
     "title": "Scheduling support",
     "intro": "Read-only view of events across all churches. Scheduling writes are disabled for operators.",
+    "presentationNotice": "Times use each church's organizational default timezone, not campus-local clocks.",
     "readOnlyNotice": "Read-only — write actions are disabled for System Admin.",
     "listHeading": "Events",
     "churchFilter": "Church",
@@ -33,7 +34,8 @@
       "assignmentsHeading": "Assignments",
       "noAssignments": "No active assignments.",
       "cancelled": "This event is cancelled.",
-      "backToList": "Back to scheduling list"
+      "backToList": "Back to scheduling list",
+      "churchDefaultTimezoneLabel": "Church default timezone {{tz}}"
     },
     "loadError": "Could not load events."
   },

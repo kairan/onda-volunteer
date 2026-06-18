@@ -86,6 +86,9 @@ export function SystemAdminSchedulingPage() {
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           {t('scheduling.intro')}
         </p>
+        <p className="mt-2 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+          {t('scheduling.presentationNotice')}
+        </p>
         <p className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
           {t('scheduling.readOnlyNotice')}
         </p>

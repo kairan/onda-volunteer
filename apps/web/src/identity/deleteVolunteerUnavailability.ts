@@ -3,8 +3,9 @@ import { apiErrorFromResponse } from '@/apiError';
 
 export async function deleteVolunteerUnavailability(input: {
   unavailabilityId: string;
-  leaderMinistryId: string;
   actingVolunteerId: string;
+  /** Required when a leader deletes on behalf of a volunteer. */
+  leaderMinistryId?: string;
 }): Promise<{ id: string }> {
   const base = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
   const res = await fetchWithProtectedHeaders(

@@ -28,7 +28,10 @@ export function SystemAdminSchedulingEventDetailPage({
     <section className="flex flex-col gap-8">
       <div className="border border-border bg-background p-6">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          {data.church.name} · {timezone}
+          {data.church.name} ·{' '}
+          {t('scheduling.detail.churchDefaultTimezoneLabel', {
+            tz: data.church.defaultTimezone,
+          })}
         </p>
         <h1 className="mt-3 font-display text-4xl font-bold uppercase leading-tight tracking-tight">
           {data.event.title}
