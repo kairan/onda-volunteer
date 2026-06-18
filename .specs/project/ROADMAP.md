@@ -60,7 +60,9 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Priority | Feature slug | Theme | Issue | TLC Spec | Status |
 |---------:|--------------|-------|-------|----------|--------|
-| _(empty — audit 2026-06-11 complete; PRD v1 shipped)_ | | | | | |
+| 1 | `ubiquitous-language-drift` | Domain / Availability / Scheduling / i18n | [#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135) | `.specs/features/ubiquitous-language-drift/` | Ready — glossary + drift fixes from 2026-06-18 audit |
+
+Execute order: **#131** (doc) optional first; **#132–#135** parallel when unblocked. See `docs/issues/README.md`.
 
 ### Deferred or gated work, not active backlog
 

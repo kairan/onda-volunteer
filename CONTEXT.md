@@ -2,6 +2,40 @@
 
 Language for volunteers, ministries, and rosters across one or more **Churches**. Bounded contexts include **Identity** (who is signed in), **Organization** (churches, campuses, ministries, membership, catalogs, and leaders), **Availability** (when people cannot serve for a ministry), and **Scheduling** (assignments and time conflicts).
 
+## Glossary quick reference
+
+One-line reminders grouped by bounded context. These are pointers, not definitions — see **Language** below for the authoritative wording and the `_Avoid_` notes.
+
+**Identity** — who is authenticated.
+- **Volunteer** — a person who can be assigned and can record when they cannot serve; exactly one sign-in person.
+
+**Organization** — church/campus/ministry structure, membership, Role catalogs, and permission grants.
+- **Church** — the tenant-level organization (one accredited community).
+- **Campus** — a site under a Church; its IANA timezone is the scheduling + presentation anchor when active.
+- **Ministry** — a serving team/area within a Church with its own volunteers and leaders.
+- **Ministry membership** — a Volunteer's affiliation with a Ministry, carried as a status.
+- **Pending** / **Active** / **Inactive** — membership statuses; only **Active** is eligible for **Assignments**; **Inactive** forbids new **Assignments** and new **Unavailability**.
+- **Admin** — church-scoped permission level (named Churches only).
+- **Leader** — ministry-scoped permission level (assigned Ministries only).
+- **System Admin** — platform operator grant; cross-church onboarding + read-only scheduling, `/system-admin/*`.
+- **Role** — a named serving capacity from a Ministry's catalog (not a permission level).
+- **Retired** — a Role catalog entry that blocks new Assignments but stays on history.
+
+**Availability** — facts about when a Volunteer cannot serve.
+- **Unavailability** — a period a Volunteer must not get new Assignments, per Volunteer + per Ministry (the model/code/admin term).
+- **Time away** — the public navigation label backed by Unavailability (presentation only).
+
+**Scheduling** — Assignments and time-conflict rules on one canonical UTC timeline.
+- **Event** — a dated occurrence with a time window that Assignments attach to.
+- **Private event** — an Event owned by one Ministry for its own work.
+- **Public event** — a Church-wide Event multiple Ministries roster into (one Church only).
+- **Assignment** — a Volunteer filling a Role for a Ministry during an interval within an Event; requires **Active** membership.
+
+**Brand / presentation** (cross-cutting, not domain facts).
+- **Onda** — the fixed product brand/wordmark in global chrome (distinct from any Church name).
+- **Default UI language** — `pt-BR` at first use, with English available.
+- **Language switcher** — lets a viewer choose pt-BR/English without changing domain facts or UTC records.
+
 ## Language
 
 **Availability**:
@@ -37,7 +71,7 @@ A serving team or area within a **Church** that has its own volunteers and leade
 The bounded context that owns **Church** and **Campus** structure, **Ministry** structure, **Ministry membership**, each **Ministry**’s **Role** catalog, and delegation of **Leaders**.
 
 **Ministry membership**:
-A **Volunteer**’s affiliation with a **Ministry**, carried as a **status** (at least **Pending** or **Active**).
+A **Volunteer**’s affiliation with a **Ministry**, carried as a **status** (**Pending**, **Active**, or **Inactive**).
 _Avoid_: Treating someone as “in the ministry” in data without a membership row — pipeline cases use **Pending** membership instead of **Unavailability** alone.
 
 **Pending** (membership status):
@@ -45,6 +79,10 @@ The person is linked to the **Ministry** for onboarding or pipeline work; they a
 
 **Active** (membership status):
 The person is a full participant in that **Ministry** and may be placed on schedules for that **Ministry** according to **Scheduling** rules.
+
+**Inactive** (membership status):
+The person is no longer an active participant in that **Ministry** after deactivation or equivalent stewardship action; they are not eligible for **Assignments** and must not receive new **Unavailability** for that **Ministry**. **Organization** may reactivate an **Inactive** membership to **Active** or **Pending** when the person rejoins. Historical **Assignments** on past **Events** and existing **Unavailability** rows remain as recorded unless separate product rules remove them.
+_Avoid_: Treating **Inactive** like **Pending** onboarding — **Pending** means pipeline/not yet rostered; **Inactive** means former participation after deactivation. Do not roster or record new absence for **Inactive** membership.
 
 **Unavailability**:
 A defined period during which a Volunteer must not receive new assignments **for a specific Ministry**.
@@ -105,9 +143,10 @@ A time-bounded commitment that a given **Volunteer** will fill a **Role** during
 - **Scheduling** depends on **Availability** to know **Unavailability** when validating or creating assignments, using the **Ministry** attached to the assignment.
 - **Scheduling** treats time windows as **half-open**: if one window **ends** exactly when another **begins**, that is **not** overlap, including when comparing **Assignments** to **Unavailability** (comparisons use the canonical **UTC** instants).
 - Each **Assignment** has its own start and end within the parent **Event**’s window; overlap checks use those **Assignment** times (which may equal the full **Event** span when appropriate), expressed as **UTC** instants.
-- An **Assignment** requires **Active** **Ministry membership** for its **Ministry**; **Pending** membership does not authorize rostering for that **Ministry**.
-- When **Ministry membership** for a **Volunteer** in a **Ministry** ceases to be **Active**, **Assignments** on **Events** whose **scheduled end** instant is still in the future are **voided**; **Assignments** on **Events** whose **scheduled end** instant is already in the past remain as recorded for history and reporting (an **Event** still underway counts as not yet past).
-- Each **Unavailability** applies to exactly one **Volunteer** and exactly one **Ministry**; it does not block assignments for other ministries. A row exists only if that **Volunteer** has **Ministry membership** to that **Ministry** (including **Pending**); pipeline cases are modeled with **Pending** membership in **Organization**, not “orphan” unavailability.
+- An **Assignment** requires **Active** **Ministry membership** for its **Ministry**; **Pending** and **Inactive** membership do not authorize rostering for that **Ministry**.
+- When **Ministry membership** for a **Volunteer** in a **Ministry** becomes **Inactive**, **Assignments** on **Events** whose **scheduled end** instant is still in the future are **voided**; **Assignments** on **Events** whose **scheduled end** instant is already in the past remain as recorded for history and reporting (an **Event** still underway counts as not yet past).
+- **Inactive** membership does not authorize new **Unavailability** for that **Ministry**; existing **Unavailability** rows are not automatically removed on deactivation.
+- Each **Unavailability** applies to exactly one **Volunteer** and exactly one **Ministry**; it does not block assignments for other ministries. A row exists only if that **Volunteer** has **Ministry membership** to that **Ministry** (**Pending** or **Active** when created; **Inactive** membership must not receive new rows); pipeline cases are modeled with **Pending** membership in **Organization**, not “orphan” unavailability.
 - A **Volunteer** may have zero or more periods of **Unavailability** (including several for the same **Ministry** over time).
 - A **Volunteer** may use one guided action to apply the same dates across every **Ministry** where they have **Ministry membership**; **Availability** still stores separate **Unavailability** records per **Ministry** (no church-wide row).
 - A **Volunteer** may **release** or **decline** their own **Assignment**; **Leader** and **Admin** may create, change, or remove **Assignments** according to stewardship scope (**Leader** for their **Ministries**, **Admin** only for **Churches** where they are accredited). After **decline** or **release**, the person may be **offered** (not required) a path to add matching **Unavailability** for that **Ministry** over the same interval as the released **Assignment** in **Availability**.
