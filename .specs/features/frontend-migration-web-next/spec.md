@@ -65,6 +65,16 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 2. WHEN the shell header renders THEN it SHALL show the **Onda** wordmark + active **Church** name (tenant) and Church/Campus context switchers (not a demo role dropdown).
 3. WHEN nav renders THEN it SHALL derive from a nav manifest gated by composed grants (no placeholder routes carried over unless still needed).
 
+### MIG-FND-04 ⭐ MVP — Look-and-feel preview (mock data)
+
+**User Story**: As a maintainer, I want a throwaway mock-data preview of the Volunteer and Leader screens at the end of the Foundation slice so I can validate the Onda brand look-and-feel **before** building the ~17 live data-backed tasks.
+
+**Acceptance Criteria**:
+
+1. WHEN the Foundation slice completes THEN the Volunteer dashboard and Leader scheduling route stubs SHALL render with **hardcoded fixtures** (greeting + assignment cards, roster with fill badge, empty state, skeleton) using the **real Onda components** (T03 primitives, T12 `AppShell`) — **no** `apiClient` / TanStack Query wiring.
+2. WHEN the preview is built THEN it SHALL cover **only the two designed roles** (Volunteer + Leader); admin / System Admin surfaces are excluded (neutral functional port per MIG-ADMIN-01 — no Onda design to validate).
+3. WHEN the live data-backed screens land (MIG-VOL-01 / MIG-LEAD-01, tasks T16 / T20 / T21) THEN the fixtures SHALL be **removed or replaced** — the preview is explicitly throwaway and SHALL NOT remain as dead code after cutover.
+
 ---
 
 ## Requirements — Data layer
@@ -136,6 +146,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 | ID | Priority | Primary surfaces |
 |----|----------|------------------|
 | MIG-FND-01..03 | P1 | `apps/web-next` scaffold, `theme/`, `styles/`, `shell/` |
+| MIG-FND-04 | P1 | throwaway mock-data preview of Volunteer + Leader stubs (replaced by T16/T20/T21) |
 | MIG-DATA-01..02 | P1 | query client, ported `api`/`auth`/`organization`/`i18n` |
 | MIG-VOL-01 | P1 | `web-next` dashboard / time-away (ref UI-VOL) |
 | MIG-LEAD-01 | P1 | `web-next` dashboard / scheduling / roster (ref UI-LEAD) |
