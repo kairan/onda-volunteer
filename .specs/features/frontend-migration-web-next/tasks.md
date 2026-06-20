@@ -36,7 +36,7 @@ T10 → T11 → T12 → T13 → T13.5
 
 ### Phase 4: Vertical Slices (Parallel after Phase 3)
 
-Four workstreams that may run in parallel once T13 (router) is green. Each workstream is internally sequential. Data-prep tasks (T14, T18) can start from T06/T07 (before T13).
+Four workstreams that may run in parallel once T13 (router) is green. T13.5 closes Slice 1 (#143) and runs after T13 before Phase 4 begins; Phase 4 prep tasks (T14, T18) may start from T06/T07 without waiting for T13.5. Each workstream is internally sequential.
 
 ```
 T13 ─┬─ T14 → T15 → T16 [P] ─┐
@@ -908,7 +908,7 @@ Phase 2 — Data Core:
 Phase 3 — Shell (Sequential):
   T10 → T11 → T12 → T13 → T13.5  (T13.5 = throwaway mock-data brand checkpoint; closes Slice 1 / #143)
 
-Phase 4 — Vertical Slices (after T13; slices run in parallel):
+Phase 4 — Vertical Slices (after T13.5 closes Slice 1; slices run in parallel):
 
   Volunteer slice:
     T13 → T14 [P start from T06/T07]
