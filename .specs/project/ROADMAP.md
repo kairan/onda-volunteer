@@ -66,7 +66,14 @@ Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability cr
 
 ### Active backlog (ready for agent / next Execute)
 
-_(none — all open slices shipped as of 2026-06-18.)_
+| Theme | Feature slug | Status | TLC |
+|-------|--------------|--------|-----|
+| **Web shell & i18n** | `frontend-migration-web-next` | Specify + Design complete — Tasks pending | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) |
+| **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for the migration (no standalone in-place execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
+
+**Frontend rebuild (`web-next`):** parallel strangler migration — new `apps/web-next` on the same stack (React 19 · Vite · TanStack Router · Tailwind 4) plus TanStack Query, Onda brand tokens, route-by-route parity, single cutover. ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).
+
+`ui-refresh-onda-brand` is now the **design authority** consumed by the migration (Onda tokens, typography, Volunteer/Leader layouts) rather than a separate in-place re-skin. Lovable reference: [`design-reference/serve-well/`](../../design-reference/serve-well/). Church Admin / System Admin redesign deferred (ported functionally with neutral tokens).
 
 ### Deferred or gated work, not active backlog
 
