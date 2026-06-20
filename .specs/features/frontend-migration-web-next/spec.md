@@ -10,7 +10,7 @@
 
 ## Problem Statement
 
-The current `apps/web` is a working React 19 + Vite + TanStack Router + Tailwind 4 app, but its **visual layer is HOPE brutalism** (ADR 0003) and its **data layer is hand-rolled fetch helpers** with no shared cache/state library. Rather than re-skin in place (the `ui-refresh-onda-brand` refresh), we will **rebuild the frontend from scratch in a parallel app** (`apps/web-next`) on the **same stack**, adopting the **provisional Onda brand** and a **modern data layer (TanStack Query)**, then **cut over route-by-route** while the existing app stays green.
+The current `apps/web` is a working React 19 + Vite + TanStack Router + Tailwind 4 app, but its **visual layer is HOPE brutalism** (ADR 0003) and its **data layer is hand-rolled fetch helpers** with no shared cache/state library. Rather than re-skin in place (the `ui-refresh-onda-brand` refresh), we will **rebuild the frontend from scratch in a parallel app** (`apps/web-next`) on the **same stack**, adopting the **provisional Onda brand** and a **modern data layer (TanStack Query)**. Routes are migrated **incrementally inside `web-next`**; `apps/web` stays deployed and CI-green until a **single production cutover** once parity is reached (see `design.md` Tech Decisions — not a per-route runtime proxy).
 
 This is a **migration**, not a redesign of behavior: API contracts, domain model (`CONTEXT.md`), routes, and pessimistic scheduling semantics are preserved.
 
@@ -18,7 +18,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 - [ ] Stand up `apps/web-next` (new package, same stack) building clean with **Onda brand tokens** (consumes `ui-refresh-onda-brand` design + ADR 0006).
 - [ ] Rebuild the **data layer** on **TanStack Query** (queries/mutations/cache) replacing ad-hoc fetch helpers, preserving the API auth-header / dev-header contract.
-- [ ] Achieve **route parity** with `apps/web` and cut over per route via strangler (old app green until each route lands).
+- [ ] Achieve **route parity** with `apps/web` (migrate routes incrementally inside `web-next`), then perform a **single production cutover** once parity is reached (old app stays green throughout).
 - [ ] Volunteer + Leader screens built fresh to **Onda design** (per `ui-refresh-onda-brand`).
 - [ ] System Admin + org-admin routes **ported functionally** with neutral inherited tokens (redesign deferred).
 - [ ] CI gates (lint, typecheck, test, coverage, Playwright) green for `web-next` before cutover; retire `apps/web` only when parity verified.

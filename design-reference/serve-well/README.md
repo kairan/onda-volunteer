@@ -4,7 +4,7 @@
 
 **Operator console:** [https://serve-well.lovable.app/system-admin](https://serve-well.lovable.app/system-admin)
 
-Exploratory UX built in Lovable before implementing the Onda brand refresh in `apps/web`. **Not production code** — use for layout, hierarchy, and interaction patterns only.
+Exploratory UX built in Lovable, now the visual reference for the parallel **`apps/web-next`** rebuild (per [`frontend-migration-web-next`](../../.specs/features/frontend-migration-web-next/)) — not an in-place refresh of `apps/web`. **Not production code** — use for layout, hierarchy, and interaction patterns only.
 
 ## What to copy into the repo
 

@@ -385,7 +385,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T13: router.tsx (route tree + auth guard)
 
-**What**: Write `apps/web-next/src/router.tsx` creating the full TanStack Router route tree: root route, shell-wrapped routes (`/dashboard`, `/scheduling`, `/scheduling/events/$eventId`, `/scheduling/events/create-private`, `/time-away`, `/leader/volunteers/$volunteerId/time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`), system-admin routes (`/system-admin/*`), auth guard via `beforeLoad`, and stub placeholder components for unbuilt routes; wire `QueryProvider`, `AuthSessionProvider`, `I18nProvider`, `LocalTimeProvider` in `main.tsx`.
+**What**: Write `apps/web-next/src/router.tsx` creating the full TanStack Router route tree: root route, shell-wrapped routes (`/dashboard`, `/scheduling`, `/scheduling/events/$eventId`, `/scheduling/events/new`, `/scheduling/events/new-private`, `/time-away`, `/leader/volunteer-time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`), system-admin routes (`/system-admin/*`), auth guard via `beforeLoad`, and stub placeholder components for unbuilt routes; wire `QueryProvider`, `AuthSessionProvider`, `I18nProvider`, `LocalTimeProvider` in `main.tsx`. Route strings must match `apps/web/src/router.tsx` exactly (route parity — MIG-CUT-01).
 **Where**: `apps/web-next/src/router.tsx`, `apps/web-next/src/main.tsx`
 **Depends on**: T05, T09, T12
 **Reuses**: `apps/web/src/router.tsx` (route tree structure, beforeLoad patterns)
@@ -656,7 +656,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T23: LeaderVolunteerTimeAwayPage.tsx [P]
 
-**What**: Write `apps/web-next/src/routes/leaderVolunteerTimeAway.tsx` — leader view of a specific volunteer's unavailability list (read-only listing + leader can create/delete on behalf of volunteer via existing API); same `volunteerUnavailabilityQuery` + mutations; route guarded by leader grant.
+**What**: Write `apps/web-next/src/routes/leaderVolunteerTimeAway.tsx` — leader picks ministry + volunteer in-form (matching current `apps/web` page; no `$volunteerId` URL segment), then views/creates/deletes that volunteer's unavailability on their behalf via existing API; same `volunteerUnavailabilityQuery` + mutations; route guarded by leader grant.
 **Where**: `apps/web-next/src/routes/leaderVolunteerTimeAway.tsx`
 **Depends on**: T12, T13, T14
 **Reuses**: `apps/web/src/routes/leaderVolunteerTimeAway.tsx`
@@ -667,7 +667,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Route at `/leader/volunteers/$volunteerId/time-away` renders unavailability list for target volunteer
+- [ ] Route at `/leader/volunteer-time-away` (parity with `apps/web`) renders the in-form ministry + volunteer picker and the selected volunteer's unavailability list
 - [ ] Leader can add/delete unavailability rows; mutations invalidate `queryKeys.unavailability(volunteerId)`
 - [ ] Access denied for non-leader grants (route guard in `beforeLoad`)
 - [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`

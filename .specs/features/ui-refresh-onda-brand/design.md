@@ -36,7 +36,7 @@ Load via self-hosted fonts (`@fontsource` or project assets). Remove Montserrat 
 
 ## 3. Color tokens
 
-Extract from provisional Igreja Onda brand guide. Map to CSS variables in `apps/web` (replace HOPE `--primary`, backgrounds, borders).
+Extract from provisional Igreja Onda brand guide. This doc is the **design source consumed by [`frontend-migration-web-next`](../frontend-migration-web-next/)** — map these to CSS variables in `apps/web-next/src/styles/*` + `theme/*` (do not execute in-place on `apps/web`).
 
 ### Primary blues
 
