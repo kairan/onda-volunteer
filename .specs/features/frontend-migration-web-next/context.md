@@ -26,6 +26,10 @@ Captured during Specify (2026-06-20). Locks the scope for the `web-next` rebuild
 
 The Onda design (ADR 0006 / `ui-refresh-onda-brand`) covers **Volunteer + Leader only**. A from-scratch app must still ship **every** existing route for parity, so System Admin and org-admin screens are in **migration scope** even though they are out of **design scope**. They render with shell/token defaults until a future design phase.
 
+## Route/URL parity decision (2026-06-20)
+
+**Keep the old URLs.** `web-next` ships the **exact route strings** of today's `apps/web/src/router.tsx` (MIG-CUT-01). Rationale: this is a behavior-preserving migration, the single production cutover flips every saved bookmark/shared deep link at once, and the existing `legacyEventRedirectRoute` shows URL continuity already matters to users. Current naming inconsistencies (e.g. `events/new-private` vs `leader/volunteer-time-away`) are **not** fixed here — any URL cleanup is a deliberate **post-cutover slice** with permanent old→new redirects (same pattern as `legacyEventRedirectRoute`). Do not relitigate during #143 Execute.
+
 ## Risks / open items for Design phase
 
 - **Right Grotesk license** — confirm before Execute (else Space Grotesk fallback per ADR 0006).

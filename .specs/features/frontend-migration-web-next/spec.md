@@ -32,6 +32,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 | Onda visual spec for Volunteer/Leader | Already owned by `ui-refresh-onda-brand` — reference, don't re-spec |
 | Stack swap (Next.js, alternate router) | Decision locked: same stack (React/Vite/TanStack Router) |
 | Marketing `/` landing redesign | Deferred (ADR 0001); legacy landing not carried into `web-next` shell |
+| URL/route renaming or cleanup | **Decision:** keep strict route parity now (MIG-CUT-01); any URL harmonization is a deliberate post-cutover slice with old→new redirects (context.md) |
 | Assignment Accept/Decline, event venue, global search | Deferred by ADR 0006 / `CONTEXT.md` |
 
 ---
