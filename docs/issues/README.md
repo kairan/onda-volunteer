@@ -12,15 +12,9 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-| Priority | Issue | Spec | Summary | Label |
-|---------:|------:|------|---------|-------|
-| 1 | [#131](https://github.com/kairan/onda-volunteer/issues/131) | `131-glossary-inactive-membership.md` | Glossary: **Inactive** membership | `ready-for-agent` |
-| 2 | [#132](https://github.com/kairan/onda-volunteer/issues/132) | `132-api-unavailability-inactive-membership-guard.md` | API: reject **Unavailability** for inactive membership | `ready-for-agent` |
-| 2 | [#133](https://github.com/kairan/onda-volunteer/issues/133) | `133-volunteer-unavailability-edit-delete.md` | Volunteer edit/delete own **Unavailability** | `ready-for-agent` |
-| 2 | [#134](https://github.com/kairan/onda-volunteer/issues/134) | `134-campus-event-time-display.md` | Campus-authoritative event time display | `ready-for-agent` |
-| 3 | [#135](https://github.com/kairan/onda-volunteer/issues/135) | `135-web-i18n-language-alignment.md` | Web i18n language alignment | `ready-for-agent` |
+_(none — all open slices shipped as of 2026-06-18.)_
 
-TLC feature: [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/) (audit 2026-06-18). Issues **#132–#135** may run in parallel; **#131** is doc-only and unblocks glossary consistency.
+**Ubiquitous language drift** ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)) shipped; TLC [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/), specs in `done/131-*` … `135-*`.
 
 **System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
 
@@ -40,6 +34,11 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#135](https://github.com/kairan/onda-volunteer/issues/135) | `done/135-web-i18n-language-alignment.md` |
+| [#134](https://github.com/kairan/onda-volunteer/issues/134) | `done/134-campus-event-time-display.md` |
+| [#133](https://github.com/kairan/onda-volunteer/issues/133) | `done/133-volunteer-unavailability-edit-delete.md` |
+| [#132](https://github.com/kairan/onda-volunteer/issues/132) | `done/132-api-unavailability-inactive-membership-guard.md` |
+| [#131](https://github.com/kairan/onda-volunteer/issues/131) | `done/131-glossary-inactive-membership.md` |
 | [#129](https://github.com/kairan/onda-volunteer/issues/129) | `done/129-coverage-threshold-gates.md` |
 | [#128](https://github.com/kairan/onda-volunteer/issues/128) | `done/128-web-typecheck-strict-clean.md` |
 | [#126](https://github.com/kairan/onda-volunteer/issues/126) | `done/126-eslint-baseline-clean.md` |
