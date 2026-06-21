@@ -1,0 +1,141 @@
+{
+  "eyebrow": "Scheduling",
+  "title": "Schedule",
+  "body": "Browse church events you can see based on public and ministry visibility.",
+  "listHeading": "Events",
+  "loading": "Loading events...",
+  "emptyState": "No events to show for this church yet.",
+  "preview": {
+    "ministryHero": "{{name}}",
+    "rosterHeading": "Roster",
+    "filledBadge": "{{filled}}/{{total}} filled",
+    "unfilled": "Unfilled"
+  },
+  "errors": {
+    "loadFailed": "Could not load events."
+  },
+  "create": {
+    "link": "Create public event",
+    "title": "New public event",
+    "timezoneHintCampus": "Times below are in campus timezone ({{tz}}) for {{church}}. Stored as UTC.",
+    "timezoneHintChurchDefault": "Times below use church default timezone ({{tz}}) for {{church}}. Stored as UTC.",
+    "titleLabel": "Title",
+    "startsLabel": "Starts",
+    "endsLabel": "Ends",
+    "submit": "Create event",
+    "cancel": "Cancel",
+    "signInRequired": "Sign in to create events.",
+    "notAdmin": "Church admin accreditation is required to create public events.",
+    "errors": {
+      "notAccredited": "You are not accredited for this church.",
+      "failed": "Could not create event."
+    }
+  },
+  "createPrivate": {
+    "link": "New private event",
+    "title": "New private ministry event",
+    "ministryLabel": "Ministry",
+    "ministryPlaceholder": "Select ministry",
+    "titleLabel": "Title",
+    "startsLabel": "Starts",
+    "endsLabel": "Ends",
+    "submit": "Create private event",
+    "signInRequired": "Sign in to create private events.",
+    "notLeader": "You must lead a ministry to create private events.",
+    "errors": {
+      "failed": "Could not create private event."
+    }
+  },
+  "visibility": {
+    "public": "Public",
+    "private": "Private"
+  },
+  "detail": {
+    "loading": "Loading event roster...",
+    "timezoneLabelCampus": "Campus timezone {{tz}}",
+    "timezoneLabelChurchDefault": "Church default timezone {{tz}}",
+    "utcWindow": "UTC {{start}} → {{end}}",
+    "rosterHeading": "Roster",
+    "backToList": "← Back to events",
+    "emptyRoster": "No active assignments on this roster yet.",
+    "columns": {
+      "ministry": "Ministry",
+      "volunteer": "Volunteer",
+      "role": "Role",
+      "interval": "Interval"
+    },
+    "assignHeading": "Assign volunteer",
+    "ministryLabel": "Ministry",
+    "ministryPlaceholder": "Select ministry",
+    "volunteerLabel": "Volunteer",
+    "roleLabel": "Role",
+    "noActiveVolunteers": "No active members",
+    "noActiveRoles": "No active roles",
+    "startsAtUtcLabel": "Starts (UTC ISO)",
+    "endsAtUtcLabel": "Ends (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "This volunteer is unavailable for this ministry during the selected time.",
+      "assignFailed": "Could not create assignment.",
+      "assignmentOverlap": "This volunteer already has an overlapping assignment.",
+      "outsideEventWindow": "The assignment window must fall within the event time.",
+      "ministryArchived": "This ministry is archived and cannot accept new assignments.",
+      "notLeader": "You are not authorized to manage assignments for this ministry.",
+      "alreadyVoided": "This assignment is no longer active.",
+      "pickerLoadFailed": "Could not load volunteers and roles for this ministry.",
+      "releaseFailed": "Could not release assignment.",
+      "removeFailed": "Could not remove assignment.",
+      "releaseNotOwned": "You can only release your own assignment.",
+      "releaseAlreadyVoided": "This assignment is no longer active.",
+      "releaseReadOnly": "System Admin cannot change assignments here.",
+      "unavailabilityFailed": "Could not record unavailability."
+    },
+    "createAssignment": "Create assignment",
+    "assignSuccess": "Assignment created.",
+    "releaseSuccess": "Assignment released.",
+    "removeSuccess": "Assignment removed.",
+    "saving": "Saving...",
+    "release": "Release",
+    "remove": "Remove",
+    "removeDialog": {
+      "title": "Remove this assignment?",
+      "body": "This voids the volunteer's commitment on this roster. They are not notified automatically.",
+      "confirm": "Yes, remove"
+    },
+    "edit": {
+      "heading": "Edit event",
+      "titleLabel": "Title",
+      "startsAtUtcLabel": "Starts (UTC ISO)",
+      "endsAtUtcLabel": "Ends (UTC ISO)",
+      "submit": "Save changes",
+      "success": "Event updated.",
+      "voidedWarning": "Event rescheduled. {{count}} assignment(s) were voided because they fell outside the new window.",
+      "errors": {
+        "failed": "Could not update event.",
+        "eventAlreadyCancelled": "This event is already cancelled.",
+        "eventEditEmpty": "Please change at least one field.",
+        "eventTitleRequired": "Event title is required.",
+        "eventTitleTooLong": "Event title must be 200 characters or fewer.",
+        "invalidEventWindow": "Start time must be before end time.",
+        "leaderCannotEditPublic": "Only admins can edit public events."
+      }
+    },
+    "cancel": {
+      "action": "Cancel event",
+      "dialogTitle": "Cancel this event?",
+      "dialogBody": "This voids all assignments for this occurrence. The event record is kept for history.",
+      "confirm": "Yes, cancel event",
+      "cancelledLabel": "This event was cancelled.",
+      "success": "Event cancelled.",
+      "errors": {
+        "failed": "Could not cancel event."
+      }
+    },
+    "unavailabilityOffer": {
+      "heading": "Mark unavailable for this ministry?",
+      "body": "Optional: record unavailability for the same UTC window you just released ({{start}} → {{end}}). Nothing is saved until you confirm.",
+      "confirm": "Yes, mark unavailable",
+      "dismiss": "No thanks",
+      "success": "Unavailability recorded for this ministry and time window."
+    }
+  }
+}

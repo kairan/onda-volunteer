@@ -1,0 +1,141 @@
+{
+  "eyebrow": "Agenda",
+  "title": "Agenda",
+  "body": "Veja os eventos da igreja conforme a visibilidade pública e dos seus ministérios.",
+  "listHeading": "Eventos",
+  "loading": "Carregando eventos...",
+  "emptyState": "Nenhum evento para exibir nesta igreja ainda.",
+  "preview": {
+    "ministryHero": "{{name}}",
+    "rosterHeading": "Escala",
+    "filledBadge": "{{filled}}/{{total}} preenchidas",
+    "unfilled": "Vaga"
+  },
+  "errors": {
+    "loadFailed": "Não foi possível carregar os eventos."
+  },
+  "create": {
+    "link": "Criar evento público",
+    "title": "Novo evento público",
+    "timezoneHintCampus": "Horários abaixo no fuso do campus ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "timezoneHintChurchDefault": "Horários abaixo no fuso padrão da igreja ({{tz}}) — {{church}}. Persistidos em UTC.",
+    "titleLabel": "Título",
+    "startsLabel": "Início",
+    "endsLabel": "Fim",
+    "submit": "Criar evento",
+    "cancel": "Cancelar",
+    "signInRequired": "Entre para criar eventos.",
+    "notAdmin": "Credenciamento de administrador é necessário para criar eventos públicos.",
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "failed": "Não foi possível criar o evento."
+    }
+  },
+  "createPrivate": {
+    "link": "Novo evento privado",
+    "title": "Novo evento privado do ministério",
+    "ministryLabel": "Ministério",
+    "ministryPlaceholder": "Selecione o ministério",
+    "titleLabel": "Título",
+    "startsLabel": "Início",
+    "endsLabel": "Fim",
+    "submit": "Criar evento privado",
+    "signInRequired": "Entre para criar eventos privados.",
+    "notLeader": "É necessário liderar um ministério para criar eventos privados.",
+    "errors": {
+      "failed": "Não foi possível criar o evento privado."
+    }
+  },
+  "visibility": {
+    "public": "Público",
+    "private": "Privado"
+  },
+  "detail": {
+    "loading": "Carregando escala do evento...",
+    "timezoneLabelCampus": "Fuso do campus {{tz}}",
+    "timezoneLabelChurchDefault": "Fuso padrão da igreja {{tz}}",
+    "utcWindow": "UTC {{start}} → {{end}}",
+    "rosterHeading": "Escala",
+    "backToList": "← Voltar aos eventos",
+    "emptyRoster": "Nenhuma designação ativa nesta escala ainda.",
+    "columns": {
+      "ministry": "Ministério",
+      "volunteer": "Voluntário",
+      "role": "Função",
+      "interval": "Intervalo"
+    },
+    "assignHeading": "Designar voluntário",
+    "ministryLabel": "Ministério",
+    "ministryPlaceholder": "Selecione o ministério",
+    "volunteerLabel": "Voluntário",
+    "roleLabel": "Função",
+    "noActiveVolunteers": "Nenhum membro ativo",
+    "noActiveRoles": "Nenhuma função ativa",
+    "startsAtUtcLabel": "Início (UTC ISO)",
+    "endsAtUtcLabel": "Fim (UTC ISO)",
+    "errors": {
+      "unavailabilityBlocksAssign": "Este voluntário está indisponível para este ministério no horário selecionado.",
+      "assignFailed": "Não foi possível criar a designação.",
+      "assignmentOverlap": "Este voluntário já tem uma designação sobreposta.",
+      "outsideEventWindow": "A janela da designação deve estar dentro do horário do evento.",
+      "ministryArchived": "Este ministério está arquivado e não aceita novas designações.",
+      "notLeader": "Você não está autorizado a gerenciar designações deste ministério.",
+      "alreadyVoided": "Esta designação não está mais ativa.",
+      "pickerLoadFailed": "Não foi possível carregar voluntários e funções deste ministério.",
+      "releaseFailed": "Não foi possível liberar a designação.",
+      "removeFailed": "Não foi possível remover a designação.",
+      "releaseNotOwned": "Você só pode liberar a sua própria designação.",
+      "releaseAlreadyVoided": "Esta designação não está mais ativa.",
+      "releaseReadOnly": "Administrador do sistema não pode alterar designações aqui.",
+      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
+    },
+    "createAssignment": "Criar designação",
+    "assignSuccess": "Designação criada.",
+    "releaseSuccess": "Designação liberada.",
+    "removeSuccess": "Designação removida.",
+    "saving": "Salvando...",
+    "release": "Liberar",
+    "remove": "Remover",
+    "removeDialog": {
+      "title": "Remover esta designação?",
+      "body": "Isso anula o compromisso do voluntário nesta escala. Ele não é notificado automaticamente.",
+      "confirm": "Sim, remover"
+    },
+    "edit": {
+      "heading": "Editar evento",
+      "titleLabel": "Título",
+      "startsAtUtcLabel": "Início (UTC ISO)",
+      "endsAtUtcLabel": "Fim (UTC ISO)",
+      "submit": "Salvar alterações",
+      "success": "Evento atualizado.",
+      "voidedWarning": "Evento reagendado. {{count}} designação(ões) foram anuladas porque ficaram fora da nova janela.",
+      "errors": {
+        "failed": "Não foi possível atualizar o evento.",
+        "eventAlreadyCancelled": "Este evento já está cancelado.",
+        "eventEditEmpty": "Altere pelo menos um campo.",
+        "eventTitleRequired": "O título do evento é obrigatório.",
+        "eventTitleTooLong": "O título do evento deve ter no máximo 200 caracteres.",
+        "invalidEventWindow": "O horário de início deve ser anterior ao de término.",
+        "leaderCannotEditPublic": "Apenas administradores podem editar eventos públicos."
+      }
+    },
+    "cancel": {
+      "action": "Cancelar evento",
+      "dialogTitle": "Cancelar este evento?",
+      "dialogBody": "Isso anula todas as designações desta ocorrência. O registro do evento é mantido para histórico.",
+      "confirm": "Sim, cancelar evento",
+      "cancelledLabel": "Este evento foi cancelado.",
+      "success": "Evento cancelado.",
+      "errors": {
+        "failed": "Não foi possível cancelar o evento."
+      }
+    },
+    "unavailabilityOffer": {
+      "heading": "Marcar indisponibilidade para este ministério?",
+      "body": "Opcional: registrar indisponibilidade para o mesmo intervalo UTC que você acabou de liberar ({{start}} → {{end}}). Nada será salvo até que você confirme.",
+      "confirm": "Sim, marcar indisponível",
+      "dismiss": "Não, obrigado",
+      "success": "Indisponibilidade registrada para este ministério e intervalo de tempo."
+    }
+  }
+}

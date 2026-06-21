@@ -1,0 +1,168 @@
+{
+  "shell": {
+    "brand": "Admin do sistema",
+    "backToApp": "App de voluntários"
+  },
+  "dashboard": {
+    "title": "Painel do operador",
+    "intro": "Ferramentas de operador da plataforma para igrejas, usuários e suporte de leitura à agenda.",
+    "links": {
+      "users": "Usuários e permissões",
+      "churches": "Igrejas",
+      "scheduling": "Agenda (somente leitura)"
+    },
+    "churchesLink": "Igrejas",
+    "usersLink": "Usuários",
+    "schedulingLink": "Agenda (somente leitura)"
+  },
+  "scheduling": {
+    "eyebrow": "Suporte",
+    "title": "Suporte à agenda",
+    "intro": "Visualização somente leitura de eventos em todas as igrejas. Alterações na agenda estão desabilitadas para operadores.",
+    "presentationNotice": "Horários usam o fuso padrão organizacional de cada igreja, não o fuso local do campus.",
+    "readOnlyNotice": "Somente leitura — ações de escrita estão desativadas para Admin do sistema.",
+    "listHeading": "Eventos",
+    "churchFilter": "Igreja",
+    "allChurches": "Todas as igrejas",
+    "loading": "Carregando eventos…",
+    "empty": "Nenhum evento futuro.",
+    "backToDashboard": "Voltar ao painel",
+    "errors": {
+      "loadFailed": "Não foi possível carregar os eventos."
+    },
+    "detail": {
+      "assignmentsHeading": "Designações",
+      "noAssignments": "Nenhuma designação ativa.",
+      "cancelled": "Este evento está cancelado.",
+      "backToList": "Voltar à lista da agenda",
+      "churchDefaultTimezoneLabel": "Fuso padrão da igreja {{tz}}"
+    },
+    "loadError": "Não foi possível carregar os eventos."
+  },
+  "churches": {
+    "eyebrow": "Provisionamento",
+    "title": "Igrejas",
+    "intro": "Crie igrejas ou selecione uma para convidar um Admin da igreja por e-mail.",
+    "backToDashboard": "Voltar ao painel",
+    "createHeading": "Criar igreja",
+    "listHeading": "Todas as igrejas",
+    "fields": {
+      "name": "Nome da igreja",
+      "timezone": "Fuso padrão (IANA)"
+    },
+    "createAction": "Criar igreja",
+    "creating": "Criando…",
+    "createSuccess": "Igreja criada.",
+    "loading": "Carregando igrejas…",
+    "loadMore": "Carregar mais",
+    "loadingMore": "Carregando mais…",
+    "empty": "Nenhuma igreja ainda.",
+    "campusCount": "{{count}} campus",
+    "errors": {
+      "generic": "Algo deu errado.",
+      "nameRequired": "O nome da igreja é obrigatório.",
+      "invalidTimezone": "Informe um fuso IANA válido."
+    },
+    "loadError": "Não foi possível carregar as igrejas.",
+    "create": {
+      "title": "Criar igreja",
+      "nameLabel": "Nome da igreja",
+      "timezoneLabel": "Fuso padrão (IANA)",
+      "submit": "Criar igreja",
+      "submitting": "Criando…",
+      "errors": {
+        "generic": "Não foi possível criar a igreja. Tente novamente."
+      }
+    }
+  },
+  "accessDenied": "É necessário acesso de Admin do sistema para essa área.",
+  "users": {
+    "title": "Usuários",
+    "intro": "Busque voluntários e gerencie acreditações de Admin da igreja.",
+    "backToDashboard": "Voltar ao painel",
+    "backToSearch": "Voltar à busca",
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Nome ou ID",
+    "searchAction": "Buscar",
+    "loading": "Carregando usuários…",
+    "loadingMore": "Carregando mais…",
+    "loadMore": "Carregar mais",
+    "empty": "Nenhum usuário corresponde à busca.",
+    "summaryCounts": "{{accreditations}} acreditações · {{leaderships}} lideranças · {{memberships}} membros",
+    "viewDetail": "Ver",
+    "accreditationsTitle": "Acreditações de Admin da igreja",
+    "noAccreditations": "Ainda não há acreditações de Admin.",
+    "grantChurchIdLabel": "Id da igreja",
+    "grantChurchIdPlaceholder": "Informe o id da igreja para conceder Admin",
+    "grantAdmin": "Conceder Admin",
+    "revokeAdmin": "Revogar Admin",
+    "grantSuccess": "Acreditação de Admin concedida.",
+    "revokeSuccess": "Acreditação de Admin revogada.",
+    "leadershipsTitle": "Lideranças de ministério",
+    "membershipsTitle": "Membros de ministério",
+    "noLeaderships": "Nenhuma liderança de ministério ainda.",
+    "noMemberships": "Nenhuma participação em ministério ainda.",
+    "leaderMinistryIdLabel": "Id do ministério",
+    "leaderMinistryIdPlaceholder": "Informe o id do ministério para conceder líder",
+    "grantLeader": "Conceder líder",
+    "revokeLeader": "Revogar líder",
+    "membershipMinistryIdLabel": "Id do ministério",
+    "membershipMinistryIdPlaceholder": "Informe o id do ministério para a participação",
+    "membershipStatusLabel": "Status inicial",
+    "membershipStatusPending": "Pendente",
+    "membershipStatusActive": "Ativo",
+    "addMembership": "Adicionar participação",
+    "activateMembership": "Ativar",
+    "deactivateMembership": "Desativar",
+    "stewardshipSuccess": "Gestão atualizada.",
+    "errors": {
+      "generic": "Algo deu errado. Tente novamente.",
+      "lastAdmin": "Não é possível revogar o último Admin desta igreja."
+    },
+    "loadError": "Não foi possível carregar os usuários.",
+    "search": "Buscar",
+    "adminCount": "{{count}} acreditação(ões) de admin"
+  },
+  "userDetail": {
+    "backToUsers": "Todos os usuários",
+    "loading": "Carregando usuário…",
+    "loadError": "Não foi possível carregar este usuário.",
+    "accreditationsTitle": "Acreditações de Admin",
+    "noAccreditations": "Nenhuma acreditação de Admin ainda.",
+    "grantLabel": "Conceder Admin para igreja",
+    "grantPlaceholder": "Selecione a igreja",
+    "grant": "Conceder",
+    "revoke": "Revogar",
+    "errors": {
+      "generic": "Não foi possível atualizar a acreditação. Tente novamente."
+    }
+  },
+  "churchDetail": {
+    "backToChurches": "Todas as igrejas",
+    "loading": "Carregando igreja…",
+    "loadError": "Não foi possível carregar esta igreja.",
+    "inviteTitle": "Convidar Admin",
+    "inviteIntro": "Envia um convite por e-mail via Supabase e registra um convite de admin pendente para esta igreja.",
+    "emailLabel": "E-mail",
+    "submit": "Enviar convite",
+    "submitting": "Enviando…",
+    "inviteSuccess": "Convite de admin enviado.",
+    "invitesListTitle": "Convites de admin",
+    "invitesLoading": "Carregando convites…",
+    "invitesLoadError": "Não foi possível carregar os convites de admin.",
+    "invitesEmpty": "Nenhum convite de admin para esta igreja ainda.",
+    "revokeInvite": "Revogar convite",
+    "revokeSuccess": "Convite revogado.",
+    "inviteStatus": {
+      "PENDING": "Pendente",
+      "FULFILLED": "Concluído",
+      "REVOKED": "Revogado"
+    },
+    "errors": {
+      "notRevokable": "Somente convites pendentes podem ser revogados.",
+      "invalidEmail": "Informe um endereço de e-mail válido.",
+      "alreadyPending": "Já existe um convite pendente para este e-mail.",
+      "generic": "Não foi possível enviar o convite. Tente novamente."
+    }
+  }
+}
