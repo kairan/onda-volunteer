@@ -11,6 +11,7 @@ import { AuthPanel } from '@/AuthPanel';
 import { shellRouteErrorMessage } from '@/api/apiError';
 import type { EventDetailPayload } from '@/eventDetailPayload';
 import { DashboardPage } from '@/routes/dashboard';
+import { prefetchVolunteerDashboardQueries } from '@/volunteer/prefetchVolunteerDashboard';
 import { MinistriesPage } from '@/routes/ministries';
 import { MinistryLeadersPage } from '@/routes/ministryLeaders';
 import { VolunteersPage } from '@/routes/volunteers';
@@ -269,6 +270,7 @@ const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
   beforeLoad: shellBeforeLoad,
+  loader: () => prefetchVolunteerDashboardQueries(),
   component: shellRoute(() => <DashboardPage />),
   errorComponent: shellErrorComponent,
 });

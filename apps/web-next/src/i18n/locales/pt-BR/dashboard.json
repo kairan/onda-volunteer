@@ -14,7 +14,9 @@
     "addPeriod": "Adicionar período",
     "editPeriod": "Editar período",
     "deletePeriod": "Excluir período",
-    "samplesHeading": "Amostras de visualização"
+    "samplesHeading": "Amostras de visualização",
+    "timeAwayEmpty": "Nenhum período indisponível registrado.",
+    "viewAll": "Ver todos"
   },
   "loading": "Carregando escalas...",
   "errors": {

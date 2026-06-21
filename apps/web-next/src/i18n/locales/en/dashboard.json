@@ -14,7 +14,9 @@
     "addPeriod": "Add period",
     "editPeriod": "Edit period",
     "deletePeriod": "Delete period",
-    "samplesHeading": "Preview samples"
+    "samplesHeading": "Preview samples",
+    "timeAwayEmpty": "No upcoming time away recorded.",
+    "viewAll": "View all"
   },
   "loading": "Loading assignments...",
   "errors": {
