@@ -76,7 +76,7 @@ Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability cr
 
 | Theme | Feature slug | Status | TLC |
 |-------|--------------|--------|-----|
-| **Web shell & i18n** | `frontend-migration-web-next` (Slices 2–6) | Slice 1 shipped — [#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148) open | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slices 2–5) | **#144–#147 ready for agent**; #148 blocked until parity | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) · `docs/issues/144-*` … `147-*` |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for the migration (no standalone in-place execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
 **Frontend rebuild (`web-next`):** parallel strangler migration — new `apps/web-next` on the same stack (React 19 · Vite · TanStack Router · Tailwind 4) plus TanStack Query, Onda brand tokens, route-by-route parity, single cutover. ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).

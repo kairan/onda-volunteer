@@ -8,10 +8,10 @@
 | Issue | Tasks | Summary | Status |
 |------:|-------|---------|--------|
 | [#143](https://github.com/kairan/onda-volunteer/issues/143) | T01–T13.5 | Foundation, data core, shell, brand preview | ✅ Shipped (PRs [#151](https://github.com/kairan/onda-volunteer/pull/151), [#150](https://github.com/kairan/onda-volunteer/pull/150), [#152](https://github.com/kairan/onda-volunteer/pull/152), [#153](https://github.com/kairan/onda-volunteer/pull/153)) |
-| [#144](https://github.com/kairan/onda-volunteer/issues/144) | T14–T17 | Volunteer screens | Open |
-| [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | Open |
-| [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | Open |
-| [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | Open |
+| [#144](https://github.com/kairan/onda-volunteer/issues/144) | T14–T16.5–T17 | Volunteer screens | Open — ready for agent |
+| [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | Open — ready for agent |
+| [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | Open — ready for agent |
+| [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | Open — ready for agent |
 | [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | Open |
 
 ## Verify (Slice 1 closeout — #143)
@@ -59,6 +59,7 @@ Four workstreams that may run in parallel once T13 (router) is green. T13.5 clos
 
 ```
 T13 ─┬─ T14 → T15 → T16 [P] ─┐
+     │         └─────→ T16.5 [P] ┤
      │         └─────→ T17 [P] ┤
      │                          │
      ├─ T18 → T19 → T20 [P] ─┤
@@ -513,11 +514,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T16: VolunteerDashboardPage.tsx + e2e [P]
 
-**What**: Write `apps/web-next/src/routes/dashboard.tsx` — `VolunteerDashboardPage` with greeting header ("Hi {name}", upcoming assignment count), `AssignmentCard` list (from `volunteerAssignmentsQuery`), Time Away preview section (first 3 unavailability rows from `volunteerUnavailabilityQuery` + Add/Edit/Delete + "View all" link), empty states with i18n copy; route loader calls `queryClient.ensureQueryData` for both queries; add Playwright e2e smoke test. **Supersedes the T13.5 mock-data preview — remove the volunteer fixtures/`__preview__` usage for `/dashboard`.**
+**What**: Write `apps/web-next/src/routes/dashboard.tsx` — `VolunteerDashboardPage` with greeting header ("Hi {name}", upcoming assignment count from `volunteerAssignmentsQuery`), Time Away preview section (first 3 unavailability rows from `volunteerUnavailabilityQuery` + Add/Edit/Delete + "View all" link), empty states with i18n copy; route loader calls `queryClient.ensureQueryData` for both queries; add Playwright e2e smoke test. **No assignment cards on this route** — cards live on volunteer `/scheduling` (T16.5) per nav IA locked in #143. **Supersedes the T13.5 mock-data preview — remove the volunteer fixtures/`__preview__` usage for `/dashboard` only.**
 **Where**: `apps/web-next/src/routes/dashboard.tsx`, `apps/web-next/e2e/volunteer-dashboard.spec.ts`
 **Depends on**: T12, T13, T14, T15
-**Reuses**: `apps/web/src/routes/dashboard.tsx` (loading/error patterns), `apps/web/src/routes/timeAway.tsx` (unavailability row patterns)
-**Requirement**: MIG-VOL-01, UI-VOL-01, UI-VOL-02, UI-VOL-03, UI-VOL-04, UI-VOL-05
+**Reuses**: `apps/web/src/routes/dashboard.tsx` (loading/error patterns — count + preview only), `apps/web/src/routes/timeAway.tsx` (unavailability row patterns); design ref `design-reference/serve-well/src/components/onda/dashboards/VolunteerDashboard.tsx` (home sections only)
+**Requirement**: MIG-VOL-01, UI-VOL-01, UI-VOL-03, UI-VOL-05
 
 **Tools**:
 - MCP: NONE
@@ -525,17 +526,44 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 **Done when**:
 - [ ] Page greets by display name; assignment count summary shows correct number (including 0)
-- [ ] Assignment cards render with Onda tokens; empty state uses display typography + thin icon
 - [ ] Time Away preview shows ≤3 rows; "View all" navigates to `/time-away`
 - [ ] Skeletons appear while loading; no error crash on empty data
-- [ ] Playwright smoke: volunteer dashboard loads, greeting visible, at least 1 card or empty state visible
+- [ ] No assignment card grid on `/dashboard` (cards are T16.5 on `/scheduling`)
+- [ ] Playwright smoke: volunteer dashboard loads, greeting visible, time-away section or empty state visible
 - [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
 - [ ] Test count: ≥4 unit behavior tests (greeting renders, assignment count, time-away preview, empty state); Playwright e2e smoke green
 
 **Tests**: unit + e2e
 **Gate**: full
 
-**Commit**: `feat(web-next): VolunteerDashboardPage (greeting, assignment cards, time-away preview, Onda design)`
+**Commit**: `feat(web-next): VolunteerDashboardPage (greeting, assignment count, time-away preview, Onda design)`
+
+---
+
+### T16.5: VolunteerMyAssignmentsPage at `/scheduling` [P]
+
+**What**: Replace the volunteer branch of `apps/web-next/src/routes/scheduling.tsx` — when the signed-in user has volunteer nav (and is not viewing leader roster), render a **My Assignments** page: 2-col `AssignmentCard` grid from `volunteerAssignmentsQuery`, empty state (UI-VOL-05), skeletons while loading. Grant-based role branch (same pattern as T13.5 `VolunteerMyAssignmentsPreview`); **do not** break leader branch (T20 replaces leader preview separately). **Supersedes `VolunteerMyAssignmentsPreview` and volunteer fixtures on `/scheduling`.**
+**Where**: `apps/web-next/src/routes/scheduling.tsx` (volunteer branch), optionally extract `VolunteerMyAssignmentsPage.tsx`
+**Depends on**: T12, T13, T14, T15
+**Reuses**: T13.5 `VolunteerMyAssignmentsPreview` layout; `design-reference/serve-well` assignments grid; `AssignmentCard` from T15
+**Requirement**: MIG-VOL-01, UI-VOL-02, UI-VOL-04, UI-VOL-05
+
+**Tools**:
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+- [ ] Volunteer `/scheduling` renders `AssignmentCard` list in 2-col grid at md+ breakpoints
+- [ ] Cards link to `/scheduling/events/$eventId` on activation
+- [ ] Empty state when no assignments; skeletons while loading
+- [ ] Leader grant still routes to leader preview until T20 lands (no regression)
+- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [ ] Test count: ≥3 unit behavior tests (grid renders, empty state, card navigation)
+
+**Tests**: unit
+**Gate**: quick
+
+**Commit**: `feat(web-next): volunteer My Assignments at /scheduling (AssignmentCard grid, nav IA)`
 
 ---
 
@@ -623,7 +651,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T20: LeaderSchedulingPage.tsx + e2e [P]
 
-**What**: Write `apps/web-next/src/routes/scheduling.tsx` — `LeaderSchedulingPage` with ministry hero header (Ministry name, event count + unfilled slots for next 7 days per UI-LEAD-01), event list rendered as `RosterByEventSection` tiles (roster by event with fill ratio per UI-LEAD-02), Assign/Release wired to `assignMutation`/`releaseMutation` with inline error feedback (ADR 0001), "New event" + "Assign volunteer" header CTAs (UI-LEAD-04); route loader prefetches via `ensureQueryData`; add Playwright e2e smoke. **Supersedes the T13.5 mock-data preview — remove the leader fixtures/`__preview__` usage for `/scheduling`.**
+**What**: Write `apps/web-next/src/routes/scheduling.tsx` — `LeaderSchedulingPage` with ministry hero header (Ministry name, event count + unfilled slots for next 7 days per UI-LEAD-01), event list rendered as `RosterByEventSection` tiles (roster by event with fill ratio per UI-LEAD-02), Assign/Release wired to `assignMutation`/`releaseMutation` with inline error feedback (ADR 0001), "New event" + "Assign volunteer" header CTAs (UI-LEAD-04); route loader prefetches via `ensureQueryData`; add Playwright e2e smoke. **Supersedes the T13.5 mock-data preview — remove the leader fixtures/`__preview__` usage for the leader branch of `/scheduling` only** (volunteer branch is T16.5).
 **Where**: `apps/web-next/src/routes/scheduling.tsx`, `apps/web-next/e2e/leader-scheduling.spec.ts`
 **Depends on**: T12, T13, T18, T19
 **Reuses**: `apps/web/src/routes/scheduling.tsx` (event-list fetch pattern), `apps/web/src/routes/schedulingEventDetail.tsx` (assign/release patterns)
@@ -935,6 +963,7 @@ Phase 4 — Vertical Slices (after T13.5 closes Slice 1; slices run in parallel)
     T13 → T14 [P start from T06/T07]
     T03 → T15 [P start from T03]
     T14 + T15 + T12 + T13 → T16 [P]
+    T14 + T15 + T12 + T13 → T16.5 [P]
     T14 + T12 + T13       → T17 [P]
 
   Leader slice:
@@ -953,7 +982,7 @@ Phase 5 — Cutover (Sequential):
 ```
 
 **Parallelism constraints:**
-- T16 and T17 may run in parallel (separate route files, no shared mutable state)
+- T16 and T16.5 and T17 may run in parallel (T16.5 shares `scheduling.tsx` with T20 — coordinate role branches)
 - T20, T21, T22, T23 may run in parallel (separate route files)
 - T24, T25 may run in parallel with the volunteer/leader slices; T26 must wait for T25
 - T07 (queryKeys) and T09 (i18n) may start from T01 (no auth/fetch dependency)
@@ -981,6 +1010,7 @@ Phase 5 — Cutover (Sequential):
 | T14: Volunteer query options | 2 query files + 1 mutation file (cohesive volunteer data layer) | ✅ Granular |
 | T15: AssignmentCard | 1 component | ✅ Granular |
 | T16: VolunteerDashboardPage + e2e | 1 route + 1 e2e spec (co-located test) | ✅ Granular |
+| T16.5: Volunteer My Assignments | Volunteer branch of scheduling route | ✅ Granular |
 | T17: TimeAwayPage | 1 route | ✅ Granular |
 | T18: Leader queries + mutations | 4 files (leaderEventsQuery, eventDetailQuery, assignMutation, releaseMutation — cohesive leader data layer) | ✅ Granular |
 | T19: RosterByEventSection | 1 component | ✅ Granular |
@@ -1021,6 +1051,7 @@ Phase 5 — Cutover (Sequential):
 | T14 | T06, T07 | T13 → T14 [P] (T06/T07 upstream) | ✅ Match |
 | T15 | T03, T09 | T03 → T15 [P] (T09 upstream) | ✅ Match |
 | T16 | T12, T13, T14, T15 | T14 + T15 → T16 [P] (T12/T13 upstream) | ✅ Match |
+| T16.5 | T12, T13, T14, T15 | T14 + T15 → T16.5 [P] (T12/T13 upstream) | ✅ Match |
 | T17 | T12, T13, T14 | T14 → T17 [P] (T12/T13 upstream) | ✅ Match |
 | T18 | T06, T07 | T13 → T18 [P] (T06/T07 upstream) | ✅ Match |
 | T19 | T03, T09 | T03 → T19 [P] | ✅ Match |
@@ -1074,7 +1105,8 @@ All dependency arrows consistent. No `[P]` task depends on another `[P]` task in
 | T13.5: Mock-data preview | Route bodies (fixtures, no API) | unit (render smoke) | unit | ✅ OK |
 | T14: Volunteer query options + mutations | Query options + mutation fns | unit | unit | ✅ OK |
 | T15: AssignmentCard | UI component | unit | unit | ✅ OK |
-| T16: VolunteerDashboardPage + e2e | Route + API-backed volunteer flow | unit + e2e | unit + e2e | ✅ OK |
+| T16: VolunteerDashboardPage + e2e | Route (dashboard home; no API cards on page) | unit + e2e | unit + e2e | ✅ OK |
+| T16.5: Volunteer My Assignments | Route (volunteer scheduling branch) | unit | unit | ✅ OK |
 | T17: TimeAwayPage | Route component (CRUD; no live API in unit) | unit | unit | ✅ OK |
 | T18: Leader query options + mutations | Query options + mutation fns | unit | unit | ✅ OK |
 | T19: RosterByEventSection | UI component | unit | unit | ✅ OK |
@@ -1090,13 +1122,13 @@ All dependency arrows consistent. No `[P]` task depends on another `[P]` task in
 | T29: Deploy repoint | Deploy config only | none | none | ✅ OK |
 | T30: Rename + retire + docs | Rename + doc files | none | none | ✅ OK |
 
-All 30 tasks pass test co-location validation. No `Tests: none` violations (config/scaffold/CI tasks are the only `none` entries, which is permitted per matrix).
+All 31 tasks pass test co-location validation. No `Tests: none` violations (config/scaffold/CI tasks are the only `none` entries, which is permitted per matrix).
 
 ---
 
 *Assumptions made during task authoring (explicit):*
 
-1. **Route mapping**: `/scheduling` route in `web-next` is the "Leader Dashboard / ministry roster" view (per current `apps/web` routing structure). The volunteer personal dashboard stays at `/dashboard`. Both roles may see the same route tree but render role-appropriate content.
+1. **Route mapping**: `/dashboard` is the volunteer **home** (greeting, assignment count, time-away preview). `/scheduling` is **role-aware**: volunteers see **My Assignments** (2-col `AssignmentCard` grid, T16.5); leaders see ministry roster (T20). URL strings match `apps/web` for cutover parity (MIG-CUT-01); nav IA follows serve-well / `VOLUNTEER_NAV`, not the combined Lovable single-screen layout.
 2. **`assignMutation` uses void semantics**: The leader "Release" mutation calls `POST /assignments/:id/void` (locked as ROSTER-A1 in STATE.md), not the volunteer self-release endpoint.
 3. **Right Grotesk**: Tasks do not block on Right Grotesk licensing. Space Grotesk is used throughout per the ADR 0006 fallback decision. Right Grotesk may be added in T02 if licensed at Execute time.
 4. **`apps/web-next/e2e/`**: Playwright spec files are co-located in `apps/web-next/e2e/` (mirroring `apps/web/e2e/`). T16 and T20/T21 create the smoke specs; T28 wires them into CI.

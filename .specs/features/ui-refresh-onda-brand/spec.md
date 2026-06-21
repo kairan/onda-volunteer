@@ -14,7 +14,7 @@ The signed-in web app uses the **HOPE** brutalist visual layer (ADR 0003): heavy
 ## Goals
 
 - [ ] Replace HOPE tokens with **Onda brand palette** and **Space Grotesk** UI typography across church-role shell and in-scope routes.
-- [ ] **Volunteer** dashboard matches Lovable information architecture: greeting, assignment cards, time-away preview.
+- [ ] **Volunteer** experience matches Lovable information architecture: `/dashboard` = greeting, assignment count, time-away preview; `/scheduling` = assignment card grid (My Assignments).
 - [ ] **Ministry Leader** dashboard / roster views match Lovable patterns: ministry hero, fill ratio, unfilled slots, Assign/Release actions (wired to existing APIs).
 - [ ] Preserve ADR 0001 shell behavior (sidebar, i18n, WCAG, pessimistic scheduling, Church/Campus context).
 - [ ] pt-BR + en strings for all new/changed copy.
@@ -97,7 +97,7 @@ The signed-in web app uses the **HOPE** brutalist visual layer (ADR 0003): heavy
 **Acceptance Criteria**:
 
 1. WHEN a user has only **Volunteer** grants (no Leader/Admin nav) THEN sidebar SHALL show: **Dashboard**, **My Assignments**, **Time Away**.
-2. WHEN **My Assignments** is selected THEN the user SHALL see the full assignment list (may be `/dashboard` anchor or dedicated route — same card component as UI-VOL-02).
+2. WHEN **My Assignments** is selected THEN the user SHALL see the full assignment list at `/scheduling` (same `AssignmentCard` component as UI-VOL-02; dashboard shows count summary only).
 
 ### UI-VOL-05 P2 — Empty states
 
