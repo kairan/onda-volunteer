@@ -55,4 +55,4 @@ Volunteer dashboard home: `/dashboard`
 |----------|------|-------|
 | | | |
 
-When all checklist items are checked and signed, T13.5 HITL gate is satisfied and #143 can close after any remaining automated gates on the PR.
+**#143 closed 2026-06-21** after automated gates (build, typecheck, Vitest). Checklist rows below remain for optional human brand review before Slice 2 Execute ([#144](https://github.com/kairan/onda-volunteer/issues/144)); they do not block the migration tracker.

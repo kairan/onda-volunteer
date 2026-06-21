@@ -64,11 +64,19 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability create (AVAIL-01), volunteer edit/delete own Unavailability (AVAIL-02), campus-authoritative event time display (SCHED-01), web i18n alignment (I18N-01). TLC: `.specs/features/ubiquitous-language-drift/`.
 
+### Shipped features (2026-06-21 closeout)
+
+| Theme | Feature slug | Issues | Status |
+|-------|--------------|--------|--------|
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 1 — foundation) | [#143](https://github.com/kairan/onda-volunteer/issues/143) | ✅ Shipped |
+
+`apps/web-next` scaffold, Onda tokens, TanStack Query data core, shell + route parity, throwaway brand preview (T01–T13.5). TLC: `.specs/features/frontend-migration-web-next/`.
+
 ### Active backlog (ready for agent / next Execute)
 
 | Theme | Feature slug | Status | TLC |
 |-------|--------------|--------|-----|
-| **Web shell & i18n** | `frontend-migration-web-next` | Specify + Design complete — Tasks pending | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slices 2–6) | Slice 1 shipped — [#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148) open | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for the migration (no standalone in-place execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
 **Frontend rebuild (`web-next`):** parallel strangler migration — new `apps/web-next` on the same stack (React 19 · Vite · TanStack Router · Tailwind 4) plus TanStack Query, Onda brand tokens, route-by-route parity, single cutover. ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).
