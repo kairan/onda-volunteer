@@ -25,6 +25,14 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-border: hsl(var(--border));
   --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-input: hsl(var(--input));
 }
 
 :root {
@@ -43,6 +51,15 @@
   --destructive-foreground: 0 0% 100%;
   --border: 206 38% 74%; /* #A1C1DB */
   --ring: 231 74% 48%;
+  /* shadcn semantic aliases (Onda palette) */
+  --card: 0 0% 100%; /* #FFFFFF — same as --surface */
+  --card-foreground: 234 47% 18%; /* same as --surface-foreground */
+  --secondary: 204 45% 88%; /* tinted page surface for secondary controls */
+  --secondary-foreground: 234 47% 18%;
+  --muted: 204 50% 90%; /* avatar fallback, skeleton fill */
+  --accent: 204 48% 85%; /* hover / highlight surfaces */
+  --accent-foreground: 234 47% 18%;
+  --input: 206 38% 74%; /* same as --border */
   --radius: 6px;
   --shadow-subtle: 0 1px 3px rgba(17, 22, 94, 0.08);
   --transition-fast: 120ms;
