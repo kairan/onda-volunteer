@@ -3,7 +3,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/api/apiError';
-import { useAuthSession } from '@/auth/AuthSessionProvider';
+import {
+  devAuthBypassAllowed,
+  volunteerIdForProtectedRequests,
+} from '@/auth/authSession';
+import { useAuthSession, type AuthSessionContextValue } from '@/auth/AuthSessionProvider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { RosterByEventSection } from '@/components/RosterByEventSection';
@@ -20,6 +24,7 @@ import { eventDetailQuery } from '@/leader/eventDetailQuery';
 import { voidAssignment } from '@/leader/releaseMutation';
 import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationProvider';
+import type { MinistrySummary } from '@/organization/types';
 import {
   ministryMembershipsQuery,
   ministryRolesQuery,
@@ -46,6 +51,58 @@ function mapAssignError(err: unknown, t: (key: string) => string): string {
     default:
       return err.message;
   }
+}
+
+function resolveActingVolunteerId(auth: AuthSessionContextValue): string | null {
+  if (auth.status === 'authenticated' || auth.status === 'dev-bypass') {
+    return auth.volunteerId;
+  }
+  if (auth.status === 'loading' && devAuthBypassAllowed()) {
+    return volunteerIdForProtectedRequests() ?? null;
+  }
+  return null;
+}
+
+function resolveFormMinistryId(input: {
+  eventKind: 'PUBLIC' | 'PRIVATE';
+  privateMinistryId: string | null;
+  activeMinistryId: string | null | undefined;
+  ledInActiveChurch: MinistrySummary[];
+  allLedMinistries: MinistrySummary[];
+  assignmentMinistryIds: string[];
+}): string | null {
+  if (input.eventKind === 'PRIVATE') {
+    return input.privateMinistryId;
+  }
+
+  const {
+    activeMinistryId,
+    ledInActiveChurch,
+    allLedMinistries,
+    assignmentMinistryIds,
+  } = input;
+
+  if (
+    activeMinistryId &&
+    ledInActiveChurch.some((ministry) => ministry.id === activeMinistryId)
+  ) {
+    return activeMinistryId;
+  }
+  if (ledInActiveChurch.length === 1) {
+    return ledInActiveChurch[0].id;
+  }
+  if (ledInActiveChurch.length > 0) {
+    return ledInActiveChurch[0].id;
+  }
+
+  const fromAssignments = allLedMinistries.find((ministry) =>
+    assignmentMinistryIds.includes(ministry.id),
+  );
+  if (fromAssignments) {
+    return fromAssignments.id;
+  }
+
+  return allLedMinistries[0]?.id ?? null;
 }
 
 function mapReleaseError(err: unknown, t: (key: string) => string): string {
@@ -79,13 +136,10 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const { t, i18n } = useTranslation('scheduling');
   const auth = useAuthSession();
   const queryClient = useQueryClient();
-  const { activeChurch, activeCampus, activeMinistry } = useOrganization();
+  const { churches, activeChurch, activeCampus, activeMinistry } = useOrganization();
   const { buildDualInterval } = useLocalTimeContext();
 
-  const actingVolunteerId =
-    auth.status === 'authenticated' || auth.status === 'dev-bypass'
-      ? auth.volunteerId
-      : null;
+  const actingVolunteerId = resolveActingVolunteerId(auth);
 
   const ledMinistries = useMemo(
     () =>
@@ -95,15 +149,15 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     [activeChurch?.ministries],
   );
 
-  const formMinistryId = useMemo(() => {
-    if (data.event.kind === 'PRIVATE') {
-      return data.ministry?.id ?? null;
-    }
-    if (activeMinistry?.id && ledMinistries.some((m) => m.id === activeMinistry.id)) {
-      return activeMinistry.id;
-    }
-    return ledMinistries[0]?.id ?? null;
-  }, [activeMinistry?.id, data.event.kind, data.ministry?.id, ledMinistries]);
+  const allLedMinistries = useMemo(
+    () =>
+      ministriesForWritePickers(
+        churches.flatMap((church) =>
+          church.ministries.filter((ministry) => ministry.isLeader),
+        ),
+      ),
+    [churches],
+  );
 
   const detailQuery = useQuery(
     eventDetailQuery({
@@ -112,6 +166,28 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     }),
   );
   const payload = detailQuery.data ?? data;
+
+  const formMinistryId = useMemo(
+    () =>
+      resolveFormMinistryId({
+        eventKind: data.event.kind,
+        privateMinistryId: data.ministry?.id ?? null,
+        activeMinistryId: activeMinistry?.id,
+        ledInActiveChurch: ledMinistries,
+        allLedMinistries,
+        assignmentMinistryIds: payload.assignments.map(
+          (assignment) => assignment.ministry.id,
+        ),
+      }),
+    [
+      activeMinistry?.id,
+      allLedMinistries,
+      data.event.kind,
+      data.ministry?.id,
+      ledMinistries,
+      payload.assignments,
+    ],
+  );
 
   const rolesQuery = useQuery(
     ministryRolesQuery({
@@ -225,8 +301,14 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   });
 
   const isCancelled = Boolean(payload.event.cancelledAtUtc);
+  const canLeadSelectedMinistry =
+    data.event.kind !== 'PRIVATE' ||
+    (formMinistryId !== null &&
+      allLedMinistries.some((ministry) => ministry.id === formMinistryId));
   const canManageRoster =
-    Boolean(actingVolunteerId && formMinistryId && !isCancelled);
+    Boolean(
+      actingVolunteerId && formMinistryId && !isCancelled && canLeadSelectedMinistry,
+    );
 
   async function handleAssignSubmit(event: FormEvent) {
     event.preventDefault();
