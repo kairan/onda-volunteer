@@ -55,10 +55,12 @@ describe('VolunteerMyAssignmentsPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps leader preview when previewRole=leader', async () => {
+  it('renders leader scheduling when previewRole=leader', async () => {
     await initI18n(undefined, 'en');
     await renderVolunteerRoute('/scheduling?previewRole=leader');
 
-    expect((await screen.findAllByTestId('roster-fill-badge'))[0]).toBeInTheDocument();
+    expect(await screen.findByTestId('leader-ministry-hero')).toBeInTheDocument();
+    expect(await screen.findByTestId('leader-roster-section')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Roster' })).toBeInTheDocument();
   });
 });

@@ -21,6 +21,7 @@ export const queryKeys = {
     ['unavailability', volunteerId, churchId ?? null] as const,
   ministryMemberships: (ministryId: string) =>
     ['ministry-memberships', ministryId] as const,
+  ministryRoles: (ministryId: string) => ['ministry-roles', ministryId] as const,
   assignments: (volunteerId: string, churchId?: string | null) =>
     ['assignments', volunteerId, churchId ?? null] as const,
   systemAdmin: {
