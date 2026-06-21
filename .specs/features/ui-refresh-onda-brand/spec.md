@@ -14,7 +14,7 @@ The signed-in web app uses the **HOPE** brutalist visual layer (ADR 0003): heavy
 ## Goals
 
 - [ ] Replace HOPE tokens with **Onda brand palette** and **Space Grotesk** UI typography across church-role shell and in-scope routes.
-- [ ] **Volunteer** dashboard matches Lovable information architecture: greeting, assignment cards, time-away preview.
+- [ ] **Volunteer** experience matches Lovable information architecture: `/dashboard` = greeting, assignment count, time-away preview; `/scheduling` = assignment card grid (My Assignments).
 - [ ] **Ministry Leader** dashboard / roster views match Lovable patterns: ministry hero, fill ratio, unfilled slots, Assign/Release actions (wired to existing APIs).
 - [ ] Preserve ADR 0001 shell behavior (sidebar, i18n, WCAG, pessimistic scheduling, Church/Campus context).
 - [ ] pt-BR + en strings for all new/changed copy.
