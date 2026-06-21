@@ -12,17 +12,17 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-**Frontend rebuild (`web-next`)** — parallel strangler migration; TLC [`.specs/features/frontend-migration-web-next/`](../.specs/features/frontend-migration-web-next/). Slice 1 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)); execute queue:
+**Frontend rebuild (`web-next`)** — parallel strangler migration; TLC [`.specs/features/frontend-migration-web-next/`](../.specs/features/frontend-migration-web-next/). Slice 1 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)); execute queue (**`ready-for-agent`** on #144–#147):
 
-| Issue | Slice | Tasks |
-|------:|-------|-------|
-| [#144](https://github.com/kairan/onda-volunteer/issues/144) | Volunteer screens | T14–T17 |
-| [#145](https://github.com/kairan/onda-volunteer/issues/145) | Ministry Leader screens | T18–T23 |
-| [#146](https://github.com/kairan/onda-volunteer/issues/146) | Org-admin functional port | T24 |
-| [#147](https://github.com/kairan/onda-volunteer/issues/147) | System Admin functional port | T25–T26 |
-| [#148](https://github.com/kairan/onda-volunteer/issues/148) | CI parity & cutover | T27–T30 |
+| Issue | Slice | Tasks | Spec |
+|------:|-------|-------|------|
+| [#144](https://github.com/kairan/onda-volunteer/issues/144) | Volunteer screens | T14–T16.5–T17 | `144-web-next-migration-slice-2-volunteer.md` |
+| [#145](https://github.com/kairan/onda-volunteer/issues/145) | Ministry Leader screens | T18–T23 | `145-web-next-migration-slice-3-leader.md` |
+| [#146](https://github.com/kairan/onda-volunteer/issues/146) | Org-admin functional port | T24 | `146-web-next-migration-slice-4-org-admin.md` |
+| [#147](https://github.com/kairan/onda-volunteer/issues/147) | System Admin functional port | T25–T26 | `147-web-next-migration-slice-5-system-admin.md` |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | CI parity & cutover | T27–T30 | *(blocked until #144–#147 ship)* |
 
-Apply label **`ready-for-agent`** when blockers clear (Slice 1 foundation unblocks all rows above).
+Apply label **`ready-for-agent`** when blockers clear (Slice 1 foundation unblocks #144–#147).
 
 **Ubiquitous language drift** ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)) shipped; TLC [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/), specs in `done/131-*` … `135-*`.
 

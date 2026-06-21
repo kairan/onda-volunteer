@@ -97,7 +97,7 @@ The signed-in web app uses the **HOPE** brutalist visual layer (ADR 0003): heavy
 **Acceptance Criteria**:
 
 1. WHEN a user has only **Volunteer** grants (no Leader/Admin nav) THEN sidebar SHALL show: **Dashboard**, **My Assignments**, **Time Away**.
-2. WHEN **My Assignments** is selected THEN the user SHALL see the full assignment list (may be `/dashboard` anchor or dedicated route — same card component as UI-VOL-02).
+2. WHEN **My Assignments** is selected THEN the user SHALL see the full assignment list at `/scheduling` (same `AssignmentCard` component as UI-VOL-02; dashboard shows count summary only).
 
 ### UI-VOL-05 P2 — Empty states
 

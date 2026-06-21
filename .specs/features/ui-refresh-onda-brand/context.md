@@ -18,7 +18,7 @@ Decisions refined after comparing Slice 1 (#143) preview with the checked-in Lov
 | Page background | **`#FAFAFA`** warm white (Lovable `--background`) | Cards read cleaner on neutral wash; `#E4F1FA` kept for **active nav tint** and muted panels |
 | Shell implementation | **shadcn `Sidebar` + `SidebarProvider`** (see `AppShell.tsx` in reference) | Matches Lovable; do not keep custom drawer-only shell from early #143 branch |
 | Card elevation | **`--shadow-card`** utility from reference `styles.css` | Flat CardHeader-only layout was visually off-spec |
-| Volunteer dashboard | **2-col grid** + inline **Time away** section | See `VolunteerDashboard.tsx` in reference |
+| Volunteer dashboard | **Split nav IA** (locked #143): `/dashboard` = greeting + count + **Time away** preview; `/scheduling` = **2-col assignment card grid** (My Assignments) | See `VolunteerDashboard.tsx` in reference — do not combine on one screen |
 | Leader roster | **Event card** with header bar, fill badge, row **Assign/Release** | See `MinistryLeaderDashboard.tsx` in reference |
 | Port strategy | **Cherry-pick presentational components** into `apps/web-next` | Keep auth/Query/org/routes from migration spec — do not replace `web-next` with this package |
 
