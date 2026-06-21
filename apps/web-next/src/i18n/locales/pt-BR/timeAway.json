@@ -1,0 +1,51 @@
+{
+  "title": "Ausências",
+  "body": "Registre quando você não pode servir em um ministério.",
+  "eyebrow": "Indisponibilidade",
+  "listHeading": "Suas indisponibilidades",
+  "loading": "Carregando indisponibilidades...",
+  "emptyState": "Nenhuma indisponibilidade futura registrada para esta igreja.",
+  "createHeading": "Adicionar indisponibilidade",
+  "editHeading": "Editar indisponibilidade",
+  "form": {
+    "ministry": "Ministério",
+    "startsAt": "Início",
+    "endsAt": "Fim",
+    "submit": "Salvar indisponibilidade",
+    "submitting": "Salvando...",
+    "saveEdit": "Salvar alterações",
+    "cancelEdit": "Cancelar edição"
+  },
+  "success": "Indisponibilidade salva.",
+  "successUpdate": "Indisponibilidade atualizada.",
+  "successDelete": "Indisponibilidade removida.",
+  "actions": {
+    "edit": "Editar",
+    "delete": "Remover",
+    "deleting": "Removendo..."
+  },
+  "mirrorHeading": "Espelhar entre ministérios",
+  "mirrorBody": "Aplique as mesmas datas em registros separados de indisponibilidade—um por ministério selecionado. Isso não cria uma ausência para toda a igreja.",
+  "mirrorScope": "Estes ministérios receberão indisponibilidade espelhada:",
+  "mirrorNoMinistries": "É preciso ter vínculo em pelo menos dois ministérios nesta igreja para espelhar datas.",
+  "mirrorForm": {
+    "startsAt": "Início do espelhamento",
+    "endsAt": "Fim do espelhamento",
+    "submit": "Espelhar em ministérios",
+    "submitting": "Espelhando..."
+  },
+  "mirrorSuccess": "{{count}} indisponibilidades criadas.",
+  "mirrorPartial": "{{count}} indisponibilidades criadas. Estes ministérios não puderam ser atualizados: {{failed}}.",
+  "mirrorAllFailed": "Estes ministérios não puderam ser atualizados: {{failed}}.",
+  "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
+  "leaderSupportLink": "Gerenciar ausências de voluntários (apoio de líder)",
+  "errors": {
+    "mirrorMinistriesRequired": "Selecione pelo menos um ministério para espelhar.",
+    "ministryRequired": "Selecione um ministério.",
+    "startsAtRequired": "Informe o horário de início.",
+    "endsAtRequired": "Informe o horário de fim.",
+    "invalidWindow": "O fim deve ser depois do início.",
+    "summary": "Corrija os campos destacados e tente novamente.",
+    "deleteFailed": "Não foi possível remover esta indisponibilidade. Tente novamente."
+  }
+}
