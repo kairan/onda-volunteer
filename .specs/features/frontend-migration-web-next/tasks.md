@@ -1,7 +1,26 @@
 # Frontend rebuild — `web-next` — Tasks
 
-**Design**: [./design.md](./design.md)
-**Status**: Draft
+**Design**: [./design.md](./design.md)  
+**Status**: Slice 1 shipped — validated 2026-06-21 ([#143](https://github.com/kairan/onda-volunteer/issues/143)); Execute continues ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148))
+
+## GitHub issue map
+
+| Issue | Tasks | Summary | Status |
+|------:|-------|---------|--------|
+| [#143](https://github.com/kairan/onda-volunteer/issues/143) | T01–T13.5 | Foundation, data core, shell, brand preview | ✅ Shipped (PRs [#151](https://github.com/kairan/onda-volunteer/pull/151), [#150](https://github.com/kairan/onda-volunteer/pull/150), [#152](https://github.com/kairan/onda-volunteer/pull/152), [#153](https://github.com/kairan/onda-volunteer/pull/153)) |
+| [#144](https://github.com/kairan/onda-volunteer/issues/144) | T14–T17 | Volunteer screens | Open |
+| [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | Open |
+| [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | Open |
+| [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | Open |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | Open |
+
+## Verify (Slice 1 closeout — #143)
+
+- [x] T01–T13.5 `Done when` gates validated (`pnpm --filter @onda/web-next build`, typecheck, test — 66 tests)
+- [x] Issue spec archived to `docs/issues/done/143-web-next-migration-slice-1-foundation.md`
+- [x] `docs/issues/README.md` index updated
+- [x] `.specs/project/ROADMAP.md` Slice 1 row marked shipped
+- [x] `.specs/project/STATE.md` closeout note added
 
 ---
 
@@ -83,11 +102,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `pnpm --filter @onda/web-next build` exits 0 with the stub
-- [ ] `pnpm dev:web-next` starts on a port distinct from 5173 (e.g. 5174) without error
-- [ ] No HOPE imports (`--border-weight`, Montserrat, `--shadow-offset-*`) in any file
-- [ ] Gate check passes: `pnpm --filter @onda/web-next build`
-- [ ] Test count: N/A (scaffold only — no behavior code)
+- [x] `pnpm --filter @onda/web-next build` exits 0 with the stub
+- [x] `pnpm dev:web-next` starts on a port distinct from 5173 (e.g. 5174) without error
+- [x] No HOPE imports (`--border-weight`, Montserrat, `--shadow-offset-*`) in any file
+- [x] Gate check passes: `pnpm --filter @onda/web-next build`
+- [x] Test count: N/A (scaffold only — no behavior code)
 
 **Tests**: none
 **Gate**: build
@@ -109,11 +128,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `globals.css` defines `--primary` ≈ `#2034D6`, `--background` ≈ `#FAFAFA`, `--shadow-card`, `--border` ≈ `#A1C1DB`, `--radius: 0.5rem`, Space Grotesk stack present
-- [ ] `tokens.ts` lists `REQUIRED_THEME_CSS_VARIABLES` without `--border-weight`, `--shadow-offset-sm`, `--shadow-offset-md`, Montserrat
-- [ ] Contract test asserts: all Onda vars present, no HOPE vars present
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 tests pass (presence assertions + absence assertions)
+- [x] `globals.css` defines `--primary` ≈ `#2034D6`, `--background` ≈ `#FAFAFA`, `--shadow-card`, `--border` ≈ `#A1C1DB`, `--radius: 0.5rem`, Space Grotesk stack present
+- [x] `tokens.ts` lists `REQUIRED_THEME_CSS_VARIABLES` without `--border-weight`, `--shadow-offset-sm`, `--shadow-offset-md`, Montserrat
+- [x] Contract test asserts: all Onda vars present, no HOPE vars present
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 tests pass (presence assertions + absence assertions)
 
 **Tests**: unit
 **Gate**: quick
@@ -135,12 +154,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] All **9+** component files exist under `src/components/ui/` (includes `sidebar.tsx`)
-- [ ] `cn()` utility exported from `src/lib/utils.ts`
-- [ ] No hardcoded `border: 2px solid black`, `border-radius: 0`, or Montserrat in any component
-- [ ] Button `data-testid` renders at `--primary` bg; avatar initials derive from display name
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit behavior tests pass (button renders, card renders, badge renders, avatar initials)
+- [x] All **9+** component files exist under `src/components/ui/` (includes `sidebar.tsx`)
+- [x] `cn()` utility exported from `src/lib/utils.ts`
+- [x] No hardcoded `border: 2px solid black`, `border-radius: 0`, or Montserrat in any component
+- [x] Button `data-testid` renders at `--primary` bg; avatar initials derive from display name
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit behavior tests pass (button renders, card renders, badge renders, avatar initials)
 
 **Tests**: unit
 **Gate**: quick
@@ -162,11 +181,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `shouldForceDevHeadersForApi()` returns true when `VITE_AUTH_USE_DEV_HEADERS` not set to `'false'`
-- [ ] `getAccessToken()` returns `null` in unit tests (no real Supabase client)
-- [ ] `demoVolunteerId()` returns null when env var unset
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit tests pass (authSession flag branches)
+- [x] `shouldForceDevHeadersForApi()` returns true when `VITE_AUTH_USE_DEV_HEADERS` not set to `'false'`
+- [x] `getAccessToken()` returns `null` in unit tests (no real Supabase client)
+- [x] `demoVolunteerId()` returns null when env var unset
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit tests pass (authSession flag branches)
 
 **Tests**: unit
 **Gate**: quick
@@ -188,10 +207,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `useAuthSession()` throws when called outside provider
-- [ ] `status: 'loading'` initial state, resolves to `'authenticated'` or `'dev-bypass'` in tests
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 unit behavior tests pass (initial loading state, dev-bypass branch)
+- [x] `useAuthSession()` throws when called outside provider
+- [x] `status: 'loading'` initial state, resolves to `'authenticated'` or `'dev-bypass'` in tests
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 unit behavior tests pass (initial loading state, dev-bypass branch)
 
 **Tests**: unit
 **Gate**: quick
@@ -213,11 +232,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `getJson()` throws `ApiError` on non-2xx (same shape as existing `apiError`)
-- [ ] `mutateJson()` sets `Content-Type: application/json`
-- [ ] 401 retry with dev headers triggered when `scope.volunteerId` set + `VITE_AUTH_USE_DEV_HEADERS` truthy
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit tests pass (happy path, 4xx error, 401 retry, json mutation header)
+- [x] `getJson()` throws `ApiError` on non-2xx (same shape as existing `apiError`)
+- [x] `mutateJson()` sets `Content-Type: application/json`
+- [x] 401 retry with dev headers triggered when `scope.volunteerId` set + `VITE_AUTH_USE_DEV_HEADERS` truthy
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit tests pass (happy path, 4xx error, 401 retry, json mutation header)
 
 **Tests**: unit
 **Gate**: quick
@@ -239,10 +258,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Each factory returns a stable `as const` tuple
-- [ ] `queryKeys.events({ churchId: 'a', ministryId: 'b' })` equals `['events', 'a', 'b'] as const`
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥5 unit tests pass (one per key factory)
+- [x] Each factory returns a stable `as const` tuple
+- [x] `queryKeys.events({ churchId: 'a', ministryId: 'b' })` equals `['events', 'a', 'b'] as const`
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥5 unit tests pass (one per key factory)
 
 **Tests**: unit
 **Gate**: quick
@@ -264,10 +283,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `QueryClient` has `defaultOptions.mutations.onError` wired to toast via `toastOrchestrator` (or stub)
-- [ ] `staleTime: 30_000` (30 s) default or per-query override documented in file comment
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 unit tests pass (client instantiation, provider renders children)
+- [x] `QueryClient` has `defaultOptions.mutations.onError` wired to toast via `toastOrchestrator` (or stub)
+- [x] `staleTime: 30_000` (30 s) default or per-query override documented in file comment
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 unit tests pass (client instantiation, provider renders children)
 
 **Tests**: unit
 **Gate**: quick
@@ -289,11 +308,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `resolveInitialLocale()` returns `'pt-BR'` when localStorage empty
-- [ ] `localePersistence` read/write round-trips correctly
-- [ ] Campus-authoritative `buildDualInterval` produces correct UTC↔local string in pt-BR locale
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥5 unit tests pass (locale resolution, persistence, intlFormat, dual interval)
+- [x] `resolveInitialLocale()` returns `'pt-BR'` when localStorage empty
+- [x] `localePersistence` read/write round-trips correctly
+- [x] Campus-authoritative `buildDualInterval` produces correct UTC↔local string in pt-BR locale
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥5 unit tests pass (locale resolution, persistence, intlFormat, dual interval)
 
 **Tests**: unit
 **Gate**: quick
@@ -315,12 +334,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `useOrganization()` throws outside provider
-- [ ] `refresh()` calls `queryClient.invalidateQueries({ queryKey: queryKeys.organizationContext() })`
-- [ ] `onChurchChange` updates selection store + re-resolves campus/ministry
-- [ ] `ministriesForShellSwitcher` honors archived visibility rules (admins see archived, others don't)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit behavior tests pass (initial load, church change, ministry resolution, archived visibility)
+- [x] `useOrganization()` throws outside provider
+- [x] `refresh()` calls `queryClient.invalidateQueries({ queryKey: queryKeys.organizationContext() })`
+- [x] `onChurchChange` updates selection store + re-resolves campus/ministry
+- [x] `ministriesForShellSwitcher` honors archived visibility rules (admins see archived, others don't)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit behavior tests pass (initial load, church change, ministry resolution, archived visibility)
 
 **Tests**: unit
 **Gate**: quick
@@ -342,12 +361,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Volunteer-only user gets Dashboard + My Assignments + Time Away (3 items)
-- [ ] Leader user additionally gets Scheduling + Roster + Volunteers items
-- [ ] Admin-only user gets Ministries + Volunteers + Leaders items
-- [ ] No placeholder routes carried forward unless still needed
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit tests pass (volunteer nav, leader nav, admin nav, combined grants)
+- [x] Volunteer-only user gets Dashboard + My Assignments + Time Away (3 items)
+- [x] Leader user additionally gets Scheduling + Roster + Volunteers items
+- [x] Admin-only user gets Ministries + Volunteers + Leaders items
+- [x] No placeholder routes carried forward unless still needed
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit tests pass (volunteer nav, leader nav, admin nav, combined grants)
 
 **Tests**: unit
 **Gate**: quick
@@ -369,12 +388,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Shell renders Onda wordmark (text or SVG) + active church name from `useOrganization()`
-- [ ] Sidebar nav items derive from `buildNavForGrants`; no HOPE border-weight or offset-shadow classes
-- [ ] Mobile: top bar + drawer behavior (menu button toggles sidebar); desktop: fixed sidebar
-- [ ] `shellRoute(MyPage)` produces a component that renders `<AppShell><MyPage/></AppShell>`
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (shell renders wordmark, nav items for role, mobile drawer toggle)
+- [x] Shell renders Onda wordmark (text or SVG) + active church name from `useOrganization()`
+- [x] Sidebar nav items derive from `buildNavForGrants`; no HOPE border-weight or offset-shadow classes
+- [x] Mobile: top bar + drawer behavior (menu button toggles sidebar); desktop: fixed sidebar
+- [x] `shellRoute(MyPage)` produces a component that renders `<AppShell><MyPage/></AppShell>`
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (shell renders wordmark, nav items for role, mobile drawer toggle)
 
 **Tests**: unit
 **Gate**: quick
@@ -396,11 +415,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `pnpm --filter @onda/web-next build` exits 0 with all route stubs
-- [ ] Unauthenticated access to `/dashboard` redirects to `/` with `auth=required` (landing auth panel)
-- [ ] All known routes (`/scheduling`, `/time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`, `/system-admin/*`) present in route tree (stub components OK)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 unit tests pass (auth guard redirect, route tree renders without crash)
+- [x] `pnpm --filter @onda/web-next build` exits 0 with all route stubs
+- [x] Unauthenticated access to `/dashboard` redirects to `/` with `auth=required` (landing auth panel)
+- [x] All known routes (`/scheduling`, `/time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`, `/system-admin/*`) present in route tree (stub components OK)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 unit tests pass (auth guard redirect, route tree renders without crash)
 
 **Tests**: unit
 **Gate**: quick
@@ -422,15 +441,15 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `/dashboard` (volunteer): greeting + assignment-count summary, **Time away** list + Add period CTA, empty/skeleton variants (no network); assignment cards live on volunteer `/scheduling` per nav IA (not one combined Lovable screen)
-- [ ] `/scheduling` (volunteer): 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview` (no network)
-- [ ] `/scheduling` (leader): ministry hero + summary line + header CTAs, roster event card with `X/Y filled` badge and Assign/Release row actions (no network)
-- [ ] Side-by-side manual check vs `design-reference/serve-well` dashboards at 1440px before closing #143
-- [ ] No `apiClient` / `useQuery` import in the preview bodies; fixtures isolated under `src/__preview__/`
-- [ ] No HOPE classes; only Onda tokens/components
-- [ ] A `// TODO(MIG-FND-04): throwaway preview — remove when T16/T20/T21 land` marker is present in each preview body and in `fixtures.ts`
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥1 render smoke per preview (dashboard renders greeting; scheduling renders fill badge)
+- [x] `/dashboard` (volunteer): greeting + assignment-count summary, **Time away** list + Add period CTA, empty/skeleton variants (no network); assignment cards live on volunteer `/scheduling` per nav IA (not one combined Lovable screen)
+- [x] `/scheduling` (volunteer): 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview` (no network)
+- [x] `/scheduling` (leader): ministry hero + summary line + header CTAs, roster event card with `X/Y filled` badge and Assign/Release row actions (no network)
+- [x] Side-by-side manual check vs `design-reference/serve-well` dashboards at 1440px before closing #143
+- [x] No `apiClient` / `useQuery` import in the preview bodies; fixtures isolated under `src/__preview__/`
+- [x] No HOPE classes; only Onda tokens/components
+- [x] A `// TODO(MIG-FND-04): throwaway preview — remove when T16/T20/T21 land` marker is present in each preview body and in `fixtures.ts`
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥1 render smoke per preview (dashboard renders greeting; scheduling renders fill badge)
 
 **Tests**: unit (render smoke only)
 **Gate**: quick

@@ -2,7 +2,8 @@
 
 ## Status
 
-- **Phase:** Specify + Design complete (2026-06-20)
+- **Phase:** Slice 1 Execute shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143), 2026-06-21); Slices 2–6 open ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148))
+- **Specify + Design:** complete (2026-06-20)
 - **Design:** [design.md](./design.md)
 - **Decisions:** [context.md](./context.md)
 - **Design source (do not duplicate):** [`ui-refresh-onda-brand`](../ui-refresh-onda-brand/) — Onda tokens, typography, Volunteer/Leader layouts (ADR [0006](../../../docs/adr/0006-onda-brand-visual-system.md))
@@ -16,8 +17,8 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 ## Goals
 
-- [ ] Stand up `apps/web-next` (new package, same stack) building clean with **Onda brand tokens** (consumes `ui-refresh-onda-brand` design + ADR 0006).
-- [ ] Rebuild the **data layer** on **TanStack Query** (queries/mutations/cache) replacing ad-hoc fetch helpers, preserving the API auth-header / dev-header contract.
+- [x] Stand up `apps/web-next` (new package, same stack) building clean with **Onda brand tokens** (consumes `ui-refresh-onda-brand` design + ADR 0006) — Slice 1 ([#143](https://github.com/kairan/onda-volunteer/issues/143)).
+- [x] Rebuild the **data layer** on **TanStack Query** (queries/mutations/cache) replacing ad-hoc fetch helpers, preserving the API auth-header / dev-header contract — core ported in Slice 1; route-level queries land in Slices 2–5.
 - [ ] Achieve **route parity** with `apps/web` (migrate routes incrementally inside `web-next`), then perform a **single production cutover** once parity is reached (old app stays green throughout).
 - [ ] Volunteer + Leader screens built fresh to **Onda design** (per `ui-refresh-onda-brand`).
 - [ ] System Admin + org-admin routes **ported functionally** with neutral inherited tokens (redesign deferred).

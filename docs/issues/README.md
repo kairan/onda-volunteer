@@ -12,7 +12,17 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 ## Active backlog (dependency order)
 
-_(none — all open slices shipped as of 2026-06-18.)_
+**Frontend rebuild (`web-next`)** — parallel strangler migration; TLC [`.specs/features/frontend-migration-web-next/`](../.specs/features/frontend-migration-web-next/). Slice 1 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)); execute queue:
+
+| Issue | Slice | Tasks |
+|------:|-------|-------|
+| [#144](https://github.com/kairan/onda-volunteer/issues/144) | Volunteer screens | T14–T17 |
+| [#145](https://github.com/kairan/onda-volunteer/issues/145) | Ministry Leader screens | T18–T23 |
+| [#146](https://github.com/kairan/onda-volunteer/issues/146) | Org-admin functional port | T24 |
+| [#147](https://github.com/kairan/onda-volunteer/issues/147) | System Admin functional port | T25–T26 |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | CI parity & cutover | T27–T30 |
+
+Apply label **`ready-for-agent`** when blockers clear (Slice 1 foundation unblocks all rows above).
 
 **Ubiquitous language drift** ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)) shipped; TLC [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/), specs in `done/131-*` … `135-*`.
 
@@ -34,6 +44,7 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 
 | Issue | Spec |
 |------:|------|
+| [#143](https://github.com/kairan/onda-volunteer/issues/143) | `done/143-web-next-migration-slice-1-foundation.md` |
 | [#135](https://github.com/kairan/onda-volunteer/issues/135) | `done/135-web-i18n-language-alignment.md` |
 | [#134](https://github.com/kairan/onda-volunteer/issues/134) | `done/134-campus-event-time-display.md` |
 | [#133](https://github.com/kairan/onda-volunteer/issues/133) | `done/133-volunteer-unavailability-edit-delete.md` |
