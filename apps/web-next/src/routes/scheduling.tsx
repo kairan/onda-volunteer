@@ -2,7 +2,6 @@
 import { Calendar, Plus, UserMinus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { VolunteerMyAssignmentsPreview } from '@/__preview__/VolunteerMyAssignmentsPreview';
-import { useOrganization } from '@/organization/OrganizationProvider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +10,7 @@ import { getAvatarInitials } from '@/components/ui/avatarInitials';
 import {
   leaderSchedulingPreview,
   rosterFillCounts,
+  schedulingPreviewRole,
 } from '@/__preview__/fixtures';
 
 export function LeaderSchedulingPreview() {
@@ -125,11 +125,7 @@ export function LeaderSchedulingPreview() {
 }
 
 export function SchedulingPage() {
-  const { activeChurch } = useOrganization();
-  const isLeader =
-    activeChurch?.ministries.some((ministry) => ministry.isLeader) ?? false;
-
-  if (isLeader) {
+  if (schedulingPreviewRole === 'leader') {
     return <LeaderSchedulingPreview />;
   }
 

@@ -5,8 +5,15 @@ export type QueryScope = {
 };
 
 export const queryKeys = {
-  organizationContext: (volunteerId?: string) =>
-    ['org-context', volunteerId ?? 'self'] as const,
+  organizationContext: (
+    sessionVolunteerId?: string | null,
+    devVolunteerId?: string,
+  ) =>
+    [
+      'org-context',
+      sessionVolunteerId ?? 'anonymous',
+      devVolunteerId ?? 'default',
+    ] as const,
   events: (scope: Pick<QueryScope, 'churchId' | 'ministryId'>) =>
     ['events', scope.churchId, scope.ministryId] as const,
   eventDetail: (eventId: string) => ['event-detail', eventId] as const,

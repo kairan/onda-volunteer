@@ -77,6 +77,11 @@ export const volunteerDashboardPreview = {
   ] satisfies PreviewTimeAway[],
 };
 
+export type SchedulingPreviewRole = 'leader' | 'volunteer';
+
+/** Brand checkpoint default: leader roster on /scheduling */
+export const schedulingPreviewRole: SchedulingPreviewRole = 'leader';
+
 export const leaderSchedulingPreview = {
   ministryName: 'Worship',
   eventsThisWeek: 2,

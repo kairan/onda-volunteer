@@ -1,6 +1,7 @@
 import { Outlet } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useToasts } from '@/feedback/ToastHost';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
@@ -21,13 +22,29 @@ import { OrganizationContextControls } from './OrganizationContextControls';
 export function AppShell({ children }: { children?: ReactNode }) {
   const { t } = useTranslation('shell');
   const auth = useAuthSession();
+  const queryClient = useQueryClient();
   const toasts = useToasts();
   const orgReady =
     auth.status === 'authenticated' || auth.status === 'dev-bypass';
+  const sessionVolunteerId =
+    auth.status === 'authenticated' || auth.status === 'dev-bypass'
+      ? auth.volunteerId
+      : null;
   const devVolunteerIdForOrg =
     auth.status === 'dev-bypass' ? auth.volunteerId : demoVolunteerId();
   const [isSystemAdmin, setIsSystemAdmin] = useState(false);
   const fulfilledInviteToastKeyRef = useRef('');
+  const prevAuthSessionKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const authSessionKey = `${auth.status}:${sessionVolunteerId ?? ''}`;
+    const previous = prevAuthSessionKeyRef.current;
+    prevAuthSessionKeyRef.current = authSessionKey;
+    if (previous === null || previous === authSessionKey) {
+      return;
+    }
+    queryClient.removeQueries({ queryKey: ['org-context'] });
+  }, [sessionVolunteerId, auth.status, queryClient]);
 
   useEffect(() => {
     if (auth.status === 'authenticated') {
@@ -93,6 +110,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
   return (
     <OrganizationProvider
       enabled={orgReady}
+      sessionVolunteerId={sessionVolunteerId}
       devVolunteerId={devVolunteerIdForOrg}
       isSystemAdmin={isSystemAdmin}
     >

@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
-import { createToastOrchestrator } from '@/feedback/toastOrchestrator';
+import { getAppToastOrchestrator } from '@/feedback/toastOrchestrator';
 
-const toastOrchestrator = createToastOrchestrator();
+const toastOrchestrator = getAppToastOrchestrator();
 
 /** Shared QueryClient — default staleTime 30s per ADR 0001 pessimistic data layer. */
 export function createAppQueryClient(): QueryClient {

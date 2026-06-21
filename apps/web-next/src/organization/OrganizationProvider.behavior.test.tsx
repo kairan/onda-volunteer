@@ -40,8 +40,10 @@ function OrgProbe() {
   return (
     <div>
       <span data-testid="loading">{String(org.loading)}</span>
+      <span data-testid="error">{org.error ?? ''}</span>
       <span data-testid="church">{org.activeChurchId ?? ''}</span>
       <span data-testid="ministry">{org.activeMinistryId ?? ''}</span>
+      <span data-testid="church-count">{String(org.churches.length)}</span>
       <button type="button" onClick={() => org.onChurchChange('church-b')}>
         switch church
       </button>
@@ -54,12 +56,20 @@ function OrgProbe() {
 
 function renderWithQueryClient(
   client = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
-  props: { enabled?: boolean; devVolunteerId?: string } = {},
+  props: {
+    enabled?: boolean;
+    sessionVolunteerId?: string | null;
+    devVolunteerId?: string;
+  } = {},
 ) {
-  const { enabled = true, devVolunteerId } = props;
+  const { enabled = true, sessionVolunteerId = null, devVolunteerId } = props;
   return render(
     <QueryClientProvider client={client}>
-      <OrganizationProvider enabled={enabled} devVolunteerId={devVolunteerId}>
+      <OrganizationProvider
+        enabled={enabled}
+        sessionVolunteerId={sessionVolunteerId}
+        devVolunteerId={devVolunteerId}
+      >
         <OrgProbe />
       </OrganizationProvider>
     </QueryClientProvider>,
@@ -157,10 +167,76 @@ describe('OrganizationProvider', () => {
 
     await waitFor(() => {
       expect(invalidateSpy).toHaveBeenCalledWith({
-        queryKey: queryKeys.organizationContext(),
+        queryKey: queryKeys.organizationContext(null),
         refetchType: 'none',
       });
       expect(screen.getByTestId('ministry').textContent).toBe('min-other');
+    });
+  });
+
+  it('partitions cache by sessionVolunteerId', async () => {
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockImplementation(
+      async () => ({ churches: [churches[0]!] }),
+    );
+
+    const { unmount } = renderWithQueryClient(client, {
+      sessionVolunteerId: 'vol-a',
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('church').textContent).toBe('church-a');
+    });
+
+    unmount();
+    cleanup();
+
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockImplementation(
+      async () => ({ churches: [churches[1]!] }),
+    );
+
+    renderWithQueryClient(client, { sessionVolunteerId: 'vol-b' });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('church').textContent).toBe('church-b');
+      expect(screen.getByTestId('ministry').textContent).toBe('min-b1');
+    });
+    expect(fetchOrgContext.fetchOrganizationContext).toHaveBeenCalledTimes(2);
+  });
+
+  it('clears selection and churches on fetch failure', async () => {
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    renderWithQueryClient();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('loading').textContent).toBe('false');
+    });
+    expect(screen.getByTestId('error').textContent).toBe('Network error');
+    expect(screen.getByTestId('church').textContent).toBe('');
+    expect(screen.getByTestId('church-count').textContent).toBe('0');
+  });
+
+  it('clears selection when refresh rejects', async () => {
+    vi.mocked(fetchOrgContext.fetchOrganizationContext)
+      .mockResolvedValueOnce({ churches })
+      .mockRejectedValueOnce(new Error('Refresh failed'));
+
+    const user = userEvent.setup();
+    renderWithQueryClient();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('church').textContent).toBe('church-a');
+    });
+
+    await user.click(screen.getByRole('button', { name: 'refresh' }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('error').textContent).toBe('Refresh failed');
+      expect(screen.getByTestId('church').textContent).toBe('');
+      expect(screen.getByTestId('church-count').textContent).toBe('0');
     });
   });
 
@@ -177,7 +253,7 @@ describe('OrganizationProvider', () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const { rerender } = render(
       <QueryClientProvider client={client}>
-        <OrganizationProvider enabled devVolunteerId="vol-a">
+        <OrganizationProvider enabled devVolunteerId="vol-a" sessionVolunteerId="vol-a">
           <OrgProbe />
         </OrganizationProvider>
       </QueryClientProvider>,
@@ -189,7 +265,7 @@ describe('OrganizationProvider', () => {
 
     rerender(
       <QueryClientProvider client={client}>
-        <OrganizationProvider enabled devVolunteerId="vol-b">
+        <OrganizationProvider enabled devVolunteerId="vol-b" sessionVolunteerId="vol-b">
           <OrgProbe />
         </OrganizationProvider>
       </QueryClientProvider>,

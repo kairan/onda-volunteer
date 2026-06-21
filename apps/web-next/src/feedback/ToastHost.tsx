@@ -1,13 +1,13 @@
 import {
   createContext,
   useContext,
-  useMemo,
+  useEffect,
   useState,
   type ReactNode,
 } from 'react';
 import {
   createToastOrchestrator,
-  type ToastMessage,
+  getAppToastOrchestrator,
 } from './toastOrchestrator';
 
 type ToastApi = ReturnType<typeof createToastOrchestrator>;
@@ -15,34 +15,21 @@ type ToastApi = ReturnType<typeof createToastOrchestrator>;
 const ToastContext = createContext<ToastApi | null>(null);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const orchestrator = useMemo(() => createToastOrchestrator(), []);
+  const orchestrator = getAppToastOrchestrator();
   const [, setTick] = useState(0);
 
-  const api = useMemo<ToastApi>(() => {
-    const base = orchestrator;
-    return {
-      push(toast: ToastMessage) {
-        base.push(toast);
-        setTick((value) => value + 1);
-      },
-      dismiss(id: string) {
-        base.dismiss(id);
-        setTick((value) => value + 1);
-      },
-      visible() {
-        return base.visible();
-      },
-    };
+  useEffect(() => {
+    return orchestrator.subscribe(() => setTick((value) => value + 1));
   }, [orchestrator]);
 
   return (
-    <ToastContext.Provider value={api}>
+    <ToastContext.Provider value={orchestrator}>
       {children}
       <div
         aria-live="polite"
         className="pointer-events-none fixed bottom-4 right-4 z-50 flex w-80 flex-col gap-2"
       >
-        {api.visible().map((toast) => (
+        {orchestrator.visible().map((toast) => (
           <div
             key={toast.id}
             role={toast.kind === 'error' ? 'alert' : 'status'}

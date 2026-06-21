@@ -90,21 +90,27 @@ const OrganizationContext = createContext<OrganizationContextValue | null>(null)
 export function OrganizationProvider({
   children,
   enabled,
+  sessionVolunteerId = null,
   devVolunteerId,
   isSystemAdmin = false,
 }: {
   children: ReactNode;
   enabled: boolean;
+  sessionVolunteerId?: string | null;
   devVolunteerId?: string;
   isSystemAdmin?: boolean;
 }) {
   const queryClient = useQueryClient();
+  const orgContextQueryKey = queryKeys.organizationContext(
+    sessionVolunteerId,
+    devVolunteerId,
+  );
   const {
     data,
     isLoading,
     error: queryError,
   } = useQuery({
-    queryKey: queryKeys.organizationContext(devVolunteerId),
+    queryKey: orgContextQueryKey,
     queryFn: () =>
       fetchOrganizationContext(
         devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
@@ -112,7 +118,8 @@ export function OrganizationProvider({
     enabled,
   });
 
-  const churches = data?.churches ?? [];
+  const hasQueryError = Boolean(queryError);
+  const churches = hasQueryError ? [] : (data?.churches ?? []);
   const [activeChurchId, setActiveChurchId] = useState<string | null>(null);
   const [activeCampusId, setActiveCampusId] = useState<string | null>(null);
   const [activeMinistryId, setActiveMinistryId] = useState<string | null>(null);
@@ -123,7 +130,17 @@ export function OrganizationProvider({
     setActiveChurchId(null);
     setActiveCampusId(null);
     setActiveMinistryId(null);
-  }, [devVolunteerId]);
+  }, [sessionVolunteerId, devVolunteerId]);
+
+  useEffect(() => {
+    if (!queryError) {
+      return;
+    }
+    bootstrappedRef.current = false;
+    setActiveChurchId(null);
+    setActiveCampusId(null);
+    setActiveMinistryId(null);
+  }, [queryError]);
 
   useEffect(() => {
     if (!enabled) {
@@ -198,41 +215,60 @@ export function OrganizationProvider({
   );
 
   const refresh = useCallback(async () => {
-    await queryClient.cancelQueries({
-      queryKey: queryKeys.organizationContext(devVolunteerId),
-    });
-    const freshData = await fetchOrganizationContext(
-      devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
-    );
-    const resolved = resolveSelection(
-      freshData.churches,
-      activeChurchId,
-      activeCampusId,
-      activeMinistryId,
-      isSystemAdmin,
-    );
-    setActiveChurchId(resolved.churchId);
-    setActiveCampusId(resolved.campusId);
-    setActiveMinistryId(resolved.ministryId);
-    setStoredOrganizationSelection(
-      resolved.churchId,
-      resolved.campusId,
-      resolved.ministryId,
-    );
-    queryClient.setQueryData(
-      queryKeys.organizationContext(devVolunteerId),
-      freshData,
-    );
-    await queryClient.invalidateQueries({
-      queryKey: queryKeys.organizationContext(devVolunteerId),
-      refetchType: 'none',
-    });
+    try {
+      await queryClient.cancelQueries({
+        queryKey: orgContextQueryKey,
+      });
+      const freshData = await fetchOrganizationContext(
+        devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
+      );
+      const resolved = resolveSelection(
+        freshData.churches,
+        activeChurchId,
+        activeCampusId,
+        activeMinistryId,
+        isSystemAdmin,
+      );
+      setActiveChurchId(resolved.churchId);
+      setActiveCampusId(resolved.campusId);
+      setActiveMinistryId(resolved.ministryId);
+      setStoredOrganizationSelection(
+        resolved.churchId,
+        resolved.campusId,
+        resolved.ministryId,
+      );
+      queryClient.setQueryData(orgContextQueryKey, freshData);
+      await queryClient.invalidateQueries({
+        queryKey: orgContextQueryKey,
+        refetchType: 'none',
+      });
+    } catch (err) {
+      const error =
+        err instanceof Error
+          ? err
+          : new Error('Failed to load organization context');
+      bootstrappedRef.current = false;
+      setActiveChurchId(null);
+      setActiveCampusId(null);
+      setActiveMinistryId(null);
+      queryClient.setQueryData(orgContextQueryKey, undefined);
+      queryClient
+        .getQueryCache()
+        .find({ queryKey: orgContextQueryKey })
+        ?.setState({
+          data: undefined,
+          error,
+          status: 'error',
+          fetchStatus: 'idle',
+        });
+    }
   }, [
     activeCampusId,
     activeChurchId,
     activeMinistryId,
     devVolunteerId,
     isSystemAdmin,
+    orgContextQueryKey,
     queryClient,
   ]);
 
@@ -245,12 +281,12 @@ export function OrganizationProvider({
           ? queryError.message
           : 'Failed to load organization context'
         : null,
-      activeChurchId,
-      activeCampusId,
-      activeMinistryId,
-      activeChurch,
-      activeCampus,
-      activeMinistry,
+      activeChurchId: hasQueryError ? null : activeChurchId,
+      activeCampusId: hasQueryError ? null : activeCampusId,
+      activeMinistryId: hasQueryError ? null : activeMinistryId,
+      activeChurch: hasQueryError ? null : activeChurch,
+      activeCampus: hasQueryError ? null : activeCampus,
+      activeMinistry: hasQueryError ? null : activeMinistry,
       onChurchChange,
       onCampusChange,
       onMinistryChange,
@@ -261,6 +297,7 @@ export function OrganizationProvider({
       enabled,
       isLoading,
       queryError,
+      hasQueryError,
       activeChurchId,
       activeCampusId,
       activeMinistryId,

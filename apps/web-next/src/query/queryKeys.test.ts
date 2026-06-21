@@ -2,11 +2,26 @@ import { describe, expect, it } from 'vitest';
 import { queryKeys } from './queryKeys';
 
 describe('queryKeys', () => {
-  it('organizationContext uses volunteer id or self', () => {
-    expect(queryKeys.organizationContext()).toEqual(['org-context', 'self']);
+  it('organizationContext partitions by session user and dev header scope', () => {
+    expect(queryKeys.organizationContext()).toEqual([
+      'org-context',
+      'anonymous',
+      'default',
+    ]);
     expect(queryKeys.organizationContext('vol-1')).toEqual([
       'org-context',
       'vol-1',
+      'default',
+    ]);
+    expect(queryKeys.organizationContext('vol-1', 'dev-vol')).toEqual([
+      'org-context',
+      'vol-1',
+      'dev-vol',
+    ]);
+    expect(queryKeys.organizationContext(null, 'dev-vol')).toEqual([
+      'org-context',
+      'anonymous',
+      'dev-vol',
     ]);
   });
 

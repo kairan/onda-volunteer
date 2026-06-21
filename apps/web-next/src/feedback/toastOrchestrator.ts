@@ -10,6 +10,13 @@ const MAX_NON_CRITICAL = 2;
 
 export function createToastOrchestrator() {
   const queue: ToastMessage[] = [];
+  const listeners = new Set<() => void>();
+
+  function notify() {
+    for (const listener of listeners) {
+      listener();
+    }
+  }
 
   return {
     push(toast: ToastMessage) {
@@ -18,20 +25,29 @@ export function createToastOrchestrator() {
         queue.length = 0;
         queue.push(...withoutErrors, toast);
         trimNonCritical();
+        notify();
         return;
       }
 
       queue.push(toast);
       trimNonCritical();
+      notify();
     },
     dismiss(id: string) {
       const index = queue.findIndex((item) => item.id === id);
       if (index >= 0) {
         queue.splice(index, 1);
+        notify();
       }
     },
     visible() {
       return [...queue];
+    },
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
     },
   };
 
@@ -44,4 +60,10 @@ export function createToastOrchestrator() {
     queue.length = 0;
     queue.push(...errors, ...nonCritical);
   }
+}
+
+const appToastOrchestrator = createToastOrchestrator();
+
+export function getAppToastOrchestrator() {
+  return appToastOrchestrator;
 }
