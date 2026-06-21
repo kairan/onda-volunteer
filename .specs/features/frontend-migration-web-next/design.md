@@ -197,7 +197,7 @@ During migration (additions, existing `@onda/web` jobs unchanged):
 
 ## Testing Strategy
 
-- **Theme contract test** (rewritten): assert Onda tokens — `--primary: #2034D6` (or HSL equivalent), page bg `#E4F1FA`/`#FBFBDE` (locked), `--border #A1C1DB`, radius 6–8px, Space Grotesk stack; assert **absence** of HOPE vars (`--border-weight`, `--shadow-offset-*`, zero-radius, Montserrat).
+- **Theme contract test** (rewritten): assert Onda tokens from `design-reference/serve-well/src/styles.css` — `--primary` ≈ `#2034D6`, page bg `#FAFAFA`, `--shadow-card`, `--border` ≈ `#A1C1DB`, radius `0.5rem`, Space Grotesk stack; assert **absence** of HOPE vars (`--border-weight`, `--shadow-offset-*`, zero-radius, Montserrat).
 - **Vitest behavior tests** per slice using `@testing-library/user-event` (AGENTS.md) — greeting/cards/roster/assign-release/unavailability CRUD.
 - **Query layer**: unit tests for query-key factory + mutation invalidation; mock `apiClient`.
 - **Playwright smoke**: volunteer dashboard + leader roster assign/release green on `web-next` before cutover (CI parity with current `e2e-web`).

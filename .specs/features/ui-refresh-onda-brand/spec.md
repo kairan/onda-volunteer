@@ -43,7 +43,7 @@ The signed-in web app uses the **HOPE** brutalist visual layer (ADR 0003): heavy
 **Acceptance Criteria**:
 
 1. WHEN the signed-in shell loads THEN primary actions SHALL use `#2034D6` with hover `#151BB6`.
-2. WHEN inspecting theme variables THEN page background SHALL use `#E4F1FA` or `#FBFBDE` (one locked in theme test) and cards SHALL use `#FFFFFF` with 1px `#A1C1DB` borders and 6–8px radius.
+2. WHEN inspecting theme variables THEN page background SHALL use `#FAFAFA` (warm white), cards SHALL use `#FFFFFF` with 1px `#A1C1DB` borders, `--shadow-card`, and 8px radius (`--radius: 0.5rem`).
 3. WHEN text renders in UI chrome THEN body/nav SHALL use **Space Grotesk** (not Inter/Montserrat as primary).
 4. WHEN a display headline appears THEN it MAY use **Right Grotesk** (max 1–2 per screen).
 5. WHEN focus moves via keyboard THEN focus ring SHALL be visible and use brand primary (`#2034D6`) with WCAG 2.2 AA contrast.

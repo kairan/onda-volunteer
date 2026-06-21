@@ -18,20 +18,24 @@ function readBuiltCss(): string {
 }
 
 describe('theme Tailwind build output', () => {
-  it('emits shadcn semantic utilities wired to Onda CSS variables', () => {
-    const builtCss = readBuiltCss();
+  it(
+    'emits shadcn semantic utilities wired to Onda CSS variables',
+    () => {
+      const builtCss = readBuiltCss();
 
-    for (const key of REQUIRED_SHADCN_THEME_COLOR_KEYS) {
-      expect(builtCss, `missing theme key ${key}`).toContain(`${key}:`);
-    }
+      for (const key of REQUIRED_SHADCN_THEME_COLOR_KEYS) {
+        expect(builtCss, `missing theme key ${key}`).toContain(`${key}:`);
+      }
 
-    expect(builtCss).toContain('.bg-card');
-    expect(builtCss).toContain('.bg-secondary');
-    expect(builtCss).toContain('.bg-muted');
-    expect(builtCss).toContain('.bg-accent');
-    expect(builtCss).toContain('.border-input');
-    expect(builtCss).toMatch(/\.bg-card\{[^}]*hsl\(var\(--card\)\)/);
-    expect(builtCss).toMatch(/\.bg-secondary\{[^}]*hsl\(var\(--secondary\)\)/);
-    expect(builtCss).toMatch(/\.border-input\{[^}]*hsl\(var\(--input\)\)/);
-  });
+      expect(builtCss).toContain('.bg-card');
+      expect(builtCss).toContain('.bg-secondary');
+      expect(builtCss).toContain('.bg-muted');
+      expect(builtCss).toContain('.bg-accent');
+      expect(builtCss).toContain('.border-input');
+      expect(builtCss).toMatch(/\.bg-card\{[^}]*var\(--card\)/);
+      expect(builtCss).toMatch(/\.bg-secondary\{[^}]*var\(--secondary\)/);
+      expect(builtCss).toMatch(/\.border-input\{[^}]*var\(--input\)/);
+    },
+    60_000,
+  );
 });

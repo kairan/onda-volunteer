@@ -1,0 +1,191 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system definition — Onda Brand Provisório
+ *
+ * Tipografia: Space Grotesk (fonte principal da marca)
+ * Paleta: extraída das guias oficiais provisórias
+ *
+ * Cores primárias (tons de azul):
+ *   Azul Vivo        #2034D6  oklch(0.4455 0.2410 267.39)
+ *   Azul Marinho     #181A43  oklch(0.2428 0.0760 277.02)
+ *   Azul Intenso     #151BB6  oklch(0.3743 0.2272 267.18)
+ *   Azul Escuro      #11165E  oklch(0.2575 0.1248 270.81)
+ *   Azul Royal       #1B2488  oklch(0.3338 0.1628 270.02)
+ *
+ * Cores de apoio:
+ *   Creme            #E8E6D3  oklch(0.9214 0.0254 101.98)
+ *   Azul Pastel      #E4F1FA  oklch(0.9511 0.0184 237.77)
+ *   Azul Gelo        #E1F1F6  oklch(0.9477 0.0183 218.38)
+ *   Azul Claro 1     #6897B9  oklch(0.6558 0.0719 240.65)
+ *   Azul Claro 2     #A1C1DB  oklch(0.7960 0.0507 242.88)
+ *   Azul Médio       #5681B3  oklch(0.5931 0.0907 252.97)
+ *   Azul Slate       #416B92  oklch(0.5142 0.0781 247.84)
+ *   Azul Indigo      #4B66E2  oklch(0.5597 0.1904 269.91)
+ */
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --shadow-card: var(--shadow-card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.5rem;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgb(24 26 67 / 0.04), 0 1px 3px rgb(24 26 67 / 0.06);
+
+  /* Background — branco quente #FAFAFA */
+  --background: oklch(0.9851 0 0);
+  /* Foreground — Azul Marinho Escuro #181A43 */
+  --foreground: oklch(0.2428 0.0760 277.02);
+
+  /* Card — branco puro */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2428 0.0760 277.02);
+
+  /* Popover */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2428 0.0760 277.02);
+
+  /* Primary — Azul Vivo #2034D6 */
+  --primary: oklch(0.4455 0.2410 267.39);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Secondary — Creme #E8E6D3 */
+  --secondary: oklch(0.9214 0.0254 101.98);
+  --secondary-foreground: oklch(0.2428 0.0760 277.02);
+
+  /* Muted — Azul Pastel #E4F1FA */
+  --muted: oklch(0.9511 0.0184 237.77);
+  --muted-foreground: oklch(0.5142 0.0781 247.84);
+
+  /* Accent — Azul Gelo #E1F1F6 */
+  --accent: oklch(0.9477 0.0183 218.38);
+  --accent-foreground: oklch(0.3338 0.1628 270.02);
+
+  /* Destructive */
+  --destructive: oklch(0.6 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* Border — cinza azulado claro */
+  --border: oklch(0.89 0.01 250);
+  --input: oklch(0.89 0.01 250);
+  --ring: oklch(0.4455 0.2410 267.39);
+
+  /* Charts */
+  --chart-1: oklch(0.4455 0.2410 267.39);
+  --chart-2: oklch(0.5931 0.0907 252.97);
+  --chart-3: oklch(0.6558 0.0719 240.65);
+  --chart-4: oklch(0.7378 0.0903 152.91);
+  --chart-5: oklch(0.5142 0.0781 247.84);
+
+  /* Sidebar */
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.2428 0.0760 277.02);
+  --sidebar-primary: oklch(0.4455 0.2410 267.39);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.9477 0.0183 218.38);
+  --sidebar-accent-foreground: oklch(0.3338 0.1628 270.02);
+  --sidebar-border: oklch(0.89 0.01 250);
+  --sidebar-ring: oklch(0.4455 0.2410 267.39);
+}
+
+.dark {
+  --background: oklch(0.19 0.04 270);
+  --foreground: oklch(0.95 0.005 250);
+
+  --card: oklch(0.22 0.04 270);
+  --card-foreground: oklch(0.95 0.005 250);
+
+  --popover: oklch(0.22 0.04 270);
+  --popover-foreground: oklch(0.95 0.005 250);
+
+  --primary: oklch(0.5597 0.1904 269.91);
+  --primary-foreground: oklch(0.19 0.04 270);
+
+  --secondary: oklch(0.28 0.03 270);
+  --secondary-foreground: oklch(0.95 0.005 250);
+
+  --muted: oklch(0.28 0.03 270);
+  --muted-foreground: oklch(0.70 0.03 250);
+
+  --accent: oklch(0.28 0.03 270);
+  --accent-foreground: oklch(0.95 0.005 250);
+
+  --destructive: oklch(0.70 0.19 22);
+  --destructive-foreground: oklch(0.95 0.005 250);
+
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.5597 0.1904 269.91);
+
+  --chart-1: oklch(0.5597 0.1904 269.91);
+  --chart-2: oklch(0.5931 0.0907 252.97);
+  --chart-3: oklch(0.6558 0.0719 240.65);
+  --chart-4: oklch(0.7378 0.0903 152.91);
+  --chart-5: oklch(0.5142 0.0781 247.84);
+
+  --sidebar: oklch(0.22 0.04 270);
+  --sidebar-foreground: oklch(0.95 0.005 250);
+  --sidebar-primary: oklch(0.5597 0.1904 269.91);
+  --sidebar-primary-foreground: oklch(0.95 0.005 250);
+  --sidebar-accent: oklch(0.28 0.03 270);
+  --sidebar-accent-foreground: oklch(0.95 0.005 250);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.5597 0.1904 269.91);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}

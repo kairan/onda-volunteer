@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Comando voluntário",
+  "title": "Painel",
+  "body": "A visão geral da sua participação aparecerá aqui com os próximos sinais de agenda e ministério.",
+  "upcomingAssignments": "Próximas escalas",
+  "emptyState": "Sem escalas futuras. Confira a agenda para oportunidades em aberto.",
+  "preview": {
+    "greeting": "Olá, {{name}}",
+    "assignmentCount": "{{count}} escalas futuras",
+    "confirmed": "Confirmada",
+    "next30Days": "Próximos 30 dias",
+    "timeAwayHeading": "Períodos indisponíveis",
+    "timeAwayBody": "Períodos em que você não pode servir",
+    "addPeriod": "Adicionar período",
+    "editPeriod": "Editar período",
+    "deletePeriod": "Excluir período",
+    "samplesHeading": "Amostras de visualização"
+  },
+  "loading": "Carregando escalas...",
+  "errors": {
+    "loadFailed": "Não foi possível carregar as escalas."
+  },
+  "pendingMemberships": "Você tem vínculos pendentes em: {{names}}. Poderá servir quando forem ativados.",
+  "stats": {
+    "ministries": {
+      "label": "Ministérios",
+      "value": "Pronto"
+    },
+    "schedule": {
+      "label": "Agenda",
+      "value": "Próxima"
+    },
+    "timeAway": {
+      "label": "Ausências",
+      "value": "Nenhuma"
+    }
+  }
+}

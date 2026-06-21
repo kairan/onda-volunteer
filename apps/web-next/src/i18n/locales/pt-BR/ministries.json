@@ -1,0 +1,108 @@
+{
+  "title": "Ministérios",
+  "body": "Mantenha o catálogo de funções dos ministérios que você lidera. Funções aposentadas permanecem no histórico, mas não podem ser usadas em novas designações.",
+  "signInRequired": "Entre para gerenciar funções do ministério.",
+  "notLeader": "É necessário liderar um ministério para gerenciar o catálogo de funções.",
+  "ministryLabel": "Ministério",
+  "ministryPlaceholder": "Selecione o ministério",
+  "newRolePlaceholder": "Nome da nova função",
+  "addRole": "Adicionar função",
+  "loading": "Carregando funções…",
+  "activeBadge": "Ativa",
+  "retiredBadge": "Aposentada",
+  "rename": "Renomear",
+  "retire": "Aposentar",
+  "saveRename": "Salvar",
+  "cancelRename": "Cancelar",
+  "errorGeneric": "Algo deu errado. Tente novamente.",
+  "retireConfirm": "Aposentar \"{{name}}\"? Funções aposentadas permanecem em designações passadas, mas não podem ser usadas em novas. Para restaurar uma função aposentada, fale com o administrador da igreja.",
+  "churchSettings": {
+    "title": "Configurações da igreja",
+    "body": "Atualize o nome da igreja ativa e o fuso horário padrão. Os horários dos eventos continuam em UTC; alterar o fuso afeta apenas a exibição.",
+    "nameLabel": "Nome da igreja",
+    "timezoneLabel": "Fuso horário padrão",
+    "timezoneHint": "Use um fuso IANA como America/Sao_Paulo ou UTC.",
+    "save": "Salvar configurações",
+    "saving": "Salvando…",
+    "messages": {
+      "saved": "Configurações da igreja salvas."
+    },
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "nameRequired": "O nome da igreja é obrigatório.",
+      "invalidTimezone": "Informe um fuso horário IANA válido."
+    }
+  },
+  "campusSettings": {
+    "title": "Configurações do campus",
+    "body": "Atualize o nome e o fuso horário IANA do campus ativo. Os horários dos eventos continuam em UTC; alterar o fuso afeta apenas a exibição deste campus.",
+    "nameLabel": "Nome do campus",
+    "timezoneLabel": "Fuso horário do campus",
+    "timezoneHint": "Use um fuso IANA como America/Sao_Paulo ou UTC.",
+    "save": "Salvar configurações do campus",
+    "saving": "Salvando…",
+    "messages": {
+      "saved": "Configurações do campus salvas."
+    },
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "nameRequired": "O nome do campus é obrigatório.",
+      "invalidTimezone": "Informe um fuso horário IANA válido."
+    },
+    "confirm": {
+      "title": "Alterar fuso horário do campus?",
+      "body": "Horários de eventos e designações em UTC não mudam. A exibição local deste campus usará o novo fuso horário.",
+      "cancel": "Cancelar",
+      "confirm": "Salvar alteração de fuso"
+    }
+  },
+  "structure": {
+    "title": "Estrutura dos ministérios",
+    "body": "Crie e renomeie ministérios da igreja ativa. Renomeações mantêm o mesmo ID do ministério para preservar vínculos com membros, funções, designações e histórico de indisponibilidades.",
+    "newNameLabel": "Nome do novo ministério",
+    "newNamePlaceholder": "Hospitalidade",
+    "create": "Criar ministério",
+    "currentHeading": "Ministérios atuais",
+    "empty": "Ainda não há ministérios.",
+    "rename": "Renomear ministério",
+    "renameAria": "Renomear ministério {{name}}",
+    "renameNameLabel": "Nome do ministério {{name}}",
+    "saveRename": "Salvar ministério",
+    "cancelRename": "Cancelar",
+    "archive": "Arquivar ministério",
+    "archivedBadge": "Arquivado",
+    "archivedOption": "{{name}} (arquivado)",
+    "archiveConfirm": "Arquivar \"{{name}}\"? Novas operações de agenda, membros, funções e indisponibilidades serão bloqueadas. Designações futuras deste ministério serão anuladas. O histórico permanece legível.",
+    "messages": {
+      "created": "Ministério criado.",
+      "renamed": "Ministério renomeado.",
+      "archived": "Ministério arquivado."
+    },
+    "errors": {
+      "notAccredited": "Você não está credenciado para esta igreja.",
+      "nameRequired": "O nome do ministério é obrigatório.",
+      "nameConflict": "Já existe um ministério com esse nome nesta igreja.",
+      "alreadyArchived": "Este ministério já está arquivado.",
+      "archived": "Este ministério está arquivado e não aceita novas alterações."
+    }
+  },
+  "delegation": {
+    "title": "Delegar líderes",
+    "body": "Conceda ou revogue a liderança no ministério. A delegação é limitada às igrejas em que você é administrador credenciado.",
+    "signInRequired": "Entre para gerenciar delegação de líderes.",
+    "notAdmin": "Credenciamento de administrador da igreja é necessário.",
+    "volunteerIdPlaceholder": "ID do voluntário",
+    "grant": "Conceder liderança",
+    "revoke": "Revogar",
+    "loading": "Carregando líderes…",
+    "messages": {
+      "granted": "Liderança concedida.",
+      "revoked": "Liderança revogada."
+    },
+    "errors": {
+      "loadFailed": "Não foi possível carregar os líderes.",
+      "actionFailed": "Ação falhou. Tente novamente.",
+      "notAccredited": "Você não está credenciado para esta igreja."
+    }
+  }
+}

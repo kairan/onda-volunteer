@@ -98,10 +98,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T02: Onda globals.css + theme contract test
 
-**What**: Write `src/styles/globals.css` with Onda CSS variables (primary `#2034D6`, hover `#151BB6`, bg `#E4F1FA`, card bg `#FFFFFF`, border `#A1C1DB`, radius 6–8 px, subtle shadow) and `@font-face` for Space Grotesk (self-hosted); write `src/theme/tokens.ts` listing `REQUIRED_THEME_CSS_VARIABLES` for Onda (drops `--border-weight`, `--shadow-offset-*`); write `src/theme/theme.contract.test.ts` asserting the presence of Onda vars and the **absence** of HOPE vars.
+**What**: Write `src/styles/globals.css` by porting token structure from `design-reference/serve-well/src/styles.css` (oklch shadcn vars, `--shadow-card`, `--sidebar-*`, Space Grotesk via `@fontsource`); primary `#2034D6`, hover `#151BB6`, page bg `#FAFAFA`, card `#FFFFFF`, border `#A1C1DB`, radius `0.5rem`; write `src/theme/tokens.ts` listing `REQUIRED_THEME_CSS_VARIABLES` for Onda (drops `--border-weight`, `--shadow-offset-*`); write `src/theme/theme.contract.test.ts` asserting Onda vars present and HOPE vars absent.
 **Where**: `apps/web-next/src/styles/globals.css`, `apps/web-next/src/theme/tokens.ts`, `apps/web-next/src/theme/theme.contract.test.ts`
 **Depends on**: T01
-**Reuses**: `apps/web/src/theme/tokens.ts` (test structure to invert), `apps/web/src/theme/theme.contract.test.ts` (test pattern)
+**Reuses**: `design-reference/serve-well/src/styles.css` (token source), `apps/web/src/theme/tokens.ts` (test structure to invert), `apps/web/src/theme/theme.contract.test.ts` (test pattern)
 **Requirement**: MIG-FND-02
 
 **Tools**:
@@ -109,7 +109,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `globals.css` defines `--primary: #2034D6` (or HSL equivalent), `--background: #E4F1FA`, `--border: #A1C1DB`, `--radius: 6px` (or 8px), Space Grotesk `@font-face` present
+- [ ] `globals.css` defines `--primary` ≈ `#2034D6`, `--background` ≈ `#FAFAFA`, `--shadow-card`, `--border` ≈ `#A1C1DB`, `--radius: 0.5rem`, Space Grotesk stack present
 - [ ] `tokens.ts` lists `REQUIRED_THEME_CSS_VARIABLES` without `--border-weight`, `--shadow-offset-sm`, `--shadow-offset-md`, Montserrat
 - [ ] Contract test asserts: all Onda vars present, no HOPE vars present
 - [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
@@ -124,10 +124,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T03: shadcn primitive components [P]
 
-**What**: Install shadcn primitives button, card, input, badge, dialog, sheet, skeleton, avatar (initials variant) re-themed to Onda CSS variables (no HOPE border-weight, no black borders, 6–8 px radius). Each component uses Onda `--primary`, `--border`, `--radius` vars — not hardcoded HOPE values.
-**Where**: `apps/web-next/src/components/ui/` (button.tsx, card.tsx, input.tsx, badge.tsx, dialog.tsx, sheet.tsx, skeleton.tsx, avatar.tsx), `apps/web-next/src/lib/utils.ts` (`cn` helper)
+**What**: Install shadcn primitives button, card, input, badge, dialog, sheet, skeleton, avatar, **sidebar** (+ separator if required by sidebar) re-themed to Onda CSS variables from T02; card styling SHALL use `shadow-card` pattern from reference. Each component uses Onda `--primary`, `--border`, `--radius` vars — not hardcoded HOPE values.
+**Where**: `apps/web-next/src/components/ui/` (button.tsx, card.tsx, input.tsx, badge.tsx, dialog.tsx, sheet.tsx, skeleton.tsx, avatar.tsx, **sidebar.tsx**), `apps/web-next/src/lib/utils.ts` (`cn` helper)
 **Depends on**: T02
-**Reuses**: shadcn registry (plugin-shadcn-shadcn); NOT `apps/web/src/components/ui/` (HOPE-styled)
+**Reuses**: shadcn registry (plugin-shadcn-shadcn); `design-reference/serve-well/src/components/ui/sidebar.tsx` + card/badge/button patterns; NOT `apps/web/src/components/ui/` (HOPE-styled)
 **Requirement**: MIG-FND-02
 
 **Tools**:
@@ -135,7 +135,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] All 8 component files exist under `src/components/ui/`
+- [ ] All **9+** component files exist under `src/components/ui/` (includes `sidebar.tsx`)
 - [ ] `cn()` utility exported from `src/lib/utils.ts`
 - [ ] No hardcoded `border: 2px solid black`, `border-radius: 0`, or Montserrat in any component
 - [ ] Button `data-testid` renders at `--primary` bg; avatar initials derive from display name
@@ -358,10 +358,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T12: AppShell.tsx + shellRoute() helper
 
-**What**: Write `apps/web-next/src/shell/AppShell.tsx` — signed-in shell matching ADR 0001 structure (≈260 px sidebar + top bar desktop; sticky top bar + drawer mobile) with Onda tokens only; header shows Onda wordmark + active Church name + context switchers (no demo role dropdown); sidebar renders `buildNavForGrants`-derived nav items; `shellRoute(component)` helper wraps a route component in `<AppShell>`; includes `RouteErrorPanel` port and `ToastHost` + `toastOrchestrator` port.
+**What**: Write `apps/web-next/src/shell/AppShell.tsx` — signed-in shell using **shadcn `SidebarProvider` + `Sidebar`** layout ported from `design-reference/serve-well/src/components/onda/AppShell.tsx` / `AppSidebar.tsx`, adapted to ADR 0001 behavior: grant-gated nav from `buildNavForGrants`, Church/Campus context controls in top bar (no demo role dropdown, no global search); sticky top bar + mobile drawer via `SidebarTrigger`; includes `RouteErrorPanel`, `ToastHost`, `toastOrchestrator`, and `shellRoute()` helper.
 **Where**: `apps/web-next/src/shell/AppShell.tsx`, `apps/web-next/src/shell/shellRoute.tsx`, `apps/web-next/src/shell/RouteErrorPanel.tsx`, `apps/web-next/src/shell/OrganizationContextControls.tsx`, `apps/web-next/src/feedback/ToastHost.tsx`, `apps/web-next/src/feedback/toastOrchestrator.ts`
 **Depends on**: T03, T10, T11
-**Reuses**: `apps/web/src/shell/AppShell.tsx`, `apps/web/src/shell/shellPage.tsx`, `apps/web/src/shell/RouteErrorPanel.tsx`, `apps/web/src/shell/OrganizationContextControls.tsx`, `apps/web/src/feedback/ToastHost.tsx`, `apps/web/src/feedback/toastOrchestrator.ts`
+**Reuses**: `design-reference/serve-well/src/components/onda/AppShell.tsx`, `AppSidebar.tsx`; `apps/web/src/shell/OrganizationContextControls.tsx`, `apps/web/src/feedback/ToastHost.tsx`, `apps/web/src/feedback/toastOrchestrator.ts`, `apps/web/src/shell/RouteErrorPanel.tsx`
 **Requirement**: MIG-FND-03
 
 **Tools**:
@@ -397,7 +397,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 **Done when**:
 - [ ] `pnpm --filter @onda/web-next build` exits 0 with all route stubs
-- [ ] Unauthenticated access to `/dashboard` redirects to auth panel
+- [ ] Unauthenticated access to `/dashboard` redirects to `/` with `auth=required` (landing auth panel)
 - [ ] All known routes (`/scheduling`, `/time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`, `/system-admin/*`) present in route tree (stub components OK)
 - [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
 - [ ] Test count: ≥2 unit tests pass (auth guard redirect, route tree renders without crash)
@@ -411,10 +411,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T13.5: Mock-data look-and-feel preview (Volunteer + Leader, throwaway)
 
-**What**: Replace the `/dashboard` (Volunteer) and `/scheduling` (Leader) route **stubs** with mock-data previews that render the real Onda components (T03 primitives + T12 `AppShell`) against **hardcoded fixtures** — greeting + a few assignment cards, a roster section with a fill badge, an empty state, and a skeleton — with **no** `apiClient` / TanStack Query wiring. The assignment cards are rendered inline (`AssignmentCard`-style) rather than using the T15 `AssignmentCard` component, keeping T13.5 dependent only on T13; T16 swaps in the real `AssignmentCard` when the volunteer data layer is live. Purpose: a brand look-and-feel checkpoint that closes Slice 1 (#143) before the ~17 live data-backed tasks. Fixtures live in a clearly-labelled `__preview__` location and are **deleted/replaced** by T16 (volunteer) and T20/T21 (leader). Scope is the **two designed roles only** — do not preview admin / system-admin (MIG-ADMIN-01 neutral port, no Onda design).
-**Where**: `apps/web-next/src/routes/dashboard.tsx` + `apps/web-next/src/routes/scheduling.tsx` (preview bodies), `apps/web-next/src/__preview__/fixtures.ts`
+**What**: Replace the `/dashboard` (Volunteer) and `/scheduling` route **stubs** with mock-data previews that **mirror layout** from `design-reference/serve-well/src/components/onda/dashboards/VolunteerDashboard.tsx` and `MinistryLeaderDashboard.tsx` — **no** `apiClient` / TanStack Query. **Volunteer nav IA split** (per `VOLUNTEER_NAV`): `/dashboard` = greeting + assignment-count summary + **Time away** section + empty/skeleton variants; volunteer `/scheduling` ("My assignments") = 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview`. **Leader** `/scheduling` = ministry hero + header CTAs, roster event card with fill badge and per-row Assign/Release (non-functional OK). **Omit** Lovable-only elements: Accept/Decline, location rows, pending badges. Fixtures in `src/__preview__/`, deleted/replaced by T16/T20/T21.
+**Where**: `apps/web-next/src/routes/dashboard.tsx` + `apps/web-next/src/routes/scheduling.tsx` (preview bodies), `apps/web-next/src/__preview__/fixtures.ts`, `apps/web-next/src/__preview__/VolunteerMyAssignmentsPreview.tsx`
 **Depends on**: T13
-**Reuses**: T03 shadcn primitives, T12 `AppShell`; fixture shapes mirror `apps/web/src/identity/types.ts` / event+roster DTOs (so T16/T20/T21 can swap to live queries with minimal churn)
+**Reuses**: T03 shadcn primitives, T12 `AppShell`; `design-reference/serve-well/src/components/onda/dashboards/*`; fixture shapes mirror `apps/web/src/identity/types.ts` / event+roster DTOs
 **Requirement**: MIG-FND-04
 
 **Tools**:
@@ -422,8 +422,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `/dashboard` renders greeting + ≥2 `AssignmentCard`-style cards + an empty-state and skeleton variant from fixtures (no network)
-- [ ] `/scheduling` renders a ministry hero + one roster section with an `X/Y filled` badge from fixtures (no network)
+- [ ] `/dashboard` (volunteer): greeting + assignment-count summary, **Time away** list + Add period CTA, empty/skeleton variants (no network); assignment cards live on volunteer `/scheduling` per nav IA (not one combined Lovable screen)
+- [ ] `/scheduling` (volunteer): 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview` (no network)
+- [ ] `/scheduling` (leader): ministry hero + summary line + header CTAs, roster event card with `X/Y filled` badge and Assign/Release row actions (no network)
+- [ ] Side-by-side manual check vs `design-reference/serve-well` dashboards at 1440px before closing #143
 - [ ] No `apiClient` / `useQuery` import in the preview bodies; fixtures isolated under `src/__preview__/`
 - [ ] No HOPE classes; only Onda tokens/components
 - [ ] A `// TODO(MIG-FND-04): throwaway preview — remove when T16/T20/T21 land` marker is present in each preview body and in `fixtures.ts`

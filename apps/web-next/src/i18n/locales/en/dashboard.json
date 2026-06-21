@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Volunteer command",
+  "title": "Dashboard",
+  "body": "Your participation overview will appear here with the next scheduling and ministry signals.",
+  "upcomingAssignments": "Upcoming assignments",
+  "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
+  "preview": {
+    "greeting": "Hi {{name}}",
+    "assignmentCount": "{{count}} upcoming assignments",
+    "confirmed": "Confirmed",
+    "next30Days": "Next 30 days",
+    "timeAwayHeading": "Time away",
+    "timeAwayBody": "Periods you're unavailable to serve",
+    "addPeriod": "Add period",
+    "editPeriod": "Edit period",
+    "deletePeriod": "Delete period",
+    "samplesHeading": "Preview samples"
+  },
+  "loading": "Loading assignments...",
+  "errors": {
+    "loadFailed": "Could not load assignments."
+  },
+  "pendingMemberships": "You have pending memberships in: {{names}}. You will be able to serve once they are activated.",
+  "stats": {
+    "ministries": {
+      "label": "Ministries",
+      "value": "Ready"
+    },
+    "schedule": {
+      "label": "Schedule",
+      "value": "Next"
+    },
+    "timeAway": {
+      "label": "Time away",
+      "value": "Clear"
+    }
+  }
+}
