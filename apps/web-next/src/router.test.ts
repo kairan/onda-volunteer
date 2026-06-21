@@ -1,8 +1,8 @@
 import type { AnyRoute } from '@tanstack/react-router';
 import { createMemoryHistory, createRouter } from '@tanstack/react-router';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import * as authSession from '@/auth/authSession';
 import { buildNavForGrants } from '@/navigation/manifest';
-import { syncAuthVolunteerId } from '@/auth/authSession';
 import { buildRouteTree } from './router';
 
 function collectRoutePaths(route: AnyRoute): string[] {
@@ -33,7 +33,12 @@ describe('buildRouteTree', () => {
   });
 
   it('redirects unauthenticated dashboard access to the auth landing route', async () => {
-    syncAuthVolunteerId({ status: 'unauthenticated', reason: 'signed-out' });
+    vi.spyOn(authSession, 'devAuthBypassAllowed').mockReturnValue(false);
+    vi.spyOn(authSession, 'volunteerIdForProtectedRequests').mockReturnValue(undefined);
+    authSession.syncAuthVolunteerId({
+      status: 'unauthenticated',
+      reason: 'signed-out',
+    });
 
     const routeTree = buildRouteTree();
     const history = createMemoryHistory({ initialEntries: ['/dashboard'] });
@@ -44,4 +49,8 @@ describe('buildRouteTree', () => {
     expect(history.location.pathname).toBe('/');
     expect(history.location.search).toContain('auth=required');
   });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });

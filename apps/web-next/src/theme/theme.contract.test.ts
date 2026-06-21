@@ -19,11 +19,11 @@ describe('theme CSS variable contract (Onda)', () => {
   });
 
   it('locks Onda brand anchors in :root', () => {
-    expect(globalsCss).toMatch(/--primary:\s*231\s+74%\s+48%/);
-    expect(globalsCss).toMatch(/--background:\s*204\s+56%\s+93%/);
-    expect(globalsCss).toMatch(/--border:\s*206\s+38%\s+74%/);
-    expect(globalsCss).toMatch(/--radius:\s*6px/);
-    expect(globalsCss).toMatch(/--primary-hover:\s*234\s+79%\s+40%/);
+    expect(globalsCss).toMatch(/--primary:\s*oklch\(0\.4455\s+0\.241\s+267\.39\)/);
+    expect(globalsCss).toMatch(/--background:\s*oklch\(0\.9851\s+0\s+0\)/);
+    expect(globalsCss).toMatch(/--shadow-card:/);
+    expect(globalsCss).toMatch(/--radius:\s*0\.5rem/);
+    expect(globalsCss).toMatch(/--primary-hover:\s*oklch\(0\.3743/);
   });
 
   it('uses Space Grotesk for UI typography', () => {

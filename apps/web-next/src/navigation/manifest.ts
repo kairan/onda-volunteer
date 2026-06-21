@@ -18,7 +18,7 @@ export const VOLUNTEER_NAV: NavManifestItem[] = [
   },
   {
     id: 'myAssignments',
-    path: '/dashboard',
+    path: '/scheduling',
     labelKey: 'shell:nav.myAssignments',
   },
   {
@@ -94,4 +94,8 @@ export function buildNavForGrants(grants: NavGrants): NavManifestItem[] {
     seen.add(item.id);
     return true;
   });
+}
+
+export function isNavItemActive(item: NavManifestItem, pathname: string): boolean {
+  return pathname === item.path || pathname.startsWith(`${item.path}/`);
 }

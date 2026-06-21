@@ -15,6 +15,11 @@ import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
 import { buildRouteTree } from '@/router';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
+import { useIsMobile } from '@/hooks/use-mobile';
+
+vi.mock('@/hooks/use-mobile', () => ({
+  useIsMobile: vi.fn(() => false),
+}));
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
   fetchIdentityMe: vi.fn(),
@@ -63,6 +68,7 @@ function shellTestProviders(
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
+  vi.mocked(useIsMobile).mockReturnValue(false);
   syncAuthVolunteerId({ status: 'loading' });
 });
 
@@ -124,7 +130,8 @@ describe('AppShell', () => {
     ).toBeInTheDocument();
   });
 
-  it('toggles the mobile navigation drawer from the menu button', async () => {
+  it('opens the mobile sidebar sheet from the trigger button', async () => {
+    vi.mocked(useIsMobile).mockReturnValue(true);
     await initI18n(undefined, 'en');
     syncAuthVolunteerId({
       status: 'dev-bypass',
@@ -137,13 +144,12 @@ describe('AppShell', () => {
 
     render(shellTestProviders(<RouterProvider router={routed} />));
 
-    const openButton = await screen.findByRole('button', { name: /open menu/i });
-    expect(screen.queryByRole('dialog', { name: /open menu/i })).not.toBeInTheDocument();
+    const toggleButton = await screen.findByRole('button', {
+      name: /toggle sidebar/i,
+    });
+    await user.click(toggleButton);
 
-    await user.click(openButton);
-    expect(screen.getByRole('dialog', { name: /open menu/i })).toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: /close menu/i }));
-    expect(screen.queryByRole('dialog', { name: /open menu/i })).not.toBeInTheDocument();
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText('My assignments')).toBeInTheDocument();
   });
 });

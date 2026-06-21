@@ -24,4 +24,13 @@ describe('dashboard preview', () => {
       await screen.findByRole('heading', { name: /hi alex volunteer/i }),
     ).toBeInTheDocument();
   });
+
+  it('renders the time away section from fixtures', async () => {
+    await initI18n(undefined, 'en');
+    renderDashboard();
+    expect(
+      await screen.findByRole('heading', { name: /time away/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Family vacation')).toBeInTheDocument();
+  });
 });

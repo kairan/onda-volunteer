@@ -10,6 +10,13 @@ export type PreviewAssignment = {
   status: 'ROSTERED';
 };
 
+export type PreviewTimeAway = {
+  id: string;
+  startsAtUtc: string;
+  endsAtUtc: string;
+  note: string;
+};
+
 export type PreviewRosterRow = {
   roleName: string;
   volunteerName: string | null;
@@ -28,40 +35,78 @@ export const volunteerDashboardPreview = {
   assignments: [
     {
       id: 'asg-1',
-      eventTitle: 'Sunday Morning Service',
+      eventTitle: 'Sunday Service',
       ministryName: 'Worship',
-      roleName: 'Vocals',
-      startsAtUtc: '2026-06-21T14:00:00.000Z',
-      endsAtUtc: '2026-06-21T16:00:00.000Z',
+      roleName: 'Lead Vocalist',
+      startsAtUtc: '2026-06-22T13:00:00.000Z',
+      endsAtUtc: '2026-06-22T15:00:00.000Z',
       status: 'ROSTERED' as const,
     },
     {
       id: 'asg-2',
-      eventTitle: 'Youth Night',
-      ministryName: 'Youth',
+      eventTitle: 'Wednesday Prayer',
+      ministryName: 'Prayer',
+      roleName: 'Intercessor',
+      startsAtUtc: '2026-06-25T22:00:00.000Z',
+      endsAtUtc: '2026-06-26T00:00:00.000Z',
+      status: 'ROSTERED' as const,
+    },
+    {
+      id: 'asg-3',
+      eventTitle: 'Community Dinner',
+      ministryName: 'Hospitality',
       roleName: 'Greeter',
-      startsAtUtc: '2026-06-28T23:00:00.000Z',
-      endsAtUtc: '2026-06-29T01:00:00.000Z',
+      startsAtUtc: '2026-06-27T21:00:00.000Z',
+      endsAtUtc: '2026-06-27T23:00:00.000Z',
       status: 'ROSTERED' as const,
     },
   ] satisfies PreviewAssignment[],
+  timeAway: [
+    {
+      id: 'away-1',
+      startsAtUtc: '2026-07-05T00:00:00.000Z',
+      endsAtUtc: '2026-07-12T23:59:59.000Z',
+      note: 'Family vacation',
+    },
+    {
+      id: 'away-2',
+      startsAtUtc: '2026-08-02T00:00:00.000Z',
+      endsAtUtc: '2026-08-03T23:59:59.000Z',
+      note: 'Wedding out of town',
+    },
+  ] satisfies PreviewTimeAway[],
 };
 
 export const leaderSchedulingPreview = {
   ministryName: 'Worship',
-  eventCount: 2,
-  rosterEvent: {
-    id: 'evt-preview-1',
-    title: 'Sunday Morning Service',
-    startsAtUtc: '2026-06-21T14:00:00.000Z',
-    endsAtUtc: '2026-06-21T16:00:00.000Z',
-    roster: [
-      { roleName: 'Vocals', volunteerName: 'Alex Volunteer' },
-      { roleName: 'Keys', volunteerName: 'Jordan Keys' },
-      { roleName: 'Drums', volunteerName: null },
-      { roleName: 'Bass', volunteerName: null },
-    ],
-  } satisfies PreviewRosterEvent,
+  eventsThisWeek: 2,
+  openSlots: 3,
+  rosterEvents: [
+    {
+      id: 'evt-preview-1',
+      title: 'Sunday Service',
+      startsAtUtc: '2026-06-22T13:00:00.000Z',
+      endsAtUtc: '2026-06-22T15:00:00.000Z',
+      roster: [
+        { roleName: 'Lead Vocalist', volunteerName: 'Sarah Chen' },
+        { roleName: 'Acoustic Guitar', volunteerName: 'Michael Torres' },
+        { roleName: 'Keys', volunteerName: 'Priya Patel' },
+        { roleName: 'Drums', volunteerName: null },
+        { roleName: 'Bass', volunteerName: null },
+      ],
+    },
+    {
+      id: 'evt-preview-2',
+      title: 'Evening Worship Night',
+      startsAtUtc: '2026-06-28T22:00:00.000Z',
+      endsAtUtc: '2026-06-29T01:00:00.000Z',
+      roster: [
+        { roleName: 'Lead Vocalist', volunteerName: "James O'Connor" },
+        { roleName: 'Keys', volunteerName: 'Priya Patel' },
+        { roleName: 'Guitar', volunteerName: null },
+      ],
+    },
+  ] satisfies PreviewRosterEvent[],
 };
 
 export function rosterFillCounts(roster: PreviewRosterRow[]): {

@@ -2,12 +2,21 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
-import { SchedulingPage } from '@/routes/scheduling';
+import { LeaderSchedulingPreview } from '@/routes/scheduling';
+import { VolunteerMyAssignmentsPreview } from '@/__preview__/VolunteerMyAssignmentsPreview';
 
-function renderScheduling() {
+function renderLeaderScheduling() {
   return render(
     <I18nProvider>
-      <SchedulingPage />
+      <LeaderSchedulingPreview />
+    </I18nProvider>,
+  );
+}
+
+function renderVolunteerAssignments() {
+  return render(
+    <I18nProvider>
+      <VolunteerMyAssignmentsPreview />
     </I18nProvider>,
   );
 }
@@ -17,11 +26,19 @@ afterEach(() => {
 });
 
 describe('scheduling preview', () => {
-  it('renders the roster fill badge from fixtures', async () => {
+  it('renders the roster fill badge on the leader preview', async () => {
     await initI18n(undefined, 'en');
-    renderScheduling();
-    expect(await screen.findByTestId('roster-fill-badge')).toHaveTextContent(
-      '2/4 filled',
-    );
+    renderLeaderScheduling();
+    const badges = await screen.findAllByTestId('roster-fill-badge');
+    expect(badges[0]).toHaveTextContent('3/5 filled');
+  });
+
+  it('renders volunteer assignment cards on the my assignments preview', async () => {
+    await initI18n(undefined, 'en');
+    renderVolunteerAssignments();
+    expect(
+      await screen.findByRole('heading', { name: /upcoming assignments/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Sunday Service')).toBeInTheDocument();
   });
 });

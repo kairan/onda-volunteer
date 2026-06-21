@@ -4,6 +4,7 @@ import {
   LEADER_NAV,
   VOLUNTEER_NAV,
   buildNavForGrants,
+  isNavItemActive,
 } from './manifest';
 
 describe('buildNavForGrants', () => {
@@ -18,6 +19,11 @@ describe('buildNavForGrants', () => {
       'myAssignments',
       'timeAway',
     ]);
+  });
+
+  it('routes my assignments to /scheduling for volunteers', () => {
+    const myAssignments = VOLUNTEER_NAV.find((item) => item.id === 'myAssignments');
+    expect(myAssignments?.path).toBe('/scheduling');
   });
 
   it('adds leader scheduling and roster items for leader grants', () => {
@@ -66,5 +72,11 @@ describe('buildNavForGrants', () => {
     for (const item of [...VOLUNTEER_NAV, ...LEADER_NAV, ...ADMIN_NAV]) {
       expect(item.path.startsWith('/')).toBe(true);
     }
+  });
+
+  it('marks my assignments active on /scheduling', () => {
+    const myAssignments = VOLUNTEER_NAV.find((item) => item.id === 'myAssignments')!;
+    expect(isNavItemActive(myAssignments, '/scheduling')).toBe(true);
+    expect(isNavItemActive(VOLUNTEER_NAV[0], '/dashboard')).toBe(true);
   });
 });

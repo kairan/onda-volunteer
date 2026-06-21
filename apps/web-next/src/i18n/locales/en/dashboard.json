@@ -6,8 +6,14 @@
   "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
   "preview": {
     "greeting": "Hi {{name}}",
-    "assignmentCount": "{{count}} upcoming",
+    "assignmentCount": "{{count}} upcoming assignments",
     "confirmed": "Confirmed",
+    "next30Days": "Next 30 days",
+    "timeAwayHeading": "Time away",
+    "timeAwayBody": "Periods you're unavailable to serve",
+    "addPeriod": "Add period",
+    "editPeriod": "Edit period",
+    "deletePeriod": "Delete period",
     "samplesHeading": "Preview samples"
   },
   "loading": "Loading assignments...",
