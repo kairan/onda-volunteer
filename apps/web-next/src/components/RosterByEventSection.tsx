@@ -14,17 +14,24 @@ export type RosterByEventSectionProps = {
   eventTitle: string;
   timeLabels: DualTimeLabels;
   roster: RosterRow[];
-  busyRoleId?: string | null;
-  rowError?: { roleId: string; message: string } | null;
+  /** Composite key `${eventId}:${roleId}` when multiple event cards share role ids. */
+  eventId?: string;
+  busyRoleKey?: string | null;
+  rowError?: { roleKey: string; message: string } | null;
   onAssign: (roleId: string) => void;
   onRelease: (assignmentId: string, roleId: string) => void;
 };
+
+function rosterRoleKey(eventId: string | undefined, roleId: string): string {
+  return eventId ? `${eventId}:${roleId}` : roleId;
+}
 
 export function RosterByEventSection({
   eventTitle,
   timeLabels,
   roster,
-  busyRoleId,
+  eventId,
+  busyRoleKey,
   rowError,
   onAssign,
   onRelease,
@@ -58,9 +65,10 @@ export function RosterByEventSection({
       </div>
       <ul className="divide-y divide-border">
         {roster.map((row) => {
-          const isBusy = busyRoleId === row.roleId;
+          const roleKey = rosterRoleKey(eventId, row.roleId);
+          const isBusy = busyRoleKey === roleKey;
           const errorMessage =
-            rowError?.roleId === row.roleId ? rowError.message : null;
+            rowError?.roleKey === roleKey ? rowError.message : null;
 
           return (
             <li key={row.roleId} className="px-4 py-3 text-sm">

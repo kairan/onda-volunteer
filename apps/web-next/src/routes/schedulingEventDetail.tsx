@@ -223,9 +223,9 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     });
   }, [formMinistryId, payload.assignments, rolesQuery.data]);
 
-  const [busyRoleId, setBusyRoleId] = useState<string | null>(null);
+  const [busyRoleKey, setBusyRoleKey] = useState<string | null>(null);
   const [rowError, setRowError] = useState<{
-    roleId: string;
+    roleKey: string;
     message: string;
   } | null>(null);
   const [assignRoleId, setAssignRoleId] = useState<string | null>(null);
@@ -259,7 +259,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       roleId: string;
     }) => voidAssignment(input),
     onMutate: (variables) => {
-      setBusyRoleId(variables.roleId);
+      setBusyRoleKey(`${payload.event.id}:${variables.roleId}`);
       setRowError(null);
     },
     onSuccess: () => {
@@ -273,12 +273,12 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     },
     onError: (error, variables) => {
       setRowError({
-        roleId: variables.roleId,
+        roleKey: `${payload.event.id}:${variables.roleId}`,
         message: mapReleaseError(error, t),
       });
     },
     onSettled: () => {
-      setBusyRoleId(null);
+      setBusyRoleKey(null);
     },
   });
 
@@ -374,6 +374,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       {canManageRoster ? (
         <>
           <RosterByEventSection
+            eventId={payload.event.id}
             eventTitle={payload.event.title}
             timeLabels={buildDualInterval(
               payload.event.window.startsAtUtc,
@@ -384,7 +385,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
               intervalOptions,
             )}
             roster={roster}
-            busyRoleId={busyRoleId}
+            busyRoleKey={busyRoleKey}
             rowError={rowError}
             onAssign={(roleId) => {
               setAssignRoleId(roleId);

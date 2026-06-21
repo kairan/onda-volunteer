@@ -173,11 +173,15 @@ export function LeaderSchedulingPage() {
     rosterByEvent.map((row) => row.roster),
   );
 
-  const [busyRoleId, setBusyRoleId] = useState<string | null>(null);
+  const [busyRoleKey, setBusyRoleKey] = useState<string | null>(null);
   const [rowError, setRowError] = useState<{
-    roleId: string;
+    roleKey: string;
     message: string;
   } | null>(null);
+
+  function rosterRoleKey(eventId: string, roleId: string): string {
+    return `${eventId}:${roleId}`;
+  }
   const [assignTarget, setAssignTarget] = useState<AssignTarget | null>(null);
   const [selectedVolunteerId, setSelectedVolunteerId] = useState('');
   const [assignFormError, setAssignFormError] = useState<string | null>(null);
@@ -192,8 +196,8 @@ export function LeaderSchedulingPage() {
   const releaseMutation = useMutation({
     mutationFn: (input: VoidAssignmentInput & { eventId: string; roleId: string }) =>
       voidAssignment(input),
-    onMutate: ({ roleId }) => {
-      setBusyRoleId(roleId);
+    onMutate: ({ eventId, roleId }) => {
+      setBusyRoleKey(rosterRoleKey(eventId, roleId));
       setRowError(null);
     },
     onSuccess: (_data, variables) => {
@@ -207,12 +211,12 @@ export function LeaderSchedulingPage() {
     },
     onError: (error, variables) => {
       setRowError({
-        roleId: variables.roleId,
+        roleKey: rosterRoleKey(variables.eventId, variables.roleId),
         message: mapReleaseError(error, t),
       });
     },
     onSettled: () => {
-      setBusyRoleId(null);
+      setBusyRoleKey(null);
     },
   });
 
@@ -335,6 +339,7 @@ export function LeaderSchedulingPage() {
           rosterByEvent.map(({ event, roster }) => (
             <RosterByEventSection
               key={event.id}
+              eventId={event.id}
               eventTitle={event.title}
               timeLabels={buildDualInterval(
                 event.window.startsAtUtc,
@@ -345,7 +350,7 @@ export function LeaderSchedulingPage() {
                 intervalOptions,
               )}
               roster={roster}
-              busyRoleId={busyRoleId}
+              busyRoleKey={busyRoleKey}
               rowError={rowError}
               onAssign={(roleId) => openAssignDialog(event.id, roleId)}
               onRelease={(assignmentId, roleId) => {

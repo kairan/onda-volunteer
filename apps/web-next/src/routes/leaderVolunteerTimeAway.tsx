@@ -56,6 +56,7 @@ export function LeaderVolunteerTimeAwayPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (ledMinistries.length === 1 && !ministryId) {
@@ -170,6 +171,14 @@ export function LeaderVolunteerTimeAwayPage() {
         queryKey: queryKeys.unavailability(volunteerId, activeChurch?.id),
       });
       setStatusMessage(t('successDelete'));
+      setDeleteError(null);
+    },
+    onError: (error) => {
+      if (error instanceof ApiRequestError) {
+        setDeleteError(error.message);
+        return;
+      }
+      setDeleteError(t('errors.deleteFailed'));
     },
   });
 
@@ -263,7 +272,10 @@ export function LeaderVolunteerTimeAwayPage() {
           <select
             className="rounded-md border border-border bg-background px-3 py-2"
             value={ministryId}
-            onChange={(event) => setMinistryId(event.target.value)}
+            onChange={(event) => {
+              setMinistryId(event.target.value);
+              setFieldErrors((prev) => ({ ...prev, ministryId: undefined }));
+            }}
           >
             <option value="">{t('ministry')}</option>
             {ledMinistries.map((ministry) => (
@@ -272,6 +284,9 @@ export function LeaderVolunteerTimeAwayPage() {
               </option>
             ))}
           </select>
+          {fieldErrors.ministryId ? (
+            <span className="text-destructive">{fieldErrors.ministryId}</span>
+          ) : null}
         </label>
         <label className="flex flex-col gap-1 text-sm">
           <span className="font-medium">{t('volunteer')}</span>
@@ -279,7 +294,10 @@ export function LeaderVolunteerTimeAwayPage() {
             className="rounded-md border border-border bg-background px-3 py-2"
             value={volunteerId}
             disabled={!ministryId || membershipsQuery.isLoading}
-            onChange={(event) => setVolunteerId(event.target.value)}
+            onChange={(event) => {
+              setVolunteerId(event.target.value);
+              setFieldErrors((prev) => ({ ...prev, volunteerId: undefined }));
+            }}
           >
             <option value="">{t('selectVolunteer')}</option>
             {members.map((member) => (
@@ -288,6 +306,9 @@ export function LeaderVolunteerTimeAwayPage() {
               </option>
             ))}
           </select>
+          {fieldErrors.volunteerId ? (
+            <span className="text-destructive">{fieldErrors.volunteerId}</span>
+          ) : null}
         </label>
       </div>
 
@@ -347,6 +368,11 @@ export function LeaderVolunteerTimeAwayPage() {
 
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">{t('listHeading')}</h2>
+            {deleteError ? (
+              <p role="alert" className="text-sm text-destructive">
+                {deleteError}
+              </p>
+            ) : null}
             {rowsQuery.isLoading ? (
               <p className="text-sm text-muted-foreground">{t('loading')}</p>
             ) : rowsQuery.isError ? (
