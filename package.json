@@ -11,6 +11,7 @@
     "test:e2e:web": "PLAYWRIGHT_WITH_API=true pnpm --filter @onda/web test:e2e",
     "dev:api": "pnpm --filter @onda/api dev",
     "dev:web": "pnpm --filter @onda/web dev",
+    "dev:web-next": "pnpm --filter @onda/web-next dev",
     "link:volunteer-auth": "pnpm --filter @onda/api link:volunteer-auth"
   },
   "packageManager": "pnpm@11.1.2",
