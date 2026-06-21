@@ -5,6 +5,7 @@ import {
   VOLUNTEER_NAV,
   buildNavForGrants,
   isNavItemActive,
+  pickActiveNavItem,
 } from './manifest';
 
 describe('buildNavForGrants', () => {
@@ -26,7 +27,7 @@ describe('buildNavForGrants', () => {
     expect(myAssignments?.path).toBe('/scheduling');
   });
 
-  it('adds leader scheduling and roster items for leader grants', () => {
+  it('adds leader scheduling for leader grants without duplicate /scheduling links', () => {
     const nav = buildNavForGrants({
       isVolunteer: true,
       isLeader: true,
@@ -34,12 +35,11 @@ describe('buildNavForGrants', () => {
     });
     expect(nav.map((item) => item.id)).toEqual([
       'dashboard',
-      'myAssignments',
       'timeAway',
       'scheduling',
-      'roster',
       'volunteers',
     ]);
+    expect(nav.filter((item) => item.path === '/scheduling')).toHaveLength(1);
   });
 
   it('returns admin ministries, volunteers, and leaders for org admin grants', () => {
@@ -60,8 +60,9 @@ describe('buildNavForGrants', () => {
     const ids = nav.map((item) => item.id);
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids).toContain('dashboard');
-    expect(ids).toContain('myAssignments');
     expect(ids).toContain('scheduling');
+    expect(ids).not.toContain('myAssignments');
+    expect(ids).not.toContain('roster');
     expect(ids).toContain('ministries');
     expect(ids).toContain('leaders');
     expect(ids.filter((id) => id === 'volunteers')).toHaveLength(1);
@@ -74,9 +75,26 @@ describe('buildNavForGrants', () => {
     }
   });
 
-  it('marks my assignments active on /scheduling', () => {
-    const myAssignments = VOLUNTEER_NAV.find((item) => item.id === 'myAssignments')!;
+  it('marks only one /scheduling nav item active for dual-role users', () => {
+    const nav = buildNavForGrants({
+      isVolunteer: true,
+      isLeader: true,
+      isOrgAdmin: false,
+    });
+    const active = pickActiveNavItem(nav, '/scheduling');
+    expect(active?.id).toBe('scheduling');
+    expect(nav.filter((item) => isNavItemActive(item, '/scheduling'))).toHaveLength(1);
+  });
+
+  it('marks my assignments active on /scheduling for volunteer-only grants', () => {
+    const nav = buildNavForGrants({
+      isVolunteer: true,
+      isLeader: false,
+      isOrgAdmin: false,
+    });
+    const myAssignments = nav.find((item) => item.id === 'myAssignments')!;
+    expect(pickActiveNavItem(nav, '/scheduling')?.id).toBe('myAssignments');
     expect(isNavItemActive(myAssignments, '/scheduling')).toBe(true);
-    expect(isNavItemActive(VOLUNTEER_NAV[0], '/dashboard')).toBe(true);
+    expect(isNavItemActive(nav[0], '/dashboard')).toBe(true);
   });
 });

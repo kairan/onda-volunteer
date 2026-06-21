@@ -77,7 +77,10 @@ export const ADMIN_NAV: NavManifestItem[] = [
 export function buildNavForGrants(grants: NavGrants): NavManifestItem[] {
   const merged: NavManifestItem[] = [];
   if (grants.isVolunteer) {
-    merged.push(...VOLUNTEER_NAV);
+    const volunteerItems = grants.isLeader
+      ? VOLUNTEER_NAV.filter((item) => item.id !== 'myAssignments')
+      : VOLUNTEER_NAV;
+    merged.push(...volunteerItems);
   }
   if (grants.isLeader) {
     merged.push(...LEADER_NAV);
@@ -86,14 +89,38 @@ export function buildNavForGrants(grants: NavGrants): NavManifestItem[] {
     merged.push(...ADMIN_NAV);
   }
 
-  const seen = new Set<string>();
+  const seenIds = new Set<string>();
+  const seenPaths = new Set<string>();
   return merged.filter((item) => {
-    if (seen.has(item.id)) {
+    if (seenIds.has(item.id) || seenPaths.has(item.path)) {
       return false;
     }
-    seen.add(item.id);
+    seenIds.add(item.id);
+    seenPaths.add(item.path);
     return true;
   });
+}
+
+/** Prefer the most specific nav item when several share the same path prefix. */
+export function pickActiveNavItem(
+  navItems: NavManifestItem[],
+  pathname: string,
+): NavManifestItem | null {
+  const matches = navItems.filter((item) => isNavItemActive(item, pathname));
+  if (matches.length === 0) {
+    return null;
+  }
+  if (matches.length === 1) {
+    return matches[0];
+  }
+  return matches.sort((a, b) => {
+    const aExact = pathname === a.path ? 0 : 1;
+    const bExact = pathname === b.path ? 0 : 1;
+    if (aExact !== bExact) {
+      return aExact - bExact;
+    }
+    return navItems.indexOf(a) - navItems.indexOf(b);
+  })[0];
 }
 
 export function isNavItemActive(item: NavManifestItem, pathname: string): boolean {
