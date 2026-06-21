@@ -71,7 +71,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 **Acceptance Criteria**:
 
-1. WHEN the Foundation slice completes THEN the Volunteer dashboard and Leader scheduling route stubs SHALL render with **hardcoded fixtures** (greeting + assignment cards, roster with fill badge, empty state, skeleton) using the **real Onda components** (T03 primitives, T12 `AppShell`) — **no** `apiClient` / TanStack Query wiring.
+1. WHEN the Foundation slice completes THEN volunteer preview fixtures SHALL cover greeting, assignment cards, time-away preview, and empty/skeleton variants across `/dashboard` and volunteer `/scheduling` (My assignments nav item); leader `/scheduling` SHALL render roster with fill badge — all with **hardcoded fixtures** and **real Onda components** (T03 primitives, T12 `AppShell`) — **no** `apiClient` / TanStack Query wiring.
 2. WHEN the preview is built THEN it SHALL cover **only the two designed roles** (Volunteer + Leader); admin / System Admin surfaces are excluded (neutral functional port per MIG-ADMIN-01 — no Onda design to validate).
 3. WHEN the live data-backed screens land (MIG-VOL-01 / MIG-LEAD-01, tasks T16 / T20 / T21) THEN the fixtures SHALL be **removed or replaced** — the preview is explicitly throwaway and SHALL NOT remain as dead code after cutover.
 

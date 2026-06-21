@@ -397,7 +397,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 **Done when**:
 - [ ] `pnpm --filter @onda/web-next build` exits 0 with all route stubs
-- [ ] Unauthenticated access to `/dashboard` redirects to auth panel
+- [ ] Unauthenticated access to `/dashboard` redirects to `/` with `auth=required` (landing auth panel)
 - [ ] All known routes (`/scheduling`, `/time-away`, `/ministries`, `/volunteers`, `/ministry-leaders`, `/system-admin/*`) present in route tree (stub components OK)
 - [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
 - [ ] Test count: ≥2 unit tests pass (auth guard redirect, route tree renders without crash)
@@ -411,8 +411,8 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T13.5: Mock-data look-and-feel preview (Volunteer + Leader, throwaway)
 
-**What**: Replace the `/dashboard` (Volunteer) and `/scheduling` (Leader) route **stubs** with mock-data previews that **mirror layout** from `design-reference/serve-well/src/components/onda/dashboards/VolunteerDashboard.tsx` and `MinistryLeaderDashboard.tsx` — greeting + 2-col assignment cards with `shadow-card`, **Time away** section on dashboard, ministry hero + header CTAs, roster event card with fill badge and per-row Assign/Release (non-functional OK), empty/skeleton variants — **no** `apiClient` / TanStack Query. **Omit** Lovable-only elements: Accept/Decline, location rows, pending badges. Fixtures in `src/__preview__/`, deleted/replaced by T16/T20/T21.
-**Where**: `apps/web-next/src/routes/dashboard.tsx` + `apps/web-next/src/routes/scheduling.tsx` (preview bodies), `apps/web-next/src/__preview__/fixtures.ts`
+**What**: Replace the `/dashboard` (Volunteer) and `/scheduling` route **stubs** with mock-data previews that **mirror layout** from `design-reference/serve-well/src/components/onda/dashboards/VolunteerDashboard.tsx` and `MinistryLeaderDashboard.tsx` — **no** `apiClient` / TanStack Query. **Volunteer nav IA split** (per `VOLUNTEER_NAV`): `/dashboard` = greeting + assignment-count summary + **Time away** section + empty/skeleton variants; volunteer `/scheduling` ("My assignments") = 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview`. **Leader** `/scheduling` = ministry hero + header CTAs, roster event card with fill badge and per-row Assign/Release (non-functional OK). **Omit** Lovable-only elements: Accept/Decline, location rows, pending badges. Fixtures in `src/__preview__/`, deleted/replaced by T16/T20/T21.
+**Where**: `apps/web-next/src/routes/dashboard.tsx` + `apps/web-next/src/routes/scheduling.tsx` (preview bodies), `apps/web-next/src/__preview__/fixtures.ts`, `apps/web-next/src/__preview__/VolunteerMyAssignmentsPreview.tsx`
 **Depends on**: T13
 **Reuses**: T03 shadcn primitives, T12 `AppShell`; `design-reference/serve-well/src/components/onda/dashboards/*`; fixture shapes mirror `apps/web/src/identity/types.ts` / event+roster DTOs
 **Requirement**: MIG-FND-04
@@ -422,8 +422,9 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `/dashboard` matches reference layout: greeting, 2-col assignment cards (`shadow-card`), **Time away** list + Add period CTA, empty/skeleton variants (no network)
-- [ ] `/scheduling` matches reference layout: ministry hero + summary line + header CTAs, roster event card with `X/Y filled` badge and Assign/Release row actions (no network)
+- [ ] `/dashboard` (volunteer): greeting + assignment-count summary, **Time away** list + Add period CTA, empty/skeleton variants (no network); assignment cards live on volunteer `/scheduling` per nav IA (not one combined Lovable screen)
+- [ ] `/scheduling` (volunteer): 2-col assignment cards (`shadow-card`) via `VolunteerMyAssignmentsPreview` (no network)
+- [ ] `/scheduling` (leader): ministry hero + summary line + header CTAs, roster event card with `X/Y filled` badge and Assign/Release row actions (no network)
 - [ ] Side-by-side manual check vs `design-reference/serve-well` dashboards at 1440px before closing #143
 - [ ] No `apiClient` / `useQuery` import in the preview bodies; fixtures isolated under `src/__preview__/`
 - [ ] No HOPE classes; only Onda tokens/components
