@@ -13,5 +13,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    // Vite build + full router shell tests are memory-heavy; cap forks to avoid OOM.
+    pool: 'forks',
+    maxWorkers: 2,
   },
 });

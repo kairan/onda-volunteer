@@ -2,6 +2,7 @@ import type { AnyRoute } from '@tanstack/react-router';
 import { createMemoryHistory, createRouter } from '@tanstack/react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as authSession from '@/auth/authSession';
+import * as supabaseClient from '@/supabaseClient';
 import { buildNavForGrants } from '@/navigation/manifest';
 import { buildRouteTree } from './router';
 
@@ -34,7 +35,9 @@ describe('buildRouteTree', () => {
 
   it('redirects unauthenticated dashboard access to the auth landing route', async () => {
     vi.spyOn(authSession, 'devAuthBypassAllowed').mockReturnValue(false);
+    vi.spyOn(authSession, 'demoVolunteerId').mockReturnValue(undefined);
     vi.spyOn(authSession, 'volunteerIdForProtectedRequests').mockReturnValue(undefined);
+    vi.spyOn(supabaseClient, 'getSupabaseClient').mockReturnValue(null);
     authSession.syncAuthVolunteerId({
       status: 'unauthenticated',
       reason: 'signed-out',
@@ -53,4 +56,5 @@ describe('buildRouteTree', () => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  authSession.syncAuthVolunteerId({ status: 'loading' });
 });

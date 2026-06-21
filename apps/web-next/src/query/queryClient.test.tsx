@@ -1,12 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useMutation } from '@tanstack/react-query';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { QueryClient } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useMutation } from '@tanstack/react-query';
+import { describe, expect, it } from 'vitest';
 import { ToastProvider } from '@/feedback/ToastHost';
-import { getAppToastOrchestrator } from '@/feedback/toastOrchestrator';
 import { createAppQueryClient } from './queryClient';
-import { QueryProvider } from './QueryProvider';
 
 function FailingMutationTrigger() {
   const mutation = useMutation({
@@ -32,32 +29,27 @@ describe('queryClient', () => {
 
 describe('QueryProvider', () => {
   it('renders children', () => {
+    const client = new QueryClient();
     render(
-      <QueryProvider>
+      <QueryClientProvider client={client}>
         <span>child</span>
-      </QueryProvider>,
+      </QueryClientProvider>,
     );
     expect(screen.getByText('child')).toBeInTheDocument();
   });
 });
 
 describe('mutation onError toast', () => {
-  beforeEach(() => {
-    const orchestrator = getAppToastOrchestrator();
-    for (const toast of orchestrator.visible()) {
-      orchestrator.dismiss(toast.id);
-    }
-  });
-
   it('shows a toast when a mutation fails under ToastProvider', async () => {
     const user = userEvent.setup();
+    const client = createAppQueryClient();
 
     render(
-      <QueryProvider>
+      <QueryClientProvider client={client}>
         <ToastProvider>
           <FailingMutationTrigger />
         </ToastProvider>
-      </QueryProvider>,
+      </QueryClientProvider>,
     );
 
     await user.click(screen.getByRole('button', { name: 'trigger failure' }));

@@ -67,3 +67,10 @@ const appToastOrchestrator = createToastOrchestrator();
 export function getAppToastOrchestrator() {
   return appToastOrchestrator;
 }
+
+/** Clears queued toasts between Vitest cases (singleton survives file boundaries). */
+export function resetAppToastOrchestratorForTests() {
+  for (const toast of appToastOrchestrator.visible()) {
+    appToastOrchestrator.dismiss(toast.id);
+  }
+}
