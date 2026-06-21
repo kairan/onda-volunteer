@@ -30,8 +30,8 @@ describe('theme Tailwind build output', () => {
     expect(builtCss).toContain('.bg-muted');
     expect(builtCss).toContain('.bg-accent');
     expect(builtCss).toContain('.border-input');
-    expect(builtCss).toMatch(/\.bg-card\{[^}]*hsl\(var\(--card\)\)/);
-    expect(builtCss).toMatch(/\.bg-secondary\{[^}]*hsl\(var\(--secondary\)\)/);
-    expect(builtCss).toMatch(/\.border-input\{[^}]*hsl\(var\(--input\)\)/);
+    expect(builtCss).toMatch(/\.bg-card\{[^}]*var\(--card\)/);
+    expect(builtCss).toMatch(/\.bg-secondary\{[^}]*var\(--secondary\)/);
+    expect(builtCss).toMatch(/\.border-input\{[^}]*var\(--input\)/);
   });
 });

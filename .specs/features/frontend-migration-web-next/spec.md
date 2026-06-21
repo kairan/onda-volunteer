@@ -53,7 +53,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 **Acceptance Criteria**:
 
-1. WHEN the theme loads THEN CSS variables SHALL match ADR 0006 tokens (`#2034D6` primary, `#E4F1FA`/`#FBFBDE` bg, `#A1C1DB` border, 6–8px radius, subtle shadow) — values locked by a **theme contract test** ported from `apps/web/src/theme`.
+1. WHEN the theme loads THEN CSS variables SHALL match ADR 0006 tokens (`#2034D6` primary, page bg `#FAFAFA`, `#E4F1FA` nav/muted accent, `#A1C1DB` border, `--shadow-card`, radius `0.5rem`, Space Grotesk) — values locked by a **theme contract test** ported from reference `design-reference/serve-well/src/styles.css`.
 2. WHEN UI text renders THEN it SHALL use **Space Grotesk** (self-hosted), display headings optionally **Right Grotesk** (1–2 per screen), per `ui-refresh-onda-brand/design.md` §2.
 3. WHEN focus moves by keyboard THEN focus ring SHALL be `#2034D6` with WCAG 2.2 AA contrast.
 
@@ -71,7 +71,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 **Acceptance Criteria**:
 
-1. WHEN the Foundation slice completes THEN the Volunteer dashboard and Leader scheduling route stubs SHALL render with **hardcoded fixtures** (greeting + assignment cards, roster with fill badge, empty state, skeleton) using the **real Onda components** (T03 primitives, T12 `AppShell`) — **no** `apiClient` / TanStack Query wiring.
+1. WHEN the Foundation slice completes THEN volunteer preview fixtures SHALL cover greeting, assignment cards, time-away preview, and empty/skeleton variants across `/dashboard` and volunteer `/scheduling` (My assignments nav item); leader `/scheduling` SHALL render roster with fill badge — all with **hardcoded fixtures** and **real Onda components** (T03 primitives, T12 `AppShell`) — **no** `apiClient` / TanStack Query wiring.
 2. WHEN the preview is built THEN it SHALL cover **only the two designed roles** (Volunteer + Leader); admin / System Admin surfaces are excluded (neutral functional port per MIG-ADMIN-01 — no Onda design to validate).
 3. WHEN the live data-backed screens land (MIG-VOL-01 / MIG-LEAD-01, tasks T16 / T20 / T21) THEN the fixtures SHALL be **removed or replaced** — the preview is explicitly throwaway and SHALL NOT remain as dead code after cutover.
 

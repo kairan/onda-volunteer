@@ -7,6 +7,20 @@ Captured during Specify (2026-06-20). Resolves gray areas for the Onda brand vis
 - **Provisional Igreja Onda identity** until the official BrandBook ships.
 - Palette and typography values come from the brand guide (eyedropper extraction), **not** generic SaaS defaults (no `#6366F1` indigo, no Inter as primary UI font).
 - Reference prototype: [serve-well.lovable.app](https://serve-well.lovable.app/) — layout inspiration only.
+- **Local clone (2026-06-21):** full Lovable export at [`design-reference/serve-well/`](../../../design-reference/serve-well/) — authoritative for tokens, shell, and dashboard layout during Execute.
+
+## Visual lock from local clone (2026-06-21)
+
+Decisions refined after comparing Slice 1 (#143) preview with the checked-in Lovable export:
+
+| Topic | Decision | Rationale |
+|-------|----------|-----------|
+| Page background | **`#FAFAFA`** warm white (Lovable `--background`) | Cards read cleaner on neutral wash; `#E4F1FA` kept for **active nav tint** and muted panels |
+| Shell implementation | **shadcn `Sidebar` + `SidebarProvider`** (see `AppShell.tsx` in reference) | Matches Lovable; do not keep custom drawer-only shell from early #143 branch |
+| Card elevation | **`--shadow-card`** utility from reference `styles.css` | Flat CardHeader-only layout was visually off-spec |
+| Volunteer dashboard | **2-col grid** + inline **Time away** section | See `VolunteerDashboard.tsx` in reference |
+| Leader roster | **Event card** with header bar, fill badge, row **Assign/Release** | See `MinistryLeaderDashboard.tsx` in reference |
+| Port strategy | **Cherry-pick presentational components** into `apps/web-next` | Keep auth/Query/org/routes from migration spec — do not replace `web-next` with this package |
 
 ## Scope lock (user decision)
 
@@ -33,6 +47,9 @@ Church Admin and System Admin **may** inherit updated tokens passively when shel
 | Explicit “Unfilled” slots + Assign CTA | **Adopt** | UI-LEAD-04 |
 | Header CTAs: New event · Assign volunteer | **Adopt** (wire to existing flows) | UI-LEAD-05 |
 | Volunteer initials avatar on roster rows | **Adopt** (derived from `displayName`, no upload) | UI-LEAD-06 |
+| shadcn Sidebar shell + sticky top bar | **Adopt** (from reference `AppShell`) | UI-BRAND-02 |
+| `--shadow-card` on assignment/roster cards | **Adopt** | UI-BRAND-01 |
+| 2-col assignment card grid (md+) | **Adopt** | UI-VOL-02 |
 | Accept / Decline pending assignment on dashboard | **Defer** — no assignment-confirmation workflow in API/`CONTEXT.md` | — |
 | “1 awaiting your response” summary line | **Defer** with Accept/Decline | — |
 | Event venue / location on cards | **Defer** — no **Event** venue field | — |

@@ -30,6 +30,16 @@ The Onda design (ADR 0006 / `ui-refresh-onda-brand`) covers **Volunteer + Leader
 
 **Keep the old URLs.** `web-next` ships the **exact route strings** of today's `apps/web/src/router.tsx` (MIG-CUT-01). Rationale: this is a behavior-preserving migration, the single production cutover flips every saved bookmark/shared deep link at once, and the existing `legacyEventRedirectRoute` shows URL continuity already matters to users. Current naming inconsistencies (e.g. `events/new-private` vs `leader/volunteer-time-away`) are **not** fixed here — any URL cleanup is a deliberate **post-cutover slice** with permanent old→new redirects (same pattern as `legacyEventRedirectRoute`). Do not relitigate during #143 Execute.
 
+## Auth UX decision (2026-06-21, #143 PR3)
+
+**Redirect unauthenticated shell routes to the landing page.** `ensureShellRouteAuth()` in `beforeLoad` throws `redirect({ to: '/', search: { auth: 'required' } })` when there is no dev header, no Supabase session, and no volunteer id. This differs from `apps/web`, where `ProtectedAppShell` keeps the protected URL and shows an inline `AuthPanel` gate.
+
+`ProtectedAppShell` inline gates remain for auth states that pass `beforeLoad` (e.g. `profile-not-linked`, `supabase-not-configured`, loading). Cutover testers should expect unauthenticated deep links to land on `/` with `?auth=required`, not a URL-stable inline sign-in on `/dashboard`.
+
+## Volunteer preview nav IA (2026-06-21, #143 PR3)
+
+**Split volunteer mock preview across nav routes.** Lovable `VolunteerDashboard.tsx` combines greeting, assignment cards, and time away on one screen. `web-next` follows `VOLUNTEER_NAV`: `/dashboard` = home (greeting + assignment-count summary + time-away preview); `/scheduling` = "My assignments" (2-col assignment cards). T13.5 validates brand look-and-feel across both routes; T16/T20 wire live data per route.
+
 ## Risks / open items for Design phase
 
 - **Right Grotesk license** — confirm before Execute (else Space Grotesk fallback per ADR 0006).

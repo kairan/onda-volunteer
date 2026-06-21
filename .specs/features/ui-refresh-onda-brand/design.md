@@ -62,7 +62,7 @@ Extract from provisional Igreja Onda brand guide. This doc is the **design sourc
 | `--brand-success` | `#7DBB8F` | Positive / confirmed states |
 | `--brand-info` | `#5A92BC`, `#6897B9` | Info accents |
 
-**Default page background:** `#E4F1FA` (cool wash) unless brand team prefers `#FBFBDE` — lock in Execute via theme contract test.
+**Default page background:** `#FAFAFA` warm white (locked from local clone `design-reference/serve-well/src/styles.css`, 2026-06-21). Use `#E4F1FA` for active nav tint, muted panels, and confirmed-badge washes — not full-page fill. Alt `#FBFBDE` remains reserved for brand team override only.
 
 ### Semantic (preserve ADR 0001)
 
@@ -74,19 +74,23 @@ Keep existing **destructive** (warm red-orange), **focus** (may align focus ring
 
 ### Shell (church roles — Volunteer & Leader)
 
-- **Desktop:** ~260px left sidebar + top bar (ADR 0001).
-- **Mobile:** sticky top bar + sheet nav (ADR 0001).
-- **Logo area:** “Onda” wordmark in Space Grotesk; optional wave motif in `#2034D6`. **Church** name under logo (tenant), e.g. “Grace Chapel”.
-- **Context:** Church + Campus switchers in shell (not Lovable role dropdown).
-- **Active nav item:** `#2034D6` left border **or** `#E4F1FA` background tint.
+Implement using **shadcn `Sidebar` + `SidebarProvider`** — port layout from `design-reference/serve-well/src/components/onda/AppShell.tsx` and `AppSidebar.tsx`.
+
+- **Desktop:** collapsible left sidebar (~260px) + sticky top bar with backdrop blur (ADR 0001 structure).
+- **Mobile:** `SidebarTrigger` + sheet/drawer nav (ADR 0001).
+- **Logo area:** “Onda” wordmark in Space Grotesk + primary icon tile. **Church** name under logo (tenant), e.g. “Grace Chapel”.
+- **Context:** Church + Campus switchers in top bar (replace Lovable role dropdown and search — **out of scope**).
+- **Active nav item:** sidebar accent tint (`--sidebar-accent`) or `#E4F1FA` background.
 
 ### Cards
+
+Match reference `styles.css` `--shadow-card` and card components:
 
 ```css
 background: var(--brand-surface);
 border: 1px solid var(--brand-border);
-border-radius: 6px; /* 8px for large cards — pick one and lock in theme test */
-box-shadow: 0 1px 3px rgba(17, 22, 94, 0.08);
+border-radius: 8px; /* --radius: 0.5rem in reference */
+box-shadow: var(--shadow-card); /* 0 1px 2px rgb(24 26 67 / 0.04), 0 1px 3px rgb(24 26 67 / 0.06) */
 ```
 
 No HOPE offset shadows, no 2–3px black borders, no zero-radius mandate.
@@ -171,7 +175,7 @@ Wire **New event** → existing private event create flow. **Assign** → event 
 
 ## 7. Accessibility
 
-- WCAG 2.2 AA contrast on `#FFFFFF` and `#E4F1FA` backgrounds.
+- WCAG 2.2 AA contrast on `#FFFFFF`, `#FAFAFA`, and `#E4F1FA` accent surfaces.
 - Focus visible: `#2034D6` ring (2px offset).
 - Touch targets ≥ 44×44px on mobile icon controls (ADR 0001).
 - Honor `prefers-reduced-motion` for card hover elevation.
@@ -180,16 +184,19 @@ Wire **New event** → existing private event create flow. **Assign** → event 
 
 ## 8. Implementation map
 
-| UI area | Primary files |
-|---------|---------------|
-| CSS variables / Tailwind theme | `apps/web/src/styles/*`, `apps/web/src/theme/*` |
-| Shell chrome | `apps/web/src/shell/*` |
-| Volunteer dashboard | `apps/web/src/routes/dashboard.tsx` |
-| Time away (full) | `apps/web/src/routes/timeAway.tsx` |
-| Leader roster / events | `apps/web/src/routes/scheduling*.tsx`, `schedulingEventDetail.tsx` |
-| shadcn primitives | `apps/web/src/components/ui/*` |
-| Theme contract test | `apps/web/src/theme/*test*` |
-| ADR | `docs/adr/0006-onda-brand-visual-system.md` |
+**Reference (read-only):** `design-reference/serve-well/` — see [README](../../../design-reference/serve-well/README.md) for file-level port map.
+
+| UI area | Reference | Production target (`web-next`) |
+|---------|-----------|--------------------------------|
+| CSS variables / Tailwind theme | `design-reference/serve-well/src/styles.css` | `apps/web-next/src/styles/globals.css`, `theme/tokens.ts` |
+| Shell chrome | `…/components/onda/AppShell.tsx`, `AppSidebar.tsx` | `apps/web-next/src/shell/*` |
+| Volunteer dashboard | `…/dashboards/VolunteerDashboard.tsx` | `apps/web-next/src/routes/dashboard.tsx` |
+| Leader roster landing | `…/dashboards/MinistryLeaderDashboard.tsx` | `apps/web-next/src/routes/scheduling.tsx` |
+| shadcn primitives + sidebar | `…/components/ui/*` | `apps/web-next/src/components/ui/*` |
+| Theme contract test | — | `apps/web-next/src/theme/theme.contract.test.ts` |
+| ADR | — | `docs/adr/0006-onda-brand-visual-system.md` |
+
+Do **not** re-skin `apps/web` in place — migration spec owns Execute.
 
 ---
 

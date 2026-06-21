@@ -6,10 +6,14 @@
   "loading": "Loading events...",
   "emptyState": "No events to show for this church yet.",
   "preview": {
-    "ministryHero": "{{name}}",
+    "ministryHero": "{{name}} ministry",
+    "leaderSummary": "{{events}} events this week · {{openSlots}} open slots",
     "rosterHeading": "Roster",
     "filledBadge": "{{filled}}/{{total}} filled",
-    "unfilled": "Unfilled"
+    "unfilled": "Unfilled",
+    "newEvent": "New event",
+    "assignVolunteer": "Assign volunteer",
+    "assign": "Assign"
   },
   "errors": {
     "loadFailed": "Could not load events."

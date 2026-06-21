@@ -28,7 +28,7 @@ Church Admin and System Admin layout redesign are **explicitly deferred**; this 
 | Primary actions / links / focus | `#2034D6` |
 | Primary hover | `#151BB6` |
 | Primary text | `#181A43` |
-| Page background (default) | `#E4F1FA` (alt `#FBFBDE` — lock one in theme test) |
+| Page background (default) | `#FAFAFA` warm white (locked from Lovable clone, 2026-06-21); `#E4F1FA` for nav tint / muted panels (alt `#FBFBDE` reserved) |
 | Card surface | `#FFFFFF` |
 | Borders | `#A1C1DB` / `#8FB5D7` |
 | Muted text | `#334B6E` / `#416B92` |
