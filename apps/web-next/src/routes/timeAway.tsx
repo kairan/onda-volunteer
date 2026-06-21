@@ -85,6 +85,7 @@ export function TimeAwayPage() {
   const [deleteTarget, setDeleteTarget] = useState<VolunteerUnavailability | null>(
     null,
   );
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const ministries = useMemo(
     () => ministriesForWritePickers(activeChurch?.ministries ?? []),
@@ -106,7 +107,7 @@ export function TimeAwayPage() {
       return;
     }
     await queryClient.invalidateQueries({
-      queryKey: queryKeys.unavailability(volunteerId),
+      queryKey: queryKeys.unavailability(volunteerId, churchId),
     });
   };
 
@@ -148,11 +149,15 @@ export function TimeAwayPage() {
     mutationFn: deleteVolunteerUnavailability,
     onSuccess: async () => {
       setDeleteTarget(null);
+      setDeleteError(null);
       await invalidateUnavailability();
     },
-    onError: () => {
-      setEditFieldErrors({ summary: t('errors.deleteFailed') });
-      setDeleteTarget(null);
+    onError: (error) => {
+      if (error instanceof ApiRequestError) {
+        setDeleteError(error.message);
+        return;
+      }
+      setDeleteError(t('errors.deleteFailed'));
     },
   });
 
@@ -241,14 +246,18 @@ export function TimeAwayPage() {
   const groupedByMinistry = useMemo(() => {
     const groups = new Map<
       string,
-      { name: string; rows: VolunteerUnavailability[] }
+      { id: string; name: string; rows: VolunteerUnavailability[] }
     >();
     for (const row of rowsQuery.data ?? []) {
       const existing = groups.get(row.ministry.id);
       if (existing) {
         existing.rows.push(row);
       } else {
-        groups.set(row.ministry.id, { name: row.ministry.name, rows: [row] });
+        groups.set(row.ministry.id, {
+          id: row.ministry.id,
+          name: row.ministry.name,
+          rows: [row],
+        });
       }
     }
     return [...groups.values()].sort((a, b) => a.name.localeCompare(b.name));
@@ -345,7 +354,7 @@ export function TimeAwayPage() {
         ) : (
           <div className="mt-4 space-y-6">
             {groupedByMinistry.map((group) => (
-              <div key={group.name}>
+              <div key={group.id}>
                 <h3 className="text-sm font-medium text-muted-foreground">
                   {group.name}
                 </h3>
@@ -431,7 +440,10 @@ export function TimeAwayPage() {
                               type="button"
                               size="sm"
                               variant="ghost"
-                              onClick={() => setDeleteTarget(row)}
+                              onClick={() => {
+                              setDeleteTarget(row);
+                              setDeleteError(null);
+                            }}
                             >
                               {t('actions.delete')}
                             </Button>
@@ -452,6 +464,7 @@ export function TimeAwayPage() {
         onOpenChange={(open) => {
           if (!open) {
             setDeleteTarget(null);
+            setDeleteError(null);
           }
         }}
       >
@@ -460,11 +473,19 @@ export function TimeAwayPage() {
             <DialogTitle>{t('deleteConfirm.title')}</DialogTitle>
             <DialogDescription>{t('deleteConfirm.body')}</DialogDescription>
           </DialogHeader>
+          {deleteError ? (
+            <p className="text-sm text-destructive" role="alert">
+              {deleteError}
+            </p>
+          ) : null}
           <DialogFooter className="gap-2 sm:gap-0">
             <Button
               type="button"
               variant="outline"
-              onClick={() => setDeleteTarget(null)}
+              onClick={() => {
+                setDeleteTarget(null);
+                setDeleteError(null);
+              }}
             >
               {t('deleteConfirm.cancel')}
             </Button>

@@ -4,6 +4,7 @@
   "body": "Your participation overview will appear here with the next scheduling and ministry signals.",
   "upcomingAssignments": "Upcoming assignments",
   "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
+  "unknownMinistry": "Unknown ministry",
   "preview": {
     "greeting": "Hi {{name}}",
     "assignmentCount": "{{count}} upcoming assignments",

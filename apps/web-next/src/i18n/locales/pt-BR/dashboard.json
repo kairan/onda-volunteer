@@ -4,6 +4,7 @@
   "body": "A visão geral da sua participação aparecerá aqui com os próximos sinais de agenda e ministério.",
   "upcomingAssignments": "Próximas escalas",
   "emptyState": "Sem escalas futuras. Confira a agenda para oportunidades em aberto.",
+  "unknownMinistry": "Ministério desconhecido",
   "preview": {
     "greeting": "Olá, {{name}}",
     "assignmentCount": "{{count}} escalas futuras",

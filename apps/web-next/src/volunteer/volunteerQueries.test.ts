@@ -51,7 +51,9 @@ describe('volunteerUnavailabilityQuery', () => {
       churchId: 'church-1',
     });
 
-    expect(options.queryKey).toEqual(queryKeys.unavailability('vol-1'));
+    expect(options.queryKey).toEqual(
+      queryKeys.unavailability('vol-1', 'church-1'),
+    );
   });
 
   it('fetchVolunteerUnavailability calls getJson with church scope', async () => {

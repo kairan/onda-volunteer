@@ -29,7 +29,7 @@ export function volunteerUnavailabilityQuery(
   input: VolunteerUnavailabilityQueryInput,
 ) {
   return queryOptions({
-    queryKey: queryKeys.unavailability(input.volunteerId),
+    queryKey: queryKeys.unavailability(input.volunteerId, input.churchId),
     queryFn: () => fetchVolunteerUnavailability(input),
     enabled: Boolean(input.volunteerId && input.churchId),
   });

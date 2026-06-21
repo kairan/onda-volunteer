@@ -35,10 +35,16 @@ describe('queryKeys', () => {
     expect(queryKeys.eventDetail('evt-1')).toEqual(['event-detail', 'evt-1']);
   });
 
-  it('unavailability is keyed by volunteer id', () => {
+  it('unavailability includes volunteer and optional church', () => {
+    expect(queryKeys.unavailability('vol-1', 'church-a')).toEqual([
+      'unavailability',
+      'vol-1',
+      'church-a',
+    ]);
     expect(queryKeys.unavailability('vol-1')).toEqual([
       'unavailability',
       'vol-1',
+      null,
     ]);
   });
 

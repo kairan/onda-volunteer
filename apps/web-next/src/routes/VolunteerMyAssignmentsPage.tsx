@@ -11,10 +11,11 @@ import type { MinistrySummary } from '@/organization/types';
 function ministryNameForAssignment(
   assignment: VolunteerAssignment,
   ministries: MinistrySummary[],
+  unknownMinistryLabel: string,
 ): string {
   return (
     ministries.find((ministry) => ministry.id === assignment.ministryId)?.name ??
-    assignment.role.name
+    unknownMinistryLabel
   );
 }
 
@@ -81,7 +82,11 @@ export function VolunteerMyAssignmentsPage() {
               key={assignment.id}
               eventId={assignment.event.id}
               eventTitle={assignment.event.title}
-              ministryName={ministryNameForAssignment(assignment, ministries)}
+              ministryName={ministryNameForAssignment(
+                assignment,
+                ministries,
+                t('dashboard:unknownMinistry'),
+              )}
               roleName={assignment.role.name}
               timeLabels={buildDualInterval(
                 assignment.startsAtUtc,
