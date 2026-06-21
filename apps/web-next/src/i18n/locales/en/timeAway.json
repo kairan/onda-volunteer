@@ -39,6 +39,12 @@
   "mirrorAllFailed": "These ministries could not be updated: {{failed}}.",
   "pendingNotice": "You have Pending membership in {{ministries}}. You cannot be rostered until Active, but you can still record unavailability for calendar truth.",
   "leaderSupportLink": "Manage volunteer time away (leader support)",
+  "deleteConfirm": {
+    "title": "Remove unavailability?",
+    "body": "This removes the selected period. You can add it again later if needed.",
+    "confirm": "Remove",
+    "cancel": "Cancel"
+  },
   "errors": {
     "mirrorMinistriesRequired": "Select at least one ministry to mirror.",
     "ministryRequired": "Select a ministry.",

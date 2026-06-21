@@ -17,7 +17,8 @@ export const queryKeys = {
   events: (scope: Pick<QueryScope, 'churchId' | 'ministryId'>) =>
     ['events', scope.churchId, scope.ministryId] as const,
   eventDetail: (eventId: string) => ['event-detail', eventId] as const,
-  unavailability: (volunteerId: string) => ['unavailability', volunteerId] as const,
+  unavailability: (volunteerId: string, churchId?: string | null) =>
+    ['unavailability', volunteerId, churchId ?? null] as const,
   ministryMemberships: (ministryId: string) =>
     ['ministry-memberships', ministryId] as const,
   assignments: (volunteerId: string, churchId?: string | null) =>

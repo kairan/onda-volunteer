@@ -39,6 +39,12 @@
   "mirrorAllFailed": "Estes ministérios não puderam ser atualizados: {{failed}}.",
   "pendingNotice": "Você tem vínculo Pendente em {{ministries}}. Não poderá ser escalado até ficar Ativo, mas ainda pode registrar indisponibilidade para manter o calendário correto.",
   "leaderSupportLink": "Gerenciar ausências de voluntários (apoio de líder)",
+  "deleteConfirm": {
+    "title": "Remover indisponibilidade?",
+    "body": "Isso remove o período selecionado. Você pode adicioná-lo novamente depois, se precisar.",
+    "confirm": "Remover",
+    "cancel": "Cancelar"
+  },
   "errors": {
     "mirrorMinistriesRequired": "Selecione pelo menos um ministério para espelhar.",
     "ministryRequired": "Selecione um ministério.",

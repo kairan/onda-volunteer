@@ -4,6 +4,7 @@
   "body": "Your participation overview will appear here with the next scheduling and ministry signals.",
   "upcomingAssignments": "Upcoming assignments",
   "emptyState": "No upcoming assignments. Check scheduling for open opportunities.",
+  "unknownMinistry": "Unknown ministry",
   "preview": {
     "greeting": "Hi {{name}}",
     "assignmentCount": "{{count}} upcoming assignments",
@@ -14,7 +15,9 @@
     "addPeriod": "Add period",
     "editPeriod": "Edit period",
     "deletePeriod": "Delete period",
-    "samplesHeading": "Preview samples"
+    "samplesHeading": "Preview samples",
+    "timeAwayEmpty": "No upcoming time away recorded.",
+    "viewAll": "View all"
   },
   "loading": "Loading assignments...",
   "errors": {

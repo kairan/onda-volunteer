@@ -13,12 +13,17 @@ import { syncAuthVolunteerId } from '@/auth/authSession';
 import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { initI18n } from '@/i18n/controller';
+import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { buildRouteTree } from '@/router';
 import { fetchIdentityMe } from '@/identity/fetchIdentityMe';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 vi.mock('@/hooks/use-mobile', () => ({
   useIsMobile: vi.fn(() => false),
+}));
+
+vi.mock('@/volunteer/prefetchVolunteerDashboard', () => ({
+  prefetchVolunteerDashboardQueries: vi.fn(async () => {}),
 }));
 
 vi.mock('@/identity/fetchIdentityMe', () => ({
@@ -57,9 +62,11 @@ function shellTestProviders(
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <ToastProvider>
-          <AuthSessionTestProvider state={authState}>{ui}</AuthSessionTestProvider>
-        </ToastProvider>
+        <LocalTimeProvider>
+          <ToastProvider>
+            <AuthSessionTestProvider state={authState}>{ui}</AuthSessionTestProvider>
+          </ToastProvider>
+        </LocalTimeProvider>
       </I18nProvider>
     </QueryClientProvider>
   );

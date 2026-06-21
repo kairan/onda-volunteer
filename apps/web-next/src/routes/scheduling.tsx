@@ -1,17 +1,16 @@
-// TODO(MIG-FND-04): throwaway preview — remove when T16/T20/T21 land
-import { Calendar, Plus, UserMinus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { VolunteerMyAssignmentsPreview } from '@/__preview__/VolunteerMyAssignmentsPreview';
+import {
+  leaderSchedulingPreview,
+  rosterFillCounts,
+} from '@/__preview__/fixtures';
+import { VolunteerMyAssignmentsPage } from '@/routes/VolunteerMyAssignmentsPage';
+import { useOrganization } from '@/organization/OrganizationProvider';
+import { Calendar, Plus, UserMinus, UserPlus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getAvatarInitials } from '@/components/ui/avatarInitials';
-import {
-  leaderSchedulingPreview,
-  resolveSchedulingPreviewRole,
-  rosterFillCounts,
-} from '@/__preview__/fixtures';
 
 export function LeaderSchedulingPreview() {
   const { t, i18n } = useTranslation('scheduling');
@@ -124,10 +123,26 @@ export function LeaderSchedulingPreview() {
   );
 }
 
+function useSchedulingViewRole(previewRole?: string): 'leader' | 'volunteer' {
+  const { activeChurch } = useOrganization();
+  const isLeader =
+    activeChurch?.ministries.some((ministry) => ministry.isLeader) ?? false;
+
+  if (previewRole === 'volunteer') {
+    return 'volunteer';
+  }
+  if (previewRole === 'leader') {
+    return 'leader';
+  }
+  return isLeader ? 'leader' : 'volunteer';
+}
+
 export function SchedulingPage({ previewRole }: { previewRole?: string } = {}) {
-  if (resolveSchedulingPreviewRole(previewRole) === 'leader') {
+  const viewRole = useSchedulingViewRole(previewRole);
+
+  if (viewRole === 'leader') {
     return <LeaderSchedulingPreview />;
   }
 
-  return <VolunteerMyAssignmentsPreview />;
+  return <VolunteerMyAssignmentsPage />;
 }
