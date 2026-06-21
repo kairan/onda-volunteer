@@ -3,6 +3,8 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   FORBIDDEN_HOPE_CSS_VARIABLES,
+  REQUIRED_SHADCN_THEME_COLOR_KEYS,
+  REQUIRED_SHADCN_THEME_CSS_VARIABLES,
   REQUIRED_THEME_CSS_VARIABLES,
 } from './tokens';
 
@@ -30,6 +32,17 @@ describe('theme CSS variable contract (Onda)', () => {
     expect(globalsCss).toContain("@import '@fontsource/space-grotesk/400.css';");
     expect(globalsCss).toMatch(/--font-sans:\s*'Space Grotesk'/);
     expect(globalsCss).not.toMatch(/montserrat|Montserrat/i);
+  });
+
+  it('defines shadcn semantic variables aliased to Onda palette', () => {
+    for (const name of REQUIRED_SHADCN_THEME_CSS_VARIABLES) {
+      expect(globalsCss, `missing ${name}`).toContain(`${name}:`);
+    }
+    for (const name of REQUIRED_SHADCN_THEME_COLOR_KEYS) {
+      expect(globalsCss, `missing ${name}`).toContain(`${name}:`);
+    }
+    expect(globalsCss).toMatch(/--card:\s*oklch\(1\s+0\s+0\)/);
+    expect(globalsCss).toMatch(/--input:\s*oklch\(0\.89\s+0\.01\s+250\)/);
   });
 
   it('does not define HOPE structural tokens', () => {

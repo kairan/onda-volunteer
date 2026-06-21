@@ -52,10 +52,14 @@ function OrgProbe() {
   );
 }
 
-function renderWithQueryClient(client = new QueryClient({ defaultOptions: { queries: { retry: false } } })) {
+function renderWithQueryClient(
+  client = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+  props: { enabled?: boolean; devVolunteerId?: string } = {},
+) {
+  const { enabled = true, devVolunteerId } = props;
   return render(
     <QueryClientProvider client={client}>
-      <OrganizationProvider enabled>
+      <OrganizationProvider enabled={enabled} devVolunteerId={devVolunteerId}>
         <OrgProbe />
       </OrganizationProvider>
     </QueryClientProvider>,
@@ -119,10 +123,25 @@ describe('OrganizationProvider', () => {
     expect(adminVisible.map((m) => m.id)).toEqual(['min-active', 'min-archived']);
   });
 
-  it('refresh invalidates organization context query', async () => {
-    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
-      churches,
-    });
+  it('refresh invalidates organization context query and re-resolves selection', async () => {
+    vi.mocked(fetchOrgContext.fetchOrganizationContext)
+      .mockResolvedValueOnce({ churches })
+      .mockResolvedValueOnce({
+        churches: [
+          {
+            ...churches[0]!,
+            ministries: [
+              {
+                id: 'min-active',
+                name: 'Active Ministry',
+                archivedAt: '2026-06-01',
+              },
+              { id: 'min-other', name: 'Other Ministry' },
+            ],
+          },
+          churches[1]!,
+        ],
+      });
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const invalidateSpy = vi.spyOn(client, 'invalidateQueries');
 
@@ -132,13 +151,53 @@ describe('OrganizationProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('loading').textContent).toBe('false');
     });
+    expect(screen.getByTestId('ministry').textContent).toBe('min-active');
 
     await user.click(screen.getByRole('button', { name: 'refresh' }));
 
     await waitFor(() => {
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: queryKeys.organizationContext(),
+        refetchType: 'none',
       });
+      expect(screen.getByTestId('ministry').textContent).toBe('min-other');
+    });
+  });
+
+  it('re-bootstraps selection when devVolunteerId changes', async () => {
+    vi.mocked(fetchOrgContext.fetchOrganizationContext).mockImplementation(
+      async (input) => {
+        if (input?.volunteerId === 'vol-b') {
+          return { churches: [churches[1]!] };
+        }
+        return { churches: [churches[0]!] };
+      },
+    );
+
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const { rerender } = render(
+      <QueryClientProvider client={client}>
+        <OrganizationProvider enabled devVolunteerId="vol-a">
+          <OrgProbe />
+        </OrganizationProvider>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('church').textContent).toBe('church-a');
+    });
+
+    rerender(
+      <QueryClientProvider client={client}>
+        <OrganizationProvider enabled devVolunteerId="vol-b">
+          <OrgProbe />
+        </OrganizationProvider>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('church').textContent).toBe('church-b');
+      expect(screen.getByTestId('ministry').textContent).toBe('min-b1');
     });
   });
 });

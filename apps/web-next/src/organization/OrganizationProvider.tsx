@@ -119,6 +119,13 @@ export function OrganizationProvider({
   const bootstrappedRef = useRef(false);
 
   useEffect(() => {
+    bootstrappedRef.current = false;
+    setActiveChurchId(null);
+    setActiveCampusId(null);
+    setActiveMinistryId(null);
+  }, [devVolunteerId]);
+
+  useEffect(() => {
     if (!enabled) {
       bootstrappedRef.current = false;
       return;
@@ -191,10 +198,43 @@ export function OrganizationProvider({
   );
 
   const refresh = useCallback(async () => {
-    await queryClient.invalidateQueries({
+    await queryClient.cancelQueries({
       queryKey: queryKeys.organizationContext(devVolunteerId),
     });
-  }, [devVolunteerId, queryClient]);
+    const freshData = await fetchOrganizationContext(
+      devVolunteerId ? { volunteerId: devVolunteerId } : undefined,
+    );
+    const resolved = resolveSelection(
+      freshData.churches,
+      activeChurchId,
+      activeCampusId,
+      activeMinistryId,
+      isSystemAdmin,
+    );
+    setActiveChurchId(resolved.churchId);
+    setActiveCampusId(resolved.campusId);
+    setActiveMinistryId(resolved.ministryId);
+    setStoredOrganizationSelection(
+      resolved.churchId,
+      resolved.campusId,
+      resolved.ministryId,
+    );
+    queryClient.setQueryData(
+      queryKeys.organizationContext(devVolunteerId),
+      freshData,
+    );
+    await queryClient.invalidateQueries({
+      queryKey: queryKeys.organizationContext(devVolunteerId),
+      refetchType: 'none',
+    });
+  }, [
+    activeCampusId,
+    activeChurchId,
+    activeMinistryId,
+    devVolunteerId,
+    isSystemAdmin,
+    queryClient,
+  ]);
 
   const value = useMemo(
     () => ({
