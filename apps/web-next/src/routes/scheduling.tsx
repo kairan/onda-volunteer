@@ -9,8 +9,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getAvatarInitials } from '@/components/ui/avatarInitials';
 import {
   leaderSchedulingPreview,
+  resolveSchedulingPreviewRole,
   rosterFillCounts,
-  schedulingPreviewRole,
 } from '@/__preview__/fixtures';
 
 export function LeaderSchedulingPreview() {
@@ -124,8 +124,8 @@ export function LeaderSchedulingPreview() {
   );
 }
 
-export function SchedulingPage() {
-  if (schedulingPreviewRole === 'leader') {
+export function SchedulingPage({ previewRole }: { previewRole?: string } = {}) {
+  if (resolveSchedulingPreviewRole(previewRole) === 'leader') {
     return <LeaderSchedulingPreview />;
   }
 

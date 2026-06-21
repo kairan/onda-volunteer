@@ -82,6 +82,19 @@ export type SchedulingPreviewRole = 'leader' | 'volunteer';
 /** Brand checkpoint default: leader roster on /scheduling */
 export const schedulingPreviewRole: SchedulingPreviewRole = 'leader';
 
+/**
+ * Dev-only preview toggle for HITL (T13.5).
+ * Navigate to `/scheduling?previewRole=volunteer` or `?previewRole=leader`.
+ */
+export function resolveSchedulingPreviewRole(
+  previewRoleParam?: string | null,
+): SchedulingPreviewRole {
+  if (previewRoleParam === 'volunteer' || previewRoleParam === 'leader') {
+    return previewRoleParam;
+  }
+  return schedulingPreviewRole;
+}
+
 export const leaderSchedulingPreview = {
   ministryName: 'Worship',
   eventsThisWeek: 2,

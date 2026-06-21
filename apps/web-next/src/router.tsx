@@ -277,7 +277,16 @@ const schedulingHubRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/scheduling',
   beforeLoad: shellBeforeLoad,
-  component: shellRoute(() => <SchedulingPage />),
+  validateSearch: (search: Record<string, unknown>) => ({
+    previewRole:
+      search.previewRole === 'volunteer' || search.previewRole === 'leader'
+        ? search.previewRole
+        : undefined,
+  }),
+  component: shellRoute(function SchedulingHubPage() {
+    const { previewRole } = schedulingHubRoute.useSearch();
+    return <SchedulingPage previewRole={previewRole} />;
+  }),
   errorComponent: shellErrorComponent,
 });
 
