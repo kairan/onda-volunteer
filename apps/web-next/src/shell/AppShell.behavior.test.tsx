@@ -124,17 +124,18 @@ describe('AppShell', () => {
     const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
     await waitFor(() => {
       expect(
-        within(primaryNav).getByRole('link', { name: 'My assignments' }),
-      ).toBeInTheDocument();
-    });
-    await waitFor(() => {
-      expect(
         within(primaryNav).getByRole('link', { name: 'Events' }),
       ).toBeInTheDocument();
     });
     expect(
-      within(primaryNav).getByRole('link', { name: 'Roster' }),
+      within(primaryNav).getByRole('link', { name: 'Volunteers' }),
     ).toBeInTheDocument();
+    expect(
+      within(primaryNav).queryByRole('link', { name: 'My assignments' }),
+    ).not.toBeInTheDocument();
+    expect(
+      within(primaryNav).queryByRole('link', { name: 'Roster' }),
+    ).not.toBeInTheDocument();
   });
 
   it('opens the mobile sidebar sheet from the trigger button', async () => {
@@ -157,6 +158,6 @@ describe('AppShell', () => {
     await user.click(toggleButton);
 
     expect(await screen.findByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByText('My assignments')).toBeInTheDocument();
+    expect(screen.getByText('Events')).toBeInTheDocument();
   });
 });

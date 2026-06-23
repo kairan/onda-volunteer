@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { isNavItemActive, type NavManifestItem } from '@/navigation/manifest';
+import { pickActiveNavItem, type NavManifestItem } from '@/navigation/manifest';
 import {
   Sidebar,
   SidebarContent,
@@ -51,6 +51,7 @@ export function ChurchAppSidebar({
 }: ChurchAppSidebarProps) {
   const { t } = useTranslation('shell');
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const activeNavItem = pickActiveNavItem(navItems, pathname);
 
   return (
     <Sidebar collapsible="icon">
@@ -79,7 +80,7 @@ export function ChurchAppSidebar({
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
                         asChild
-                        isActive={isNavItemActive(item, pathname)}
+                        isActive={activeNavItem?.id === item.id}
                         tooltip={t(item.labelKey)}
                       >
                         <Link to={item.path}>

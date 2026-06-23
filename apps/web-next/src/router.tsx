@@ -16,6 +16,10 @@ import { MinistriesPage } from '@/routes/ministries';
 import { MinistryLeadersPage } from '@/routes/ministryLeaders';
 import { VolunteersPage } from '@/routes/volunteers';
 import { SchedulingPage } from '@/routes/scheduling';
+import { prefetchLeaderSchedulingQueries } from '@/leader/prefetchLeaderScheduling';
+import { fetchEventDetail } from '@/leader/eventDetailQuery';
+import { volunteerIdForProtectedRequests } from '@/auth/authSession';
+import { ensureLeaderRouteAccess } from '@/leader/ensureLeaderRouteAccess';
 import {
   SchedulingEventDetailPending,
   SchedulingEventDetailView,
@@ -159,7 +163,10 @@ function createSchedulingEventDetailRoute(
 const leaderVolunteerTimeAwayRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/leader/volunteer-time-away',
-  beforeLoad: shellBeforeLoad,
+  beforeLoad: async () => {
+    await ensureShellRouteAuth();
+    await ensureLeaderRouteAccess();
+  },
   component: shellRoute(() => <LeaderVolunteerTimeAwayPage />),
   errorComponent: shellErrorComponent,
 });
@@ -279,6 +286,7 @@ const schedulingHubRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/scheduling',
   beforeLoad: shellBeforeLoad,
+  loader: () => prefetchLeaderSchedulingQueries(),
   validateSearch: (search: Record<string, unknown>) => ({
     previewRole:
       search.previewRole === 'volunteer' || search.previewRole === 'leader'
@@ -329,30 +337,11 @@ async function defaultSchedulingEventDetailLoader({
 }: {
   params: { eventId: string };
 }): Promise<EventDetailPayload> {
-  return {
-    church: {
-      id: 'church-stub',
-      name: 'Demo Church',
-      defaultTimezone: 'UTC',
-    },
-    event: {
-      id: params.eventId,
-      kind: 'PUBLIC',
-      title: 'Event stub',
-      window: {
-        startsAtUtc: '2026-06-21T14:00:00.000Z',
-        endsAtUtc: '2026-06-21T16:00:00.000Z',
-      },
-      framing: {
-        churchDefaultTimezone: 'UTC',
-        startsDisplayInChurchTz: '14:00',
-        endsDisplayInChurchTz: '16:00',
-      },
-      cancelledAtUtc: null,
-    },
-    ministry: null,
-    assignments: [],
-  };
+  const volunteerId = volunteerIdForProtectedRequests();
+  if (!volunteerId) {
+    throw new Error('Sign in required');
+  }
+  return fetchEventDetail({ eventId: params.eventId, volunteerId });
 }
 
 export function buildRouteTree(options: BuildRouteTreeOptions = {}) {

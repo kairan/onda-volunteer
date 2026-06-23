@@ -32,6 +32,7 @@
     "startsAtRequired": "Enter a start time.",
     "endsAtRequired": "Enter an end time.",
     "invalidWindow": "End time must be after start time.",
-    "summary": "Fix the highlighted fields and try again."
+    "summary": "Fix the highlighted fields and try again.",
+    "deleteFailed": "Could not remove this unavailability. Try again."
   }
 }
