@@ -174,7 +174,9 @@ export function MinistryLeadersPage() {
       ) : null}
 
       {successMessage ? (
-        <p className="text-sm text-muted-foreground">{successMessage}</p>
+        <p role="status" className="text-sm font-medium text-primary">
+          {successMessage}
+        </p>
       ) : null}
 
       {leadersQuery.isLoading ? (
