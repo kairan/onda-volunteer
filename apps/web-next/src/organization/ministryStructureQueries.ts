@@ -5,6 +5,15 @@ import type {
   MinistryRoleRow,
 } from '@/leader/types';
 import { queryKeys } from '@/query/queryKeys';
+import type {
+  VolunteerInviteRow,
+  VolunteerSearchResult,
+} from './ministryStructureMutations';
+
+export type MinistryLeaderRow = {
+  volunteerId: string;
+  displayName: string;
+};
 
 export async function fetchMinistryMemberships(input: {
   ministryId: string;
@@ -48,5 +57,88 @@ export function ministryRolesQuery(input: {
     queryKey: queryKeys.ministryRoles(input.ministryId),
     queryFn: () => fetchMinistryRoles(input),
     enabled: Boolean(input.ministryId && input.actingVolunteerId),
+  });
+}
+
+export async function fetchMinistryLeaders(input: {
+  ministryId: string;
+  actingVolunteerId: string;
+}): Promise<MinistryLeaderRow[]> {
+  return getJson<MinistryLeaderRow[]>(
+    `/ministries/${input.ministryId}/leaders`,
+    { volunteerId: input.actingVolunteerId },
+  );
+}
+
+export function ministryLeadersQuery(input: {
+  ministryId: string;
+  actingVolunteerId: string;
+}) {
+  return queryOptions({
+    queryKey: queryKeys.ministryLeaders(input.ministryId),
+    queryFn: () => fetchMinistryLeaders(input),
+    enabled: Boolean(input.ministryId && input.actingVolunteerId),
+  });
+}
+
+export async function fetchVolunteerInvites(input: {
+  ministryId: string;
+  actingVolunteerId: string;
+}): Promise<VolunteerInviteRow[]> {
+  const data = await getJson<{ invites: VolunteerInviteRow[] }>(
+    `/ministries/${input.ministryId}/invites`,
+    { volunteerId: input.actingVolunteerId },
+  );
+  return data.invites;
+}
+
+export function volunteerInvitesQuery(input: {
+  ministryId: string;
+  actingVolunteerId: string;
+}) {
+  return queryOptions({
+    queryKey: queryKeys.volunteerInvites(input.ministryId),
+    queryFn: () => fetchVolunteerInvites(input),
+    enabled: Boolean(input.ministryId && input.actingVolunteerId),
+  });
+}
+
+export async function searchVolunteers(input: {
+  churchId: string;
+  query: string;
+  ministryId: string;
+  actingVolunteerId: string;
+}): Promise<VolunteerSearchResult[]> {
+  const params = new URLSearchParams({
+    q: input.query,
+    ministryId: input.ministryId,
+  });
+  const data = await getJson<{ volunteers: VolunteerSearchResult[] }>(
+    `/churches/${input.churchId}/volunteers/search?${params}`,
+    { volunteerId: input.actingVolunteerId },
+  );
+  return data.volunteers;
+}
+
+export function volunteerSearchQuery(input: {
+  churchId: string;
+  ministryId: string;
+  actingVolunteerId: string;
+  query: string;
+}) {
+  return queryOptions({
+    queryKey: queryKeys.volunteerSearch(
+      input.churchId,
+      input.ministryId,
+      input.query,
+    ),
+    queryFn: () => searchVolunteers(input),
+    enabled:
+      Boolean(
+        input.churchId &&
+          input.ministryId &&
+          input.actingVolunteerId &&
+          input.query.length >= 2,
+      ),
   });
 }

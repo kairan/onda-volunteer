@@ -20,6 +20,26 @@ export const volunteerRouteOrgContext = {
   ],
 };
 
+export const adminRouteOrgContext = {
+  churches: [
+    {
+      id: 'church-admin',
+      name: 'Admin Church',
+      defaultTimezone: 'UTC',
+      isAccreditedAdmin: true,
+      campuses: [{ id: 'campus-1', name: 'Main', timezone: 'UTC' }],
+      ministries: [
+        {
+          id: 'min-greeters',
+          name: 'Greeters',
+          isChurchAdmin: true,
+          isLeader: true,
+        },
+      ],
+    },
+  ],
+};
+
 export const volunteerRouteAssignments = [
   {
     id: 'asg-1',
@@ -93,6 +113,15 @@ export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unk
   }
   if (path.includes('/ministries/') && path.endsWith('/memberships')) {
     return [{ volunteerId: 'vol-2', displayName: 'Alex', status: 'ACTIVE' }];
+  }
+  if (path.includes('/ministries/') && path.endsWith('/leaders')) {
+    return [{ volunteerId: 'leader-1', displayName: 'Pat Leader' }];
+  }
+  if (path.includes('/ministries/') && path.endsWith('/invites')) {
+    return { invites: [] };
+  }
+  if (path.includes('/volunteers/search')) {
+    return { volunteers: [] };
   }
   if (path.includes('/assignments')) {
     return volunteerRouteAssignments;

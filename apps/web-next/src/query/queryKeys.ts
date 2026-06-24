@@ -22,6 +22,15 @@ export const queryKeys = {
   ministryMemberships: (ministryId: string) =>
     ['ministry-memberships', ministryId] as const,
   ministryRoles: (ministryId: string) => ['ministry-roles', ministryId] as const,
+  ministryLeaders: (ministryId: string) =>
+    ['ministry-leaders', ministryId] as const,
+  volunteerInvites: (ministryId: string) =>
+    ['volunteer-invites', ministryId] as const,
+  volunteerSearch: (
+    churchId: string,
+    ministryId: string,
+    query: string,
+  ) => ['volunteer-search', churchId, ministryId, query] as const,
   assignments: (volunteerId: string, churchId?: string | null) =>
     ['assignments', volunteerId, churchId ?? null] as const,
   systemAdmin: {
