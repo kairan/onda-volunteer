@@ -36,10 +36,14 @@ export const queryKeys = {
   systemAdmin: {
     churches: () => ['system-admin', 'churches'] as const,
     church: (churchId: string) => ['system-admin', 'church', churchId] as const,
-    volunteers: () => ['system-admin', 'volunteers'] as const,
+    adminInvites: (churchId: string) =>
+      ['system-admin', 'admin-invites', churchId] as const,
+    volunteers: (q?: string) =>
+      ['system-admin', 'volunteers', q ?? ''] as const,
     volunteer: (volunteerId: string) =>
       ['system-admin', 'volunteer', volunteerId] as const,
-    events: () => ['system-admin', 'events'] as const,
+    events: (churchId?: string) =>
+      ['system-admin', 'events', churchId ?? ''] as const,
     eventDetail: (eventId: string) =>
       ['system-admin', 'event-detail', eventId] as const,
   },

@@ -93,5 +93,15 @@ describe('queryKeys', () => {
       'volunteer',
       'vol-1',
     ]);
+    expect(queryKeys.systemAdmin.volunteers('search')).toEqual([
+      'system-admin',
+      'volunteers',
+      'search',
+    ]);
+    expect(queryKeys.systemAdmin.adminInvites('church-1')).toEqual([
+      'system-admin',
+      'admin-invites',
+      'church-1',
+    ]);
   });
 });

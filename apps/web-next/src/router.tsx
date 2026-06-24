@@ -33,15 +33,13 @@ import { ProtectedAppShell } from '@/shell/ProtectedAppShell';
 import { shellRoute } from '@/shell/shellRoute';
 import { ensureShellRouteAuth } from '@/shell/shellRouteAuth';
 import { SystemAdminShell } from '@/system-admin/SystemAdminShell';
-import {
-  SystemAdminChurchDetailPage,
-  SystemAdminChurchesPage,
-  SystemAdminDashboardPage,
-  SystemAdminSchedulingEventDetailPage,
-  SystemAdminSchedulingPage,
-  SystemAdminUserDetailPage,
-  SystemAdminUsersPage,
-} from '@/system-admin/SystemAdminPages';
+import { SystemAdminChurchDetailPage } from '@/system-admin/SystemAdminChurchDetailPage';
+import { SystemAdminChurchesPage } from '@/system-admin/SystemAdminChurchesPage';
+import { SystemAdminDashboardPage } from '@/system-admin/SystemAdminDashboardPage';
+import { SystemAdminSchedulingEventDetailPage } from '@/system-admin/SystemAdminSchedulingEventDetailPage';
+import { SystemAdminSchedulingPage } from '@/system-admin/SystemAdminSchedulingPage';
+import { SystemAdminUserDetailPage } from '@/system-admin/SystemAdminUserDetailPage';
+import { SystemAdminUsersPage } from '@/system-admin/SystemAdminUsersPage';
 import { ensureSystemAdminRouteAccess } from '@/system-admin/ensureSystemAdminRouteAccess';
 import { UserSelectPage } from '@/routes/userSelect';
 
