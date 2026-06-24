@@ -13,9 +13,7 @@
 
 ## Next agent action
 
-Execute **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27 remainder: web-next in `pnpm test:coverage` + Vitest floors; then T29 deploy repoint, T30 rename/retire). TLC: `.specs/features/frontend-migration-web-next/tasks.md` T27–T30.
-
-Label **`ready-for-agent`** on #148 when applying hygiene to GitHub.
+Execute **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27 remainder: web-next in `pnpm test:coverage` + Vitest floors; then T29 deploy repoint, T30 rename/retire). TLC: `.specs/features/frontend-migration-web-next/tasks.md` T27–T30. **`ready-for-agent`** already on #148; stale agent labels removed from closed #144–#147.
 
 ## Blockers
 
