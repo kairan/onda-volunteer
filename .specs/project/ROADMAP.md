@@ -64,6 +64,17 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability create (AVAIL-01), volunteer edit/delete own Unavailability (AVAIL-02), campus-authoritative event time display (SCHED-01), web i18n alignment (I18N-01). TLC: `.specs/features/ubiquitous-language-drift/`.
 
+### Shipped features (2026-06-24 closeout)
+
+| Theme | Feature slug | Issues | Status |
+|-------|--------------|--------|--------|
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 2 — volunteer) | [#144](https://github.com/kairan/onda-volunteer/issues/144) | ✅ Shipped |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 3 — leader) | [#145](https://github.com/kairan/onda-volunteer/issues/145) | ✅ Shipped |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 4 — org-admin) | [#146](https://github.com/kairan/onda-volunteer/issues/146) | ✅ Shipped |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 5 — system admin) | [#147](https://github.com/kairan/onda-volunteer/issues/147) | ✅ Shipped |
+
+Slices 2–5: live API routes in `apps/web-next`, 105 Vitest tests green. TLC: `.specs/features/frontend-migration-web-next/` (T14–T26 checked). T28 Playwright CI shipped via [#157](https://github.com/kairan/onda-volunteer/pull/157).
+
 ### Shipped features (2026-06-21 closeout)
 
 | Theme | Feature slug | Issues | Status |
@@ -76,7 +87,7 @@ Glossary **Inactive** membership (GLOSS-01), inactive guard on Unavailability cr
 
 | Theme | Feature slug | Status | TLC |
 |-------|--------------|--------|-----|
-| **Web shell & i18n** | `frontend-migration-web-next` (Slices 2–5) | **#144–#147 ready for agent**; #148 blocked until parity | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) · `docs/issues/144-*` … `147-*` |
+| **Web shell & i18n** | `frontend-migration-web-next` (Slice 6 — CI & cutover) | **#148 ready for agent** (T28 ✅; T27 partial) | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) · `docs/issues/148-web-next-migration-slice-6-cutover.md` |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for the migration (no standalone in-place execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
 **Frontend rebuild (`web-next`):** parallel strangler migration — new `apps/web-next` on the same stack (React 19 · Vite · TanStack Router · Tailwind 4) plus TanStack Query, Onda brand tokens, route-by-route parity, single cutover. ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).

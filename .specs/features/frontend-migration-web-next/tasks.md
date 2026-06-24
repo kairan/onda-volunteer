@@ -1,18 +1,18 @@
 # Frontend rebuild — `web-next` — Tasks
 
 **Design**: [./design.md](./design.md)  
-**Status**: Slice 1 shipped — validated 2026-06-21 ([#143](https://github.com/kairan/onda-volunteer/issues/143)); Execute continues ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148))
+**Status**: Slices 1–5 shipped — validated 2026-06-24 ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)); Slice 6 Execute continues ([#148](https://github.com/kairan/onda-volunteer/issues/148); T28 shipped via [#157](https://github.com/kairan/onda-volunteer/pull/157))
 
 ## GitHub issue map
 
 | Issue | Tasks | Summary | Status |
 |------:|-------|---------|--------|
 | [#143](https://github.com/kairan/onda-volunteer/issues/143) | T01–T13.5 | Foundation, data core, shell, brand preview | ✅ Shipped (PRs [#151](https://github.com/kairan/onda-volunteer/pull/151), [#150](https://github.com/kairan/onda-volunteer/pull/150), [#152](https://github.com/kairan/onda-volunteer/pull/152), [#153](https://github.com/kairan/onda-volunteer/pull/153)) |
-| [#144](https://github.com/kairan/onda-volunteer/issues/144) | T14–T16.5–T17 | Volunteer screens | Open — ready for agent |
-| [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | Open — ready for agent |
-| [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | Open — ready for agent |
-| [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | Open — ready for agent |
-| [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | Open |
+| [#144](https://github.com/kairan/onda-volunteer/issues/144) | T14–T16.5–T17 | Volunteer screens | ✅ Shipped ([#156](https://github.com/kairan/onda-volunteer/pull/156), [#157](https://github.com/kairan/onda-volunteer/pull/157)) |
+| [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | ✅ Shipped ([#158](https://github.com/kairan/onda-volunteer/pull/158)) |
+| [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | ✅ Shipped ([#159](https://github.com/kairan/onda-volunteer/pull/159)) |
+| [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | ✅ Shipped ([#160](https://github.com/kairan/onda-volunteer/pull/160)) |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | Open — **ready for agent** (T28 ✅; T27 partial; T29–T30 pending) |
 
 ## Verify (Slice 1 closeout — #143)
 
@@ -21,6 +21,30 @@
 - [x] `docs/issues/README.md` index updated
 - [x] `.specs/project/ROADMAP.md` Slice 1 row marked shipped
 - [x] `.specs/project/STATE.md` closeout note added
+
+## Verify (Slice 2 closeout — #144)
+
+- [x] T14–T17 `Done when` gates validated (`pnpm --filter @onda/web-next test` — 105 tests incl. volunteer behavior)
+- [x] Issue spec archived to `docs/issues/done/144-web-next-migration-slice-2-volunteer.md`
+- [x] `docs/issues/README.md` index updated
+
+## Verify (Slice 3 closeout — #145)
+
+- [x] T18–T23 `Done when` gates validated (leader scheduling + event detail behavior tests + Playwright smoke)
+- [x] Issue spec archived to `docs/issues/done/145-web-next-migration-slice-3-leader.md`
+- [x] `docs/issues/README.md` index updated
+
+## Verify (Slice 4 closeout — #146)
+
+- [x] T24 `Done when` gates validated (ministries, volunteers, ministryLeaders behavior tests)
+- [x] Issue spec archived to `docs/issues/done/146-web-next-migration-slice-4-org-admin.md`
+- [x] `docs/issues/README.md` index updated
+
+## Verify (Slice 5 closeout — #147)
+
+- [x] T25–T26 `Done when` gates validated (system-admin shell + pages behavior tests)
+- [x] Issue spec archived to `docs/issues/done/147-web-next-migration-slice-5-system-admin.md`
+- [x] `docs/issues/README.md` index updated
 
 ---
 
@@ -472,11 +496,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `volunteerAssignmentsQuery({ volunteerId, churchId })` returns `queryOptions` with correct key from `queryKeys.assignments()`
-- [ ] `volunteerUnavailabilityQuery({ volunteerId })` returns `queryOptions` with correct key
-- [ ] Mutation fns accept same payloads as current identity fetchers; call `apiClient.mutateJson`
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥5 unit tests pass (assignments query options, unavailability query options, create/update/delete mutation fns call apiClient correctly)
+- [x] `volunteerAssignmentsQuery({ volunteerId, churchId })` returns `queryOptions` with correct key from `queryKeys.assignments()`
+- [x] `volunteerUnavailabilityQuery({ volunteerId })` returns `queryOptions` with correct key
+- [x] Mutation fns accept same payloads as current identity fetchers; call `apiClient.mutateJson`
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥5 unit tests pass (assignments query options, unavailability query options, create/update/delete mutation fns call apiClient correctly)
 
 **Tests**: unit
 **Gate**: quick
@@ -498,12 +522,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Card renders event title, "Ministry · Role" label, localized date/time
-- [ ] Status badge shows "confirmed" when `assignment.status === 'ROSTERED'`
-- [ ] Skeleton variant renders layout-stable placeholders (no layout shift)
-- [ ] No HOPE classes (`border-2 border-black`, `rounded-none`, `shadow-[4px_4px_0_black]`)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (renders card data, shows badge, skeleton renders)
+- [x] Card renders event title, "Ministry · Role" label, localized date/time
+- [x] Status badge shows "confirmed" when `assignment.status === 'ROSTERED'`
+- [x] Skeleton variant renders layout-stable placeholders (no layout shift)
+- [x] No HOPE classes (`border-2 border-black`, `rounded-none`, `shadow-[4px_4px_0_black]`)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (renders card data, shows badge, skeleton renders)
 
 **Tests**: unit
 **Gate**: quick
@@ -525,13 +549,13 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Page greets by display name; assignment count summary shows correct number (including 0)
-- [ ] Time Away preview shows ≤3 rows; "View all" navigates to `/time-away`
-- [ ] Skeletons appear while loading; no error crash on empty data
-- [ ] No assignment card grid on `/dashboard` (cards are T16.5 on `/scheduling`)
-- [ ] Playwright smoke: volunteer dashboard loads, greeting visible, time-away section or empty state visible
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit behavior tests (greeting renders, assignment count, time-away preview, empty state); Playwright e2e smoke green
+- [x] Page greets by display name; assignment count summary shows correct number (including 0)
+- [x] Time Away preview shows ≤3 rows; "View all" navigates to `/time-away`
+- [x] Skeletons appear while loading; no error crash on empty data
+- [x] No assignment card grid on `/dashboard` (cards are T16.5 on `/scheduling`)
+- [x] Playwright smoke: volunteer dashboard loads, greeting visible, time-away section or empty state visible
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit behavior tests (greeting renders, assignment count, time-away preview, empty state); Playwright e2e smoke green
 
 **Tests**: unit + e2e
 **Gate**: full
@@ -553,12 +577,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Volunteer `/scheduling` renders `AssignmentCard` list in 2-col grid at md+ breakpoints
-- [ ] Cards link to `/scheduling/events/$eventId` on activation
-- [ ] Empty state when no assignments; skeletons while loading
-- [ ] Leader grant still routes to leader preview until T20 lands (no regression)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests (grid renders, empty state, card navigation)
+- [x] Volunteer `/scheduling` renders `AssignmentCard` list in 2-col grid at md+ breakpoints
+- [x] Cards link to `/scheduling/events/$eventId` on activation
+- [x] Empty state when no assignments; skeletons while loading
+- [x] Leader grant still routes to leader preview until T20 lands (no regression)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests (grid renders, empty state, card navigation)
 
 **Tests**: unit
 **Gate**: quick
@@ -580,12 +604,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] List renders all unavailability rows for signed-in volunteer
-- [ ] Create/Edit form submits via `useMutation`; on success invalidates `queryKeys.unavailability(volunteerId)`
-- [ ] Delete shows confirm dialog before `deleteVolunteerUnavailability`
-- [ ] Inline error appears near form on API rejection (ADR 0001 hybrid feedback)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (list renders, add form submits, delete confirm)
+- [x] List renders all unavailability rows for signed-in volunteer
+- [x] Create/Edit form submits via `useMutation`; on success invalidates `queryKeys.unavailability(volunteerId)`
+- [x] Delete shows confirm dialog before `deleteVolunteerUnavailability`
+- [x] Inline error appears near form on API rejection (ADR 0001 hybrid feedback)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (list renders, add form submits, delete confirm)
 
 **Tests**: unit
 **Gate**: quick
@@ -607,12 +631,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `leaderEventsQuery(scope)` produces stable key via `queryKeys.events(scope)` and fetches via `apiClient.getJson`
-- [ ] `eventDetailQuery(eventId)` key matches `queryKeys.eventDetail(eventId)`
-- [ ] `assignMutation` invalidates `eventDetail` + `events` on success; throws `ApiError` on rejection
-- [ ] `releaseMutation` (leader void, not volunteer self-release) invalidates same keys
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥5 unit tests pass (query key shapes, assign mutation invalidation, release mutation invalidation, error propagation)
+- [x] `leaderEventsQuery(scope)` produces stable key via `queryKeys.events(scope)` and fetches via `apiClient.getJson`
+- [x] `eventDetailQuery(eventId)` key matches `queryKeys.eventDetail(eventId)`
+- [x] `assignMutation` invalidates `eventDetail` + `events` on success; throws `ApiError` on rejection
+- [x] `releaseMutation` (leader void, not volunteer self-release) invalidates same keys
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥5 unit tests pass (query key shapes, assign mutation invalidation, release mutation invalidation, error propagation)
 
 **Tests**: unit
 **Gate**: quick
@@ -634,13 +658,13 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Fill badge shows `X/Y filled` in brand semantic color (e.g. green when full, amber when partial)
-- [ ] Assigned row shows role label + display name + `<avatar initials>`
-- [ ] Unfilled row shows "Unfilled" + "Assign" button (Onda primary)
-- [ ] Release button visible on assigned rows; triggers handler prop
-- [ ] No HOPE classes
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit behavior tests (fill badge, assigned row, unfilled row with assign button, release button)
+- [x] Fill badge shows `X/Y filled` in brand semantic color (e.g. green when full, amber when partial)
+- [x] Assigned row shows role label + display name + `<avatar initials>`
+- [x] Unfilled row shows "Unfilled" + "Assign" button (Onda primary)
+- [x] Release button visible on assigned rows; triggers handler prop
+- [x] No HOPE classes
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit behavior tests (fill badge, assigned row, unfilled row with assign button, release button)
 
 **Tests**: unit
 **Gate**: quick
@@ -662,14 +686,14 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Ministry name hero visible when active ministry context set
-- [ ] Event summary shows count + unfilled slot count for next 7 days
-- [ ] Empty state renders with i18n copy when no events
-- [ ] Assign action opens assign flow; inline error appears on API rejection
-- [ ] Release action calls void mutation (leader stewardship, not volunteer self-release)
-- [ ] Playwright smoke: leader scheduling page loads, ministry hero visible, roster section renders
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥4 unit behavior tests (hero renders, event count summary, empty state, inline error on rejection); Playwright e2e smoke green
+- [x] Ministry name hero visible when active ministry context set
+- [x] Event summary shows count + unfilled slot count for next 7 days
+- [x] Empty state renders with i18n copy when no events
+- [x] Assign action opens assign flow; inline error appears on API rejection
+- [x] Release action calls void mutation (leader stewardship, not volunteer self-release)
+- [x] Playwright smoke: leader scheduling page loads, ministry hero visible, roster section renders
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥4 unit behavior tests (hero renders, event count summary, empty state, inline error on rejection); Playwright e2e smoke green
 
 **Tests**: unit + e2e
 **Gate**: full
@@ -691,12 +715,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Event title, localized time, and status badge render on load
-- [ ] Full roster list renders with `RosterByEventSection`
-- [ ] Assign / Release actions fire mutations; page re-fetches via `queryClient.invalidateQueries` after success
-- [ ] Inline error shown near relevant row on API rejection
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests (event detail renders, assign action, release action); Playwright e2e smoke green
+- [x] Event title, localized time, and status badge render on load
+- [x] Full roster list renders with `RosterByEventSection`
+- [x] Assign / Release actions fire mutations; page re-fetches via `queryClient.invalidateQueries` after success
+- [x] Inline error shown near relevant row on API rejection
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests (event detail renders, assign action, release action); Playwright e2e smoke green
 
 **Tests**: unit + e2e
 **Gate**: full
@@ -718,11 +742,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Form validates required fields; submit button disabled until valid
-- [ ] On success: `queryKeys.events(scope)` invalidated; user navigated to new event detail route
-- [ ] UTC↔local datetime conversion uses `datetimeLocalUtc` helpers (campus timezone)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (form renders, validation, submit mutation called)
+- [x] Form validates required fields; submit button disabled until valid
+- [x] On success: `queryKeys.events(scope)` invalidated; user navigated to new event detail route
+- [x] UTC↔local datetime conversion uses `datetimeLocalUtc` helpers (campus timezone)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (form renders, validation, submit mutation called)
 
 **Tests**: unit
 **Gate**: quick
@@ -744,11 +768,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Route at `/leader/volunteer-time-away` (parity with `apps/web`) renders the in-form ministry + volunteer picker and the selected volunteer's unavailability list
-- [ ] Leader can add/delete unavailability rows; mutations invalidate `queryKeys.unavailability(volunteerId)`
-- [ ] Access denied for non-leader grants (route guard in `beforeLoad`)
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 unit behavior tests pass (list renders, access guard)
+- [x] Route at `/leader/volunteer-time-away` (parity with `apps/web`) renders the in-form ministry + volunteer picker and the selected volunteer's unavailability list
+- [x] Leader can add/delete unavailability rows; mutations invalidate `queryKeys.unavailability(volunteerId)`
+- [x] Access denied for non-leader grants (route guard in `beforeLoad`)
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 unit behavior tests pass (list renders, access guard)
 
 **Tests**: unit
 **Gate**: quick
@@ -770,12 +794,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] All three pages render data from live API via `useQuery`
-- [ ] CRUD mutations use `useMutation` with invalidation of relevant org-context keys
-- [ ] No HOPE visual classes; shell token defaults applied
-- [ ] Each page has a `// TODO: Onda design phase — port with neutral tokens for now` comment
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (one per page: renders, key data visible)
+- [x] All three pages render data from live API via `useQuery`
+- [x] CRUD mutations use `useMutation` with invalidation of relevant org-context keys
+- [x] No HOPE visual classes; shell token defaults applied
+- [x] Each page has a `// TODO: Onda design phase — port with neutral tokens for now` comment
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (one per page: renders, key data visible)
 
 **Tests**: unit
 **Gate**: quick
@@ -797,10 +821,10 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] Non-system-admin accessing `/system-admin/*` is redirected (or shown access-denied)
-- [ ] `SystemAdminShell` renders system-admin nav with Onda tokens
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥2 unit behavior tests pass (access guard redirects, shell renders)
+- [x] Non-system-admin accessing `/system-admin/*` is redirected (or shown access-denied)
+- [x] `SystemAdminShell` renders system-admin nav with Onda tokens
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥2 unit behavior tests pass (access guard redirects, shell renders)
 
 **Tests**: unit
 **Gate**: quick
@@ -822,12 +846,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] All 7 pages render data from live API via `useQuery`
-- [ ] System-admin church create mutation invalidates `queryKeys.systemAdmin.churches()`
-- [ ] Read-only scheduling guard respected (system admin cannot mutate scheduling, ADR 0005)
-- [ ] No HOPE classes; neutral token defaults
-- [ ] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
-- [ ] Test count: ≥3 unit behavior tests pass (dashboard renders, churches list renders, access guard on scheduling)
+- [x] All 7 pages render data from live API via `useQuery`
+- [x] System-admin church create mutation invalidates `queryKeys.systemAdmin.churches()`
+- [x] Read-only scheduling guard respected (system admin cannot mutate scheduling, ADR 0005)
+- [x] No HOPE classes; neutral token defaults
+- [x] Gate check passes: `pnpm --filter @onda/web-next typecheck && pnpm --filter @onda/web-next test`
+- [x] Test count: ≥3 unit behavior tests pass (dashboard renders, churches list renders, access guard on scheduling)
 
 **Tests**: unit
 **Gate**: quick
@@ -849,11 +873,12 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `pnpm typecheck:web-next` exits 0 on current codebase
-- [ ] `pnpm --filter @onda/web-next test` runs Vitest and exits 0
-- [ ] CI `typecheck-web-next` job present in `ci.yml`; CI `coverage` job includes `@onda/web-next` filter
+- [x] `pnpm typecheck:web-next` exits 0 on current codebase
+- [x] `pnpm --filter @onda/web-next test` runs Vitest and exits 0
+- [x] CI `typecheck-web-next` job present in `ci.yml`
+- [ ] CI `coverage` job includes `@onda/web-next` filter
 - [ ] Coverage config enforces same global floors as `apps/web` (#129)
-- [ ] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
+- [x] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
 - [ ] Test count: N/A (this task is CI infrastructure; verify via CI run)
 
 **Tests**: none
@@ -876,11 +901,11 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - Skill: NONE
 
 **Done when**:
-- [ ] `pnpm --filter @onda/web-next exec playwright install chromium` installs without error
-- [ ] `PLAYWRIGHT_WITH_API=true pnpm --filter @onda/web-next test:e2e` runs the volunteer dashboard and leader scheduling smoke tests green (requires Postgres + `pnpm dev:api`)
-- [ ] `e2e-web-next` CI job exists in `e2e-web.yml`
-- [ ] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
-- [ ] Test count: N/A (CI job verification)
+- [x] `pnpm --filter @onda/web-next exec playwright install chromium` installs without error
+- [x] `PLAYWRIGHT_WITH_API=true pnpm --filter @onda/web-next test:e2e` runs the volunteer dashboard and leader scheduling smoke tests green (requires Postgres + `pnpm dev:api`)
+- [x] `e2e-web-next` CI job exists in `e2e-web.yml`
+- [x] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
+- [x] Test count: N/A (CI job verification)
 
 **Tests**: none
 **Gate**: build

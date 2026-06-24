@@ -1,26 +1,26 @@
-# Session handoff (2026-06-11)
+# Session handoff (2026-06-24)
 
 ## Completed this session
 
-1. **#128 web typecheck strict clean** — 59 `tsc` errors fixed; `pnpm typecheck:web` + CI `typecheck-web` job; test fixtures + explicit shell routes.
-2. **#129 coverage threshold gates** — API jest-e2e `rootDir` fix; Jest/Vitest global floors; CI `coverage` job blocking (no `continue-on-error`).
-3. **#61 T61-06 complete** — Lint (#126), web typecheck (#128), and coverage (#129) promotion criteria all shipped.
-4. **Validate** — `pnpm lint`, `pnpm typecheck:web`, `pnpm test:coverage`, `pnpm test` green.
+1. **TLC hygiene** — closed out web-next migration Slices 2–5 ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#147](https://github.com/kairan/onda-volunteer/issues/147)) after GitHub issues closed without tracker sync.
+2. **`tasks.md`** — T14–T26 marked complete; T28 marked shipped; T27 partial (coverage floors for `@onda/web-next` still open).
+3. **Issue specs** — archived `144-*` … `147-*` to `docs/issues/done/`; created active `148-web-next-migration-slice-6-cutover.md`.
+4. **Tracker** — `docs/issues/README.md`, `.specs/project/ROADMAP.md`, `.specs/project/STATE.md` updated.
 
-## HITL follow-up
+## Validate
 
-After PR merge and first green CI on `main`, add to branch protection per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md):
-
-- `CI / typecheck-api`
-- `CI / typecheck-web`
-- `CI / coverage` (optional but recommended)
-
-(`CI / lint` already enabled.)
+- [x] `pnpm --filter @onda/web-next test` — 105 tests green (2026-06-24)
 
 ## Next agent action
 
-No active TLC slice. PRD v1 + #61 CI hygiene complete. Deferred: production hardening (email, notifications, reporting per ROADMAP).
+Execute **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27 remainder: web-next in `pnpm test:coverage` + Vitest floors; then T29 deploy repoint, T30 rename/retire). TLC: `.specs/features/frontend-migration-web-next/tasks.md` T27–T30.
+
+Label **`ready-for-agent`** on #148 when applying hygiene to GitHub.
 
 ## Blockers
 
 None.
+
+## HITL
+
+T13.5 visual sign-off rows in `.specs/features/frontend-migration-web-next/hitl-signoff.md` remain open for human brand review; do not block #148 Execute.
