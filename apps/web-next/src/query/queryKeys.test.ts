@@ -55,6 +55,21 @@ describe('queryKeys', () => {
     ]);
   });
 
+  it('ministry admin keys include ministry scope', () => {
+    expect(queryKeys.ministryRoles('min-1')).toEqual(['ministry-roles', 'min-1']);
+    expect(queryKeys.ministryLeaders('min-1')).toEqual([
+      'ministry-leaders',
+      'min-1',
+    ]);
+    expect(queryKeys.volunteerInvites('min-1')).toEqual([
+      'volunteer-invites',
+      'min-1',
+    ]);
+    expect(
+      queryKeys.volunteerSearch('church-1', 'min-1', 'ali'),
+    ).toEqual(['volunteer-search', 'church-1', 'min-1', 'ali']);
+  });
+
   it('assignments includes volunteer and optional church', () => {
     expect(queryKeys.assignments('vol-1', 'church-a')).toEqual([
       'assignments',
