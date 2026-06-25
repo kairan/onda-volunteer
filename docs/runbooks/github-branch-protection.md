@@ -10,9 +10,11 @@ Enable required status checks **after** the new [`.github/workflows/ci.yml`](../
 | `CI / lint` | [ci.yml](../../.github/workflows/ci.yml) | `lint` |
 | `CI / typecheck-api` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-api` |
 | `CI / typecheck-web-legacy` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-legacy` |
+| `CI / typecheck-web-next` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-next` |
 | `CI / test` | [ci.yml](../../.github/workflows/ci.yml) | `test` |
 | `CI / coverage` | [ci.yml](../../.github/workflows/ci.yml) | `coverage` |
 | `Web Playwright e2e / playwright-web-legacy` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright-web-legacy` |
+| `Web Playwright e2e / playwright-web-next` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright-web-next` |
 
 ## UI (recommended)
 
@@ -63,6 +65,40 @@ EOF
 If GitHub rejects unknown contexts, merge a PR that runs the workflows first, then retry.
 
 ### Merge status checks into existing rule
+
+When protection already exists, use the **`checks`** array format (GitHub Actions `app_id`: **15368**). Replace legacy names (`typecheck-web`, `playwright`) with `typecheck-web-legacy`, `playwright-web-legacy`; add `typecheck-web-next`, `playwright-web-next` when those jobs ship.
+
+```bash
+gh api --method PUT repos/kairan/onda-volunteer/branches/main/protection --input - <<'EOF'
+{
+  "required_status_checks": {
+    "strict": true,
+    "checks": [
+      {"context": "build", "app_id": 15368},
+      {"context": "lint", "app_id": 15368},
+      {"context": "test", "app_id": 15368},
+      {"context": "coverage", "app_id": 15368},
+      {"context": "typecheck-api", "app_id": 15368},
+      {"context": "typecheck-web-legacy", "app_id": 15368},
+      {"context": "typecheck-web-next", "app_id": 15368},
+      {"context": "playwright-web-legacy", "app_id": 15368},
+      {"context": "playwright-web-next", "app_id": 15368}
+    ]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null
+}
+EOF
+```
+
+Requires the new check names to have run at least once (open a PR after renaming jobs). Verify:
+
+```bash
+gh api repos/kairan/onda-volunteer/branches/main/protection --jq '.required_status_checks.contexts'
+```
+
+### Legacy `jq` merge (deprecated — use `checks` block above)
 
 When protection already exists, read the current rule, union the CI contexts below with any existing ones, and `PUT` the merged payload (preserves review requirements and restrictions):
 
