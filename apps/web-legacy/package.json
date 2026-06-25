@@ -1,5 +1,5 @@
 {
-  "name": "@onda/web",
+  "name": "@onda/web-legacy",
   "private": true,
   "type": "module",
   "scripts": {

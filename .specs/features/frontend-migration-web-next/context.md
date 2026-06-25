@@ -10,11 +10,11 @@ Captured during Specify (2026-06-20). Locks the scope for the `web-next` rebuild
 |---------|------------|
 | `ui-refresh-onda-brand` overlap | Reused as design/UX authority (tokens, typography, Volunteer/Leader layouts). Not re-specified here. |
 | Stack | **Unchanged** — React 19 + Vite 6 + TanStack Router + Tailwind 4 + i18next |
-| Migration strategy | **Parallel app (strangler):** new `apps/web-next`, migrate route-by-route, `apps/web` stays green until cutover |
+| Migration strategy | **Parallel app (strangler):** new `apps/web-next`, migrate route-by-route, `apps/web-legacy` stays green until cutover |
 | Data layer | **Rewrite** — adopt **TanStack Query** (queries, mutations, cache/invalidation); keep pessimistic scheduling mutations (ADR 0001) |
 | System Admin + org-admin | **Port functionally** with neutral inherited Onda tokens; visual redesign deferred to a future phase |
 
-## Keep vs rebuild (current `apps/web/src`)
+## Keep vs rebuild (current `apps/web-legacy/src`)
 
 | Layer | Modules | Migration treatment |
 |-------|---------|---------------------|
@@ -28,11 +28,11 @@ The Onda design (ADR 0006 / `ui-refresh-onda-brand`) covers **Volunteer + Leader
 
 ## Route/URL parity decision (2026-06-20)
 
-**Keep the old URLs.** `web-next` ships the **exact route strings** of today's `apps/web/src/router.tsx` (MIG-CUT-01). Rationale: this is a behavior-preserving migration, the single production cutover flips every saved bookmark/shared deep link at once, and the existing `legacyEventRedirectRoute` shows URL continuity already matters to users. Current naming inconsistencies (e.g. `events/new-private` vs `leader/volunteer-time-away`) are **not** fixed here — any URL cleanup is a deliberate **post-cutover slice** with permanent old→new redirects (same pattern as `legacyEventRedirectRoute`). Do not relitigate during #143 Execute.
+**Keep the old URLs.** `web-next` ships the **exact route strings** of today's `apps/web-legacy/src/router.tsx` (MIG-CUT-01). Rationale: this is a behavior-preserving migration, the single production cutover flips every saved bookmark/shared deep link at once, and the existing `legacyEventRedirectRoute` shows URL continuity already matters to users. Current naming inconsistencies (e.g. `events/new-private` vs `leader/volunteer-time-away`) are **not** fixed here — any URL cleanup is a deliberate **post-cutover slice** with permanent old→new redirects (same pattern as `legacyEventRedirectRoute`). Do not relitigate during #143 Execute.
 
 ## Auth UX decision (2026-06-21, #143 PR3)
 
-**Redirect unauthenticated shell routes to the landing page.** `ensureShellRouteAuth()` in `beforeLoad` throws `redirect({ to: '/', search: { auth: 'required' } })` when there is no dev header, no Supabase session, and no volunteer id. This differs from `apps/web`, where `ProtectedAppShell` keeps the protected URL and shows an inline `AuthPanel` gate.
+**Redirect unauthenticated shell routes to the landing page.** `ensureShellRouteAuth()` in `beforeLoad` throws `redirect({ to: '/', search: { auth: 'required' } })` when there is no dev header, no Supabase session, and no volunteer id. This differs from `apps/web-legacy`, where `ProtectedAppShell` keeps the protected URL and shows an inline `AuthPanel` gate.
 
 `ProtectedAppShell` inline gates remain for auth states that pass `beforeLoad` (e.g. `profile-not-linked`, `supabase-not-configured`, loading). Cutover testers should expect unauthenticated deep links to land on `/` with `?auth=required`, not a URL-stable inline sign-in on `/dashboard`.
 
@@ -46,7 +46,7 @@ The Onda design (ADR 0006 / `ui-refresh-onda-brand`) covers **Volunteer + Leader
 - **Cutover mechanics** — decide whether final step renames `web-next` → `web` or repoints deploy; affects CI workflow paths.
 - **Query/loader boundary** — TanStack Router loaders vs TanStack Query: pick one ownership model for server reads and document it in `design.md`.
 - **Coverage floors** — `web-next` must meet the global floors (#129) before cutover; plan test porting per route slice.
-- **Dual CI cost** — running gates for both `apps/web` and `apps/web-next` until cutover; keep migration window tight.
+- **Dual CI cost** — running gates for both `apps/web-legacy` and `apps/web-next` until cutover; keep migration window tight.
 
 ## ADR impact
 

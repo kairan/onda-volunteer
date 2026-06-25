@@ -16,7 +16,7 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 | Issue | Slice | Tasks | Spec |
 |------:|-------|-------|------|
-| [#148](https://github.com/kairan/onda-volunteer/issues/148) | CI parity & cutover | T27–T30 (T28 ✅) | `148-web-next-migration-slice-6-cutover.md` |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | CI parity & cutover | T27, T29–T30 (T28 ✅, T30a ✅ pending PR) | `148-web-next-migration-slice-6-cutover.md` |
 
 Apply label **`ready-for-agent`** on #148 (blockers cleared 2026-06-24).
 

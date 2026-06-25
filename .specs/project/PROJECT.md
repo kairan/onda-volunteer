@@ -14,7 +14,7 @@
 
 ## Tech stack
 
-**Core:** pnpm monorepo — NestJS + Prisma + PostgreSQL (`apps/api`), React + Vite + TanStack Router (`apps/web`).
+**Core:** pnpm monorepo — NestJS + Prisma + PostgreSQL (`apps/api`), React + Vite + TanStack Router (`apps/web-legacy`, migration target `apps/web-next`).
 
 **Key dependencies:** Prisma, TanStack Router/Query, Playwright (e2e), Jest (API e2e).
 

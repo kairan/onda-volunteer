@@ -11,7 +11,7 @@
 
 ## Problem Statement
 
-The current `apps/web` is a working React 19 + Vite + TanStack Router + Tailwind 4 app, but its **visual layer is HOPE brutalism** (ADR 0003) and its **data layer is hand-rolled fetch helpers** with no shared cache/state library. Rather than re-skin in place (the `ui-refresh-onda-brand` refresh), we will **rebuild the frontend from scratch in a parallel app** (`apps/web-next`) on the **same stack**, adopting the **provisional Onda brand** and a **modern data layer (TanStack Query)**. Routes are migrated **incrementally inside `web-next`**; `apps/web` stays deployed and CI-green until a **single production cutover** once parity is reached (see `design.md` Tech Decisions — not a per-route runtime proxy).
+The current `apps/web-legacy` (formerly `apps/web`) is a working React 19 + Vite + TanStack Router + Tailwind 4 app, but its **visual layer is HOPE brutalism** (ADR 0003) and its **data layer is hand-rolled fetch helpers** with no shared cache/state library. Rather than re-skin in place (the `ui-refresh-onda-brand` refresh), we will **rebuild the frontend from scratch in a parallel app** (`apps/web-next`) on the **same stack**, adopting the **provisional Onda brand** and a **modern data layer (TanStack Query)**. Routes are migrated **incrementally inside `web-next`**; `apps/web-legacy` stays deployed and CI-green until a **single production cutover** once parity is reached (see `design.md` Tech Decisions — not a per-route runtime proxy).
 
 This is a **migration**, not a redesign of behavior: API contracts, domain model (`CONTEXT.md`), routes, and pessimistic scheduling semantics are preserved.
 
@@ -19,10 +19,10 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 - [x] Stand up `apps/web-next` (new package, same stack) building clean with **Onda brand tokens** (consumes `ui-refresh-onda-brand` design + ADR 0006) — Slice 1 ([#143](https://github.com/kairan/onda-volunteer/issues/143)).
 - [x] Rebuild the **data layer** on **TanStack Query** (queries/mutations/cache) replacing ad-hoc fetch helpers, preserving the API auth-header / dev-header contract — core ported in Slice 1; route-level queries land in Slices 2–5.
-- [ ] Achieve **route parity** with `apps/web` (migrate routes incrementally inside `web-next`), then perform a **single production cutover** once parity is reached (old app stays green throughout).
+- [ ] Achieve **route parity** with `apps/web-legacy` (migrate routes incrementally inside `web-next`), then perform a **single production cutover** once parity is reached (legacy app stays green throughout).
 - [ ] Volunteer + Leader screens built fresh to **Onda design** (per `ui-refresh-onda-brand`).
 - [ ] System Admin + org-admin routes **ported functionally** with neutral inherited tokens (redesign deferred).
-- [ ] CI gates (lint, typecheck, test, coverage, Playwright) green for `web-next` before cutover; retire `apps/web` only when parity verified.
+- [ ] CI gates (lint, typecheck, test, coverage, Playwright) green for `web-next` before cutover; retire `apps/web-legacy` only when parity verified.
 
 ## Out of Scope
 
@@ -47,8 +47,8 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 **Acceptance Criteria**:
 
 1. WHEN `apps/web-next` is created THEN it SHALL use React 19, Vite 6, TanStack Router, Tailwind 4, i18next (workspace versions), and build via `pnpm --filter @onda/web-next build`.
-2. WHEN the app boots THEN it SHALL NOT import HOPE artifacts (`--border-weight`, `--shadow-offset-*`, zero-radius rule, Montserrat display) from `apps/web`.
-3. WHEN dev runs THEN a root `dev:web-next` script SHALL start it on a distinct port from `apps/web`.
+2. WHEN the app boots THEN it SHALL NOT import HOPE artifacts (`--border-weight`, `--shadow-offset-*`, zero-radius rule, Montserrat display) from `apps/web-legacy`.
+3. WHEN dev runs THEN a root `dev:web-next` script SHALL start it on a distinct port from `apps/web-legacy`.
 
 ### MIG-FND-02 ⭐ MVP — Onda brand tokens & typography
 
@@ -94,7 +94,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 **Acceptance Criteria**:
 
-1. WHEN the app calls the API THEN it SHALL send the same auth/dev headers contract (`X-Leader-Ministry-Id`, `X-Volunteer-Id`, Supabase token) as `apps/web` (`apiAuthHeaders`, `sessionToken`, `auth/`).
+1. WHEN the app calls the API THEN it SHALL send the same auth/dev headers contract (`X-Leader-Ministry-Id`, `X-Volunteer-Id`, Supabase token) as `apps/web-legacy` (`apiAuthHeaders`, `sessionToken`, `auth/`).
 2. WHEN org context is needed THEN Church/Campus/grants resolution SHALL be ported (behavior-equivalent to `organization/OrganizationContextProvider`), adapted onto the Query layer.
 3. WHEN i18n loads THEN pt-BR (default) + en resources and the locale controller SHALL be ported; new copy added under existing namespaces.
 
@@ -116,7 +116,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 
 **Acceptance Criteria**:
 
-1. WHEN System Admin routes (`/system-admin/*`, ADR 0005) are ported THEN behavior and access guards SHALL match `apps/web` using **neutral inherited Onda tokens** (no bespoke redesign).
+1. WHEN System Admin routes (`/system-admin/*`, ADR 0005) are ported THEN behavior and access guards SHALL match `apps/web-legacy` using **neutral inherited Onda tokens** (no bespoke redesign).
 2. WHEN org-admin routes (`/ministries`, `/volunteers`, `/ministry-leaders`, event create flows) are ported THEN they SHALL be functionally equivalent on the new data + token layer.
 3. WHEN a ported screen lacks an Onda design THEN it SHALL use shell/token defaults and be flagged for a future design phase (no HOPE styling reintroduced).
 
@@ -129,7 +129,7 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 **Acceptance Criteria**:
 
 1. WHEN a route is migrated THEN `web-next` SHALL serve it at the same path; the old app remains the source of truth until all in-scope routes reach parity.
-2. WHEN all routes reach parity and CI is green THEN cutover SHALL repoint the deploy/build to `web-next` (or rename `web-next` → `web`), and the old `apps/web` source SHALL be retired in a dedicated PR.
+2. WHEN all routes reach parity and CI is green THEN cutover SHALL repoint the deploy/build to `web-next` (or rename `web-next` → `web`), and `apps/web-legacy` SHALL be retired in a dedicated PR (T30).
 3. WHEN cutover completes THEN `DESIGN_SYSTEM.md` SHALL be replaced with Onda content and HOPE docs archived; ADR 0006 marked shipped.
 
 ### MIG-ENG-01 ⭐ MVP — Tests & CI parity
@@ -152,12 +152,12 @@ This is a **migration**, not a redesign of behavior: API contracts, domain model
 | MIG-VOL-01 | P1 | `web-next` dashboard / time-away (ref UI-VOL) |
 | MIG-LEAD-01 | P1 | `web-next` dashboard / scheduling / roster (ref UI-LEAD) |
 | MIG-ADMIN-01 | P1 | `web-next` system-admin + org-admin routes |
-| MIG-CUT-01 | P1 | build/deploy swap, `DESIGN_SYSTEM.md`, retire `apps/web` |
+| MIG-CUT-01 | P1 | build/deploy swap, `DESIGN_SYSTEM.md`, retire `apps/web-legacy` |
 | MIG-ENG-01 | P1 | CI workflows, package gates |
 
 ## References
 
 - Design source: `.specs/features/ui-refresh-onda-brand/` (spec + design + ADR 0006)
 - Shell / i18n / a11y baseline: ADR 0001 · Operator role: ADR 0005 · Superseded visual: ADR 0003 (HOPE)
-- Domain: `CONTEXT.md` · Current app: `apps/web/src` (router, shell, domain modules)
+- Domain: `CONTEXT.md` · Legacy app: `apps/web-legacy/src` (router, shell, domain modules)
 - Shipped roster UI to preserve: `docs/issues/done/115-leader-roster-assignment-ui.md`

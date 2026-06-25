@@ -1,19 +1,23 @@
-# Session handoff (2026-06-24)
+# Session handoff (2026-06-25)
 
 ## Completed this session
 
-1. **TLC hygiene** — closed out web-next migration Slices 2–5 ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#147](https://github.com/kairan/onda-volunteer/issues/147)) after GitHub issues closed without tracker sync.
-2. **`tasks.md`** — T14–T26 marked complete; T28 marked shipped; T27 partial (coverage floors for `@onda/web-next` still open).
-3. **Issue specs** — archived `144-*` … `147-*` to `docs/issues/done/`; created active `148-web-next-migration-slice-6-cutover.md`.
-4. **Tracker** — `docs/issues/README.md`, `.specs/project/ROADMAP.md`, `.specs/project/STATE.md` updated.
+1. **T30a legacy rename** — `apps/web` → `apps/web-legacy`, `@onda/web` → `@onda/web-legacy`; root scripts and CI jobs renamed; `apps/web-next` unchanged. Branch: `chore/rename-web-to-web-legacy`.
+2. **TLC sync** — `tasks.md` T30a added + checked; `spec.md`, `design.md`, `context.md`, `STATE.md`, issue doc `148-*`, `docs/issues/README.md` updated.
+3. **GitHub #148** — issue body updated with T30a status.
 
 ## Validate
 
-- [x] `pnpm --filter @onda/web-next test` — 105 tests green (2026-06-24)
+- [x] `pnpm typecheck:web-legacy` — pass
+- [x] `pnpm --filter @onda/web-legacy test` — 144 tests green
+- [x] `pnpm --filter @onda/web-legacy build` — pass
+- [x] `pnpm lint` — pass
 
 ## Next agent action
 
-Execute **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27 remainder: web-next in `pnpm test:coverage` + Vitest floors; then T29 deploy repoint, T30 rename/retire). TLC: `.specs/features/frontend-migration-web-next/tasks.md` T27–T30. **`ready-for-agent`** already on #148; stale agent labels removed from closed #144–#147.
+1. **Open PR** for `chore/rename-web-to-web-legacy` (T30a).
+2. **After merge:** update branch protection required checks (`typecheck-web-legacy`, `playwright-web-legacy`) per `docs/runbooks/github-branch-protection.md`.
+3. Continue **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — T27 remainder (web-next coverage floors), then T29 deploy repoint, then T30 final cutover (`web-next`→`web`, retire `web-legacy`).
 
 ## Blockers
 

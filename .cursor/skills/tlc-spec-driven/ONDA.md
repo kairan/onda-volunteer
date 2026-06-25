@@ -8,11 +8,11 @@ The upstream skill may create `.specs/codebase/` (STACK, ARCHITECTURE, etc.). **
 
 | Upstream `.specs/codebase/` intent | Onda source |
 |-----------------------------------|-------------|
-| Stack, monorepo layout, scripts | [`AGENTS.md`](../../../AGENTS.md), root `package.json`, `apps/api`, `apps/web` |
+| Stack, monorepo layout, scripts | [`AGENTS.md`](../../../AGENTS.md), root `package.json`, `apps/api`, `apps/web-legacy`, `apps/web-next` |
 | Domain model | [`CONTEXT.md`](../../../CONTEXT.md) |
 | Architecture decisions | [`docs/adr/`](../../../docs/adr/) |
 | Feature history / acceptance specs | [`docs/issues/`](../../../docs/issues/) |
-| Testing approach | `AGENTS.md` (Running tests), `apps/api` Jest e2e, `apps/web` Vitest + Playwright |
+| Testing approach | `AGENTS.md` (Running tests), `apps/api` Jest e2e, `apps/web-legacy` / `apps/web-next` Vitest + Playwright |
 
 If `design.md` or `tasks.md` reference `.specs/codebase/CONCERNS.md` or `TESTING.md`, substitute judgment from `docs/issues/`, ADRs, and code review — do not generate empty codebase stubs.
 

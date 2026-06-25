@@ -92,3 +92,129 @@ describe('SystemAdminChurchesPage', () => {
     expect(await screen.findByText('New Parish')).toBeInTheDocument();
   });
 });
+
+const volunteerListFixture = {
+  id: 'vol-alice',
+  displayName: 'Alice Admin',
+  accreditations: [{ churchId: 'church-1', churchName: 'Grace Chapel' }],
+  leaderships: [],
+  memberships: [],
+};
+
+const volunteerDetailFixture = {
+  ...volunteerListFixture,
+  accreditations: [],
+  leaderships: [],
+  memberships: [],
+};
+
+describe('SystemAdminUsersPage', () => {
+  it('lists volunteers from search results', async () => {
+    await initI18n(undefined, 'en');
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path.startsWith('/system-admin/volunteers')) {
+        return { items: [volunteerListFixture], nextCursor: null };
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+
+    await renderSystemAdminRoute('/system-admin/users');
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /^users$/i }),
+    ).toBeInTheDocument();
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+  });
+
+  it('loads additional pages when nextCursor is present', async () => {
+    await initI18n(undefined, 'en');
+    let volunteerCalls = 0;
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path.startsWith('/system-admin/volunteers')) {
+        volunteerCalls += 1;
+        if (volunteerCalls === 1) {
+          return { items: [volunteerListFixture], nextCursor: 'vol-alice' };
+        }
+        return {
+          items: [
+            {
+              id: 'vol-bob',
+              displayName: 'Bob Leader',
+              accreditations: [],
+              leaderships: [],
+              memberships: [],
+            },
+          ],
+          nextCursor: null,
+        };
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+
+    await renderSystemAdminRoute('/system-admin/users');
+
+    expect(await screen.findByText('Alice Admin')).toBeInTheDocument();
+
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: /load more/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Bob Leader')).toBeInTheDocument();
+    });
+  });
+});
+
+describe('SystemAdminUserDetailPage', () => {
+  it('renders volunteer stewardship details', async () => {
+    await initI18n(undefined, 'en');
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path === '/system-admin/volunteers/vol-alice') {
+        return volunteerDetailFixture;
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+
+    await renderSystemAdminRoute('/system-admin/users/vol-alice');
+
+    expect(
+      await screen.findByRole('heading', { name: /alice admin/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('vol-alice')).toBeInTheDocument();
+  });
+});
+
+describe('SystemAdminChurchDetailPage', () => {
+  it('renders church detail and pending invites', async () => {
+    await initI18n(undefined, 'en');
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path === '/system-admin/churches/church-1') {
+        return {
+          id: 'church-1',
+          name: 'Grace Chapel',
+          defaultTimezone: 'UTC',
+          campuses: [{ id: 'c1', name: 'Principal', timezone: 'UTC' }],
+        };
+      }
+      if (path === '/system-admin/churches/church-1/admin-invites') {
+        return {
+          items: [
+            {
+              id: 'invite-1',
+              email: 'admin@example.com',
+              status: 'PENDING',
+              sentAtUtc: '2026-06-01T12:00:00.000Z',
+            },
+          ],
+        };
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+
+    await renderSystemAdminRoute('/system-admin/churches/church-1');
+
+    expect(
+      await screen.findByRole('heading', { name: /grace chapel/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('admin@example.com')).toBeInTheDocument();
+  });
+});

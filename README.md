@@ -20,7 +20,7 @@ Wait until Postgres is healthy, then:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
+cp apps/web-legacy/.env.example apps/web-legacy/.env
 pnpm install
 cd apps/api && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm prisma:seed
 ```
@@ -40,19 +40,19 @@ pnpm dev:api
 ```
 
 ```bash
-pnpm dev:web
+pnpm dev:web-legacy
 ```
 
 Open `http://localhost:5173/`, follow **View demo event**, or browse directly to `http://localhost:5173/events/seed-event-public`.
 
 ## Tests
 
-Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web unit tests cover the design token contract and foundation primitives (Vitest). Browser e2e uses Playwright in `apps/web/e2e` (see `docs/issues/done/60-web-playwright-browser-e2e.md`).
+Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web unit tests cover the design token contract and foundation primitives (Vitest). Browser e2e uses Playwright in `apps/web-legacy/e2e` (see `docs/issues/done/60-web-playwright-browser-e2e.md`).
 
 ```bash
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=public"
 pnpm test
-pnpm test:e2e:web   # Playwright: Chromium + seeded API + Vite
+pnpm test:e2e:web-legacy   # Playwright: Chromium + seeded API + Vite
 ```
 
 ## Project layout
@@ -61,7 +61,7 @@ pnpm test:e2e:web   # Playwright: Chromium + seeded API + Vite
 |------|------|
 | `apps/api/prisma` | Schema + migrations + seed |
 | `apps/api/src/events` | `GET /events/:id` read model |
-| `apps/web/src/router.tsx` | TanStack Router tree, event `loader` + page |
+| `apps/web-legacy/src/router.tsx` | TanStack Router tree, event `loader` + page |
 | `docker-compose.yml` | Local Postgres |
 
 Domain vocabulary lives in `CONTEXT.md`; backlog slices are under `docs/issues/`.

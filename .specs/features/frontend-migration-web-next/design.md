@@ -10,7 +10,7 @@
 
 ## Architecture Overview
 
-`apps/web-next` is a **new package on the same stack** (React 19 · Vite 6 · TanStack Router · Tailwind 4 · i18next) plus **TanStack Query v5** as the single server-state layer. It is built in **layers**, bottom-up, then routes are migrated as **vertical slices**. `apps/web` stays the deployed/CI-green app untouched until a **single production cutover** (see Tech Decisions).
+`apps/web-next` is a **new package on the same stack** (React 19 · Vite 6 · TanStack Router · Tailwind 4 · i18next) plus **TanStack Query v5** as the single server-state layer. It is built in **layers**, bottom-up, then routes are migrated as **vertical slices**. `apps/web-legacy` stays the deployed/CI-green app untouched until a **single production cutover** (see Tech Decisions).
 
 ```mermaid
 graph TD
@@ -34,7 +34,7 @@ graph TD
 2. **Data core** — `QueryClient`, query-key factory, `apiClient` (port of protected-headers fetch + error contract), auth/session provider, i18n.
 3. **Shell** — `AppShell-next` (ADR 0001 behavior, Onda styling), Organization context on Query, grant-gated nav.
 4. **Vertical slices** — one route at a time: Volunteer (dashboard/time-away), Leader (dashboard/roster/event detail/create), then functional admin port (org-admin, system-admin).
-5. **Cutover** — CI parity, swap deploy, retire `apps/web`, replace `DESIGN_SYSTEM.md`.
+5. **Cutover** — CI parity, T30a legacy rename, swap deploy, T30 `web-next`→`web`, retire `apps/web-legacy`, replace `DESIGN_SYSTEM.md`.
 
 ---
 
@@ -42,7 +42,7 @@ graph TD
 
 ### Existing modules to port (behavior-preserving, re-expressed on Query)
 
-| Module | Location (`apps/web/src`) | Treatment in `web-next` |
+| Module | Location (`apps/web-legacy/src`) | Treatment in `web-next` |
 |--------|---------------------------|-------------------------|
 | Protected fetch / headers | `apiAuthHeaders.ts` | Port as `apiClient` core; keep dev-header + 401→dev retry contract verbatim |
 | Error contract | `apiError.ts` | Port; map to Query error + ADR 0001 hybrid feedback |
@@ -64,7 +64,7 @@ graph TD
 |--------|-------------|
 | `apps/api` REST | Unchanged endpoints; `apiClient` sends same auth/dev headers (`X-Leader-Ministry-Id`, `X-Volunteer-Id`, Bearer) |
 | Supabase | Same client + token resolution |
-| CI | New filter-scoped jobs for `@onda/web-next` added alongside existing `@onda/web` jobs (parametrized, see CI plan) |
+| CI | New filter-scoped jobs for `@onda/web-next` added alongside existing `@onda/web-legacy` jobs (parametrized, see CI plan) |
 
 ---
 
@@ -162,7 +162,7 @@ const queryKeys = {
 |----------|--------|-----------|
 | Server-state ownership | **TanStack Query is source of truth**; Router loaders only call `queryClient.ensureQueryData` to prefetch critical-path data, components read via `useQuery`/`useSuspenseQuery` | One cache, consistent invalidation; avoids dual loader/Query state drift the spec warns about |
 | Strangler mechanics | **Parallel build + single production cutover** (not per-route runtime proxy) | App is a single SPA; per-route runtime split needs reverse-proxy/edge infra not present in repo. Routes are migrated incrementally *in the new app* and CI-gated; users flip once parity is reached. Per-route prod rollout via proxy noted as future option if needed |
-| Cutover step | Dedicated PR: repoint deploy/build to `web-next`, then a follow-up PR renames `apps/web-next` → `apps/web` (old source retired) | Keeps the flip reviewable and reversible; rename isolated from behavior |
+| Cutover step | **T30a:** rename `apps/web` → `apps/web-legacy` (prep PR). **T29:** repoint deploy/build to `web-next`. **T30:** rename `apps/web-next` → `apps/web`, retire `apps/web-legacy` | Frees the `apps/web` path before final rename; each step is reviewable and reversible |
 | Display font | **Right Grotesk if licensed at Execute, else Space Grotesk fallback** (self-hosted) | Honors ADR 0006 licensing caveat; never blocks the slice |
 | Data fetching deps | `@tanstack/react-query` v5 (workspace) | Current major; pairs with TanStack Router already in use |
 | Coverage | `web-next` ships its own Vitest coverage config meeting the global floors (#129); ratchet per slice | Cutover requires parity with existing gates |
@@ -172,14 +172,14 @@ const queryKeys = {
 
 ## CI Integration Plan
 
-During migration (additions, existing `@onda/web` jobs unchanged):
+During migration (additions, existing `@onda/web-legacy` jobs unchanged):
 
 - `pnpm build` already recurses (`pnpm -r run build`) → `web-next` covered once it has a `build` script.
 - `pnpm lint` is repo-wide (`eslint .`) → `web-next` covered automatically (must be warning-clean, #126).
-- Add `typecheck:web-next` script + CI job (mirror `typecheck-web`).
+- Add `typecheck:web-next` script + CI job (mirror `typecheck-web-legacy`).
 - Extend `test` / `test:coverage` to include `@onda/web-next` (or add parallel jobs).
 - Wire `web-next` Playwright smoke into `e2e-web.yml` (or a sibling job).
-- **At cutover**: remove `@onda/web` jobs, rename `web-next` jobs back to web.
+- **At cutover (T30)**: remove `@onda/web-legacy` jobs, rename `web-next` jobs back to web.
 
 ---
 
@@ -191,7 +191,7 @@ During migration (additions, existing `@onda/web` jobs unchanged):
 4. **Volunteer slice**: dashboard (greeting, assignment cards, time-away preview) end-to-end on live API → first real vertical proof.
 5. **Leader slice**: ministry dashboard + roster by event + Assign/Release + event detail/create.
 6. **Admin port**: org-admin routes, then system-admin routes (neutral tokens).
-7. **MIG-CUT**: CI parity → deploy repoint → directory rename → `DESIGN_SYSTEM.md` swap → retire `apps/web`.
+7. **MIG-CUT**: CI parity → **T30a** legacy rename → deploy repoint (T29) → **T30** `web-next`→`web` rename → `DESIGN_SYSTEM.md` swap → retire `apps/web-legacy`.
 
 ---
 

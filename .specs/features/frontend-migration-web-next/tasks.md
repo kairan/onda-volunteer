@@ -876,8 +876,8 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - [x] `pnpm typecheck:web-next` exits 0 on current codebase
 - [x] `pnpm --filter @onda/web-next test` runs Vitest and exits 0
 - [x] CI `typecheck-web-next` job present in `ci.yml`
-- [ ] CI `coverage` job includes `@onda/web-next` filter
-- [ ] Coverage config enforces same global floors as `apps/web` (#129)
+- [x] CI `coverage` job includes `@onda/web-next` filter
+- [x] Coverage config enforces global floors aligned with #129 (`61/60/49/60` — functions ratcheted 1pp for new surface; stubs/e2e-only excluded per `vitest.config.ts`)
 - [x] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
 - [ ] Test count: N/A (this task is CI infrastructure; verify via CI run)
 
@@ -916,7 +916,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ### T29: Cutover PR 1 — deploy repoint to web-next
 
-**What**: Single dedicated PR that repoints the build/deploy target from `apps/web` to `apps/web-next`; update any deploy scripts, `Dockerfile` (if present), or CI build step that references `apps/web` as the build artifact; verify `pnpm build` produces the correct `dist/` from `apps/web-next`; all existing CI gates green on the PR.
+**What**: Single dedicated PR that repoints the build/deploy target from `apps/web-legacy` to `apps/web-next`; update any deploy scripts, `Dockerfile` (if present), or CI build step that references the legacy app as the build artifact; verify `pnpm build` produces the correct `dist/` from `apps/web-next`; all existing CI gates green on the PR.
 **Where**: CI build config, deploy scripts, root `package.json` (if `build` script references `apps/web` explicitly)
 **Depends on**: T27, T28
 **Reuses**: NONE (config change only)
@@ -929,7 +929,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 **Done when**:
 - [ ] `pnpm build` artifact comes from `apps/web-next`
 - [ ] All CI jobs (`lint`, `typecheck-web-next`, `test`, `coverage`, `e2e-web-next`) green on the PR
-- [ ] `apps/web` CI jobs still green (old app untouched until T30)
+- [ ] `apps/web-legacy` CI jobs still green (legacy app untouched until T30)
 - [ ] Gate check passes: `pnpm lint && pnpm --filter @onda/web-next build`
 - [ ] Test count: N/A (deploy config only)
 
@@ -940,10 +940,36 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 
 ---
 
+### T30a: Legacy app rename (`apps/web` → `apps/web-legacy`)
+
+**What**: Dedicated prep PR (before T30): rename `apps/web/` → `apps/web-legacy/`; package `@onda/web` → `@onda/web-legacy`; update root scripts (`dev:web-legacy`, `typecheck:web-legacy`, `test:e2e:web-legacy`), CI job names (`typecheck-web-legacy`, `playwright-web-legacy`), and active runbooks. **Does not** rename `web-next` → `web` or retire legacy source.
+**Where**: `apps/web-legacy/`, root `package.json`, `.github/workflows/ci.yml`, `.github/workflows/e2e-web.yml`, `AGENTS.md`, `README.md`, runbooks
+**Depends on**: T28 (both apps in CI)
+**Reuses**: NONE (rename + reference sweep)
+**Requirement**: MIG-CUT-01
+
+**Tools**:
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+- [x] `apps/web/` no longer exists; `apps/web-legacy/` is the HOPE-era app
+- [x] `@onda/web-legacy` package name; root scripts and CI filters updated
+- [x] `apps/web-next` unchanged (still `@onda/web-next`, port 5174)
+- [x] Gate check passes: `pnpm typecheck:web-legacy && pnpm --filter @onda/web-legacy test && pnpm lint`
+- [x] Test count: 144 Vitest tests green on `@onda/web-legacy`
+
+**Tests**: none (rename)
+**Gate**: quick
+
+**Commit**: `chore: rename apps/web to apps/web-legacy`
+
+---
+
 ### T30: Cutover PR 2 — rename + retire + DESIGN_SYSTEM.md + ADR 0006
 
-**What**: Follow-up PR: rename `apps/web-next/` → `apps/web/` (old `apps/web` source deleted or moved to `apps/web-legacy/` for one sprint then removed); update all internal references (`@onda/web-next` → `@onda/web`); replace `DESIGN_SYSTEM.md` root file with Onda brand content (HOPE docs archived to `docs/archive/` or deleted); update ADR 0006 status to "Accepted + Shipped"; remove now-redundant `@onda/web` (old) CI jobs; verify all CI green.
-**Where**: `apps/web-next/` → `apps/web/` (rename), root `DESIGN_SYSTEM.md`, `docs/adr/0006-onda-brand-visual-system.md`, `.github/workflows/ci.yml` (remove old web jobs)
+**What**: Follow-up PR: rename `apps/web-next/` → `apps/web/`; delete or archive `apps/web-legacy/`; update all internal references (`@onda/web-next` → `@onda/web`); replace `DESIGN_SYSTEM.md` root file with Onda brand content (HOPE docs archived to `docs/archive/` or deleted); update ADR 0006 status to "Accepted + Shipped"; remove `@onda/web-legacy` CI jobs; verify all CI green. **Prerequisite:** T30a shipped (legacy already at `apps/web-legacy`).
+**Where**: `apps/web-next/` → `apps/web/` (rename), `apps/web-legacy/` (retire), root `DESIGN_SYSTEM.md`, `docs/adr/0006-onda-brand-visual-system.md`, `.github/workflows/ci.yml` (remove legacy web jobs)
 **Depends on**: T29
 **Reuses**: NONE (rename + doc swap)
 **Requirement**: MIG-CUT-01, MIG-ENG-01
@@ -956,7 +982,8 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 - [ ] `apps/web-next/` no longer exists; `apps/web/` is the rebuilt app
 - [ ] `DESIGN_SYSTEM.md` documents Onda tokens, Space Grotesk, ADR 0006 (no HOPE content)
 - [ ] ADR 0006 status field reads `Accepted — Shipped (web-next cutover)`
-- [ ] Old `@onda/web` CI jobs removed from `ci.yml` and `e2e-web.yml`
+- [ ] Old `@onda/web-legacy` CI jobs removed from `ci.yml` and `e2e-web.yml`
+- [ ] `apps/web-legacy/` retired (deleted or archived)
 - [ ] `pnpm build` and all CI jobs green post-rename
 - [ ] Gate check passes: `pnpm lint && pnpm build`
 - [ ] Test count: N/A (rename + docs)
@@ -964,7 +991,7 @@ T26 + T17 + T23 → T27 → T28 → T29 → T30
 **Tests**: none
 **Gate**: build
 
-**Commit**: `feat(cutover): rename web-next→web, replace DESIGN_SYSTEM.md (Onda), retire apps/web, ADR 0006 shipped`
+**Commit**: `feat(cutover): rename web-next→web, replace DESIGN_SYSTEM.md (Onda), retire apps/web-legacy, ADR 0006 shipped`
 
 ---
 
@@ -1003,7 +1030,7 @@ Phase 4 — Vertical Slices (after T13.5 closes Slice 1; slices run in parallel)
     T25             → T26
 
 Phase 5 — Cutover (Sequential):
-  T26 + T17 + T23 → T27 → T28 → T29 → T30
+  T26 + T17 + T23 → T27 → T28 → T30a → T29 → T30
 ```
 
 **Parallelism constraints:**
@@ -1049,6 +1076,7 @@ Phase 5 — Cutover (Sequential):
 | T27: CI scripts + jobs | 3 config locations (package.json, ci.yml, vitest.config.ts — cohesive CI parity) | ✅ Granular |
 | T28: Playwright CI wiring | playwright.config.ts + e2e-web.yml job (cohesive e2e CI) | ✅ Granular |
 | T29: Deploy repoint | Config change only (1 PR) | ✅ Granular |
+| T30a: Legacy rename | Rename `apps/web` → `apps/web-legacy` (prep PR) | ✅ Granular |
 | T30: Rename + retire + docs | 1 final cleanup PR | ✅ Granular |
 
 **Notes on ⚠️ cases:** T09, T12, T24, T26 each bundle multiple closely-related files under one domain concern. Per the template ("2–3 related things in same file = OK if cohesive"), these are acceptable — each bundle is a single architectural layer with a single verifiable outcome. Splitting them further would produce tasks that cannot be independently compiled or tested.
@@ -1089,8 +1117,9 @@ Phase 5 — Cutover (Sequential):
 | T26 | T25 | T25 → T26 | ✅ Match |
 | T27 | T26, T17, T23 | T26 + T17 + T23 → T27 | ✅ Match |
 | T28 | T16, T21, T27 | T27 → T28 (T16/T21 upstream) | ✅ Match |
-| T29 | T27, T28 | T28 → T29 | ✅ Match |
-| T30 | T29 | T29 → T30 | ✅ Match |
+| T29 | T27, T28, T30a | T28 → T30a → T29 | ✅ Match |
+| T30a | T28 | T28 → T30a (prep; may land before T29) | ✅ Match |
+| T30 | T29, T30a | T29 → T30 | ✅ Match |
 
 All dependency arrows consistent. No `[P]` task depends on another `[P]` task in the same parallel phase.
 
@@ -1145,6 +1174,7 @@ All dependency arrows consistent. No `[P]` task depends on another `[P]` task in
 | T27: CI scripts + jobs | CI config only | none | none | ✅ OK |
 | T28: Playwright CI wiring | CI config + playwright config | none | none | ✅ OK |
 | T29: Deploy repoint | Deploy config only | none | none | ✅ OK |
+| T30a: Legacy rename | Directory + package rename | none | none | ✅ OK |
 | T30: Rename + retire + docs | Rename + doc files | none | none | ✅ OK |
 
 All 31 tasks pass test co-location validation. No `Tests: none` violations (config/scaffold/CI tasks are the only `none` entries, which is permitted per matrix).
@@ -1156,7 +1186,7 @@ All 31 tasks pass test co-location validation. No `Tests: none` violations (conf
 1. **Route mapping**: `/dashboard` is the volunteer **home** (greeting, assignment count, time-away preview). `/scheduling` is **role-aware**: volunteers see **My Assignments** (2-col `AssignmentCard` grid, T16.5); leaders see ministry roster (T20). URL strings match `apps/web` for cutover parity (MIG-CUT-01); nav IA follows serve-well / `VOLUNTEER_NAV`, not the combined Lovable single-screen layout.
 2. **`assignMutation` uses void semantics**: The leader "Release" mutation calls `POST /assignments/:id/void` (locked as ROSTER-A1 in STATE.md), not the volunteer self-release endpoint.
 3. **Right Grotesk**: Tasks do not block on Right Grotesk licensing. Space Grotesk is used throughout per the ADR 0006 fallback decision. Right Grotesk may be added in T02 if licensed at Execute time.
-4. **`apps/web-next/e2e/`**: Playwright spec files are co-located in `apps/web-next/e2e/` (mirroring `apps/web/e2e/`). T16 and T20/T21 create the smoke specs; T28 wires them into CI.
+4. **`apps/web-legacy/e2e/`** and **`apps/web-next/e2e/`**: Playwright spec files are co-located per app (mirroring pre-rename layout). T16 and T20/T21 create the smoke specs; T28 wires web-next into CI.
 5. **`systemAdminQueries.ts` key prefix**: System-admin query keys use a nested `queryKeys.systemAdmin.*` namespace (added to T07 factory) to avoid collision with church-scoped keys.
 6. **T09 `LocalTimeProvider` scope**: `src/settings/` files are included in T09 (i18n port) because `LocalTimeProvider` depends on i18next locale state and is part of the same portability layer. If a task executor prefers splitting it, T09 may emit `LocalTimeProvider` + `SchedulingTimeDisplay` as a separate commit within the same PR.
 7. **T27 dependency ordering**: T27 (CI scripts) formally depends on T26 (last code task), T17 (last volunteer route), and T23 (last leader route). In practice it depends on all code tasks being merged; the formal dependency captures the serial gate at end of Phase 4.

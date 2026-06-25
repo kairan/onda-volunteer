@@ -46,13 +46,14 @@ When the user says **implement**, **design**, **tasks**, **triage**, **TDD**, or
 
 ### Overview
 
-Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web`) for church volunteer scheduling.
+Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web-legacy` + `apps/web-next`) for church volunteer scheduling.
 
 - **API** (`apps/api`): NestJS + Prisma + PostgreSQL — `pnpm dev:api` (port 3000)
-- **Web** (`apps/web`): React + Vite + TanStack Router — `pnpm dev:web` (port 5173)
+- **Web legacy** (`apps/web-legacy`): HOPE-era React + Vite + TanStack Router — `pnpm dev:web-legacy` (port 5173)
+- **Web next** (`apps/web-next`): Onda rebuild — `pnpm dev:web-next` (port 5174)
 - **Database**: PostgreSQL 16 via Docker (`docker compose up -d`)
 
-Standard scripts are in the root `package.json`: `dev:api`, `dev:web`, `test`, `build`.
+Standard scripts are in the root `package.json`: `dev:api`, `dev:web-legacy`, `dev:web-next`, `test`, `build`.
 
 ### CI (GitHub Actions)
 
@@ -79,7 +80,7 @@ Boot runs `.cursor/scripts/cloud-install.sh` from `environment.json` (`pnpm inst
 2. Start Postgres: `sudo docker compose up -d` (from repo root).
 3. Run Prisma migrations: `cd apps/api && pnpm exec prisma migrate deploy && cd ..`
 4. Start API: `pnpm dev:api` (uses `AUTH_ALLOW_DEV_HEADERS=true` so no Supabase needed).
-5. Start Web: `pnpm dev:web`.
+5. Start Web legacy: `pnpm dev:web-legacy` (or Web next: `pnpm dev:web-next`).
 
 ### Authentication bypass
 
@@ -92,26 +93,26 @@ export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=p
 pnpm test
 ```
 
-API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
+API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web-legacy/e2e` and `apps/web-next/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
 
 #### Web Vitest behavior tests (RTL)
 
 - Use `@testing-library/user-event` for all user interactions in Vitest + React Testing Library behavior tests (`*.behavior.test.tsx`).
 - Do **not** use `fireEvent` from Testing Library to simulate clicks, typing, or keyboard input.
-- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web/src/routes/ministries.behavior.test.tsx` (rename test ~L116–134).
+- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web-legacy/src/routes/ministries.behavior.test.tsx` (rename test ~L116–134).
 - Exception: only when `userEvent` cannot model the interaction — add a brief comment in the test explaining why. Keep exceptions rare.
 
 ```bash
-pnpm --filter @onda/web exec playwright install chromium   # once per machine
-pnpm test:e2e:web                                          # smoke + API integration (CI parity)
-pnpm --filter @onda/web test:e2e                           # smoke only (Vite, no API)
+pnpm --filter @onda/web-legacy exec playwright install chromium   # once per machine
+pnpm test:e2e:web-legacy                                          # smoke + API integration (CI parity)
+pnpm --filter @onda/web-legacy test:e2e                           # smoke only (Vite, no API)
 ```
 
 Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
 
 ### Gotchas
 
-- ESLint: `pnpm lint` (`--max-warnings 0`; required CI gate per #126). Typecheck: `pnpm typecheck:api` / `pnpm typecheck:web`. Coverage: `pnpm test:coverage` enforces global floors per #129 (API Jest e2e, web Vitest).
+- ESLint: `pnpm lint` (`--max-warnings 0`; required CI gate per #126). Typecheck: `pnpm typecheck:api` / `pnpm typecheck:web-legacy` / `pnpm typecheck:web-next`. Coverage: `pnpm test:coverage` enforces global floors per #129 (API Jest e2e, web-legacy Vitest).
 - API auth context contract: [`docs/runbooks/api-auth-context.md`](docs/runbooks/api-auth-context.md).
 - The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00-16:00 UTC on 2026-06-07. Assignment creation in that window will be rejected by design.
 - `pnpm-workspace.yaml` has `allowBuilds` entries that prevent interactive build prompts during install.

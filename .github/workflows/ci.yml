@@ -79,8 +79,8 @@ jobs:
       - name: Typecheck API
         run: pnpm --filter @onda/api typecheck
 
-  typecheck-web:
-    name: typecheck-web
+  typecheck-web-legacy:
+    name: typecheck-web-legacy
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -99,8 +99,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck Web
-        run: pnpm typecheck:web
+      - name: Typecheck Web Legacy
+        run: pnpm typecheck:web-legacy
 
   typecheck-web-next:
     name: typecheck-web-next
@@ -227,5 +227,6 @@ jobs:
           name: coverage-reports
           path: |
             apps/api/coverage
-            apps/web/coverage
+            apps/web-legacy/coverage
+            apps/web-next/coverage
           if-no-files-found: warn

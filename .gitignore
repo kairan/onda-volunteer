@@ -7,7 +7,7 @@ dist
 # Test coverage (Jest / Vitest local output)
 coverage/
 
-# Playwright (apps/web)
+# Playwright (apps/web-legacy, apps/web-next)
 playwright-report/
 test-results/
 blob-report/

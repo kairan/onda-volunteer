@@ -135,9 +135,9 @@ Valid point, but out of scope for this PR ({feature slug} / #{issue}). Suggest a
 ## Onda Volunteer notes
 
 - **TLC paths:** [tlc-context.md](tlc-context.md), [ONDA.md](../tlc-spec-driven/ONDA.md).
-- **Tests:** `AGENTS.md` — `pnpm test`, `pnpm test:e2e:web` (API + Postgres), smoke `pnpm --filter @onda/web test:e2e`.
+- **Tests:** `AGENTS.md` — `pnpm test`, `pnpm test:e2e:web-legacy` (API + Postgres), smoke `pnpm --filter @onda/web-legacy test:e2e`.
 - **Playwright CI:** `.github/workflows/e2e-web.yml` sets `PLAYWRIGHT_WITH_API=true`. Reproduce API-backed failures locally with that env.
-- **Multi-church seed:** Demo volunteer leads ministries at **Igreja Central** only. API-backed leader/scheduling e2e must select that church (`getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central')`). Smoke mocks in `apps/web/e2e/apiMocks.ts` use a single church — behavior differs from API; see comment there.
+- **Multi-church seed:** Demo volunteer leads ministries at **Igreja Central** only. API-backed leader/scheduling e2e must select that church (`getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central')`). Smoke mocks in `apps/web-legacy/e2e/apiMocks.ts` use a single church — behavior differs from API; see comment there.
 - **Commits / push:** Commit and push only when the user intent is to land PR fixes (not for explain-only requests). Follow user git rules (no force-push `main`, no `--no-verify` unless asked).
 
 ## Do not

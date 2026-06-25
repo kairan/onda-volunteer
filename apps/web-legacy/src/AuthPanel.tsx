@@ -55,7 +55,7 @@ export function AuthPanel({
         className="mb-6 border border-border bg-surface p-4 text-sm text-surface-foreground"
       >
         <strong>Supabase not configured.</strong> Copy{' '}
-        <code>apps/web/.env.example</code> → <code>apps/web/.env</code> and set{' '}
+        <code>apps/web-legacy/.env.example</code> → <code>apps/web-legacy/.env</code> and set{' '}
         <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>{' '}
         from your Supabase project (see{' '}
         <code>docs/runbooks/supabase-auth-local.md</code>).
