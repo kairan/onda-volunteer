@@ -1,6 +1,6 @@
 # Project state (TLC memory)
 
-Cross-session decisions, blockers, lessons, and deferred ideas. Agents update this during TLC work (see `references/state-management.md` in the tlc-spec-driven skill).
+Cross-session decisions, blockers, lessons, and deferred ideas. Agents update this during TLC work (see [memory.md](../../.cursor/skills/tlc-spec-driven/references/memory.md) and [ONDA.md](../../.cursor/skills/tlc-spec-driven/ONDA.md) for Onda path overrides).
 
 ## Decisions
 
