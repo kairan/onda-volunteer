@@ -37,7 +37,7 @@ Establish Playwright in `apps/web` as the canonical **browser e2e** runner, wire
 
 ### Deferred to other issues
 
-- [ ] **#58** — After legacy retirement, Playwright targets shell routes only (no `/events/$eventId`).
+- [x] **#58** — Legacy `/events/$eventId` retired; Playwright covers shell routes and redirect (ADR 0004, `done/58-web-retire-legacy-event-routes.md`).
 - [ ] **#49** — Keyboard-only smoke for **Scheduling** and **Time away** (WCAG release gate).
 
 ### Conventions

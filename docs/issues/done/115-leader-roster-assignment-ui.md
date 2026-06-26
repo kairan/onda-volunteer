@@ -2,7 +2,7 @@
 
 **Type:** Feature
 **Status:** Shipped (validated 2026-06-11)
-**TLC:** `.specs/features/leader-roster-assignment-ui/` (spec, design, tasks)
+**TLC:** `.specs/archive/features/leader-roster-assignment-ui/` (spec, design, tasks)
 
 ## Problem
 
@@ -32,9 +32,9 @@ Production rostering controls on event detail:
 
 ## Specification links
 
-- Spec: `.specs/features/leader-roster-assignment-ui/spec.md` (ROSTER-01–14)
-- Design: `.specs/features/leader-roster-assignment-ui/design.md`
-- Tasks: `.specs/features/leader-roster-assignment-ui/tasks.md`
+- Spec: `.specs/archive/features/leader-roster-assignment-ui/spec.md` (ROSTER-01–14)
+- Design: `.specs/archive/features/leader-roster-assignment-ui/design.md`
+- Tasks: `.specs/archive/features/leader-roster-assignment-ui/tasks.md`
 
 ## Tracker
 

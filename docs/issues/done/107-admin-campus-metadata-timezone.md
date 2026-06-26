@@ -3,7 +3,7 @@
 **Type:** Feature  
 **Label:** shipped (PR [#111](https://github.com/kairan/onda-volunteer/pull/111))  
 **Blocked by:** none  
-**TLC:** `.specs/features/organization-structure-administration/` (P2)
+**TLC:** `.specs/archive/features/organization-structure-administration/` (P2)
 
 ## Domain (read before Execute)
 
@@ -19,7 +19,7 @@ Church-scoped **Admin** `PATCH` **Campus** name + IANA timezone; **Campus settin
 
 T-CAMPUS-01 → T-CAMPUS-02 → T-CAMPUS-03 → T-CAMPUS-04; T-CAMPUS-05 [P] i18n
 
-See `.specs/features/organization-structure-administration/tasks.md`.
+See `.specs/archive/features/organization-structure-administration/tasks.md`.
 
 ## Acceptance criteria
 

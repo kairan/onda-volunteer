@@ -128,7 +128,7 @@ That uses different ports and `DATABASE_URL` than `docker compose`. This repo’
 
 ## 8. System Admin operator and church Admin invites
 
-Normative boundaries: ADR [0005](../adr/0005-system-admin-operator-role.md). Feature tasks: `.specs/features/system-admin-platform/`.
+Normative boundaries: ADR [0005](../adr/0005-system-admin-operator-role.md). Feature tasks: `.specs/archive/features/system-admin-platform/`.
 
 ### Seeded operator volunteer
 

@@ -1,5 +1,7 @@
 # PRD: HOPE design system migration
 
+> **Historical — superseded for visual direction.** Current brand authority: ADR [0006](../adr/0006-onda-brand-visual-system.md) and the web-next migration ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#148](https://github.com/kairan/onda-volunteer/issues/148)). Retained for ADR 0002→0003 chain and #49 automated gate history.
+
 ## Problem Statement
 
 The web client currently implements a dark-field, Lamborghini-inspired visual identity (ADR 0002): black background, gold accent (#FFC000), Archivo Narrow display font, hairline white-alpha borders, and no elevation feedback. This direction diverges from the visual language used across other Onda Dura church projects and creates a cinematic, luxury-exclusive feel that does not match the service-oriented, accessibility-first needs of a **Volunteer** scheduling product. Dense **Scheduling** tables, **Unavailability** forms, and **Ministry** rosters need high-contrast black-on-white readability for extended sessions, not white-on-black cinema.

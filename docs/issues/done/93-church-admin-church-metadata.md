@@ -3,7 +3,7 @@
 **Type:** Feature  
 **Label:** `ready-for-agent`  
 **Blocked by:** none  
-**TLC:** `.specs/features/system-admin-platform/` (CHURCH-META-01)
+**TLC:** `.specs/archive/features/system-admin-platform/` (CHURCH-META-01)
 
 ## What to build
 

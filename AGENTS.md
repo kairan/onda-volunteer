@@ -17,6 +17,7 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 | Architecture tech-debt / fragile seams | [`docs/issues/architecture-debt.md`](docs/issues/architecture-debt.md) |
 | Cloud agent runbook | This file (`AGENTS.md`) |
 | Feature specs, design, tasks (active work) | `.specs/features/<feature-slug>/` (`spec.md`, `design.md`, `tasks.md`, optional `context.md`, `validation.md`) |
+| Shipped TLC planning history | `.specs/archive/features/` (see `INDEX.md`; redirect stubs at old `.specs/features/<slug>/README.md`) |
 | Vision, roadmap, session memory | `.specs/project/` (`PROJECT.md`, `ROADMAP.md`, `STATE.md`) |
 | Pause / resume between sessions | `.specs/HANDOFF.md` |
 | Confirmed execution lessons | `.specs/LESSONS.md` (via `.cursor/skills/tlc-spec-driven/scripts/lessons.py`) |

@@ -2,11 +2,11 @@
 
 **Type:** AFK  
 **Status:** Shipped (validated 2026-06-18, PR [#138](https://github.com/kairan/onda-volunteer/pull/138))  
-**TLC:** `.specs/features/ubiquitous-language-drift/` (I18N-01)
+**TLC:** `.specs/archive/features/ubiquitous-language-drift/` (I18N-01)
 
 ## Parent
 
-- TLC feature: `.specs/features/ubiquitous-language-drift/spec.md` (I18N-01)
+- TLC feature: `.specs/archive/features/ubiquitous-language-drift/spec.md` (I18N-01)
 
 ## What was built
 
@@ -23,8 +23,8 @@ Copy-only alignment: pt-BR **Time away** nav (no `Tempo livre`), **System Admin*
 
 ## Specification links
 
-- Spec: `.specs/features/ubiquitous-language-drift/spec.md`
-- Tasks: `.specs/features/ubiquitous-language-drift/tasks.md`
+- Spec: `.specs/archive/features/ubiquitous-language-drift/spec.md`
+- Tasks: `.specs/archive/features/ubiquitous-language-drift/tasks.md`
 
 ## Tracker
 

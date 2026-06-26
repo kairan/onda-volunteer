@@ -59,6 +59,7 @@ When upstream references say "project docs" or "read the codebase", use this tab
 | Session handoff | [`.specs/HANDOFF.md`](../../../.specs/HANDOFF.md) |
 | Confirmed execution lessons | `.specs/LESSONS.md` (via lessons script — see below) |
 | Active feature work | `.specs/features/<slug>/` |
+| Shipped TLC planning history | `.specs/archive/features/` (`INDEX.md`) |
 
 If upstream `design.md` / `tasks.md` text mentions `.specs/codebase/TESTING.md` or `CONCERNS.md`, substitute **`AGENTS.md`** + **`architecture-debt.md`** + code review — do not generate stubs.
 
@@ -178,6 +179,7 @@ When closing a feature, update in order:
 3. `docs/issues/README.md` row
 4. `.specs/project/ROADMAP.md` if theme status changed
 5. `.specs/project/STATE.md` for new project-level decisions
+6. Move `.specs/features/<slug>/` → `.specs/archive/features/<slug>/`; leave redirect stub at `.specs/features/<slug>/README.md` (see **AD-001** in `STATE.md`)
 
 **Shipped code + README index beat stale TLC checkboxes.** HITL-only rows (e.g. WCAG human sign-off in `hitl-signoff.md`) may stay open after automated gates ship.
 

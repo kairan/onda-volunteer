@@ -2,7 +2,7 @@
 
 **Type:** Documentation / tracker hygiene
 **Status:** Shipped — Phase 1 in planning PR #119; Phase 2 executed 2026-06-09 after [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113
-**TLC:** `.specs/features/org-structure-doc-closeout/` (spec, tasks complete)
+**TLC:** `.specs/archive/features/org-structure-doc-closeout/` (spec, tasks complete)
 
 ## Problem
 
@@ -12,7 +12,7 @@ The `organization-structure-administration` TLC feature shipped ([#108](https://
 
 - **T-DOC-01** — `STATE.md`: add `2026-06-06 (Ministry archive #108)` Decisions entry covering three locked decisions: no unarchive in v1; shell switcher visibility (Admin/System Admin see archived with badge; others see nothing); i18n policy (agent drafts `en` + `pt-BR`, no HITL gate)
 - **T-DOC-02** — `ROADMAP.md`: expand Organization theme to distinguish shipped slices (#109 P1, #107 P2 campus) from `ready-for-agent` backlog (#108); add system-admin-platform as shipped
-- **T-DOC-03** — `organization-structure-administration/spec.md`: ORG-STRUCT-07 row → "Shipped — see `.specs/features/system-admin-platform/` (#87–93)"
+- **T-DOC-03** — `organization-structure-administration/spec.md`: ORG-STRUCT-07 row → "Shipped — see `.specs/archive/features/system-admin-platform/` (#87–93)"
 
 ## Phase 2 — Post-Execute (unblocked — run `T-DOC-04`–`T-DOC-10`)
 
@@ -40,8 +40,8 @@ The `organization-structure-administration` TLC feature shipped ([#108](https://
 
 ## Specification links
 
-- Spec: `.specs/features/org-structure-doc-closeout/spec.md` (DOC-CLOSE-01–10)
-- Tasks: `.specs/features/org-structure-doc-closeout/tasks.md`
+- Spec: `.specs/archive/features/org-structure-doc-closeout/spec.md` (DOC-CLOSE-01–10)
+- Tasks: `.specs/archive/features/org-structure-doc-closeout/tasks.md`
 
 ## Tracker
 

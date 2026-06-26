@@ -2,7 +2,7 @@
 
 **Type:** Tech debt / CI hygiene  
 **Status:** Shipped (validated 2026-06-11)  
-**TLC:** `.specs/features/coverage-threshold-gates/` (spec, tasks, baseline)
+**TLC:** `.specs/archive/features/coverage-threshold-gates/` (spec, tasks, baseline)
 
 ## Problem
 
@@ -14,7 +14,7 @@ CI `coverage` job published artifacts in report-only mode per #61 T61-06. No mer
 - `coverageThreshold` in `apps/api/test/jest-e2e.json` (85/85/63/88 global)
 - Vitest `coverage.thresholds` in `apps/web/vitest.config.ts` (61/60/49/61 global)
 - Removed `continue-on-error: true` from CI `coverage` job
-- Baseline recorded in `.specs/features/coverage-threshold-gates/baseline.md`
+- Baseline recorded in `.specs/archive/features/coverage-threshold-gates/baseline.md`
 
 ## Acceptance criteria
 
@@ -26,8 +26,8 @@ CI `coverage` job published artifacts in report-only mode per #61 T61-06. No mer
 
 ## Specification links
 
-- Spec: `.specs/features/coverage-threshold-gates/spec.md`
-- Tasks: `.specs/features/coverage-threshold-gates/tasks.md`
+- Spec: `.specs/archive/features/coverage-threshold-gates/spec.md`
+- Tasks: `.specs/archive/features/coverage-threshold-gates/tasks.md`
 - Extends: `docs/issues/done/61-ci-lint-and-coverage.md`
 
 ## Tracker

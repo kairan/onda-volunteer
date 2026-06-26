@@ -2,11 +2,11 @@
 
 **Type:** AFK  
 **Status:** Shipped (validated 2026-06-18)  
-**TLC:** `.specs/features/ubiquitous-language-drift/` (GLOSS-01)
+**TLC:** `.specs/archive/features/ubiquitous-language-drift/` (GLOSS-01)
 
 ## Parent
 
-- TLC feature: `.specs/features/ubiquitous-language-drift/spec.md` (GLOSS-01)
+- TLC feature: `.specs/archive/features/ubiquitous-language-drift/spec.md` (GLOSS-01)
 
 ## What was built
 
@@ -21,8 +21,8 @@ Defined **Inactive** **Ministry membership** status in `CONTEXT.md` (schema/UI a
 
 ## Specification links
 
-- Spec: `.specs/features/ubiquitous-language-drift/spec.md`
-- Tasks: `.specs/features/ubiquitous-language-drift/tasks.md`
+- Spec: `.specs/archive/features/ubiquitous-language-drift/spec.md`
+- Tasks: `.specs/archive/features/ubiquitous-language-drift/tasks.md`
 
 ## Tracker
 
