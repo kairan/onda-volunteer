@@ -2,7 +2,7 @@
 
 **Type:** Feature
 **Status:** Shipped (validated 2026-06-11)
-**TLC:** `.specs/features/volunteer-onboarding-invite/` (spec, design, tasks)
+**TLC:** `.specs/archive/features/volunteer-onboarding-invite/` (spec, design, tasks)
 
 ## Problem
 
@@ -15,7 +15,7 @@ Leaders and Admins added volunteers to ministries by typing a raw `volunteerId` 
 
 Raw `volunteerId` text input on `/volunteers` replaced with these flows.
 
-**Follow-up:** ONBOARD-A5 web shell toast per fulfilled invite on first sign-in deferred — see `.specs/features/invite-fulfillment-toast/spec.md`.
+**Follow-up:** ONBOARD-A5 web shell toast shipped via [#124](https://github.com/kairan/onda-volunteer/issues/124) — see `.specs/archive/features/invite-fulfillment-toast/spec.md`.
 
 ## Acceptance criteria
 
@@ -31,9 +31,9 @@ Raw `volunteerId` text input on `/volunteers` replaced with these flows.
 
 ## Specification links
 
-- Spec: `.specs/features/volunteer-onboarding-invite/spec.md` (ONBOARD-01–15)
-- Design: `.specs/features/volunteer-onboarding-invite/design.md`
-- Tasks: `.specs/features/volunteer-onboarding-invite/tasks.md`
+- Spec: `.specs/archive/features/volunteer-onboarding-invite/spec.md` (ONBOARD-01–15)
+- Design: `.specs/archive/features/volunteer-onboarding-invite/design.md`
+- Tasks: `.specs/archive/features/volunteer-onboarding-invite/tasks.md`
 
 ## Tracker
 

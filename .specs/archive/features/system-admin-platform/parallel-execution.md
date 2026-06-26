@@ -1,6 +1,6 @@
 # System Admin Platform — Parallel Execution Guide
 
-**Feature**: `.specs/features/system-admin-platform/`  
+**Feature**: `.specs/archive/features/system-admin-platform/`  
 **Tasks**: [`tasks.md`](tasks.md)  
 **Design**: [`design.md`](design.md)
 

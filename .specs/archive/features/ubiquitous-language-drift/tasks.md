@@ -1,6 +1,6 @@
 # Ubiquitous language drift — Tasks
 
-**Spec**: `.specs/features/ubiquitous-language-drift/spec.md`  
+**Spec**: `.specs/archive/features/ubiquitous-language-drift/spec.md`  
 **Status**: Shipped — validated 2026-06-18 ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)).
 
 ## Execution plan

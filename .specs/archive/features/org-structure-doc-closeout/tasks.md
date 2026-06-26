@@ -1,6 +1,6 @@
 # Org Structure Doc Closeout — Tasks
 
-**Spec**: `.specs/features/org-structure-doc-closeout/spec.md`  
+**Spec**: `.specs/archive/features/org-structure-doc-closeout/spec.md`  
 **Status**: Complete — Phase 1 done (planning PR #119, incl. `T-DOC-07`/`T-DOC-08`); Phase 2 (`T-DOC-04`–`T-DOC-10`) executed 2026-06-09 after [#108](https://github.com/kairan/onda-volunteer/issues/108) shipped via #113. Closes [#118](https://github.com/kairan/onda-volunteer/issues/118).
 
 ---
@@ -87,8 +87,8 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 
 ### T-DOC-03: org-structure spec.md — ORG-STRUCT-07 shipped note
 
-**What**: Update the ORG-STRUCT-07 traceability row in `organization-structure-administration/spec.md` from "Pending — split to `system-admin-platform`" to "Shipped — see `.specs/features/system-admin-platform/` (#87–93)".  
-**Where**: `.specs/features/organization-structure-administration/spec.md` → Requirement Traceability table  
+**What**: Update the ORG-STRUCT-07 traceability row in `organization-structure-administration/spec.md` from "Pending — split to `system-admin-platform`" to "Shipped — see `.specs/archive/features/system-admin-platform/` (#87–93)".  
+**Where**: `.specs/archive/features/organization-structure-administration/spec.md` → Requirement Traceability table  
 **Depends on**: None  
 **Requirement**: DOC-CLOSE-03
 
@@ -107,7 +107,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 ### T-DOC-04: tasks.md — check T-ARCHIVE-* boxes
 
 **What**: Mark T-ARCHIVE-01 through T-ARCHIVE-05 as `[x]` in `organization-structure-administration/tasks.md`, confirming Execute is complete.  
-**Where**: `.specs/features/organization-structure-administration/tasks.md`  
+**Where**: `.specs/archive/features/organization-structure-administration/tasks.md`  
 **Depends on**: #108 PR merge  
 **Requirement**: DOC-CLOSE-04
 
@@ -124,7 +124,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 ### T-DOC-05: org-structure spec.md — ORG-STRUCT-06 Verified
 
 **What**: Update ORG-STRUCT-06 traceability row status to "Verified" and update the status block to "Implemented — Execute verified ([#108])".  
-**Where**: `.specs/features/organization-structure-administration/spec.md`  
+**Where**: `.specs/archive/features/organization-structure-administration/spec.md`  
 **Depends on**: T-DOC-04  
 **Requirement**: DOC-CLOSE-05, DOC-CLOSE-06
 
@@ -140,7 +140,7 @@ All tasks are documentation-only. Gate is doc review / grep for expected content
 ### T-DOC-06: org-structure design.md — status line update
 
 **What**: Update `organization-structure-administration/design.md` status line for ORG-STRUCT-06 from "designed (Execute [#108])" to "Verified — #108".  
-**Where**: `.specs/features/organization-structure-administration/design.md` → Status line  
+**Where**: `.specs/archive/features/organization-structure-administration/design.md` → Status line  
 **Depends on**: T-DOC-04  
 **Requirement**: DOC-CLOSE-05 (partial)  
 **Parallel**: `[P]` with T-DOC-05

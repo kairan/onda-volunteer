@@ -7,9 +7,9 @@
 
 ## Source references
 
-- Feature spec: `.specs/features/organization-structure-administration/spec.md`
-- Feature design: `.specs/features/organization-structure-administration/design.md`
-- Feature tasks: `.specs/features/organization-structure-administration/tasks.md`
+- Feature spec: `.specs/archive/features/organization-structure-administration/spec.md`
+- Feature design: `.specs/archive/features/organization-structure-administration/design.md`
+- Feature tasks: `.specs/archive/features/organization-structure-administration/tasks.md`
 - Archived issue spec: `docs/issues/done/108-org-structure-ministry-archive.md`
 - Tracker index: `docs/issues/README.md`
 - Domain glossary: `CONTEXT.md`
@@ -26,7 +26,7 @@ The organization-structure-administration TLC feature shipped ([#108](https://gi
 |----------|-----------|---------------|
 | `.specs/project/STATE.md` | 2026-06-06 product decisions for #108 (no unarchive in v1; shell switcher visibility rules; i18n policy) are documented in `design.md` and the issue spec but **not reflected** in the Decisions section of STATE.md | Add entry: `2026-06-06 (Ministry archive #108)` with three locked decisions |
 | `.specs/project/ROADMAP.md` | Organization theme row shows only `organization-structure-administration` candidate; does not surface that P1 (#109) and P2 campus (#107) shipped, nor that ministry archive (#108) is `ready-for-agent` | Update row to show shipped + backlog items |
-| `organization-structure-administration/spec.md` | ORG-STRUCT-07 traceability row says "Pending — split to `system-admin-platform`"; `system-admin-platform` shipped completely (#87–93) | Update to "Shipped — see `.specs/features/system-admin-platform/`" |
+| `organization-structure-administration/spec.md` | ORG-STRUCT-07 traceability row says "Pending — split to `system-admin-platform`"; `system-admin-platform` shipped completely (#87–93) | Update to "Shipped — see `.specs/archive/features/system-admin-platform/`" |
 
 ### What needs to happen post-Execute (#108 merge)
 

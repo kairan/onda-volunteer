@@ -1,6 +1,6 @@
 # Tasks: Web typecheck strict clean (#128)
 
-**Spec:** `.specs/features/web-typecheck-strict-clean/spec.md`
+**Spec:** `.specs/archive/features/web-typecheck-strict-clean/spec.md`
 
 ## Task list
 
@@ -16,7 +16,7 @@
   - Verify: zero `tsc` errors
 - [x] T-TC-06: Add `typecheck:web` script + CI job; update branch protection runbook
   - Verify: CI green; local `pnpm typecheck:web` passes
-- [x] T-TC-07: TLC closeout — `docs/issues/done/127-*.md`, README, ROADMAP, STATE, HANDOFF
+- [x] T-TC-07: TLC closeout — `docs/issues/done/128-web-typecheck-strict-clean.md`, README, ROADMAP, STATE, HANDOFF
   - Verify: ONDA tracking stack complete
 
 ## Gates

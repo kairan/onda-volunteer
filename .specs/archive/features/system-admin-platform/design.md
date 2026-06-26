@@ -1,6 +1,6 @@
 # System Admin Platform Design
 
-**Spec**: `.specs/features/system-admin-platform/spec.md`  
+**Spec**: `.specs/archive/features/system-admin-platform/spec.md`  
 **Status**: Approved for Tasks / Execute  
 **ADR**: [`docs/adr/0005-system-admin-operator-role.md`](../../../docs/adr/0005-system-admin-operator-role.md) (T-SYS-01)
 

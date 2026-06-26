@@ -1,6 +1,6 @@
 # Volunteer Discovery & Onboarding Invite — Design
 
-**Spec**: `.specs/features/volunteer-onboarding-invite/spec.md`  
+**Spec**: `.specs/archive/features/volunteer-onboarding-invite/spec.md`  
 **Status**: Design approved — all assumptions locked 2026-06-06 (user-confirmed). Ready for Execute.  
 **Requirements**: ONBOARD-01–15
 

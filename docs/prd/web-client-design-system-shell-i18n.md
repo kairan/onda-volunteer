@@ -1,6 +1,6 @@
 # PRD: Web client design system, app shell, and i18n (Onda Dura)
 
-> Supersession note: the shell, routing, i18n, accessibility, and product-structure decisions in this PRD remain useful historical context. The visual direction and font choices are superseded by ADR 0003 and `DESIGN_SYSTEM.md`; do not use this PRD as the current visual reference.
+> **Supersession note:** Shell, routing, i18n, accessibility, and product-structure decisions remain valid. **Visual direction** is superseded by ADR [0006](../adr/0006-onda-brand-visual-system.md) (Onda brand); HOPE-era docs (ADR 0003, `DESIGN_SYSTEM.md`) are historical only.
 
 ## Problem Statement
 
@@ -142,4 +142,4 @@ Introduce **Tailwind CSS** and **shadcn/ui** (New York preset, hybrid customizat
 
 - This PRD is intentionally narrow: it is safe to implement without completing the entire volunteer platform backlog, but it must not contradict **`CONTEXT.md`** or **ADR 0001**.
 - Parent platform intent remains in **`docs/prd/volunteer-management-platform.md`**; schedule engineering across both documents by treating this file as the **presentation foundation** milestone.
-- **Issue tracker publishing:** the repository does not define an automated tracker integration. Create a tracker ticket manually (or paste from **`docs/issues/done/legacy-08-web-client-design-system-shell-i18n.md`**), and apply **`ready-for-agent`** per your triage convention once dependencies are satisfied.
+- **Issue tracker publishing:** the repository does not define an automated tracker integration. Create a tracker ticket manually (or see **`docs/issues/done/legacy-INDEX.md`** for historical web shell epic context), and apply **`ready-for-agent`** per your triage convention once dependencies are satisfied.

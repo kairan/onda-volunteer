@@ -111,7 +111,7 @@ The production UI must replace the demo form with real, Leader-scoped rostering 
 | ROSTER-13 | S3: Demo VITE_DEMO_* gate removed | Specified |
 | ROSTER-14 | S3: No functional regression without demo env vars | Specified |
 
-**Design / Tasks**: `.specs/features/leader-roster-assignment-ui/design.md`, `tasks.md`.
+**Design / Tasks**: `.specs/archive/features/leader-roster-assignment-ui/design.md`, `tasks.md`.
 
 ## Decisions (locked 2026-06-06, user-confirmed)
 

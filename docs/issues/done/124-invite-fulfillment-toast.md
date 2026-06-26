@@ -2,7 +2,7 @@
 
 **Type:** Feature
 **Status:** Shipped (validated 2026-06-11, PR [#125](https://github.com/kairan/onda-volunteer/pull/125))
-**TLC:** `.specs/features/invite-fulfillment-toast/` (spec, tasks)
+**TLC:** `.specs/archive/features/invite-fulfillment-toast/` (spec, tasks)
 
 ## Problem
 
@@ -28,9 +28,9 @@ Volunteer invite fulfillment on first sign-in creates Pending memberships silent
 
 ## Specification links
 
-- Spec: `.specs/features/invite-fulfillment-toast/spec.md`
-- Tasks: `.specs/features/invite-fulfillment-toast/tasks.md`
-- Parent: `.specs/features/volunteer-onboarding-invite/spec.md` (ONBOARD-A5)
+- Spec: `.specs/archive/features/invite-fulfillment-toast/spec.md`
+- Tasks: `.specs/archive/features/invite-fulfillment-toast/tasks.md`
+- Parent: `.specs/archive/features/volunteer-onboarding-invite/spec.md` (ONBOARD-A5)
 
 ## Tracker
 

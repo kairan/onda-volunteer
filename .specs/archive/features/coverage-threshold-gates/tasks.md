@@ -1,6 +1,6 @@
 # Tasks: Coverage threshold gates (#129)
 
-**Spec:** `.specs/features/coverage-threshold-gates/spec.md`
+**Spec:** `.specs/archive/features/coverage-threshold-gates/spec.md`
 
 ## Task list
 

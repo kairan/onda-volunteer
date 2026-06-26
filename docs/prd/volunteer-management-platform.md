@@ -115,13 +115,13 @@ Deliver a web application backed by **NestJS** and **PostgreSQL (Supabase)**, wi
 
 - **Volunteers** without their own sign-in and household-style multi-volunteer logins (explicitly deferred in `CONTEXT.md`).
 - **Public events** (or other calendars) that intentionally span **multiple Churches** in a single occurrence (deferred).
-- **System Admin** implementation detail beyond the accepted operator model — see ADR [`docs/adr/0005-system-admin-operator-role.md`](../adr/0005-system-admin-operator-role.md) and feature spec [`.specs/features/system-admin-platform/spec.md`](../../.specs/features/system-admin-platform/spec.md) for scope (in-app grant/revoke of **System Admin**, impersonation, and operator scheduling writes remain out of scope).
+- **System Admin** implementation detail beyond the accepted operator model — see ADR [`docs/adr/0005-system-admin-operator-role.md`](../adr/0005-system-admin-operator-role.md) and feature spec [`.specs/archive/features/system-admin-platform/spec.md`](../../.specs/archive/features/system-admin-platform/spec.md) for scope (in-app grant/revoke of **System Admin**, impersonation, and operator scheduling writes remain out of scope).
 - Full production hardening items not required to prove the architecture: email templates, push notifications, advanced audit UI, complex reporting dashboards, mobile apps.
 
 ## Further Notes
 
 - Keep ubiquitous language consistent with `CONTEXT.md` and avoid overloading the word “role” between permission levels and roster **Roles**.
 - **System Admin** (platform operator) vs church-scoped **Admin**: ADR [`docs/adr/0005-system-admin-operator-role.md`](../adr/0005-system-admin-operator-role.md); glossary term in `CONTEXT.md`.
-- This PRD is written to align with `volunteer.md` deliverables: Prisma schema, Nest DDD-oriented module layout, deep **Scheduling** implementation, and a TanStack Router protected route + typed loader pattern.
+- Platform deliverables align with `CONTEXT.md`: Prisma schema, Nest DDD-oriented module layout, deep **Scheduling** implementation, and TanStack Router protected routes (now in `apps/web-next` with TanStack Query).
 - **Related PRD (presentation layer):** foundational web chrome, Tailwind/shadcn adoption, and i18n are specified in **`docs/prd/web-client-design-system-shell-i18n.md`** (see ADR **`docs/adr/0001-visual-system-shell-and-i18n-baseline.md`**). Prefer that PRD for UI-only milestones so this document stays the domain and platform backbone.
 - **Issue tracker publishing:** the repository does not currently define an issue tracker integration or triage label vocabulary. Save/publish this PRD into your tracker manually when available, and apply the label **`ready-for-agent`** per your triage convention.

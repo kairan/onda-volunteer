@@ -2,11 +2,11 @@
 
 **Type:** AFK  
 **Status:** Shipped (validated 2026-06-18, PR [#137](https://github.com/kairan/onda-volunteer/pull/137))  
-**TLC:** `.specs/features/ubiquitous-language-drift/` (AVAIL-01)
+**TLC:** `.specs/archive/features/ubiquitous-language-drift/` (AVAIL-01)
 
 ## Parent
 
-- TLC feature: `.specs/features/ubiquitous-language-drift/spec.md` (AVAIL-01)
+- TLC feature: `.specs/archive/features/ubiquitous-language-drift/spec.md` (AVAIL-01)
 
 ## What was built
 
@@ -21,8 +21,8 @@ Aligned `SchedulingService.createUnavailability` with bulk mirror membership gua
 
 ## Specification links
 
-- Spec: `.specs/features/ubiquitous-language-drift/spec.md`
-- Tasks: `.specs/features/ubiquitous-language-drift/tasks.md`
+- Spec: `.specs/archive/features/ubiquitous-language-drift/spec.md`
+- Tasks: `.specs/archive/features/ubiquitous-language-drift/tasks.md`
 
 ## Tracker
 

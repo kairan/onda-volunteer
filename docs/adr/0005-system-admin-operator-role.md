@@ -2,7 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2026-05-31  
-**Feature spec:** [`.specs/features/system-admin-platform/spec.md`](../../.specs/features/system-admin-platform/spec.md)
+**Feature spec:** [`.specs/archive/features/system-admin-platform/spec.md`](../../.specs/archive/features/system-admin-platform/spec.md)
 
 ## Context
 
@@ -82,6 +82,6 @@ A person may hold **System Admin** and church **Admin** / **Leader** / **Volunte
 
 ## References
 
-- Design: [`.specs/features/system-admin-platform/design.md`](../../.specs/features/system-admin-platform/design.md)
+- Design: [`.specs/archive/features/system-admin-platform/design.md`](../../.specs/archive/features/system-admin-platform/design.md)
 - Auth context runbook: [`docs/runbooks/api-auth-context.md`](../runbooks/api-auth-context.md)
 - Supabase local runbook: [`docs/runbooks/supabase-auth-local.md`](../runbooks/supabase-auth-local.md)

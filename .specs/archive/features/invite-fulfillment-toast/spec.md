@@ -26,7 +26,7 @@ When a net-new person accepts a **VolunteerInvite** and signs in for the first t
 
 ## Source references
 
-- Parent spec: `.specs/features/volunteer-onboarding-invite/spec.md` (ONBOARD-A5)
+- Parent spec: `.specs/archive/features/volunteer-onboarding-invite/spec.md` (ONBOARD-A5)
 - Fulfillment: `apps/api/src/organization/volunteer-invite-fulfillment.service.ts`
 - Shell toasts: `apps/web/src/shell/AppShell.tsx`, `apps/web/src/feedback/ToastHost.tsx`
 

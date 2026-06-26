@@ -1,6 +1,6 @@
 # Event Edit / Reschedule — Design
 
-**Spec**: `.specs/features/event-edit-reschedule/spec.md`  
+**Spec**: `.specs/archive/features/event-edit-reschedule/spec.md`  
 **Status**: Design approved — all assumptions locked 2026-06-06 (user-confirmed). Ready for Execute.  
 **Requirements**: EVENT-EDIT-01–16
 

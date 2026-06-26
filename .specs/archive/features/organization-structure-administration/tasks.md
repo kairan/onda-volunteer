@@ -1,7 +1,7 @@
 # Organization Structure Administration — Tasks
 
-**Design**: `.specs/features/organization-structure-administration/design.md`  
-**Spec**: `.specs/features/organization-structure-administration/spec.md`  
+**Design**: `.specs/archive/features/organization-structure-administration/design.md`  
+**Spec**: `.specs/archive/features/organization-structure-administration/spec.md`  
 **Status**: Execute complete — P2 campus slice #107, P1 tracker doc, and ORG-STRUCT-06 ministry archive ([#108](https://github.com/kairan/onda-volunteer/issues/108), shipped via PR #113)
 
 ---
@@ -26,7 +26,7 @@ T-CAMPUS-03 → T-CAMPUS-04 → T-CAMPUS-05 [P] i18n
 T-ORG-P1-01
 ```
 
-**Next:** none — all phases shipped. Closeout tracked in `.specs/features/org-structure-doc-closeout/` ([#118](https://github.com/kairan/onda-volunteer/issues/118)).
+**Next:** none — all phases shipped. Closeout tracked in `.specs/archive/features/org-structure-doc-closeout/` ([#118](https://github.com/kairan/onda-volunteer/issues/118)).
 
 **GitHub:** [#107](https://github.com/kairan/onda-volunteer/issues/107) (P2 Execute) · [#108](https://github.com/kairan/onda-volunteer/issues/108) (shipped via PR #113) · [#109](https://github.com/kairan/onda-volunteer/issues/109) (P1 tracker doc)
 

@@ -131,7 +131,7 @@ Assignments that fit within the new window are unaffected.
 | EVENT-EDIT-15 | S4: Reschedule shows voided assignment count | Specified |
 | EVENT-EDIT-16 | S4: Reschedule error surfaced to user | Specified |
 
-**Design / Tasks**: `.specs/features/event-edit-reschedule/design.md`, `tasks.md`.
+**Design / Tasks**: `.specs/archive/features/event-edit-reschedule/design.md`, `tasks.md`.
 
 ---
 

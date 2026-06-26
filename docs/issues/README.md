@@ -6,11 +6,11 @@ HOPE design system migration: `docs/prd/hope-design-system-migration.md`
 Domain glossary: `CONTEXT.md`  
 Architecture tech debt index: `architecture-debt.md`
 
-Completed slices are kept under **`done/`** for history. Active specs live in this directory; **the numeric prefix on each filename equals the GitHub issue number** (e.g. `40-time-away-bulk-mirror-ministries.md` → [#40](https://github.com/kairan/onda-volunteer/issues/40)). Archived specs under `done/` keep the issue/spec number they shipped or closed under; historical specs under `done/legacy-*` keep the old tracer-bullet slice id in the filename only.
+Completed slices are kept under **`done/`** for history. Active specs live in this directory; **the numeric prefix on each filename equals the GitHub issue number** (e.g. `148-web-next-migration-slice-6-cutover.md` → [#148](https://github.com/kairan/onda-volunteer/issues/148)). Pre–GitHub-number tracer bullets are indexed in [`done/legacy-INDEX.md`](done/legacy-INDEX.md).
 
-Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cleared.
+Apply label **`ready-for-agent`** on GitHub when that issue's blockers are cleared.
 
-## Active backlog (dependency order)
+## Active backlog
 
 **Frontend rebuild (`web-next`)** — parallel strangler migration; TLC [`.specs/features/frontend-migration-web-next/`](../.specs/features/frontend-migration-web-next/). Slices 1–5 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)); execute queue:
 
@@ -20,21 +20,11 @@ Apply label **`ready-for-agent`** on GitHub when that issue’s blockers are cle
 
 Apply label **`ready-for-agent`** on #148 (blockers cleared 2026-06-24).
 
-**Ubiquitous language drift** ([#131](https://github.com/kairan/onda-volunteer/issues/131)–[#135](https://github.com/kairan/onda-volunteer/issues/135)) shipped; TLC [`.specs/features/ubiquitous-language-drift/`](../.specs/features/ubiquitous-language-drift/), specs in `done/131-*` … `135-*`.
-
-**System Admin platform** chains [#87](https://github.com/kairan/onda-volunteer/issues/87)–[#93](https://github.com/kairan/onda-volunteer/issues/93) are shipped; see `done/` and [`.specs/features/system-admin-platform/`](../.specs/features/system-admin-platform/).
+Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
 
 ## Architecture tech debt
 
-Not product features. Specs in this directory; tracked on GitHub with label **`tech-debt`**. See `architecture-debt.md`.
-
-| Issue | Spec | Summary | Schedule |
-|------:|------|---------|----------|
-| [#54](https://github.com/kairan/onda-volunteer/issues/54) | `done/54-api-scheduling-invariants-module.md` | Pure **Scheduling** rules + unit tests | Shipped |
-| [#55](https://github.com/kairan/onda-volunteer/issues/55) | `done/55-api-request-scoped-auth-context.md` | Nest request-scoped auth | Shipped |
-| [#56](https://github.com/kairan/onda-volunteer/issues/56) | `done/56-api-church-stewardship-access-module.md` | Consolidate church access queries | Shipped |
-| [#57](https://github.com/kairan/onda-volunteer/issues/57) | `done/57-api-assignment-route-under-scheduling.md` | Move assign POST to **Scheduling** | Shipped |
-| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` | Retire `/events/$eventId` (redirect → shell) | Shipped (ADR 0004) |
+All architecture-debt waves **shipped** ([#54](https://github.com/kairan/onda-volunteer/issues/54)–[#58](https://github.com/kairan/onda-volunteer/issues/58), [#61](https://github.com/kairan/onda-volunteer/issues/61)). See [`architecture-debt.md`](architecture-debt.md) for the completed index.
 
 ## Recently archived (`done/`)
 
@@ -46,59 +36,9 @@ Not product features. Specs in this directory; tracked on GitHub with label **`t
 | [#144](https://github.com/kairan/onda-volunteer/issues/144) | `done/144-web-next-migration-slice-2-volunteer.md` |
 | [#143](https://github.com/kairan/onda-volunteer/issues/143) | `done/143-web-next-migration-slice-1-foundation.md` |
 | [#135](https://github.com/kairan/onda-volunteer/issues/135) | `done/135-web-i18n-language-alignment.md` |
-| [#134](https://github.com/kairan/onda-volunteer/issues/134) | `done/134-campus-event-time-display.md` |
-| [#133](https://github.com/kairan/onda-volunteer/issues/133) | `done/133-volunteer-unavailability-edit-delete.md` |
-| [#132](https://github.com/kairan/onda-volunteer/issues/132) | `done/132-api-unavailability-inactive-membership-guard.md` |
 | [#131](https://github.com/kairan/onda-volunteer/issues/131) | `done/131-glossary-inactive-membership.md` |
 | [#129](https://github.com/kairan/onda-volunteer/issues/129) | `done/129-coverage-threshold-gates.md` |
-| [#128](https://github.com/kairan/onda-volunteer/issues/128) | `done/128-web-typecheck-strict-clean.md` |
-| [#126](https://github.com/kairan/onda-volunteer/issues/126) | `done/126-eslint-baseline-clean.md` |
 | [#124](https://github.com/kairan/onda-volunteer/issues/124) | `done/124-invite-fulfillment-toast.md` |
-| [#117](https://github.com/kairan/onda-volunteer/issues/117) | `done/117-event-edit-reschedule.md` |
-| [#116](https://github.com/kairan/onda-volunteer/issues/116) | `done/116-volunteer-onboarding-invite.md` |
 | [#115](https://github.com/kairan/onda-volunteer/issues/115) | `done/115-leader-roster-assignment-ui.md` |
-| [#118](https://github.com/kairan/onda-volunteer/issues/118) | `done/118-org-structure-doc-closeout.md` |
-| [#108](https://github.com/kairan/onda-volunteer/issues/108) | `done/108-org-structure-ministry-archive.md` |
-| [#107](https://github.com/kairan/onda-volunteer/issues/107) | `done/107-admin-campus-metadata-timezone.md` |
-| [#93](https://github.com/kairan/onda-volunteer/issues/93) | `done/93-church-admin-church-metadata.md` |
-| [#109](https://github.com/kairan/onda-volunteer/issues/109) | `done/109-org-structure-p1-ministry-admin.md` |
-| [#92](https://github.com/kairan/onda-volunteer/issues/92) | `done/92-system-admin-chain-5-scheduling-readonly.md` |
-| [#91](https://github.com/kairan/onda-volunteer/issues/91) | `done/91-system-admin-chain-4-stewardship.md` |
-| [#89](https://github.com/kairan/onda-volunteer/issues/89) | `done/89-system-admin-chain-2-church-provisioning.md` |
-| [#90](https://github.com/kairan/onda-volunteer/issues/90) | `done/90-system-admin-chain-3-admin-invite.md` |
-| [#88](https://github.com/kairan/onda-volunteer/issues/88) | `done/88-system-admin-chain-1-identity-shell.md` |
-| [#87](https://github.com/kairan/onda-volunteer/issues/87) | `done/87-system-admin-chain-0-documentation.md` |
-| local #61 / PR [#83](https://github.com/kairan/onda-volunteer/pull/83) | `done/61-ci-lint-and-coverage.md` |
-| [#58](https://github.com/kairan/onda-volunteer/issues/58) | `done/58-web-retire-legacy-event-routes.md` |
-| [#57](https://github.com/kairan/onda-volunteer/issues/57) | `done/57-api-assignment-route-under-scheduling.md` |
-| [#56](https://github.com/kairan/onda-volunteer/issues/56) | `done/56-api-church-stewardship-access-module.md` |
-| [#55](https://github.com/kairan/onda-volunteer/issues/55) | `done/55-api-request-scoped-auth-context.md` |
-| [#54](https://github.com/kairan/onda-volunteer/issues/54) | `done/54-api-scheduling-invariants-module.md` |
-| [#49](https://github.com/kairan/onda-volunteer/issues/49) | `done/49-hope-polish-wcag-release-gate.md` |
-| [#48](https://github.com/kairan/onda-volunteer/issues/48) | `done/48-personal-local-time-i18n-closeout.md` |
-| [#47](https://github.com/kairan/onda-volunteer/issues/47) | `done/47-admin-delegates-leaders-across-churches.md` |
-| [#46](https://github.com/kairan/onda-volunteer/issues/46) | `done/46-admin-manages-ministry-membership-lifecycle.md` |
-| [#45](https://github.com/kairan/onda-volunteer/issues/45) | `done/45-admin-cancels-event-voids-assignments.md` |
-| [#44](https://github.com/kairan/onda-volunteer/issues/44) | `done/44-role-catalog-maintain-rename-retire.md` |
-| [#43](https://github.com/kairan/onda-volunteer/issues/43) | `done/43-leader-creates-rosters-private-event.md` |
-| [#42](https://github.com/kairan/onda-volunteer/issues/42) | `done/42-admin-creates-public-event.md` |
-| [#41](https://github.com/kairan/onda-volunteer/issues/41) | `done/41-leader-manages-volunteer-unavailability.md` |
-| [#60](https://github.com/kairan/onda-volunteer/issues/60) | `done/60-web-playwright-browser-e2e.md` |
-| [#38](https://github.com/kairan/onda-volunteer/issues/38) | `done/38-event-roster-writes-assign-release-unavailability-offer.md` |
-| [#37](https://github.com/kairan/onda-volunteer/issues/37) | `done/37-event-roster-read-inside-shell.md` |
-| [#36](https://github.com/kairan/onda-volunteer/issues/36) | `done/36-scheduling-hub-event-list-visibility.md` |
-| [#39](https://github.com/kairan/onda-volunteer/issues/39) | `done/39-time-away-self-service-unavailability.md` |
 
-## Completed history (`done/legacy-*`)
-
-Older tracer-bullet specs (filename prefix `legacy-NN` = original slice **NN**, not necessarily the GitHub issue number). Examples:
-
-| Legacy file | Summary |
-|-------------|---------|
-| `done/legacy-01` … `legacy-07` | Platform tracer bullets + auth |
-| `done/legacy-08` … `legacy-14` | Web shell epic |
-| `done/legacy-15-organization-context-reads.md` | **Church** / **Campus** reads → shell switchers (GitHub [#5](https://github.com/kairan/onda-volunteer/issues/5)) |
-| `done/legacy-17-dashboard-my-upcoming-assignments.md` | **Dashboard** upcoming **Assignments** ([#7](https://github.com/kairan/onda-volunteer/issues/7)) |
-| `done/legacy-18-time-away-list-create-unavailability.md` | **Time away** list + create ([#8](https://github.com/kairan/onda-volunteer/issues/8)) |
-
-See `done/` for the full archive.
+See `done/` for the full archive (49 numbered specs + [`legacy-INDEX.md`](done/legacy-INDEX.md)). Shipped TLC planning detail: [`.specs/archive/features/INDEX.md`](../.specs/archive/features/INDEX.md).

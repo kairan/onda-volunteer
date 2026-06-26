@@ -1,5 +1,7 @@
 # HOPE Design System — Ondadura Visual Identity
 
+> **Historical — superseded for visual direction.** Current brand authority: ADR [0006](docs/adr/0006-onda-brand-visual-system.md) (Onda brand) and [`.specs/features/ui-refresh-onda-brand/`](.specs/features/ui-refresh-onda-brand/). This document remains as the HOPE-era reference chain (ADR 0003, #49 HITL gate).
+
 A sharp, flat, brutalist-inspired design system. No rounded corners. Heavy borders. Bold typography. Yellow accent on black-and-white base.
 
 ---

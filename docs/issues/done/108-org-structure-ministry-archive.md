@@ -2,7 +2,7 @@
 
 **Type:** Feature  
 **Shipped:** 2026-06-06 via [#113](https://github.com/kairan/onda-volunteer/pull/113)  
-**TLC:** `.specs/features/organization-structure-administration/` (`spec.md` ORG-STRUCT-06, `design.md` § Ministry archive, `tasks.md` T-ARCHIVE-*)
+**TLC:** `.specs/archive/features/organization-structure-administration/` (`spec.md` ORG-STRUCT-06, `design.md` § Ministry archive, `tasks.md` T-ARCHIVE-*)
 
 ## Summary
 

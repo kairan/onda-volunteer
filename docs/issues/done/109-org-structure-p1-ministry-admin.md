@@ -3,7 +3,7 @@
 **Type:** Documentation / tracker parity  
 **Label:** `ready-for-agent`  
 **Blocked by:** none  
-**TLC:** `.specs/features/organization-structure-administration/` (P1 — code shipped)
+**TLC:** `.specs/archive/features/organization-structure-administration/` (P1 — code shipped)
 
 ## What shipped
 
@@ -25,7 +25,7 @@ T-ORG-P1-01
 
 - API: `POST /churches/:churchId/ministries`, `PATCH /ministries/:ministryId`
 - Web: `apps/web/src/organization/ministryStructure.ts`, `apps/web/src/routes/ministries.tsx`
-- TLC spec traceability: ORG-STRUCT-01–04 in `.specs/features/organization-structure-administration/spec.md`
+- TLC spec traceability: ORG-STRUCT-01–04 in `.specs/archive/features/organization-structure-administration/spec.md`
 
 ## Tracker
 

@@ -14,13 +14,13 @@ CI lint runs in report-only mode (`continue-on-error: true`) per [#61](docs/issu
 ## Non-goals
 
 - Web `tsc --noEmit` CI gate (61 strict errors — separate slice).
-- Coverage threshold enforcement ([#61](.specs/features/61-ci-lint-and-coverage/tasks.md) step 2).
+- Coverage threshold enforcement ([#61](.specs/archive/features/61-ci-lint-and-coverage/tasks.md) step 2).
 - ESLint rule-set expansion beyond fixing existing violations.
 
 ## Dependencies
 
 - Builds on shipped [#61](docs/issues/done/61-ci-lint-and-coverage.md) lint infra (`eslint.config.mjs`, `pnpm lint`, CI job).
-- Promotion criteria from [T61-06](.specs/features/61-ci-lint-and-coverage/tasks.md): focused cleanup PR satisfies lint gate promotion.
+- Promotion criteria from [T61-06](.specs/archive/features/61-ci-lint-and-coverage/tasks.md): focused cleanup PR satisfies lint gate promotion.
 
 ## Verification approach
 

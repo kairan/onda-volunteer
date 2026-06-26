@@ -2,11 +2,11 @@
 
 **Type:** AFK  
 **Status:** Shipped (validated 2026-06-18, PR [#139](https://github.com/kairan/onda-volunteer/pull/139))  
-**TLC:** `.specs/features/ubiquitous-language-drift/` (AVAIL-02)
+**TLC:** `.specs/archive/features/ubiquitous-language-drift/` (AVAIL-02)
 
 ## Parent
 
-- TLC feature: `.specs/features/ubiquitous-language-drift/spec.md` (AVAIL-02)
+- TLC feature: `.specs/archive/features/ubiquitous-language-drift/spec.md` (AVAIL-02)
 
 ## What was built
 
@@ -23,8 +23,8 @@ Extended **Time away** beyond list/create (#39): **Volunteers** may PATCH/DELETE
 
 ## Specification links
 
-- Spec: `.specs/features/ubiquitous-language-drift/spec.md`
-- Tasks: `.specs/features/ubiquitous-language-drift/tasks.md`
+- Spec: `.specs/archive/features/ubiquitous-language-drift/spec.md`
+- Tasks: `.specs/archive/features/ubiquitous-language-drift/tasks.md`
 
 ## Tracker
 

@@ -1,6 +1,6 @@
 # Tasks: ESLint baseline clean (#126)
 
-**Spec:** `.specs/features/eslint-baseline-clean/spec.md`  
+**Spec:** `.specs/archive/features/eslint-baseline-clean/spec.md`  
 **Status:** Shipped — validated 2026-06-11
 
 ## Task list

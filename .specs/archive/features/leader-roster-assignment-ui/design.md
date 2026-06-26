@@ -1,6 +1,6 @@
 # Leader Production Roster Assignment UI — Design
 
-**Spec**: `.specs/features/leader-roster-assignment-ui/spec.md`  
+**Spec**: `.specs/archive/features/leader-roster-assignment-ui/spec.md`  
 **Status**: Design approved — ready for Tasks/Execute.  
 **Requirements**: ROSTER-01–14
 

@@ -3,7 +3,7 @@
 **Type:** Feature  
 **Label:** `ready-for-agent`  
 **Blocked by:** #88, #89 (church list/detail read endpoints shipped for invite UI; full church create remains #89)  
-**TLC:** `.specs/features/system-admin-platform/`
+**TLC:** `.specs/archive/features/system-admin-platform/`
 
 ## What to build
 

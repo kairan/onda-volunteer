@@ -2,7 +2,7 @@
 
 **Type:** Tech debt / CI hygiene  
 **Status:** Shipped (validated 2026-06-11)  
-**TLC:** `.specs/features/web-typecheck-strict-clean/` (spec, tasks)
+**TLC:** `.specs/archive/features/web-typecheck-strict-clean/` (spec, tasks)
 
 ## Problem
 
@@ -28,8 +28,8 @@ Web `tsc --noEmit` reported 59 strict errors across 27 files, blocking #61 promo
 
 ## Specification links
 
-- Spec: `.specs/features/web-typecheck-strict-clean/spec.md`
-- Tasks: `.specs/features/web-typecheck-strict-clean/tasks.md`
+- Spec: `.specs/archive/features/web-typecheck-strict-clean/spec.md`
+- Tasks: `.specs/archive/features/web-typecheck-strict-clean/tasks.md`
 - Extends: `docs/issues/done/61-ci-lint-and-coverage.md`
 
 ## Tracker

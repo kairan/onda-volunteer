@@ -1,6 +1,6 @@
 # Invite fulfillment toast — Tasks
 
-**Spec**: `.specs/features/invite-fulfillment-toast/spec.md`  
+**Spec**: `.specs/archive/features/invite-fulfillment-toast/spec.md`  
 **Status**: Shipped — validated 2026-06-11 (#124).
 
 ## Execution Plan

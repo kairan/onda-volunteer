@@ -2,7 +2,7 @@
 
 **Type:** Feature
 **Status:** Shipped (validated 2026-06-11)
-**TLC:** `.specs/features/event-edit-reschedule/` (spec, design, tasks)
+**TLC:** `.specs/archive/features/event-edit-reschedule/` (spec, design, tasks)
 
 ## Problem
 
@@ -36,9 +36,9 @@ Web: inline edit section on `SchedulingEventDetailView`; voided-count warning to
 
 ## Specification links
 
-- Spec: `.specs/features/event-edit-reschedule/spec.md` (EVENT-EDIT-01–16)
-- Design: `.specs/features/event-edit-reschedule/design.md`
-- Tasks: `.specs/features/event-edit-reschedule/tasks.md`
+- Spec: `.specs/archive/features/event-edit-reschedule/spec.md` (EVENT-EDIT-01–16)
+- Design: `.specs/archive/features/event-edit-reschedule/design.md`
+- Tasks: `.specs/archive/features/event-edit-reschedule/tasks.md`
 
 ## Tracker
 

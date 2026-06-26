@@ -8,7 +8,7 @@
 
 - Domain glossary: `CONTEXT.md` (**Volunteer**, **Ministry membership**, **Pending**, **Active**, **Identity**, **Leader**, **Admin**)
 - Platform PRD: `docs/prd/volunteer-management-platform.md` (stories 5, 6 — volunteer onboarding)
-- System Admin invite pattern: `.specs/features/system-admin-platform/spec.md` (SYSADM-07: Admin invite-by-email via Supabase)
+- System Admin invite pattern: `.specs/archive/features/system-admin-platform/spec.md` (SYSADM-07: Admin invite-by-email via Supabase)
 - Current volunteers page: `apps/web/src/routes/volunteers.tsx` (volunteers added by raw `volunteerId` text input)
 - Supabase auth model: `docs/runbooks/api-auth-context.md`
 - ADR 0001 (pessimistic mutation posture)
@@ -120,7 +120,7 @@ This feature closes both gaps with:
 | ONBOARD-14 | S3: Raw volunteerId input replaced by search/invite | Specified |
 | ONBOARD-15 | S3: Error shown if API unavailable | Specified |
 
-**Design / Tasks**: `.specs/features/volunteer-onboarding-invite/design.md`, `tasks.md`.
+**Design / Tasks**: `.specs/archive/features/volunteer-onboarding-invite/design.md`, `tasks.md`.
 
 ---
 

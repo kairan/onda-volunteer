@@ -1,9 +1,9 @@
 # System Admin Platform Tasks
 
-**Design**: `.specs/features/system-admin-platform/design.md`  
-**Spec**: `.specs/features/system-admin-platform/spec.md`  
+**Design**: `.specs/archive/features/system-admin-platform/design.md`  
+**Spec**: `.specs/archive/features/system-admin-platform/spec.md`  
 **Parallel plan**: [`parallel-execution.md`](parallel-execution.md) (chains ↔ GitHub issues)  
-**Status**: Approved — ready for Execute
+**Status**: Execute complete — all tasks shipped (#87–#93)
 
 ---
 

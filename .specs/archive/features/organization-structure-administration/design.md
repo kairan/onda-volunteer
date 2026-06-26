@@ -1,6 +1,6 @@
 # Organization Structure Administration — Design
 
-**Spec**: `.specs/features/organization-structure-administration/spec.md`  
+**Spec**: `.specs/archive/features/organization-structure-administration/spec.md`  
 **Status**: Approved — ORG-STRUCT-05 designed (Execute [#107](https://github.com/kairan/onda-volunteer/issues/107)); ORG-STRUCT-06 Verified — [#108](https://github.com/kairan/onda-volunteer/issues/108) (shipped via PR #113)  
 **Requirements**: ORG-STRUCT-05 (campus metadata); ORG-STRUCT-06 (ministry archive)
 

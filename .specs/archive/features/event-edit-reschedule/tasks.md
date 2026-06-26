@@ -1,7 +1,7 @@
 # Event Edit / Reschedule — Tasks
 
-**Design**: `.specs/features/event-edit-reschedule/design.md`  
-**Spec**: `.specs/features/event-edit-reschedule/spec.md`  
+**Design**: `.specs/archive/features/event-edit-reschedule/design.md`  
+**Spec**: `.specs/archive/features/event-edit-reschedule/spec.md`  
 **Status**: Shipped — validated 2026-06-11 (#117).
 
 ---

@@ -2,7 +2,7 @@
 
 **Type:** Tech debt / CI hygiene  
 **Status:** Shipped (validated 2026-06-11)  
-**TLC:** `.specs/features/eslint-baseline-clean/` (spec, tasks)
+**TLC:** `.specs/archive/features/eslint-baseline-clean/` (spec, tasks)
 
 ## Problem
 
@@ -25,8 +25,8 @@ CI lint ran in report-only mode per #61 promotion criteria. `pnpm lint` reported
 
 ## Specification links
 
-- Spec: `.specs/features/eslint-baseline-clean/spec.md`
-- Tasks: `.specs/features/eslint-baseline-clean/tasks.md`
+- Spec: `.specs/archive/features/eslint-baseline-clean/spec.md`
+- Tasks: `.specs/archive/features/eslint-baseline-clean/tasks.md`
 - Extends: `docs/issues/done/61-ci-lint-and-coverage.md`
 
 ## Tracker

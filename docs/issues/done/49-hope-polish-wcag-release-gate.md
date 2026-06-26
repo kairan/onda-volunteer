@@ -19,7 +19,7 @@ Run a focused accessibility and visual-polish pass after the core **Scheduling**
 - [x] Focus states remain visible and meet WCAG 2.2 AA expectations on HOPE surfaces (global `:focus-visible` + Vitest baseline).
 - [x] Reduced-motion behavior is respected for overlays, hover, and loading states (globals + Playwright smoke).
 - [x] Loading skeletons and dense tables follow the HOPE visual contract without regressing readability (Vitest on pending + roster table).
-- [ ] Human review records WCAG and visual-polish signoff before release (`.specs/features/49-hope-polish-and-wcag-release-gate/hitl-signoff.md`).
+- [ ] Human review records WCAG and visual-polish signoff before release (`.specs/archive/features/49-hope-polish-and-wcag-release-gate/hitl-signoff.md`).
 
 ## Blocked by
 
