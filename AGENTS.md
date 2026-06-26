@@ -10,15 +10,18 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 
 | TLC / agent need | Use this repo source (do not duplicate) |
 |------------------|----------------------------------------|
+| Brownfield overlay (v3.1 paths, test matrix, phase loading) | [`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven/ONDA.md) |
 | Domain language, bounded contexts | [`CONTEXT.md`](CONTEXT.md) |
 | Architecture decisions | [`docs/adr/`](docs/adr/) |
 | Shipped / planned work, issue specs | [`docs/issues/`](docs/issues/) (`done/` for completed) |
+| Architecture tech-debt / fragile seams | [`docs/issues/architecture-debt.md`](docs/issues/architecture-debt.md) |
 | Cloud agent runbook | This file (`AGENTS.md`) |
-| Feature specs, design, tasks (active work) | `.specs/features/<feature-slug>/` (`spec.md`, `design.md`, `tasks.md`, optional `context.md`) |
+| Feature specs, design, tasks (active work) | `.specs/features/<feature-slug>/` (`spec.md`, `design.md`, `tasks.md`, optional `context.md`, `validation.md`) |
 | Vision, roadmap, session memory | `.specs/project/` (`PROJECT.md`, `ROADMAP.md`, `STATE.md`) |
 | Pause / resume between sessions | `.specs/HANDOFF.md` |
+| Confirmed execution lessons | `.specs/LESSONS.md` (via `.cursor/skills/tlc-spec-driven/scripts/lessons.py`) |
 
-**Brownfield rule:** Do **not** generate `.specs/codebase/*`. Stack, architecture, conventions, and testing are already documented in `CONTEXT.md`, `docs/adr/`, `AGENTS.md`, and the codebase. TLC “map codebase” means **read those sources**, then proceed to Specify.
+**Brownfield rule (TLC v3.1):** Do **not** generate `.specs/codebase/*`. There is no separate “map codebase” phase — load context through the Knowledge Verification Chain and [ONDA.md](.cursor/skills/tlc-spec-driven/ONDA.md) at Specify, Design, and Tasks.
 
 **Tracker rule:** GitHub Issues remain the execution queue for humans and cloud agents. After TLC **Tasks**, create or update issues from `tasks.md` (see skill routing below). Keep requirement IDs in specs aligned with issue numbers when both exist.
 
