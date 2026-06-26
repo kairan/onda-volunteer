@@ -1,6 +1,6 @@
 # Onda Volunteer — TLC overlay
 
-Repo-specific rules for **tlc-spec-driven** on this brownfield monorepo. Read this file at the start of any TLC workflow here.
+Repo-specific rules for **tlc-spec-driven** (v3.1+) on this brownfield monorepo. Read this file at the start of any TLC workflow here.
 
 ## Brownfield: do not fork documentation
 
@@ -22,22 +22,31 @@ All per-feature artifacts use **one directory**:
 
 ```text
 .specs/features/<feature-slug>/
-├── spec.md       # Specify
-├── context.md    # Discuss (optional)
-├── design.md     # Design (optional)
-└── tasks.md      # Tasks (optional)
+├── spec.md         # Specify
+├── context.md      # Discuss (optional)
+├── design.md       # Design (optional)
+├── tasks.md        # Tasks (optional)
+└── validation.md   # Verifier report after Execute (optional until validation runs)
 ```
 
 Use kebab-case slugs (e.g. `leader-manages-unavailability`). Do not write under `.specs/<feature-slug>/` without the `features/` segment.
 
-## Project-level TLC files
+## Project-level TLC files (Onda paths)
+
+Upstream v3.1 uses `.specs/STATE.md` (Decisions + Handoff) and `.specs/LESSONS.md`. **This repo keeps the existing layout:**
+
+| Upstream v3.1 path | Onda path | Purpose |
+|--------------------|-----------|---------|
+| `.specs/STATE.md` → `## Decisions` | `.specs/project/STATE.md` | Decisions, blockers, deferred ideas across sessions |
+| `.specs/STATE.md` → `## Handoff` | `.specs/HANDOFF.md` | Session pause/resume (overwritten each handoff) |
+| `.specs/LESSONS.md` / `lessons.json` | *(create at repo root when first lesson is recorded)* | Self-improving lessons playbook |
 
 | File | Purpose |
 |------|---------|
 | `.specs/project/PROJECT.md` | Product vision (points at `CONTEXT.md` for domain depth) |
 | `.specs/project/ROADMAP.md` | Milestones; link to `docs/issues/` for detail |
-| `.specs/project/STATE.md` | Decisions, blockers, deferred ideas across sessions |
-| `.specs/HANDOFF.md` | Session pause/resume (overwritten each handoff) |
+
+When upstream references say "read `.specs/STATE.md`", read `.specs/project/STATE.md` for decisions and `.specs/HANDOFF.md` on resume. When appending decisions or handoff snapshots, write to those Onda paths — do not migrate to `.specs/STATE.md` without an explicit repo decision.
 
 ## GitHub Issues integration
 
