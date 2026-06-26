@@ -11,7 +11,7 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 | `project/STATE.md` | Project-level decisions (`AD-NNN` / legacy bullets) |
 | `features/<slug>/` | Per-feature `spec.md`, optional `design.md`, `tasks.md`, `context.md`, `validation.md` |
 | `HANDOFF.md` | Latest session handoff (regenerated on pause) |
-| `lessons.json` / `LESSONS.md` | Self-improving execution lessons (machine-owned; use `scripts/lessons.py`) |
+| `lessons.json` / `LESSONS.md` | Self-improving execution lessons (machine-owned; use `.cursor/skills/tlc-spec-driven/scripts/lessons.py` from repo root) |
 
 ## Brownfield (this repo)
 
