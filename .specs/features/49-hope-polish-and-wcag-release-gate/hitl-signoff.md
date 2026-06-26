@@ -2,7 +2,7 @@
 
 **Automated gate:** complete (see `release-gate-checklist.md` and `pnpm --filter @onda/web test` / `pnpm test:e2e:web`).
 
-**Human review:** pending. A product or accessibility reviewer should complete the checklist below and set the date when done.
+**Human review:** complete — signed off by Kairan on 2026-05-31 (see checklist below).
 
 
 | Area                                       | Reviewer | Date  | Pass |

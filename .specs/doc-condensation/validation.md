@@ -80,9 +80,9 @@ Scratch-state checks (no persistent mutations):
 
 ## Minor gaps (non-blocking)
 
-1. **Untracked new files** — redirect stubs, `legacy-INDEX.md`, `.specs/archive/README.md`, `INDEX.md` may need `git add` before commit.
-
 Archive internal cross-refs: fixed 2026-06-26 (41 replacements in 24 files; only INDEX redirect-stub line keeps `.specs/features/`).
+
+All new files (redirect stubs, `legacy-INDEX.md`, `.specs/archive/README.md`, `INDEX.md`) are tracked in the commits landing with this PR.
 
 ---
 
