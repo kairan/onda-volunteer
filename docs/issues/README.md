@@ -20,6 +20,12 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 Apply label **`ready-for-agent`** on #148 (blockers cleared 2026-06-24).
 
+**Scheduling — role slot capacity** — TLC [`.specs/features/role-slot-capacity-per-event/`](../.specs/features/role-slot-capacity-per-event/). Complements UI-LEAD / Serve Well roster visual.
+
+| Issue | Feature | Tasks | Spec |
+|------:|---------|-------|------|
+| [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | T01–T09 | `165-role-slot-capacity-per-event.md` |
+
 Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
 
 ## Architecture tech debt

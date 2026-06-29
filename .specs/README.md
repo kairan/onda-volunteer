@@ -17,7 +17,7 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 
 ## Active vs archived features
 
-- **Active:** `.specs/features/` holds in-flight work only (currently `frontend-migration-web-next`, `ui-refresh-onda-brand`).
+- **Active:** `.specs/features/` holds in-flight work only (currently `frontend-migration-web-next`, `ui-refresh-onda-brand`, `role-slot-capacity-per-event`).
 - **Shipped:** After closeout, TLC folders move to `.specs/archive/features/` per **AD-001** in `project/STATE.md`. A redirect stub remains at `.specs/features/<slug>/README.md`.
 - **Ship record:** `docs/issues/done/<#>-*.md` is canonical for acceptance criteria.
 
