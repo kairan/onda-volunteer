@@ -122,6 +122,8 @@ In `EventsService.create` (or equivalent), after event persisted:
 
 `PATCH /events/:eventId/role-capacities`
 
+**Routing:** Add a **separate** handler in `EventsController` — e.g. `@Patch(':id/role-capacities')` — not an overload of the existing `@Patch(':id')` `editEvent` route. Nest matches more-specific paths first, but a dedicated sub-route keeps edit vs capacity concerns separated (same pattern as `@Post(':id/cancel')`).
+
 **Auth:** Leader of `ministryId` in body/query or Admin accredited for event's church.
 
 **Body:**
@@ -187,9 +189,9 @@ Extend `validateAssignmentGuards` input or parallel check in service; add `sched
 | `eventDetailPayload.ts` | `roleCapacities` type |
 | `leader/types.ts` | `RosterRow.slotIndex`, `slotKey` |
 | `buildRosterRows.ts` | Slot expansion algorithm |
-| `RosterByEventSection.tsx` | `key={slotKey}`, optional multi-slot label |
+| `RosterByEventSection.tsx` | Replace `rosterRoleKey` with `slotKey` for row `key` and busy state; optional multi-slot label |
 | `schedulingEventDetail.tsx` | Capacity editor section + assign targets slot |
-| `LeaderSchedulingPage.tsx` | `countOpenSlotsAcrossRosters` uses slot totals |
+| `LeaderSchedulingPage.tsx` | Replace `rosterRoleKey` with `slotKey` for assign busy keys; `countOpenSlotsAcrossRosters` uses slot totals |
 | `assignMutation.ts` | No API change — still `roleId`; slot is UI-only for targeting unfilled row |
 | `i18n/locales/*/scheduling.json` | Error strings + capacity editor labels |
 

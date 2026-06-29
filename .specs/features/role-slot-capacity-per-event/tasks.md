@@ -64,9 +64,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 ### T03: PATCH role capacities endpoint
 
-**What**: `PATCH /events/:eventId/role-capacities` with validation `capacity >= filled count`; leader/admin auth.
+**What**: `PATCH /events/:eventId/role-capacities` with validation `capacity >= filled count`; leader/admin auth. Register as `@Patch(':id/role-capacities')` on `EventsController` — do not overload existing `@Patch(':id')` `editEvent`.
 
-**Where**: `apps/api/src/events/` (controller + service), e2e tests
+**Where**: `apps/api/src/events/events.controller.ts`, `events.service.ts`, e2e tests
 
 **Requirements**: SCHED-SLOT-01 (AC 2, 3)
 
@@ -117,9 +117,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 ### T06: Roster UI — slots, assign/release, busy keys
 
-**What**: `RosterByEventSection` + `schedulingEventDetail` + `LeaderSchedulingPage` use `slotKey`; assign targets unfilled slot; release unchanged (assignmentId).
+**What**: Replace `${eventId}:${roleId}` `rosterRoleKey` busy keys with per-slot `slotKey` everywhere capacity > 1 matters. Today both `LeaderSchedulingPage.tsx` and `RosterByEventSection.tsx` define/use `rosterRoleKey(eventId, roleId)` — update **both** call sites plus `schedulingEventDetail.tsx`. Assign targets an unfilled slot row; release unchanged (by `assignmentId`).
 
-**Where**: `apps/web-next/src/components/RosterByEventSection.tsx`, `routes/schedulingEventDetail.tsx`, `LeaderSchedulingPage.tsx`, behavior tests
+**Where**: `apps/web-next/src/components/RosterByEventSection.tsx`, `routes/schedulingEventDetail.tsx`, `routes/LeaderSchedulingPage.tsx`, behavior tests
 
 **Requirements**: SCHED-SLOT-03 (AC 2, 3, 5, 6)
 
@@ -127,7 +127,7 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 - [ ] Behavior tests: two Audio rows visible when capacity 2
 - [ ] Assign on second unfilled row succeeds
-- [ ] `busyRoleKey` uses slotKey
+- [ ] `busyRoleKey` / row `key` use `slotKey` in `RosterByEventSection` and `LeaderSchedulingPage` (no `${eventId}:${roleId}` for multi-slot rows)
 
 **Verify**: `RosterByEventSection.behavior.test.tsx`, `schedulingEventDetail.behavior.test.tsx`
 
