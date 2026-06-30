@@ -194,16 +194,23 @@ async function main() {
     },
   });
 
+  await prisma.ministryLeader.deleteMany({
+    where: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: ministryTechnical.id,
+    },
+  });
+
   await prisma.ministryLeader.upsert({
     where: {
       volunteerId_ministryId: {
-        volunteerId: 'seed-volunteer-demo',
+        volunteerId: 'seed-volunteer-admin',
         ministryId: ministryTechnical.id,
       },
     },
     update: {},
     create: {
-      volunteerId: 'seed-volunteer-demo',
+      volunteerId: 'seed-volunteer-admin',
       ministryId: ministryTechnical.id,
     },
   });

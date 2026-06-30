@@ -14,6 +14,9 @@ test.describe('scheduling event detail @smoke', () => {
   test('private event shows multi-slot audio roster with 2/2 fill badge', async ({
     page,
   }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('onda:devVolunteerId', 'seed-volunteer-admin');
+    });
     await page.goto('/scheduling/events/seed-event-private');
 
     await expect(
