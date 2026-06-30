@@ -135,3 +135,32 @@ export function bulkUnavailabilityMembershipFailure(
   }
   return null;
 }
+
+export type RoleSlotGuardInput = {
+  capacity: number;
+  activeAssignmentCount: number;
+  volunteerAlreadyOnRole: boolean;
+};
+
+export function validateRoleSlotGuards(
+  input: RoleSlotGuardInput,
+): AssignmentGuardResult {
+  if (input.volunteerAlreadyOnRole) {
+    return {
+      ok: false,
+      code: 'VOLUNTEER_ALREADY_ON_ROLE_SLOT',
+      message:
+        'This volunteer is already rostered for this role on this event.',
+    };
+  }
+
+  if (input.activeAssignmentCount >= input.capacity) {
+    return {
+      ok: false,
+      code: 'ROLE_SLOTS_FULL',
+      message: 'All slots for this role on this event are filled.',
+    };
+  }
+
+  return { ok: true };
+}
