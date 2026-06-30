@@ -205,6 +205,21 @@ export class EventsService {
       include: { church: true, ministry: true },
     });
 
+    const activeRoles = await this.prisma.ministryRole.findMany({
+      where: { ministryId: ministry.id, retired: false },
+      select: { id: true },
+    });
+    if (activeRoles.length > 0) {
+      await this.prisma.eventRoleCapacity.createMany({
+        data: activeRoles.map((role) => ({
+          eventId: row.id,
+          ministryId: ministry.id,
+          roleId: role.id,
+          capacity: 1,
+        })),
+      });
+    }
+
     return this.toEventListItem(row);
   }
 

@@ -45,6 +45,7 @@ describe('POST /events private create + assign (e2e)', () => {
 
   beforeEach(async () => {
     await prisma.assignment.deleteMany();
+    await prisma.eventRoleCapacity.deleteMany();
     await prisma.event.deleteMany();
     await prisma.ministryMembership.deleteMany();
     await prisma.ministryRole.deleteMany();
@@ -112,6 +113,15 @@ describe('POST /events private create + assign (e2e)', () => {
         endsAtUtc: '2026-08-01T20:00:00.000Z',
       })
       .expect(201);
+
+    const capacities = await prisma.eventRoleCapacity.findMany({
+      where: { eventId: created.body.id, ministryId: ledMinistry.id },
+    });
+    expect(capacities).toHaveLength(1);
+    expect(capacities[0]).toMatchObject({
+      roleId: role.id,
+      capacity: 1,
+    });
 
     await request(app.getHttpServer())
       .post(`/events/${created.body.id}/assignments`)
