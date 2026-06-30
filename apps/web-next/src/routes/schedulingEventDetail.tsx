@@ -259,9 +259,10 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       assignmentId: string;
       actingVolunteerId: string;
       roleId: string;
+      slotKey: string;
     }) => voidAssignment(input),
     onMutate: (variables) => {
-      setBusyRoleKey(`${payload.event.id}:${variables.roleId}`);
+      setBusyRoleKey(variables.slotKey);
       setRowError(null);
     },
     onSuccess: () => {
@@ -275,7 +276,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     },
     onError: (error, variables) => {
       setRowError({
-        roleKey: `${payload.event.id}:${variables.roleId}`,
+        roleKey: variables.slotKey,
         message: mapReleaseError(error, t),
       });
     },
@@ -295,6 +296,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
         });
       }
       setAssignRoleId(null);
+      setBusyRoleKey(null);
       setAssignError(null);
     },
     onError: (error) => {
@@ -389,11 +391,12 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
             roster={roster}
             busyRoleKey={busyRoleKey}
             rowError={rowError}
-            onAssign={(roleId) => {
+            onAssign={(roleId, slotKey) => {
               setAssignRoleId(roleId);
+              setBusyRoleKey(slotKey);
               setAssignError(null);
             }}
-            onRelease={(assignmentId, roleId) => {
+            onRelease={(assignmentId, roleId, slotKey) => {
               if (!actingVolunteerId) {
                 return;
               }
@@ -401,6 +404,7 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
                 assignmentId,
                 actingVolunteerId,
                 roleId,
+                slotKey,
               });
             }}
           />

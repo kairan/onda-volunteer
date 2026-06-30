@@ -36,10 +36,12 @@ export function buildRosterRows(input: {
     for (let slotIndex = 0; slotIndex < capacity; slotIndex += 1) {
       const assignment = roleAssignments[slotIndex];
       const slotKey = `${input.eventId}:${role.id}:${slotIndex}`;
+      const roleName =
+        capacity > 1 ? `${role.name} (${slotIndex + 1})` : role.name;
       if (assignment) {
         rows.push({
           roleId: role.id,
-          roleName: role.name,
+          roleName,
           slotIndex,
           slotKey,
           assignmentId: assignment.id,
@@ -49,7 +51,7 @@ export function buildRosterRows(input: {
       } else {
         rows.push({
           roleId: role.id,
-          roleName: role.name,
+          roleName,
           slotIndex,
           slotKey,
         });

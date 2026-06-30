@@ -10,6 +10,8 @@ const rosterFixture = [
   {
     roleId: 'role-1',
     roleName: 'Greeter',
+    slotIndex: 0,
+    slotKey: 'evt-1:role-1:0',
     assignmentId: 'asg-1',
     volunteerId: 'vol-1',
     volunteerName: 'Sarah Chen',
@@ -17,6 +19,8 @@ const rosterFixture = [
   {
     roleId: 'role-2',
     roleName: 'Usher',
+    slotIndex: 0,
+    slotKey: 'evt-1:role-2:0',
   },
 ];
 
@@ -70,6 +74,29 @@ describe('RosterByEventSection', () => {
     const onRelease = vi.fn();
     renderSection({ onRelease });
     await user.click(screen.getByRole('button', { name: /release/i }));
-    expect(onRelease).toHaveBeenCalledWith('asg-1', 'role-1');
+    expect(onRelease).toHaveBeenCalledWith('asg-1', 'role-1', 'evt-1:role-1:0');
+  });
+
+  it('renders two rows for a role with capacity 2', async () => {
+    await initI18n(undefined, 'en');
+    renderSection({
+      roster: [
+        {
+          roleId: 'role-audio',
+          roleName: 'Audio (1)',
+          slotIndex: 0,
+          slotKey: 'evt-1:role-audio:0',
+        },
+        {
+          roleId: 'role-audio',
+          roleName: 'Audio (2)',
+          slotIndex: 1,
+          slotKey: 'evt-1:role-audio:1',
+        },
+      ],
+    });
+    expect(screen.getByText('Audio (1)')).toBeInTheDocument();
+    expect(screen.getByText('Audio (2)')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /assign/i })).toHaveLength(2);
   });
 });

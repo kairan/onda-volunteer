@@ -14,17 +14,13 @@ export type RosterByEventSectionProps = {
   eventTitle: string;
   timeLabels: DualTimeLabels;
   roster: RosterRow[];
-  /** Composite key `${eventId}:${roleId}` when multiple event cards share role ids. */
+  /** Per-slot key `${eventId}:${roleId}:${slotIndex}` for busy state. */
   eventId?: string;
   busyRoleKey?: string | null;
   rowError?: { roleKey: string; message: string } | null;
-  onAssign: (roleId: string) => void;
-  onRelease: (assignmentId: string, roleId: string) => void;
+  onAssign: (roleId: string, slotKey: string) => void;
+  onRelease: (assignmentId: string, roleId: string, slotKey: string) => void;
 };
-
-function rosterRoleKey(eventId: string | undefined, roleId: string): string {
-  return eventId ? `${eventId}:${roleId}` : roleId;
-}
 
 export function RosterByEventSection({
   eventTitle,
@@ -65,13 +61,12 @@ export function RosterByEventSection({
       </div>
       <ul className="divide-y divide-border">
         {roster.map((row) => {
-          const roleKey = rosterRoleKey(eventId, row.roleId);
-          const isBusy = busyRoleKey === roleKey;
+          const isBusy = busyRoleKey === row.slotKey;
           const errorMessage =
-            rowError?.roleKey === roleKey ? rowError.message : null;
+            rowError?.roleKey === row.slotKey ? rowError.message : null;
 
           return (
-            <li key={row.roleId} className="px-4 py-3 text-sm">
+            <li key={row.slotKey} className="px-4 py-3 text-sm">
               <div className="flex items-center gap-3">
                 <span className="w-36 text-muted-foreground">{row.roleName}</span>
                 <div className="flex flex-1 items-center gap-2">
@@ -96,7 +91,7 @@ export function RosterByEventSection({
                     variant="ghost"
                     type="button"
                     disabled={isBusy}
-                    onClick={() => onRelease(row.assignmentId!, row.roleId)}
+                    onClick={() => onRelease(row.assignmentId!, row.roleId, row.slotKey)}
                   >
                     <UserMinus className="h-4 w-4" aria-hidden />
                     {t('detail.release')}
@@ -107,7 +102,7 @@ export function RosterByEventSection({
                     variant="outline"
                     type="button"
                     disabled={isBusy}
-                    onClick={() => onAssign(row.roleId)}
+                    onClick={() => onAssign(row.roleId, row.slotKey)}
                   >
                     <UserPlus className="h-4 w-4" aria-hidden />
                     {t('preview.assign')}

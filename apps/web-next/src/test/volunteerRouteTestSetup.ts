@@ -95,6 +95,7 @@ export const leaderRouteEventDetail = {
   },
   ministry: null,
   assignments: [],
+  roleCapacities: [],
 };
 
 export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unknown>>(
