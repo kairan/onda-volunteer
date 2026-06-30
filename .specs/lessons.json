@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 4,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap::api e2e for new response fields must assert the field on get detail not only on patch or client mocks",
+      "text": "API e2e for new response fields must assert the field on GET detail, not only on PATCH or client mocks.",
+      "signal": "ac_gap",
+      "scope": "apps/api/test",
+      "status": "candidate",
+      "features": [
+        "role-slot-capacity-per-event"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SCHED-SLOT-01 AC5 — no GET /events/:id roleCapacities assertion (apps/api/test)"
+      ],
+      "created": "2026-06-30T15:45:09Z",
+      "last_seen": "2026-06-30T15:45:09Z"
+    },
+    {
+      "id": "L-002",
+      "key": "ac_gap::when busy disabled state keys on a composite id add a behavior test that mutating one slot does not busy siblings",
+      "text": "When busy/disabled state keys on a composite id, add a behavior test that mutating one slot does not busy siblings.",
+      "signal": "ac_gap",
+      "scope": "apps/web-next",
+      "status": "candidate",
+      "features": [
+        "role-slot-capacity-per-event"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SCHED-SLOT-03 AC5 — no busyRoleKey per-slot behavior test (apps/web-next)"
+      ],
+      "created": "2026-06-30T15:45:09Z",
+      "last_seen": "2026-06-30T15:45:09Z"
+    },
+    {
+      "id": "L-003",
+      "key": "spec_precision_gap::new i18n keys in en and pt br need at least one behavior test per locale for user visible copy",
+      "text": "New i18n keys in en and pt-BR need at least one behavior test per locale for user-visible copy.",
+      "signal": "spec_precision_gap",
+      "scope": "apps/web-next/src/i18n",
+      "status": "candidate",
+      "features": [
+        "role-slot-capacity-per-event"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SCHED-SLOT-04 AC3 — pt-BR scheduling strings untested (apps/web-next/src/i18n)"
+      ],
+      "created": "2026-06-30T15:45:09Z",
+      "last_seen": "2026-06-30T15:45:09Z"
+    }
+  ]
+}
