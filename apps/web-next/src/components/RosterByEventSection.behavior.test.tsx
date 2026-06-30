@@ -99,4 +99,29 @@ describe('RosterByEventSection', () => {
     expect(screen.getByText('Audio (2)')).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /assign/i })).toHaveLength(2);
   });
+
+  it('disables assign only on the busy slot row', async () => {
+    await initI18n(undefined, 'en');
+    renderSection({
+      busyRoleKey: 'evt-1:role-audio:1',
+      roster: [
+        {
+          roleId: 'role-audio',
+          roleName: 'Audio (1)',
+          slotIndex: 0,
+          slotKey: 'evt-1:role-audio:0',
+        },
+        {
+          roleId: 'role-audio',
+          roleName: 'Audio (2)',
+          slotIndex: 1,
+          slotKey: 'evt-1:role-audio:1',
+        },
+      ],
+    });
+    const assignButtons = screen.getAllByRole('button', { name: /assign/i });
+    expect(assignButtons).toHaveLength(2);
+    expect(assignButtons[0]).not.toBeDisabled();
+    expect(assignButtons[1]).toBeDisabled();
+  });
 });

@@ -287,7 +287,6 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     }
     setCapacityDraft(nextDraft);
     setCapacityError(null);
-    setCapacitySuccess(false);
   }, [formMinistryId, payload.event.id, payload.roleCapacities, rolesQuery.data]);
 
   const activeMembers = (membershipsQuery.data ?? []).filter(
