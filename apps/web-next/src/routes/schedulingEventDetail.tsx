@@ -217,11 +217,13 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       return [];
     }
     return buildRosterRows({
+      eventId: payload.event.id,
       roles: rolesQuery.data ?? [],
+      roleCapacities: payload.roleCapacities ?? [],
       assignments: payload.assignments,
       ministryId: formMinistryId,
     });
-  }, [formMinistryId, payload.assignments, rolesQuery.data]);
+  }, [formMinistryId, payload.assignments, payload.event.id, payload.roleCapacities, rolesQuery.data]);
 
   const [busyRoleKey, setBusyRoleKey] = useState<string | null>(null);
   const [rowError, setRowError] = useState<{

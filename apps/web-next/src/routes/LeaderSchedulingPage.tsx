@@ -160,7 +160,9 @@ export function LeaderSchedulingPage() {
       const detail = eventDetailQueries[index]?.data;
       const roster = detail
         ? buildRosterRows({
+            eventId: event.id,
             roles,
+            roleCapacities: detail.roleCapacities ?? [],
             assignments: detail.assignments,
             ministryId,
           })

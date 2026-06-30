@@ -2,7 +2,9 @@ import type { EventDetailPayload } from '@/eventDetailPayload';
 import type { MinistryRoleRow, RosterRow } from './types';
 
 export function buildRosterRows(input: {
+  eventId: string;
   roles: MinistryRoleRow[];
+  roleCapacities: EventDetailPayload['roleCapacities'];
   assignments: EventDetailPayload['assignments'];
   ministryId: string;
 }): RosterRow[] {
@@ -10,22 +12,52 @@ export function buildRosterRows(input: {
   const ministryAssignments = input.assignments.filter(
     (assignment) => assignment.ministry.id === input.ministryId,
   );
+  const ministryCapacities = input.roleCapacities.filter(
+    (capacity) => capacity.ministryId === input.ministryId,
+  );
 
-  return activeRoles.map((role) => {
-    const assignment = ministryAssignments.find(
-      (row) => row.role.id === role.id,
-    );
-    if (!assignment) {
-      return { roleId: role.id, roleName: role.name };
+  const rows: RosterRow[] = [];
+
+  for (const role of activeRoles) {
+    const capacity =
+      ministryCapacities.find((entry) => entry.roleId === role.id)?.capacity ?? 1;
+    const roleAssignments = ministryAssignments
+      .filter((assignment) => assignment.role.id === role.id)
+      .sort((left, right) => {
+        const startCompare = left.window.startsAtUtc.localeCompare(
+          right.window.startsAtUtc,
+        );
+        if (startCompare !== 0) {
+          return startCompare;
+        }
+        return left.id.localeCompare(right.id);
+      });
+
+    for (let slotIndex = 0; slotIndex < capacity; slotIndex += 1) {
+      const assignment = roleAssignments[slotIndex];
+      const slotKey = `${input.eventId}:${role.id}:${slotIndex}`;
+      if (assignment) {
+        rows.push({
+          roleId: role.id,
+          roleName: role.name,
+          slotIndex,
+          slotKey,
+          assignmentId: assignment.id,
+          volunteerId: assignment.volunteer.id,
+          volunteerName: assignment.volunteer.displayName,
+        });
+      } else {
+        rows.push({
+          roleId: role.id,
+          roleName: role.name,
+          slotIndex,
+          slotKey,
+        });
+      }
     }
-    return {
-      roleId: role.id,
-      roleName: role.name,
-      assignmentId: assignment.id,
-      volunteerId: assignment.volunteer.id,
-      volunteerName: assignment.volunteer.displayName,
-    };
-  });
+  }
+
+  return rows;
 }
 
 export function rosterFillCounts(roster: RosterRow[]): {
