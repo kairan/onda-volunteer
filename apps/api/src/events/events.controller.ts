@@ -93,6 +93,36 @@ export class EventsController {
     return this.events.getEventDetail({ id, auth });
   }
 
+  @Patch(':id/role-capacities')
+  updateRoleCapacities(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      ministryId: string;
+      capacities: Array<{ roleId: string; capacity: number }>;
+    },
+    @AuthContext() auth: AuthenticatedRequestContext,
+  ) {
+    if (!body.ministryId) {
+      throw new BadRequestException({
+        code: 'MINISTRY_ID_REQUIRED',
+        message: 'ministryId is required.',
+      });
+    }
+    if (!body.capacities?.length) {
+      throw new BadRequestException({
+        code: 'ROLE_CAPACITIES_EMPTY',
+        message: 'At least one role capacity update is required.',
+      });
+    }
+    return this.events.updateRoleCapacities({
+      eventId: id,
+      ministryId: body.ministryId,
+      capacities: body.capacities,
+      auth,
+    });
+  }
+
   @Patch(':id')
   editEvent(
     @Param('id') id: string,

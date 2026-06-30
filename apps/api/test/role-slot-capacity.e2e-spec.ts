@@ -171,4 +171,81 @@ describe('Role slot capacity guards (e2e)', () => {
 
     expect(res.body.code).toBe('VOLUNTEER_ALREADY_ON_ROLE_SLOT');
   });
+
+  it('PATCH increases capacity 1 to 2 and persists', async () => {
+    const { ministry, leader, audioRole, eventId } =
+      await seedPrivateEventFixture();
+
+    const res = await request(app.getHttpServer())
+      .patch(`/events/${eventId}/role-capacities`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({
+        ministryId: ministry.id,
+        capacities: [{ roleId: audioRole.id, capacity: 3 }],
+      })
+      .expect(200);
+
+    expect(res.body.roleCapacities).toEqual([
+      { roleId: audioRole.id, capacity: 3 },
+    ]);
+
+    const row = await prisma.eventRoleCapacity.findUniqueOrThrow({
+      where: {
+        eventId_ministryId_roleId: {
+          eventId,
+          ministryId: ministry.id,
+          roleId: audioRole.id,
+        },
+      },
+    });
+    expect(row.capacity).toBe(3);
+  });
+
+  it('PATCH rejects decrease below filled count with CAPACITY_BELOW_FILLED_SLOTS', async () => {
+    const { ministry, leader, memberA, memberB, audioRole, eventId } =
+      await seedPrivateEventFixture();
+
+    await request(app.getHttpServer())
+      .post(`/events/${eventId}/assignments`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send(assignmentBody(memberA.id, ministry.id, audioRole.id))
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/events/${eventId}/assignments`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send(assignmentBody(memberB.id, ministry.id, audioRole.id))
+      .expect(201);
+
+    const res = await request(app.getHttpServer())
+      .patch(`/events/${eventId}/role-capacities`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({
+        ministryId: ministry.id,
+        capacities: [{ roleId: audioRole.id, capacity: 1 }],
+      })
+      .expect(400);
+
+    expect(res.body.code).toBe('CAPACITY_BELOW_FILLED_SLOTS');
+  });
+
+  it('PATCH rejects non-leader with 403', async () => {
+    const { ministry, memberA, audioRole, eventId } =
+      await seedPrivateEventFixture();
+
+    const res = await request(app.getHttpServer())
+      .patch(`/events/${eventId}/role-capacities`)
+      .set('X-Volunteer-Id', memberA.id)
+      .send({
+        ministryId: ministry.id,
+        capacities: [{ roleId: audioRole.id, capacity: 2 }],
+      })
+      .expect(403);
+
+    expect(res.body.code).toBe('ADMIN_NOT_ACCREDITED');
+  });
 });
