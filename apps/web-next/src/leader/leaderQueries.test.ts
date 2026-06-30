@@ -49,11 +49,17 @@ describe('eventDetailQuery', () => {
   });
 
   it('fetchEventDetail calls getJson for event path', async () => {
-    vi.spyOn(apiClient, 'getJson').mockResolvedValue({ event: { id: 'evt-1' } });
-    await fetchEventDetail({ eventId: 'evt-1', volunteerId: 'vol-1' });
+    vi.spyOn(apiClient, 'getJson').mockResolvedValue({
+      event: { id: 'evt-1' },
+      roleCapacities: [{ ministryId: 'min-1', roleId: 'role-1', capacity: 2 }],
+    });
+    const result = await fetchEventDetail({ eventId: 'evt-1', volunteerId: 'vol-1' });
     expect(apiClient.getJson).toHaveBeenCalledWith('/events/evt-1', {
       volunteerId: 'vol-1',
     });
+    expect(result.roleCapacities).toEqual([
+      { ministryId: 'min-1', roleId: 'role-1', capacity: 2 },
+    ]);
   });
 });
 

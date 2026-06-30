@@ -34,6 +34,7 @@ describe('GET /events/:id (e2e)', () => {
 
   beforeEach(async () => {
     await prisma.assignment.deleteMany();
+    await prisma.eventRoleCapacity.deleteMany();
     await prisma.unavailability.deleteMany();
     await prisma.ministryMembership.deleteMany();
     await prisma.ministryRole.deleteMany();
@@ -123,6 +124,7 @@ describe('GET /events/:id (e2e)', () => {
       },
       ministry: null,
       assignments: [],
+      roleCapacities: [],
     });
   });
 

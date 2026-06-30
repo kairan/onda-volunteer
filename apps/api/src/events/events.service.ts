@@ -42,6 +42,11 @@ export type EventDetailResponse = {
     role: { id: string; name: string };
     window: { startsAtUtc: string; endsAtUtc: string };
   }>;
+  roleCapacities: Array<{
+    ministryId: string;
+    roleId: string;
+    capacity: number;
+  }>;
 };
 
 export type EventListItem = {
@@ -342,6 +347,7 @@ export class EventsService {
             role: true,
           },
         },
+        roleCapacities: true,
       },
     });
 
@@ -394,6 +400,11 @@ export class EventsService {
           startsAtUtc: a.startsAtUtc.toISOString(),
           endsAtUtc: a.endsAtUtc.toISOString(),
         },
+      })),
+      roleCapacities: row.roleCapacities.map((c) => ({
+        ministryId: c.ministryId,
+        roleId: c.roleId,
+        capacity: c.capacity,
       })),
     };
   }

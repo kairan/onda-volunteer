@@ -27,4 +27,9 @@ export type EventDetailPayload = {
     role: { id: string; name: string };
     window: { startsAtUtc: string; endsAtUtc: string };
   }>;
+  roleCapacities: Array<{
+    ministryId: string;
+    roleId: string;
+    capacity: number;
+  }>;
 };
