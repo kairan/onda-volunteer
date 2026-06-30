@@ -47,7 +47,7 @@ describe('Role slot capacity guards (e2e)', () => {
     await app.close();
   });
 
-  async function seedPrivateEventFixture() {
+  async function seedPrivateEventFixture(options?: { keepDefaultCapacity?: boolean }) {
     const church = await prisma.church.create({
       data: { name: 'Slot Church', defaultTimezone: 'UTC' },
     });
@@ -93,16 +93,18 @@ describe('Role slot capacity guards (e2e)', () => {
       })
       .expect(201);
 
-    await prisma.eventRoleCapacity.update({
-      where: {
-        eventId_ministryId_roleId: {
-          eventId: created.body.id,
-          ministryId: ministry.id,
-          roleId: audioRole.id,
+    if (!options?.keepDefaultCapacity) {
+      await prisma.eventRoleCapacity.update({
+        where: {
+          eventId_ministryId_roleId: {
+            eventId: created.body.id,
+            ministryId: ministry.id,
+            roleId: audioRole.id,
+          },
         },
-      },
-      data: { capacity: 2 },
-    });
+        data: { capacity: 2 },
+      });
+    }
 
     return {
       ministry,
@@ -121,6 +123,113 @@ describe('Role slot capacity guards (e2e)', () => {
     roleId,
     startsAtUtc: '2026-08-01T18:30:00.000Z',
     endsAtUtc: '2026-08-01T19:30:00.000Z',
+  });
+
+  it('GET event detail returns roleCapacities with default capacity 1 after private create', async () => {
+    const { ministry, leader, audioRole, eventId } =
+      await seedPrivateEventFixture({ keepDefaultCapacity: true });
+
+    const res = await request(app.getHttpServer())
+      .get(`/events/${eventId}`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .expect(200);
+
+    expect(res.body.roleCapacities).toEqual([
+      { ministryId: ministry.id, roleId: audioRole.id, capacity: 1 },
+    ]);
+  });
+
+  it('seeds EventRoleCapacity only for active roles when creating a private event', async () => {
+    const church = await prisma.church.create({
+      data: { name: 'Retired Role Church', defaultTimezone: 'UTC' },
+    });
+    const ministry = await prisma.ministry.create({
+      data: { name: 'Ushering', churchId: church.id },
+    });
+    const leader = await prisma.volunteer.create({
+      data: { displayName: 'Usher Leader' },
+    });
+    await prisma.ministryLeader.create({
+      data: { volunteerId: leader.id, ministryId: ministry.id },
+    });
+    const activeRole = await prisma.ministryRole.create({
+      data: { ministryId: ministry.id, name: 'Greeter', retired: false },
+    });
+    await prisma.ministryRole.create({
+      data: { ministryId: ministry.id, name: 'Legacy Door', retired: true },
+    });
+
+    const created = await request(app.getHttpServer())
+      .post('/events')
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({
+        kind: 'PRIVATE',
+        ministryId: ministry.id,
+        title: 'Sunday Service',
+        startsAtUtc: '2026-08-01T18:00:00.000Z',
+        endsAtUtc: '2026-08-01T20:00:00.000Z',
+      })
+      .expect(201);
+
+    const capacities = await prisma.eventRoleCapacity.findMany({
+      where: { eventId: created.body.id, ministryId: ministry.id },
+    });
+    expect(capacities).toHaveLength(1);
+    expect(capacities[0]).toMatchObject({
+      roleId: activeRole.id,
+      capacity: 1,
+    });
+  });
+
+  it('allows a new assignment after voiding one at full capacity', async () => {
+    const { ministry, leader, memberA, memberB, memberC, audioRole, eventId } =
+      await seedPrivateEventFixture();
+
+    const first = await request(app.getHttpServer())
+      .post(`/events/${eventId}/assignments`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send(assignmentBody(memberA.id, ministry.id, audioRole.id))
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/events/${eventId}/assignments`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send(assignmentBody(memberB.id, ministry.id, audioRole.id))
+      .expect(201);
+
+    await request(app.getHttpServer())
+      .post(`/assignments/${first.body.id}/void`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .expect(200);
+
+    await request(app.getHttpServer())
+      .post(`/events/${eventId}/assignments`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send(assignmentBody(memberC.id, ministry.id, audioRole.id))
+      .expect(201);
+  });
+
+  it('PATCH rejects capacity below 1 with INVALID_ROLE_CAPACITY', async () => {
+    const { ministry, leader, audioRole, eventId } =
+      await seedPrivateEventFixture({ keepDefaultCapacity: true });
+
+    const res = await request(app.getHttpServer())
+      .patch(`/events/${eventId}/role-capacities`)
+      .set('X-Volunteer-Id', leader.id)
+      .set('X-Leader-Ministry-Id', ministry.id)
+      .send({
+        ministryId: ministry.id,
+        capacities: [{ roleId: audioRole.id, capacity: 0 }],
+      })
+      .expect(400);
+
+    expect(res.body.code).toBe('INVALID_ROLE_CAPACITY');
   });
 
   it('allows two assignments at capacity 2 then rejects third with ROLE_SLOTS_FULL', async () => {
