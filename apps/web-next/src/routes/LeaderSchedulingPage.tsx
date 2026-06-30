@@ -340,7 +340,6 @@ export function LeaderSchedulingPage() {
           rosterByEvent.map(({ event, roster }) => (
             <RosterByEventSection
               key={event.id}
-              eventId={event.id}
               eventTitle={event.title}
               timeLabels={buildDualInterval(
                 event.window.startsAtUtc,

@@ -92,6 +92,16 @@ async function main() {
     },
   });
 
+  const ministryTechnical = await prisma.ministry.upsert({
+    where: { id: 'seed-ministry-technical' },
+    update: { churchId: churchCentral.id },
+    create: {
+      id: 'seed-ministry-technical',
+      name: 'Technical',
+      churchId: churchCentral.id,
+    },
+  });
+
   await prisma.volunteer.upsert({
     where: { id: 'seed-volunteer-demo' },
     update: { displayName: 'Demo Volunteer' },
@@ -132,6 +142,24 @@ async function main() {
     },
   });
 
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-a' },
+    update: { displayName: 'Alex Audio' },
+    create: {
+      id: 'seed-volunteer-a',
+      displayName: 'Alex Audio',
+    },
+  });
+
+  await prisma.volunteer.upsert({
+    where: { id: 'seed-volunteer-b' },
+    update: { displayName: 'Blake Audio' },
+    create: {
+      id: 'seed-volunteer-b',
+      displayName: 'Blake Audio',
+    },
+  });
+
   await prisma.systemAdministrator.upsert({
     where: { volunteerId: 'seed-volunteer-system-admin' },
     update: {},
@@ -163,6 +191,20 @@ async function main() {
     create: {
       volunteerId: 'seed-volunteer-demo',
       ministryId: 'seed-ministry-demo',
+    },
+  });
+
+  await prisma.ministryLeader.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: ministryTechnical.id,
+      },
+    },
+    update: {},
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: ministryTechnical.id,
     },
   });
 
@@ -248,6 +290,17 @@ async function main() {
     },
   });
 
+  await prisma.ministryRole.upsert({
+    where: { id: 'seed-role-audio' },
+    update: { retired: false },
+    create: {
+      id: 'seed-role-audio',
+      ministryId: ministryTechnical.id,
+      name: 'Audio',
+      retired: false,
+    },
+  });
+
   await prisma.unavailability.deleteMany({
     where: {
       volunteerId: 'seed-volunteer-demo',
@@ -281,6 +334,84 @@ async function main() {
       startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
       endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
       churchId: churchCentral.id,
+    },
+  });
+
+  await prisma.event.upsert({
+    where: { id: 'seed-event-private' },
+    update: {
+      churchId: churchCentral.id,
+      ministryId: ministryTechnical.id,
+    },
+    create: {
+      id: 'seed-event-private',
+      kind: 'PRIVATE',
+      title: 'Technical Rehearsal',
+      startsAtUtc: new Date('2026-06-28T18:00:00.000Z'),
+      endsAtUtc: new Date('2026-06-28T20:00:00.000Z'),
+      churchId: churchCentral.id,
+      ministryId: ministryTechnical.id,
+    },
+  });
+
+  await prisma.eventRoleCapacity.upsert({
+    where: {
+      eventId_ministryId_roleId: {
+        eventId: 'seed-event-private',
+        ministryId: ministryTechnical.id,
+        roleId: 'seed-role-audio',
+      },
+    },
+    update: { capacity: 2 },
+    create: {
+      eventId: 'seed-event-private',
+      ministryId: ministryTechnical.id,
+      roleId: 'seed-role-audio',
+      capacity: 2,
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: 'seed-assignment-audio-1' },
+    update: {
+      voidedAtUtc: null,
+      eventId: 'seed-event-private',
+      ministryId: ministryTechnical.id,
+      volunteerId: 'seed-volunteer-a',
+      roleId: 'seed-role-audio',
+      startsAtUtc: new Date('2026-06-28T18:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-28T19:30:00.000Z'),
+    },
+    create: {
+      id: 'seed-assignment-audio-1',
+      eventId: 'seed-event-private',
+      ministryId: ministryTechnical.id,
+      volunteerId: 'seed-volunteer-a',
+      roleId: 'seed-role-audio',
+      startsAtUtc: new Date('2026-06-28T18:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-28T19:30:00.000Z'),
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: 'seed-assignment-audio-2' },
+    update: {
+      voidedAtUtc: null,
+      eventId: 'seed-event-private',
+      ministryId: ministryTechnical.id,
+      volunteerId: 'seed-volunteer-b',
+      roleId: 'seed-role-audio',
+      startsAtUtc: new Date('2026-06-28T18:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-28T19:30:00.000Z'),
+    },
+    create: {
+      id: 'seed-assignment-audio-2',
+      eventId: 'seed-event-private',
+      ministryId: ministryTechnical.id,
+      volunteerId: 'seed-volunteer-b',
+      roleId: 'seed-role-audio',
+      startsAtUtc: new Date('2026-06-28T18:30:00.000Z'),
+      endsAtUtc: new Date('2026-06-28T19:30:00.000Z'),
     },
   });
 

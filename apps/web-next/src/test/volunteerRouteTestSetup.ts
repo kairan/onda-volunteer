@@ -152,7 +152,9 @@ export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unk
   },
 );
 
-export const mutateJsonMock = vi.fn(async (_path: string, _scope: unknown, init?: RequestInit) => {
+export const mutateJsonMock = vi.fn<
+  (path: string, _scope?: unknown, init?: RequestInit) => Promise<unknown>
+>(async (_path: string, _scope: unknown, init?: RequestInit) => {
   if (init?.method === 'DELETE') {
     return { id: 'away-1' };
   }

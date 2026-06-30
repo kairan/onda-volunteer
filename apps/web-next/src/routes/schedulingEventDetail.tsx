@@ -516,7 +516,6 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
           ) : null}
 
           <RosterByEventSection
-            eventId={payload.event.id}
             eventTitle={payload.event.title}
             timeLabels={buildDualInterval(
               payload.event.window.startsAtUtc,

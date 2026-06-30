@@ -5,10 +5,7 @@ import {
   createAssignment,
   invalidateAfterAssignOrRelease,
 } from './assignMutation';
-import {
-  invalidateAfterCapacityUpdate,
-  updateRoleCapacities,
-} from './capacityMutation';
+import { updateRoleCapacities } from './capacityMutation';
 import { eventDetailQuery, fetchEventDetail } from './eventDetailQuery';
 import {
   buildRosterRows,

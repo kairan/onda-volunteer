@@ -14,8 +14,6 @@ export type RosterByEventSectionProps = {
   eventTitle: string;
   timeLabels: DualTimeLabels;
   roster: RosterRow[];
-  /** Per-slot key `${eventId}:${roleId}:${slotIndex}` for busy state. */
-  eventId?: string;
   busyRoleKey?: string | null;
   rowError?: { roleKey: string; message: string } | null;
   onAssign: (roleId: string, slotKey: string) => void;
@@ -26,7 +24,6 @@ export function RosterByEventSection({
   eventTitle,
   timeLabels,
   roster,
-  eventId,
   busyRoleKey,
   rowError,
   onAssign,
