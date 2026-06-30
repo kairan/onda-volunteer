@@ -42,6 +42,11 @@ export type EventDetailResponse = {
     role: { id: string; name: string };
     window: { startsAtUtc: string; endsAtUtc: string };
   }>;
+  roleCapacities: Array<{
+    ministryId: string;
+    roleId: string;
+    capacity: number;
+  }>;
 };
 
 export type EventListItem = {
@@ -205,6 +210,21 @@ export class EventsService {
       include: { church: true, ministry: true },
     });
 
+    const activeRoles = await this.prisma.ministryRole.findMany({
+      where: { ministryId: ministry.id, retired: false },
+      select: { id: true },
+    });
+    if (activeRoles.length > 0) {
+      await this.prisma.eventRoleCapacity.createMany({
+        data: activeRoles.map((role) => ({
+          eventId: row.id,
+          ministryId: ministry.id,
+          roleId: role.id,
+          capacity: 1,
+        })),
+      });
+    }
+
     return this.toEventListItem(row);
   }
 
@@ -327,6 +347,7 @@ export class EventsService {
             role: true,
           },
         },
+        roleCapacities: true,
       },
     });
 
@@ -379,6 +400,11 @@ export class EventsService {
           startsAtUtc: a.startsAtUtc.toISOString(),
           endsAtUtc: a.endsAtUtc.toISOString(),
         },
+      })),
+      roleCapacities: row.roleCapacities.map((c) => ({
+        ministryId: c.ministryId,
+        roleId: c.roleId,
+        capacity: c.capacity,
       })),
     };
   }
@@ -542,6 +568,131 @@ export class EventsService {
       },
       cancelledAtUtc: updated.cancelledAtUtc?.toISOString() ?? null,
       voidedAssignmentCount,
+    };
+  }
+
+  async updateRoleCapacities(input: {
+    eventId: string;
+    ministryId: string;
+    capacities: Array<{ roleId: string; capacity: number }>;
+    auth: AuthenticatedRequestContext;
+  }) {
+    await assertSchedulingWriteAllowed(input.auth);
+
+    if (!input.capacities.length) {
+      throw new BadRequestException({
+        code: 'ROLE_CAPACITIES_EMPTY',
+        message: 'At least one role capacity update is required.',
+      });
+    }
+
+    const event = await this.prisma.event.findUnique({
+      where: { id: input.eventId },
+    });
+    if (!event) {
+      throw new NotFoundException({
+        code: 'EVENT_NOT_FOUND',
+        message: 'Event not found.',
+      });
+    }
+    if (event.cancelledAtUtc) {
+      throw new BadRequestException({
+        code: 'EVENT_ALREADY_CANCELLED',
+        message: 'Cannot update capacities on a cancelled event.',
+      });
+    }
+
+    if (event.kind === 'PRIVATE' && event.ministryId !== input.ministryId) {
+      throw new BadRequestException({
+        code: 'PRIVATE_EVENT_MINISTRY_MISMATCH',
+        message: 'Private event capacities must use the event ministry.',
+      });
+    }
+
+    try {
+      await input.auth.assertLeaderCanActOnMinistry(input.ministryId);
+    } catch {
+      await input.auth.assertAdminAccreditedForChurch(event.churchId);
+    }
+
+    await assertMinistryAcceptsWrites(this.prisma, input.ministryId);
+
+    const roleIds = input.capacities.map((row) => row.roleId);
+    const roles = await this.prisma.ministryRole.findMany({
+      where: { id: { in: roleIds }, ministryId: input.ministryId },
+    });
+    if (roles.length !== roleIds.length) {
+      throw new BadRequestException({
+        code: 'ROLE_NOT_IN_MINISTRY',
+        message: 'Each role must belong to the ministry.',
+      });
+    }
+
+    for (const row of input.capacities) {
+      if (!Number.isInteger(row.capacity) || row.capacity < 1) {
+        throw new BadRequestException({
+          code: 'INVALID_ROLE_CAPACITY',
+          message: 'Capacity must be an integer of at least 1.',
+        });
+      }
+    }
+
+    const filledCounts = await this.prisma.assignment.groupBy({
+      by: ['roleId'],
+      where: {
+        eventId: input.eventId,
+        ministryId: input.ministryId,
+        roleId: { in: roleIds },
+        voidedAtUtc: null,
+      },
+      _count: { _all: true },
+    });
+    const filledByRoleId = new Map(
+      filledCounts.map((row) => [row.roleId, row._count._all]),
+    );
+
+    for (const row of input.capacities) {
+      const filled = filledByRoleId.get(row.roleId) ?? 0;
+      if (row.capacity < filled) {
+        throw new BadRequestException({
+          code: 'CAPACITY_BELOW_FILLED_SLOTS',
+          message:
+            'Capacity cannot be set below the number of active assignments for this role.',
+        });
+      }
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      for (const row of input.capacities) {
+        await tx.eventRoleCapacity.upsert({
+          where: {
+            eventId_ministryId_roleId: {
+              eventId: input.eventId,
+              ministryId: input.ministryId,
+              roleId: row.roleId,
+            },
+          },
+          create: {
+            eventId: input.eventId,
+            ministryId: input.ministryId,
+            roleId: row.roleId,
+            capacity: row.capacity,
+          },
+          update: { capacity: row.capacity },
+        });
+      }
+    });
+
+    const updated = await this.prisma.eventRoleCapacity.findMany({
+      where: { eventId: input.eventId, ministryId: input.ministryId },
+      orderBy: { roleId: 'asc' },
+    });
+
+    return {
+      roleCapacities: updated.map((row) => ({
+        roleId: row.roleId,
+        capacity: row.capacity,
+      })),
     };
   }
 

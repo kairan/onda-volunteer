@@ -16,6 +16,7 @@ import {
   parseInstantOrThrow,
   SCHEDULING_CONFLICT_GUARD_CODES,
   validateAssignmentGuards,
+  validateRoleSlotGuards,
 } from './scheduling-rules';
 import { assertSchedulingWriteAllowed } from './scheduling-write-guard';
 
@@ -438,6 +439,41 @@ export class SchedulingService {
       unavailabilityBlocks: blocks,
       crossMinistryConflictingAssignments: otherMinistryAssignments,
     });
+
+    const capacityRow = await this.prisma.eventRoleCapacity.findUnique({
+      where: {
+        eventId_ministryId_roleId: {
+          eventId: input.eventId,
+          ministryId: input.ministryId,
+          roleId: input.roleId,
+        },
+      },
+    });
+    const capacity = capacityRow?.capacity ?? 1;
+
+    const sameRoleAssignments = await this.prisma.assignment.findMany({
+      where: {
+        eventId: input.eventId,
+        ministryId: input.ministryId,
+        roleId: input.roleId,
+        voidedAtUtc: null,
+      },
+    });
+    const volunteerAlreadyOnRole = sameRoleAssignments.some(
+      (assignment) => assignment.volunteerId === input.volunteerId,
+    );
+
+    const slotGuard = validateRoleSlotGuards({
+      capacity,
+      activeAssignmentCount: sameRoleAssignments.length,
+      volunteerAlreadyOnRole,
+    });
+    if (!slotGuard.ok) {
+      throw new BadRequestException({
+        code: slotGuard.code,
+        message: slotGuard.message,
+      });
+    }
 
     const created = await this.prisma.assignment.create({
       data: {

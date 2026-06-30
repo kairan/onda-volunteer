@@ -64,6 +64,7 @@ model Ministry {
   unavailabilities Unavailability[]
   leaders          MinistryLeader[]
   volunteerInvites VolunteerInvite[]
+  eventRoleCapacities EventRoleCapacity[]
 }
 
 model Event {
@@ -78,6 +79,7 @@ model Event {
   ministryId  String?
   ministry    Ministry? @relation(fields: [ministryId], references: [id], onDelete: SetNull)
   assignments Assignment[]
+  roleCapacities EventRoleCapacity[]
 
   @@index([churchId])
 }
@@ -163,8 +165,23 @@ model MinistryRole {
   name        String
   retired     Boolean      @default(false)
   assignments Assignment[]
+  eventCapacities EventRoleCapacity[]
 
   @@index([ministryId])
+}
+
+model EventRoleCapacity {
+  id         String       @id @default(cuid())
+  eventId    String
+  ministryId String
+  roleId     String
+  capacity   Int          @default(1)
+  event      Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  ministry   Ministry     @relation(fields: [ministryId], references: [id], onDelete: Cascade)
+  role       MinistryRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, ministryId, roleId])
+  @@index([eventId, ministryId])
 }
 
 model Assignment {

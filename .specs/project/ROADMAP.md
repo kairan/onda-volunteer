@@ -30,7 +30,7 @@ All product tracer bullets through web-next Slices 1–5 are shipped. Full index
 | Theme | Representative issues | Status |
 |-------|----------------------|--------|
 | **Organization** | #87–#93, #107–#109, #115–#118 | ✅ Shipped |
-| **Scheduling & Availability** | #36–#47, #115, #117 | ✅ Shipped |
+| **Scheduling & Availability** | #36–#47, #115, #117, #165 | ✅ Shipped |
 | **Domain / i18n hygiene** | #131–#135 | ✅ Shipped |
 | **CI / quality gates** | #60, #61, #126, #128, #129 | ✅ Shipped |
 | **Architecture tech debt** | #54–#58 | ✅ Shipped |

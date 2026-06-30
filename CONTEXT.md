@@ -30,6 +30,7 @@ One-line reminders grouped by bounded context. These are pointers, not definitio
 - **Private event** — an Event owned by one Ministry for its own work.
 - **Public event** — a Church-wide Event multiple Ministries roster into (one Church only).
 - **Assignment** — a Volunteer filling a Role for a Ministry during an interval within an Event; requires **Active** membership.
+- **Role slot** — one of N roster positions for a catalog **Role** on a specific **Event**, where N = per-event capacity (distinct from **Role** and **Assignment**).
 
 **Brand / presentation** (cross-cutting, not domain facts).
 - **Onda** — the fixed product brand/wordmark in global chrome (distinct from any Church name).
@@ -129,6 +130,10 @@ A **Role** entry that must not be selected for new **Assignments**; past **Assig
 
 **Assignment**:
 A time-bounded commitment that a given **Volunteer** will fill a **Role** during a specific interval on an **Event** for a specific **Ministry**; that interval must lie within the **Event**’s time window. An **Assignment** is allowed only when that **Volunteer** has **Active** **Ministry membership** in that **Ministry**.
+
+**Role slot**:
+One of N roster positions for a catalog **Role** on a specific **Event**, where N is the per-event capacity (`EventRoleCapacity`). Multiple **Assignments** may share the same **Role** on one **Event** up to N; each **Assignment** fills one slot. Distinct from the catalog **Role** (the function name) and from permission levels such as **Leader**.
+_Avoid_: Duplicating catalog **Roles** as “Audio 1” / “Audio 2” when capacity can express multiple slots for one **Role**.
 
 ## Relationships
 

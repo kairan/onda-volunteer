@@ -20,12 +20,6 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 Apply label **`ready-for-agent`** on #148 (blockers cleared 2026-06-24).
 
-**Scheduling — role slot capacity** — TLC [`.specs/features/role-slot-capacity-per-event/`](../.specs/features/role-slot-capacity-per-event/). Complements UI-LEAD / Serve Well roster visual.
-
-| Issue | Feature | Tasks | Spec |
-|------:|---------|-------|------|
-| [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | T01–T09 | `165-role-slot-capacity-per-event.md` |
-
 Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
 
 ## Architecture tech debt
@@ -36,6 +30,7 @@ All architecture-debt waves **shipped** ([#54](https://github.com/kairan/onda-vo
 
 | Issue | Spec |
 |------:|------|
+| [#165](https://github.com/kairan/onda-volunteer/issues/165) | `done/165-role-slot-capacity-per-event.md` |
 | [#147](https://github.com/kairan/onda-volunteer/issues/147) | `done/147-web-next-migration-slice-5-system-admin.md` |
 | [#146](https://github.com/kairan/onda-volunteer/issues/146) | `done/146-web-next-migration-slice-4-org-admin.md` |
 | [#145](https://github.com/kairan/onda-volunteer/issues/145) | `done/145-web-next-migration-slice-3-leader.md` |

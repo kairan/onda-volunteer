@@ -30,6 +30,8 @@ export type MinistryRoleRow = {
 export type RosterRow = {
   roleId: string;
   roleName: string;
+  slotIndex: number;
+  slotKey: string;
   assignmentId?: string;
   volunteerId?: string;
   volunteerName?: string;

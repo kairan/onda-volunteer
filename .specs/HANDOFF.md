@@ -1,17 +1,19 @@
-# Session handoff (2026-06-26)
+# Session handoff (2026-06-30)
 
 ## Completed this session
 
-1. **Documentation mass condensation** — archived 26 shipped `.specs/features/` folders to `.specs/archive/features/` with redirect stubs; replaced 33 `legacy-*` specs with [`docs/issues/done/legacy-INDEX.md`](../docs/issues/done/legacy-INDEX.md); condensed ROADMAP, STATE, README, and architecture-debt index.
-2. **AD-001** — post-ship TLC archive policy recorded in STATE.md.
+1. **#165 role slot capacity per event** — shipped on branch `feat/165-role-slot-capacity-per-event` (PR [#167](https://github.com/kairan/onda-volunteer/pull/167)): API `EventRoleCapacity`, assignment guards, web-next multi-slot roster + capacity editor, Playwright smoke, TLC Verifier PASS.
+2. **TLC closeout** — archived `.specs/features/role-slot-capacity-per-event/` → `.specs/archive/features/`; redirect stub + INDEX row; ROADMAP / `docs/issues/README.md` updated.
 
 ## Next agent action
 
-Execute **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27 remainder: web-next in `pnpm test:coverage` + Vitest floors; then T29 deploy repoint, T30 rename/retire). TLC: `.specs/features/frontend-migration-web-next/tasks.md` T27–T30. **`ready-for-agent`** on #148.
+Merge PR [#167](https://github.com/kairan/onda-volunteer/pull/167) when CI green, then close [#165](https://github.com/kairan/onda-volunteer/issues/165).
+
+After merge, continue **[#148](https://github.com/kairan/onda-volunteer/issues/148)** — Slice 6 CI parity & cutover (T27–T30). TLC: `.specs/features/frontend-migration-web-next/tasks.md`.
 
 ## Blockers
 
-None.
+PR #167 CI must pass (lint, typecheck-web-next, playwright-web-next fixed in latest commits).
 
 ## HITL
 
@@ -22,7 +24,7 @@ None.
 
 | Need | Path |
 |------|------|
-| Active TLC | `.specs/features/` (2 folders) |
+| Active TLC | `.specs/features/` (`frontend-migration-web-next`, `ui-refresh-onda-brand`) |
 | Shipped TLC detail | `.specs/archive/features/INDEX.md` |
 | Ship records | `docs/issues/done/` |
 | Backlog index | `docs/issues/README.md` |

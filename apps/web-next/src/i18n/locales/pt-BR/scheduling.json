@@ -91,7 +91,9 @@
       "releaseNotOwned": "Você só pode liberar a sua própria designação.",
       "releaseAlreadyVoided": "Esta designação não está mais ativa.",
       "releaseReadOnly": "Administrador do sistema não pode alterar designações aqui.",
-      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade."
+      "unavailabilityFailed": "Não foi possível registrar a indisponibilidade.",
+      "roleSlotsFull": "Todas as vagas desta função neste evento estão preenchidas.",
+      "volunteerAlreadyOnRoleSlot": "Este voluntário já está escalado nesta função neste evento."
     },
     "createAssignment": "Criar designação",
     "assignSuccess": "Designação criada.",
@@ -104,6 +106,18 @@
       "title": "Remover esta designação?",
       "body": "Isso anula o compromisso do voluntário nesta escala. Ele não é notificado automaticamente.",
       "confirm": "Sim, remover"
+    },
+    "capacityEditor": {
+      "heading": "Vagas por função neste evento",
+      "slotsLabel": "Vagas",
+      "save": "Salvar vagas",
+      "saving": "Salvando...",
+      "success": "Vagas atualizadas.",
+      "errors": {
+        "failed": "Não foi possível atualizar as vagas.",
+        "belowFilled": "Não é possível reduzir abaixo do número já preenchido. Libere voluntários primeiro.",
+        "invalidCapacity": "Cada função precisa de pelo menos uma vaga."
+      }
     },
     "edit": {
       "heading": "Editar evento",

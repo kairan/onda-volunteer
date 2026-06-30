@@ -91,7 +91,9 @@
       "releaseNotOwned": "You can only release your own assignment.",
       "releaseAlreadyVoided": "This assignment is no longer active.",
       "releaseReadOnly": "System Admin cannot change assignments here.",
-      "unavailabilityFailed": "Could not record unavailability."
+      "unavailabilityFailed": "Could not record unavailability.",
+      "roleSlotsFull": "All slots for this role on this event are filled.",
+      "volunteerAlreadyOnRoleSlot": "This volunteer is already rostered for this role on this event."
     },
     "createAssignment": "Create assignment",
     "assignSuccess": "Assignment created.",
@@ -104,6 +106,18 @@
       "title": "Remove this assignment?",
       "body": "This voids the volunteer's commitment on this roster. They are not notified automatically.",
       "confirm": "Yes, remove"
+    },
+    "capacityEditor": {
+      "heading": "Role slots per event",
+      "slotsLabel": "Slots",
+      "save": "Save slot counts",
+      "saving": "Saving...",
+      "success": "Slot counts updated.",
+      "errors": {
+        "failed": "Could not update slot counts.",
+        "belowFilled": "Cannot reduce slots below the number already filled. Release volunteers first.",
+        "invalidCapacity": "Each role needs at least one slot."
+      }
     },
     "edit": {
       "heading": "Edit event",

@@ -2,6 +2,7 @@ import {
   bulkUnavailabilityMembershipFailure,
   intervalsOverlapHalfOpen,
   validateAssignmentGuards,
+  validateRoleSlotGuards,
 } from './scheduling-rules';
 
 describe('scheduling-rules', () => {
@@ -76,5 +77,36 @@ describe('scheduling-rules', () => {
     expect(
       bulkUnavailabilityMembershipFailure('min-3', { status: 'PENDING' }),
     ).toBeNull();
+  });
+
+  it('rejects duplicate volunteer on same role slot', () => {
+    expect(
+      validateRoleSlotGuards({
+        capacity: 2,
+        activeAssignmentCount: 1,
+        volunteerAlreadyOnRole: true,
+      }),
+    ).toMatchObject({
+      ok: false,
+      code: 'VOLUNTEER_ALREADY_ON_ROLE_SLOT',
+    });
+  });
+
+  it('rejects assignment when role slots are full', () => {
+    expect(
+      validateRoleSlotGuards({
+        capacity: 2,
+        activeAssignmentCount: 2,
+        volunteerAlreadyOnRole: false,
+      }),
+    ).toMatchObject({ ok: false, code: 'ROLE_SLOTS_FULL' });
+
+    expect(
+      validateRoleSlotGuards({
+        capacity: 2,
+        activeAssignmentCount: 1,
+        volunteerAlreadyOnRole: false,
+      }),
+    ).toMatchObject({ ok: true });
   });
 });

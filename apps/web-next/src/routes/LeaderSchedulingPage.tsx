@@ -160,7 +160,9 @@ export function LeaderSchedulingPage() {
       const detail = eventDetailQueries[index]?.data;
       const roster = detail
         ? buildRosterRows({
+            eventId: event.id,
             roles,
+            roleCapacities: detail.roleCapacities ?? [],
             assignments: detail.assignments,
             ministryId,
           })
@@ -179,9 +181,6 @@ export function LeaderSchedulingPage() {
     message: string;
   } | null>(null);
 
-  function rosterRoleKey(eventId: string, roleId: string): string {
-    return `${eventId}:${roleId}`;
-  }
   const [assignTarget, setAssignTarget] = useState<AssignTarget | null>(null);
   const [selectedVolunteerId, setSelectedVolunteerId] = useState('');
   const [assignFormError, setAssignFormError] = useState<string | null>(null);
@@ -194,10 +193,10 @@ export function LeaderSchedulingPage() {
   );
 
   const releaseMutation = useMutation({
-    mutationFn: (input: VoidAssignmentInput & { eventId: string; roleId: string }) =>
+    mutationFn: (input: VoidAssignmentInput & { eventId: string; roleId: string; slotKey: string }) =>
       voidAssignment(input),
-    onMutate: ({ eventId, roleId }) => {
-      setBusyRoleKey(rosterRoleKey(eventId, roleId));
+    onMutate: ({ slotKey }) => {
+      setBusyRoleKey(slotKey);
       setRowError(null);
     },
     onSuccess: (_data, variables) => {
@@ -211,7 +210,7 @@ export function LeaderSchedulingPage() {
     },
     onError: (error, variables) => {
       setRowError({
-        roleKey: rosterRoleKey(variables.eventId, variables.roleId),
+        roleKey: variables.slotKey,
         message: mapReleaseError(error, t),
       });
     },
@@ -231,6 +230,7 @@ export function LeaderSchedulingPage() {
         });
       }
       setAssignTarget(null);
+      setBusyRoleKey(null);
       setSelectedVolunteerId('');
       setAssignFormError(null);
     },
@@ -245,8 +245,9 @@ export function LeaderSchedulingPage() {
     (row) => row.status === 'ACTIVE',
   );
 
-  function openAssignDialog(eventId: string, roleId: string) {
+  function openAssignDialog(eventId: string, roleId: string, slotKey: string) {
     setAssignTarget({ eventId, roleId });
+    setBusyRoleKey(slotKey);
     setAssignFormError(null);
     setSelectedVolunteerId(activeMembers[0]?.volunteerId ?? '');
   }
@@ -339,7 +340,6 @@ export function LeaderSchedulingPage() {
           rosterByEvent.map(({ event, roster }) => (
             <RosterByEventSection
               key={event.id}
-              eventId={event.id}
               eventTitle={event.title}
               timeLabels={buildDualInterval(
                 event.window.startsAtUtc,
@@ -352,8 +352,8 @@ export function LeaderSchedulingPage() {
               roster={roster}
               busyRoleKey={busyRoleKey}
               rowError={rowError}
-              onAssign={(roleId) => openAssignDialog(event.id, roleId)}
-              onRelease={(assignmentId, roleId) => {
+              onAssign={(roleId, slotKey) => openAssignDialog(event.id, roleId, slotKey)}
+              onRelease={(assignmentId, roleId, slotKey) => {
                 if (!actingVolunteerId) {
                   return;
                 }
@@ -362,6 +362,7 @@ export function LeaderSchedulingPage() {
                   actingVolunteerId,
                   eventId: event.id,
                   roleId,
+                  slotKey,
                 });
               }}
             />
