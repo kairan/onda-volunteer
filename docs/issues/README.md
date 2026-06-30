@@ -24,7 +24,7 @@ Apply label **`ready-for-agent`** on #148 (blockers cleared 2026-06-24).
 
 | Issue | Feature | Tasks | Spec |
 |------:|---------|-------|------|
-| [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | T01–T09 | `165-role-slot-capacity-per-event.md` |
+| [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | Done | `done/165-role-slot-capacity-per-event.md` |
 
 Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
 

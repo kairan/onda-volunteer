@@ -2,7 +2,7 @@
 
 **Design**: [./design.md](./design.md)  
 **Spec**: [./spec.md](./spec.md)  
-**Status**: Ready for Execute (human/agent) — planning complete 2026-06-27
+**Status**: Execute complete (2026-06-30)
 
 ## GitHub issue
 
@@ -36,9 +36,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Migration applies cleanly on empty and seeded DB
-- [ ] Creating private event returns event with capacities seeded
-- [ ] API e2e: new event has one capacity row per active role
+- [x] Migration applies cleanly on empty and seeded DB
+- [x] Creating private event returns event with capacities seeded
+- [x] API e2e: new event has one capacity row per active role
 
 **Verify**: `pnpm --filter @onda/api test:e2e` (relevant event create spec)
 
@@ -54,9 +54,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Unit tests cover at-capacity and duplicate volunteer
-- [ ] API e2e: 2 assigns at capacity 2 OK; 3rd fails `ROLE_SLOTS_FULL`
-- [ ] API e2e: same volunteer twice same role fails `VOLUNTEER_ALREADY_ON_ROLE_SLOT`
+- [x] Unit tests cover at-capacity and duplicate volunteer
+- [x] API e2e: 2 assigns at capacity 2 OK; 3rd fails `ROLE_SLOTS_FULL`
+- [x] API e2e: same volunteer twice same role fails `VOLUNTEER_ALREADY_ON_ROLE_SLOT`
 
 **Verify**: `pnpm --filter @onda/api test` + e2e
 
@@ -72,9 +72,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Increase capacity 1→2 persists
-- [ ] Decrease below filled count returns `CAPACITY_BELOW_FILLED_SLOTS`
-- [ ] Non-leader rejected
+- [x] Increase capacity 1→2 persists
+- [x] Decrease below filled count returns `CAPACITY_BELOW_FILLED_SLOTS`
+- [x] Non-leader rejected
 
 **Verify**: API e2e PATCH scenarios
 
@@ -90,8 +90,8 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Event detail JSON includes `roleCapacities`
-- [ ] web-next types compile; query tests pass
+- [x] Event detail JSON includes `roleCapacities`
+- [x] web-next types compile; query tests pass
 
 **Verify**: `pnpm typecheck:web-next` + unit tests touching payload
 
@@ -107,9 +107,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Unit test: capacity 2, 0 assigns → 2 unfilled rows
-- [ ] Unit test: capacity 2, 2 assigns → 2 filled rows; fill 2/2
-- [ ] Unit test: mixed roles sum correct total slots
+- [x] Unit test: capacity 2, 0 assigns → 2 unfilled rows
+- [x] Unit test: capacity 2, 2 assigns → 2 filled rows; fill 2/2
+- [x] Unit test: mixed roles sum correct total slots
 
 **Verify**: `pnpm --filter @onda/web-next test` (leaderQueries)
 
@@ -125,9 +125,9 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Behavior tests: two Audio rows visible when capacity 2
-- [ ] Assign on second unfilled row succeeds
-- [ ] `busyRoleKey` / row `key` use `slotKey` in `RosterByEventSection` and `LeaderSchedulingPage` (no `${eventId}:${roleId}` for multi-slot rows)
+- [x] Behavior tests: two Audio rows visible when capacity 2
+- [x] Assign on second unfilled row succeeds
+- [x] `busyRoleKey` / row `key` use `slotKey` in `RosterByEventSection` and `LeaderSchedulingPage` (no `${eventId}:${roleId}` for multi-slot rows)
 
 **Verify**: `RosterByEventSection.behavior.test.tsx`, `schedulingEventDetail.behavior.test.tsx`
 
@@ -143,8 +143,8 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Leader can set Audio to 2 and see second row after refetch
-- [ ] Error message shown for `CAPACITY_BELOW_FILLED_SLOTS`
+- [x] Leader can set Audio to 2 and see second row after refetch
+- [x] Error message shown for `CAPACITY_BELOW_FILLED_SLOTS`
 
 **Verify**: behavior test + manual or Playwright (T08)
 
@@ -160,7 +160,7 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] `pnpm test:e2e:web-next` green including new scenario
+- [x] `pnpm test:e2e:web-next` green including new scenario
 
 **Verify**: CI parity job `playwright-web-next`
 
@@ -176,8 +176,8 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 **Done when**:
 
-- [ ] Glossary entry merged
-- [ ] Issue spec file matches GitHub issue number
+- [x] Glossary entry merged
+- [x] Issue spec file matches GitHub issue number
 
 **Verify**: Doc review; no code gate
 
@@ -185,10 +185,10 @@ Sequential API foundation first, then web-next read model, roster UI, capacity e
 
 ## Slice gates (feature complete)
 
-- [ ] All SCHED-SLOT-01..05 acceptance criteria met
-- [ ] `pnpm test` green (API + web-next)
-- [ ] No leader roster path uses `.find()` one-assignment-per-role
-- [ ] `validation.md` written after TLC Verifier pass (post-Execute)
+- [x] All SCHED-SLOT-01..05 acceptance criteria met
+- [x] `pnpm test` green (API + web-next)
+- [x] No leader roster path uses `.find()` one-assignment-per-role
+- [x] `validation.md` written after TLC Verifier pass (post-Execute)
 
 ---
 
