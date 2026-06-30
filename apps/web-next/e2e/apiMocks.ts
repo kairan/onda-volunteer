@@ -17,6 +17,12 @@ const smokeOrganizationContext = {
           membershipStatus: 'ACTIVE',
           isLeader: true,
         },
+        {
+          id: 'seed-ministry-technical',
+          name: 'Technical',
+          membershipStatus: 'ACTIVE',
+          isLeader: true,
+        },
       ],
     },
   ],
@@ -85,12 +91,84 @@ const smokeEventDetail = {
       },
     },
   ],
+  roleCapacities: [],
 };
 
-const smokeRoles = [{ id: 'seed-role-greeter', name: 'Greeter', retired: false }];
+const smokePrivateMultiSlotEventDetail = {
+  church: {
+    id: 'seed-church-demo',
+    name: 'Igreja Central',
+    defaultTimezone: 'America/Sao_Paulo',
+  },
+  event: {
+    id: 'seed-event-private',
+    kind: 'PRIVATE',
+    title: 'Technical Rehearsal',
+    window: {
+      startsAtUtc: '2026-06-28T18:00:00.000Z',
+      endsAtUtc: '2026-06-28T20:00:00.000Z',
+    },
+    framing: {
+      churchDefaultTimezone: 'America/Sao_Paulo',
+      startsDisplayInChurchTz: '15:00',
+      endsDisplayInChurchTz: '17:00',
+    },
+    cancelledAtUtc: null,
+  },
+  ministry: { id: 'seed-ministry-technical', name: 'Technical' },
+  roleCapacities: [
+    {
+      ministryId: 'seed-ministry-technical',
+      roleId: 'seed-role-audio',
+      capacity: 2,
+    },
+  ],
+  assignments: [
+    {
+      id: 'seed-assignment-audio-1',
+      volunteer: { id: 'seed-volunteer-a', displayName: 'Alex Audio' },
+      ministry: { id: 'seed-ministry-technical', name: 'Technical' },
+      role: { id: 'seed-role-audio', name: 'Audio' },
+      window: {
+        startsAtUtc: '2026-06-28T18:30:00.000Z',
+        endsAtUtc: '2026-06-28T19:30:00.000Z',
+      },
+    },
+    {
+      id: 'seed-assignment-audio-2',
+      volunteer: { id: 'seed-volunteer-b', displayName: 'Blake Audio' },
+      ministry: { id: 'seed-ministry-technical', name: 'Technical' },
+      role: { id: 'seed-role-audio', name: 'Audio' },
+      window: {
+        startsAtUtc: '2026-06-28T18:30:00.000Z',
+        endsAtUtc: '2026-06-28T19:30:00.000Z',
+      },
+    },
+  ],
+};
+
+const smokeRoles = [
+  { id: 'seed-role-greeter', name: 'Greeter', retired: false },
+  { id: 'seed-role-audio', name: 'Audio', retired: false },
+];
 
 export function shouldUseSmokeApiMocks(): boolean {
   return process.env.PLAYWRIGHT_WITH_API !== 'true';
+}
+
+function isApiEventDetailRequest(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.port === '3000' &&
+      parsed.pathname.startsWith('/events/') &&
+      !parsed.pathname.includes('/assignments') &&
+      !parsed.pathname.includes('/role-capacities') &&
+      parsed.pathname.split('/').length === 3
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function installSmokeApiMocks(page: Page): Promise<void> {
@@ -126,23 +204,36 @@ export async function installSmokeApiMocks(page: Page): Promise<void> {
     });
   });
 
-  await page.route(/\/events\/[^/?]+$/, async (route) => {
+  await page.route((url) => isApiEventDetailRequest(url), async (route) => {
     if (route.request().method() !== 'GET') {
       await route.continue();
       return;
     }
+    const eventId = new URL(route.request().url()).pathname.split('/')[2];
+    const body =
+      eventId === 'seed-event-private'
+        ? smokePrivateMultiSlotEventDetail
+        : smokeEventDetail;
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(smokeEventDetail),
+      body: JSON.stringify(body),
     });
   });
 
-  await page.route(/\/ministries\/[^/]+\/roles/, async (route) => {
+  await page.route(/\/ministries\/([^/]+)\/roles/, async (route) => {
+    const ministryId = route
+      .request()
+      .url()
+      .match(/\/ministries\/([^/]+)\/roles/)?.[1];
+    const roles =
+      ministryId === 'seed-ministry-technical'
+        ? [{ id: 'seed-role-audio', name: 'Audio', retired: false }]
+        : smokeRoles;
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(smokeRoles),
+      body: JSON.stringify(roles),
     });
   });
 
