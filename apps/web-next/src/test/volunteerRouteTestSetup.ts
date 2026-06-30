@@ -106,6 +106,24 @@ export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unk
   if (path.startsWith('/events?')) {
     return leaderRouteEvents;
   }
+  if (path.startsWith('/events/evt-private')) {
+    return {
+      church: volunteerRouteOrgContext.churches[0],
+      event: {
+        id: 'evt-private',
+        kind: 'PRIVATE' as const,
+        title: 'Rehearsal',
+        window: leaderRouteEvents[0].window,
+        framing: leaderRouteEvents[0].framing,
+        cancelledAtUtc: null,
+      },
+      ministry: { id: 'ministry-1', name: 'Hospitality' },
+      assignments: [],
+      roleCapacities: [
+        { ministryId: 'ministry-1', roleId: 'role-1', capacity: 1 },
+      ],
+    };
+  }
   if (path.startsWith('/events/evt-1')) {
     return leaderRouteEventDetail;
   }

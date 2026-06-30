@@ -17,6 +17,10 @@ import {
   invalidateAfterAssignOrRelease,
 } from '@/leader/assignMutation';
 import {
+  invalidateAfterCapacityUpdate,
+  updateRoleCapacities,
+} from '@/leader/capacityMutation';
+import {
   buildRosterRows,
   defaultAssignmentWindow,
 } from '@/leader/buildRosterRows';
@@ -48,6 +52,24 @@ function mapAssignError(err: unknown, t: (key: string) => string): string {
       return t('detail.errors.ministryArchived');
     case 'LEADER_NOT_ASSIGNED':
       return t('detail.errors.notLeader');
+    case 'ROLE_SLOTS_FULL':
+      return t('detail.errors.roleSlotsFull');
+    case 'VOLUNTEER_ALREADY_ON_ROLE_SLOT':
+      return t('detail.errors.volunteerAlreadyOnRoleSlot');
+    default:
+      return err.message;
+  }
+}
+
+function mapCapacityError(err: unknown, t: (key: string) => string): string {
+  if (!(err instanceof ApiRequestError)) {
+    return t('detail.capacityEditor.errors.failed');
+  }
+  switch (err.code) {
+    case 'CAPACITY_BELOW_FILLED_SLOTS':
+      return t('detail.capacityEditor.errors.belowFilled');
+    case 'INVALID_ROLE_CAPACITY':
+      return t('detail.capacityEditor.errors.invalidCapacity');
     default:
       return err.message;
   }
@@ -233,6 +255,9 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
   const [assignRoleId, setAssignRoleId] = useState<string | null>(null);
   const [selectedVolunteerId, setSelectedVolunteerId] = useState('');
   const [assignError, setAssignError] = useState<string | null>(null);
+  const [capacityDraft, setCapacityDraft] = useState<Record<string, number>>({});
+  const [capacityError, setCapacityError] = useState<string | null>(null);
+  const [capacitySuccess, setCapacitySuccess] = useState(false);
 
   const initialWindow = defaultAssignmentWindow(payload);
   const [startsAtUtc, setStartsAtUtc] = useState(initialWindow.startsAtUtc);
@@ -243,6 +268,27 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     setStartsAtUtc(window.startsAtUtc);
     setEndsAtUtc(window.endsAtUtc);
   }, [payload.event.id, payload.event.window.endsAtUtc, payload.event.window.startsAtUtc]);
+
+  const activeRoles = (rolesQuery.data ?? []).filter((role) => !role.retired);
+
+  useEffect(() => {
+    if (!formMinistryId) {
+      setCapacityDraft({});
+      return;
+    }
+    const roles = (rolesQuery.data ?? []).filter((role) => !role.retired);
+    const nextDraft: Record<string, number> = {};
+    for (const role of roles) {
+      const existing = payload.roleCapacities.find(
+        (entry) =>
+          entry.ministryId === formMinistryId && entry.roleId === role.id,
+      );
+      nextDraft[role.id] = existing?.capacity ?? 1;
+    }
+    setCapacityDraft(nextDraft);
+    setCapacityError(null);
+    setCapacitySuccess(false);
+  }, [formMinistryId, payload.event.id, payload.roleCapacities, rolesQuery.data]);
 
   const activeMembers = (membershipsQuery.data ?? []).filter(
     (row) => row.status === 'ACTIVE',
@@ -304,6 +350,25 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
     },
   });
 
+  const capacityMutation = useMutation({
+    mutationFn: updateRoleCapacities,
+    onSuccess: () => {
+      if (actingVolunteerId && formMinistryId && activeChurch?.id) {
+        invalidateAfterCapacityUpdate(queryClient, {
+          churchId: activeChurch.id,
+          ministryId: formMinistryId,
+          eventId: payload.event.id,
+        });
+      }
+      setCapacityError(null);
+      setCapacitySuccess(true);
+    },
+    onError: (error) => {
+      setCapacitySuccess(false);
+      setCapacityError(mapCapacityError(error, t));
+    },
+  });
+
   const isCancelled = Boolean(payload.event.cancelledAtUtc);
   const canLeadSelectedMinistry =
     data.event.kind !== 'PRIVATE' ||
@@ -332,6 +397,23 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
       actingVolunteerId,
       startsAtUtc,
       endsAtUtc,
+    });
+  }
+
+  function handleCapacitySave(event: FormEvent) {
+    event.preventDefault();
+    if (!actingVolunteerId || !formMinistryId) {
+      return;
+    }
+    setCapacitySuccess(false);
+    capacityMutation.mutate({
+      eventId: payload.event.id,
+      ministryId: formMinistryId,
+      actingVolunteerId,
+      capacities: activeRoles.map((role) => ({
+        roleId: role.id,
+        capacity: capacityDraft[role.id] ?? 1,
+      })),
     });
   }
 
@@ -377,6 +459,63 @@ export function SchedulingEventDetailView({ data }: { data: EventDetailPayload }
 
       {canManageRoster ? (
         <>
+          {payload.event.kind === 'PRIVATE' && formMinistryId ? (
+            <form
+              className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-[var(--shadow-card)]"
+              onSubmit={handleCapacitySave}
+              data-testid="role-capacity-editor"
+            >
+              <h2 className="text-lg font-semibold">
+                {t('detail.capacityEditor.heading')}
+              </h2>
+              <ul className="space-y-3">
+                {activeRoles.map((role) => (
+                  <li
+                    key={role.id}
+                    className="flex flex-wrap items-center justify-between gap-3 text-sm"
+                  >
+                    <span className="font-medium">{role.name}</span>
+                    <label className="flex items-center gap-2">
+                      <span className="text-muted-foreground">
+                        {t('detail.capacityEditor.slotsLabel')}
+                      </span>
+                      <input
+                        type="number"
+                        min={1}
+                        className="w-20 rounded-md border border-border bg-background px-2 py-1"
+                        value={capacityDraft[role.id] ?? 1}
+                        onChange={(changeEvent) => {
+                          setCapacitySuccess(false);
+                          setCapacityError(null);
+                          setCapacityDraft((current) => ({
+                            ...current,
+                            [role.id]: Number(changeEvent.target.value),
+                          }));
+                        }}
+                        disabled={capacityMutation.isPending || rolesQuery.isLoading}
+                      />
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              {capacityError ? (
+                <p role="alert" className="text-sm text-destructive">
+                  {capacityError}
+                </p>
+              ) : null}
+              {capacitySuccess ? (
+                <p className="text-sm text-emerald-700">
+                  {t('detail.capacityEditor.success')}
+                </p>
+              ) : null}
+              <Button type="submit" disabled={capacityMutation.isPending}>
+                {capacityMutation.isPending
+                  ? t('detail.capacityEditor.saving')
+                  : t('detail.capacityEditor.save')}
+              </Button>
+            </form>
+          ) : null}
+
           <RosterByEventSection
             eventId={payload.event.id}
             eventTitle={payload.event.title}

@@ -5,6 +5,10 @@ import {
   createAssignment,
   invalidateAfterAssignOrRelease,
 } from './assignMutation';
+import {
+  invalidateAfterCapacityUpdate,
+  updateRoleCapacities,
+} from './capacityMutation';
 import { eventDetailQuery, fetchEventDetail } from './eventDetailQuery';
 import {
   buildRosterRows,
@@ -109,6 +113,25 @@ describe('releaseMutation', () => {
       '/assignments/asg-1/void',
       { volunteerId: 'vol-leader' },
       { method: 'POST' },
+    );
+  });
+});
+
+describe('capacityMutation', () => {
+  it('updateRoleCapacities patches role-capacities endpoint', async () => {
+    vi.spyOn(apiClient, 'mutateJson').mockResolvedValue({
+      roleCapacities: [{ roleId: 'role-audio', capacity: 2 }],
+    });
+    await updateRoleCapacities({
+      eventId: 'evt-1',
+      ministryId: 'min-1',
+      actingVolunteerId: 'vol-leader',
+      capacities: [{ roleId: 'role-audio', capacity: 2 }],
+    });
+    expect(apiClient.mutateJson).toHaveBeenCalledWith(
+      '/events/evt-1/role-capacities',
+      { volunteerId: 'vol-leader', leaderMinistryId: 'min-1' },
+      expect.objectContaining({ method: 'PATCH' }),
     );
   });
 });
