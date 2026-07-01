@@ -4,6 +4,7 @@ import { AppShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { EventDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/scheduling")({
   head: () => ({
@@ -44,7 +45,11 @@ function SchedulingPage() {
             <Button size="icon" variant="outline"><ChevronLeft className="h-4 w-4" /></Button>
             <Button size="sm" variant="outline">This week</Button>
             <Button size="icon" variant="outline"><ChevronRight className="h-4 w-4" /></Button>
-            <Button size="sm"><Plus className="h-4 w-4" /> Schedule event</Button>
+            <EventDialog
+              trigger={
+                <Button size="sm"><Plus className="h-4 w-4" /> Schedule event</Button>
+              }
+            />
           </div>
         </div>
 

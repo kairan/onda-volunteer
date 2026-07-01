@@ -1,7 +1,10 @@
 import { Calendar, Clock, MapPin, Plus, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { TimeAwayDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
+import { WeekTimeline } from "@/components/onda/WeekTimeline";
 
 const assignments = [
   {
@@ -45,6 +48,8 @@ export function VolunteerDashboard() {
         </p>
       </div>
 
+      <WeekTimeline />
+
       <section>
         <div className="mb-4 flex items-end justify-between">
           <div>
@@ -86,8 +91,13 @@ export function VolunteerDashboard() {
               </div>
               {a.status === "Pending" && (
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm">Accept</Button>
-                  <Button size="sm" variant="outline">Decline</Button>
+                  <Button size="sm" onClick={() => toast.success(`Accepted ${a.event}`)}>Accept</Button>
+                  <ConfirmDeleteDialog
+                    title={`Decline ${a.event}?`}
+                    description={`Your leader will be notified that you can't serve as ${a.role}.`}
+                    confirmLabel="Decline"
+                    trigger={<Button size="sm" variant="outline">Decline</Button>}
+                  />
                 </div>
               )}
             </Card>
@@ -103,9 +113,13 @@ export function VolunteerDashboard() {
               Periods you're unavailable to serve
             </p>
           </div>
-          <Button size="sm">
-            <Plus className="h-4 w-4" /> Add period
-          </Button>
+          <TimeAwayDialog
+            trigger={
+              <Button size="sm">
+                <Plus className="h-4 w-4" /> Add period
+              </Button>
+            }
+          />
         </div>
         <Card className="rounded-lg border border-border p-0 shadow-card">
           <ul className="divide-y divide-border">
@@ -121,12 +135,25 @@ export function VolunteerDashboard() {
                   </p>
                   <p className="text-xs text-muted-foreground">{t.reason}</p>
                 </div>
-                <Button size="icon" variant="ghost" aria-label="Edit">
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button size="icon" variant="ghost" aria-label="Delete">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <TimeAwayDialog
+                  mode="edit"
+                  initial={{ reason: t.reason }}
+                  trigger={
+                    <Button size="icon" variant="ghost" aria-label="Edit">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  }
+                />
+                <ConfirmDeleteDialog
+                  title="Remove this time away?"
+                  description={`${t.from} – ${t.to} · ${t.reason}`}
+                  confirmLabel="Remove"
+                  trigger={
+                    <Button size="icon" variant="ghost" aria-label="Delete">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  }
+                />
               </li>
             ))}
           </ul>

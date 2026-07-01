@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { MinistryDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/ministries")({
   head: () => ({
@@ -42,7 +43,13 @@ function MinistriesPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Ministries</h2>
             <p className="mt-1 text-sm text-muted-foreground">{ministries.length} ministries · 1 needs a leader</p>
           </div>
-          <Button size="sm"><Plus className="h-4 w-4" /> Add ministry</Button>
+          <MinistryDialog
+            trigger={
+              <Button size="sm">
+                <Plus className="h-4 w-4" /> Add ministry
+              </Button>
+            }
+          />
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
           <Table>
@@ -53,7 +60,7 @@ function MinistriesPage() {
                 <TableHead className="text-right">Volunteers</TableHead>
                 <TableHead className="text-right">Events</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -71,7 +78,28 @@ function MinistriesPage() {
                       {m.status}
                     </Badge>
                   </TableCell>
-                  <TableCell><Button size="icon" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button></TableCell>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <MinistryDialog
+                        mode="edit"
+                        initial={{ name: m.name, leader: m.leader }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit ministry">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Delete "${m.name}" ministry?`}
+                        description="Volunteers and events tied to this ministry will be unassigned."
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Delete ministry">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

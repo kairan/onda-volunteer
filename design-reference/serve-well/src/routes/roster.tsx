@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AssignSlotDialog, ConfirmDeleteDialog, EventDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/roster")({
   head: () => ({
@@ -54,7 +55,22 @@ function RosterPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Roster</h2>
             <p className="mt-1 text-sm text-muted-foreground">Assign people to event roles</p>
           </div>
-          <Button size="sm"><Plus className="h-4 w-4" /> Assign volunteer</Button>
+          <div className="flex gap-2">
+            <EventDialog
+              trigger={
+                <Button size="sm" variant="outline">
+                  <Plus className="h-4 w-4" /> New event
+                </Button>
+              }
+            />
+            <AssignSlotDialog
+              trigger={
+                <Button size="sm">
+                  <UserPlus className="h-4 w-4" /> Assign volunteer
+                </Button>
+              }
+            />
+          </div>
         </div>
         {events.map((event) => (
           <Card key={event.title} className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
@@ -89,9 +105,26 @@ function RosterPage() {
                     )}
                   </div>
                   {slot.volunteer ? (
-                    <Button size="sm" variant="ghost"><UserMinus className="h-4 w-4" /> Release</Button>
+                    <ConfirmDeleteDialog
+                      title={`Release ${slot.volunteer}?`}
+                      description={`They'll be notified that they're no longer on ${event.title} as ${slot.role}.`}
+                      confirmLabel="Release"
+                      trigger={
+                        <Button size="sm" variant="ghost">
+                          <UserMinus className="h-4 w-4" /> Release
+                        </Button>
+                      }
+                    />
                   ) : (
-                    <Button size="sm" variant="outline"><UserPlus className="h-4 w-4" /> Assign</Button>
+                    <AssignSlotDialog
+                      role={slot.role}
+                      event={event.title}
+                      trigger={
+                        <Button size="sm" variant="outline">
+                          <UserPlus className="h-4 w-4" /> Assign
+                        </Button>
+                      }
+                    />
                   )}
                 </li>
               ))}

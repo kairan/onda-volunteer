@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EventDialog, AssignSlotDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
+import { WeekTimeline } from "@/components/onda/WeekTimeline";
 
 const events = [
   {
@@ -42,14 +44,24 @@ export function MinistryLeaderDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Calendar className="h-4 w-4" /> New event
-          </Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4" /> Assign volunteer
-          </Button>
+          <EventDialog
+            trigger={
+              <Button variant="outline" size="sm">
+                <Calendar className="h-4 w-4" /> New event
+              </Button>
+            }
+          />
+          <AssignSlotDialog
+            trigger={
+              <Button size="sm">
+                <Plus className="h-4 w-4" /> Assign volunteer
+              </Button>
+            }
+          />
         </div>
       </div>
+
+      <WeekTimeline />
 
       <section className="space-y-4">
         <h3 className="text-base font-semibold">Roster</h3>
@@ -98,13 +110,26 @@ export function MinistryLeaderDashboard() {
                     )}
                   </div>
                   {slot.volunteer ? (
-                    <Button size="sm" variant="ghost">
-                      <UserMinus className="h-4 w-4" /> Release
-                    </Button>
+                    <ConfirmDeleteDialog
+                      title={`Release ${slot.volunteer}?`}
+                      description={`They'll be notified that they're no longer on ${event.title} as ${slot.role}.`}
+                      confirmLabel="Release"
+                      trigger={
+                        <Button size="sm" variant="ghost">
+                          <UserMinus className="h-4 w-4" /> Release
+                        </Button>
+                      }
+                    />
                   ) : (
-                    <Button size="sm" variant="outline">
-                      <UserPlus className="h-4 w-4" /> Assign
-                    </Button>
+                    <AssignSlotDialog
+                      role={slot.role}
+                      event={event.title}
+                      trigger={
+                        <Button size="sm" variant="outline">
+                          <UserPlus className="h-4 w-4" /> Assign
+                        </Button>
+                      }
+                    />
                   )}
                 </li>
               ))}

@@ -1,4 +1,5 @@
-import { Plus, Mail, Eye, MoreHorizontal, Building2, Users, Send, Lock } from "lucide-react";
+import { Plus, Mail, Eye, Pencil, Trash2, Building2, Users, Send, Lock } from "lucide-react";
+import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ChurchDialog, AdminInviteDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
+import { WeekTimeline } from "@/components/onda/WeekTimeline";
 
 const stats = [
   { label: "Churches", value: "42", icon: Building2 },
@@ -42,12 +45,20 @@ export function SystemAdminDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Mail className="h-4 w-4" /> Invite church admin
-          </Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4" /> New church
-          </Button>
+          <AdminInviteDialog
+            trigger={
+              <Button variant="outline" size="sm">
+                <Mail className="h-4 w-4" /> Invite church admin
+              </Button>
+            }
+          />
+          <ChurchDialog
+            trigger={
+              <Button size="sm">
+                <Plus className="h-4 w-4" /> New church
+              </Button>
+            }
+          />
         </div>
       </div>
 
@@ -62,6 +73,8 @@ export function SystemAdminDashboard() {
           </Card>
         ))}
       </div>
+
+      <WeekTimeline readOnly weekLabel="Week of Jun 22 · platform read-only" />
 
       <section>
         <div className="mb-4 flex items-end justify-between">
@@ -105,9 +118,27 @@ export function SystemAdminDashboard() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                    <div className="flex justify-end">
+                      <ChurchDialog
+                        mode="edit"
+                        initial={{ name: c.name, city: c.city }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit church">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Archive ${c.name}?`}
+                        description="Archived tenants lose access. Data is retained for 30 days."
+                        confirmLabel="Archive"
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Archive">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -119,9 +150,13 @@ export function SystemAdminDashboard() {
       <section>
         <div className="mb-4 flex items-end justify-between">
           <h3 className="text-base font-semibold">Admin invites</h3>
-          <Button size="sm" variant="outline">
-            <Mail className="h-4 w-4" /> New invite
-          </Button>
+          <AdminInviteDialog
+            trigger={
+              <Button size="sm" variant="outline">
+                <Mail className="h-4 w-4" /> New invite
+              </Button>
+            }
+          />
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
           <ul className="divide-y divide-border">
@@ -143,7 +178,17 @@ export function SystemAdminDashboard() {
                 >
                   {i.status}
                 </Badge>
-                <Button size="sm" variant="ghost">Resend</Button>
+                <Button size="sm" variant="ghost" onClick={() => toast.success(`Invite resent to ${i.email}`)}>Resend</Button>
+                <ConfirmDeleteDialog
+                  title="Revoke this invite?"
+                  description={`${i.email} will no longer be able to accept this invite.`}
+                  confirmLabel="Revoke"
+                  trigger={
+                    <Button size="icon" variant="ghost" aria-label="Revoke">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  }
+                />
               </li>
             ))}
           </ul>
