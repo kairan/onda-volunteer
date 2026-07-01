@@ -12,7 +12,7 @@
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| T01–T17 | ⏳ Not started | Execute begins at T01 after PR #168 merge |
+| T01–T17 | ⏳ Not started | Execute [#170](https://github.com/kairan/onda-volunteer/issues/170) after PR #169 merge |
 | Planning artifacts | ✅ Complete | spec.md, design.md, tasks.md, context.md, ADR 0007 |
 
 ---
@@ -99,9 +99,9 @@
 | Item | Status |
 | ---- | ------ |
 | All RST-* traced to tasks | ✅ |
-| `docs/issues/done/` entry | ⏳ Create issue from Tasks when Execute starts |
+| `docs/issues/` entry for Execute | ✅ [#170](https://github.com/kairan/onda-volunteer/issues/170) + `170-web-onda-foundation-phase-0-1.md` |
 | `frontend-migration-web-next` archived | ⏳ At T17 per RST-CUT-01 |
-| #148 closed as superseded | ⏳ After PR #168 merge + issue comment |
+| #148 closed as superseded | ✅ Closed 2026-07-01 |
 
 ---
 
@@ -125,6 +125,6 @@
 **Open for Execute**: T01+; three route-tree precision gaps to resolve in T07; feature closeout items remain for post-cutover.
 
 **Next steps**:
-1. Merge PR #168 (include local verify fixes to HANDOFF + frozen migration docs)
-2. Create GitHub issue from `tasks.md` Phase 0 slice; label `ready-for-agent` when T01 unblocked
-3. Close #148 with link to ADR 0007 + this feature
+1. Merge PR #169
+2. Label [#170](https://github.com/kairan/onda-volunteer/issues/170) `ready-for-agent` when T01 unblocked
+3. Execute T01+ on branch from #170

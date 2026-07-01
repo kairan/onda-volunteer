@@ -6,7 +6,7 @@
 
 ## Next agent action
 
-Execute **`frontend-restart-serve-well-base`** from **T01** (`.specs/features/frontend-restart-serve-well-base/tasks.md`). ADR [0007](../docs/adr/0007-frontend-serve-well-plus-api.md). **Do not** execute [#148](https://github.com/kairan/onda-volunteer/issues/148) cutover — frozen.
+Execute [#170](https://github.com/kairan/onda-volunteer/issues/170) from **T01** (`.specs/features/frontend-restart-serve-well-base/tasks.md`). ADR [0007](../docs/adr/0007-frontend-serve-well-plus-api.md). [#148](https://github.com/kairan/onda-volunteer/issues/148) cutover closed superseded.
 
 ## Blockers
 

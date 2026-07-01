@@ -12,14 +12,15 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 ## Active backlog
 
-**Frontend restart (`web-onda`)** — serve-well presentation + API data layer; TLC [`.specs/features/frontend-restart-serve-well-base/`](../.specs/features/frontend-restart-serve-well-base/). ADR [0007](../adr/0007-frontend-serve-well-plus-api.md). Execute from T01 in `tasks.md` (no GitHub issue yet — create from Tasks when slicing).
+**Frontend restart (`web-onda`)** — serve-well presentation + API data layer; TLC [`.specs/features/frontend-restart-serve-well-base/`](../.specs/features/frontend-restart-serve-well-base/). ADR [0007](../adr/0007-frontend-serve-well-plus-api.md). Execute: [#170](https://github.com/kairan/onda-volunteer/issues/170) (T01–T07).
 
-**Frozen — do not execute:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` Slice 6 cutover) superseded 2026-07-01. Spec: `148-web-next-migration-slice-6-cutover.md`. Slices 1–5 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)).
+**Superseded:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` Slice 6 cutover) — closed 2026-07-01. Spec: `148-web-next-migration-slice-6-cutover.md`. Slices 1–5 shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)).
 
 **Scheduling — role slot capacity** — TLC [`.specs/features/role-slot-capacity-per-event/`](../.specs/features/role-slot-capacity-per-event/). Complements UI-LEAD / Serve Well roster visual.
 
 | Issue | Feature | Tasks | Spec |
 |------:|---------|-------|------|
+| [#170](https://github.com/kairan/onda-volunteer/issues/170) | web-onda Foundation (serve-well + API) | T01–T07 | `170-web-onda-foundation-phase-0-1.md` |
 | [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | T01–T09 | `165-role-slot-capacity-per-event.md` |
 
 Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
