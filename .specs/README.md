@@ -17,7 +17,7 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 
 ## Active vs archived features
 
-- **Active:** `.specs/features/` holds in-flight work only (currently `frontend-migration-web-next`, `ui-refresh-onda-brand`, `role-slot-capacity-per-event`).
+- **Active:** `.specs/features/` holds in-flight work only (currently `frontend-restart-serve-well-base`, `working-context-picker`, `ui-refresh-onda-brand`, `role-slot-capacity-per-event`; `frontend-migration-web-next` frozen).
 - **Shipped:** After closeout, TLC folders move to `.specs/archive/features/` per **AD-001** in `project/STATE.md`. A redirect stub remains at `.specs/features/<slug>/README.md`.
 - **Ship record:** `docs/issues/done/<#>-*.md` is canonical for acceptance criteria.
 
@@ -26,7 +26,7 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 **Not used:** `.specs/codebase/` — v3.1 loads brownfield context via the Knowledge Verification Chain against existing docs:
 
 - [`CONTEXT.md`](../CONTEXT.md) — domain
-- [`docs/adr/`](../docs/adr/) — decisions
+- [`docs/adr/README.md`](../docs/adr/README.md) — **start here** for ADRs (active: 0001, 0004–0007; archived: 0002–0003)
 - [`docs/issues/`](../docs/issues/) — issue specs and history
 - [`AGENTS.md`](../AGENTS.md) — stack, tests, CI, dev runbook
 

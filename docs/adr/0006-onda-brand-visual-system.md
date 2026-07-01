@@ -1,9 +1,10 @@
 # ADR 0006: Onda brand visual system (provisional)
 
-**Status:** Accepted (Specify phase)  
+**Status:** Accepted  
 **Date:** 2026-06-20  
-**Supersedes:** ADR 0003 (HOPE design system) — visual direction only  
+**Supersedes:** ADR 0003 (HOPE design system) — visual direction only; ADR 0002 archived  
 **Preserves:** ADR 0001 shell structure, i18n, accessibility, scheduling UI posture  
+**Frontend package:** ADR [0007](./0007-frontend-serve-well-plus-api.md) (`apps/web-onda`, serve-well + API)
 
 **Feature spec:** [`.specs/features/ui-refresh-onda-brand/spec.md`](../../.specs/features/ui-refresh-onda-brand/spec.md)
 
@@ -79,3 +80,5 @@ Church Admin and System Admin layout redesign are **explicitly deferred**; this 
 - Design: [`.specs/features/ui-refresh-onda-brand/design.md`](../../.specs/features/ui-refresh-onda-brand/design.md)
 - Decisions: [`.specs/features/ui-refresh-onda-brand/context.md`](../../.specs/features/ui-refresh-onda-brand/context.md)
 - Prototype index: [`design-reference/serve-well/README.md`](../../design-reference/serve-well/README.md)
+- Frontend restart: [ADR 0007](./0007-frontend-serve-well-plus-api.md)
+- ADR index: [README.md](./README.md)

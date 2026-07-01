@@ -1,5 +1,7 @@
 # Frontend rebuild — `web-next` (parallel strangler migration) — Specification
 
+> **⚠️ Cutover frozen (2026-07-01):** Visual layer rejected. Do not execute #148. Successor: [frontend-restart-serve-well-base](../frontend-restart-serve-well-base/). This spec remains for history and **data-layer salvage** reference only.
+
 ## Status
 
 - **Phase:** Slice 1 Execute shipped ([#143](https://github.com/kairan/onda-volunteer/issues/143), 2026-06-21); Slices 2–6 open ([#144](https://github.com/kairan/onda-volunteer/issues/144)–[#148](https://github.com/kairan/onda-volunteer/issues/148))
