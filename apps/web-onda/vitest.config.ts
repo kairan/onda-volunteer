@@ -15,5 +15,22 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}'],
     pool: 'forks',
     maxWorkers: 2,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.{ts,tsx}',
+        'src/test/**',
+        'src/components/ui/**',
+      ],
+      thresholds: {
+        lines: 55,
+        statements: 55,
+        branches: 48,
+        functions: 52,
+      },
+    },
   },
 });
