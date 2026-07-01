@@ -18,6 +18,12 @@
   "churchLabel": "Igreja",
   "campusLabel": "Campus",
   "ministryLabel": "Ministério",
+  "workingContextLabel": "Atuar como",
+  "context": {
+    "leader": "{{ministry}} · Líder",
+    "volunteer": "{{ministry}} · Voluntário"
+  },
+  "contextSwitched": "Agora a atuar como {{label}}",
   "timezoneCue": "Fuso: {{short}}",
   "timezoneDetails": "Fuso horário IANA: {{iana}}",
   "showLocalTime": "Mostrar também meu horário local",

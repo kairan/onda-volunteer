@@ -35,7 +35,6 @@ function resolveSelection(
   churches: Church[],
   preferredChurchId: string | null,
   preferredCampusId: string | null,
-  isSystemAdmin: boolean,
 ): {
   churchId: string | null;
   campusId: string | null;
@@ -157,7 +156,6 @@ export function OrganizationProvider({
       data.churches,
       readStoredActiveChurchId(),
       readStoredActiveCampusId(),
-      isSystemAdmin,
     );
     const church =
       data.churches.find((item) => item.id === resolved.churchId) ?? null;
@@ -284,7 +282,6 @@ export function OrganizationProvider({
         freshData.churches,
         activeChurchId,
         activeCampusId,
-        isSystemAdmin,
       );
       const church =
         freshData.churches.find((item) => item.id === resolved.churchId) ?? null;

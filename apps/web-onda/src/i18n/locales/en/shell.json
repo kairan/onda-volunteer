@@ -18,6 +18,12 @@
   "churchLabel": "Church",
   "campusLabel": "Campus",
   "ministryLabel": "Ministry",
+  "workingContextLabel": "Act as",
+  "context": {
+    "leader": "{{ministry}} · Leader",
+    "volunteer": "{{ministry}} · Volunteer"
+  },
+  "contextSwitched": "Now acting as {{label}}",
   "timezoneCue": "TZ: {{short}}",
   "timezoneDetails": "IANA timezone: {{iana}}",
   "showLocalTime": "Also show my local time",
