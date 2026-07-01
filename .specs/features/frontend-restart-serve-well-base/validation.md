@@ -3,8 +3,8 @@
 **Date**: 2026-07-01  
 **Phase verified**: Execute Phase 0–1 (T01–T07) — issue [#170](https://github.com/kairan/onda-volunteer/issues/170)  
 **Spec**: `.specs/features/frontend-restart-serve-well-base/spec.md`  
-**Diff range**: `ecd7639^..4174fad` (branch `issue-170-web-onda-foundation`)  
-**Verifier**: independent sub-agent (author ≠ verifier); fix iteration 1 after gap closure
+**Diff range**: `ecd7639^..2328666` (branch `issue-170-web-onda-foundation`; includes post-validation `b052c9a` fonts + `2328666` local-dev/CORS/redirect)  
+**Verifier**: independent sub-agent (author ≠ verifier); fix iteration 2 after review follow-ups
 
 ---
 
@@ -37,7 +37,7 @@
 | Criterion | Spec-defined outcome | `file:line` + assertion | Result |
 | --------- | -------------------- | ----------------------- | ------ |
 | WHEN theme loads THEN CSS vars match ADR 0006 (`#2034D6`, `#FAFAFA`, `--shadow-card`, radius `0.5rem`, Space Grotesk) | Onda anchors in globals.css | `theme.contract.test.ts:24-28` — oklch primary/background, `--shadow-card`, `--radius: 0.5rem`; `:32-34` — Space Grotesk | ✅ PASS |
-| WHEN fonts load THEN Right Grotesk self-hosted (not Lovable CDN) | Local `.otf` URLs, no CDN | `theme.contract.test.ts:38-41` — `url('../assets/fonts/RightGrotesk-*.otf')`; `not.toMatch(/__l5e\/assets/)` | ✅ PASS |
+| WHEN fonts load THEN Right Grotesk self-hosted (not Lovable CDN) | Local `.otf` URLs + binaries on disk, no CDN | `theme.contract.test.ts:37-52` — CSS URLs; `existsSync` for `RightGrotesk-*.otf`; `not.toMatch(/__l5e\/assets/)` | ✅ PASS |
 | WHEN shadcn primitives render THEN from serve-well `components/ui` | Button/Card/Sidebar mount | `ui.smoke.test.tsx:17-54` — `getByTestId('smoke-button')`, `smoke-card`, `smoke-sidebar` | ✅ PASS |
 
 ### RST-FND-03 — Data layer graft
@@ -62,7 +62,7 @@
 | Criterion | Evidence | Result |
 | --------- | -------- | ------ |
 | `pnpm --filter @onda/web-onda build` + typecheck green | Gate run 2026-07-01 — both exit 0 | ✅ PASS |
-| Theme contract + apiClient/auth tests pass | 60/60 vitest (12 files) | ✅ PASS |
+| Theme contract + apiClient/auth tests pass | 62/62 vitest (12 files) | ✅ PASS |
 | Nav reacts to working context | `AppShell.behavior.test.tsx:177-184` — after `selectOptions(..., 'min-kids:volunteer')`, `My assignments` present, `Events` absent | ✅ PASS |
 | All `design.md` §6 routes resolve without 404 | `router.test.ts:59-63` — `PARITY_PATHS` ⊆ registered; `:85-102` — `/events/$eventId` redirect | ✅ PASS |
 | Signed-in shell matches serve-well at 1440px | Automated shell tests pass; human side-by-side not run | 🧑 HITL — **deferred** (not blocking #170 merge) |
@@ -91,8 +91,8 @@
 - **Test gate**: `pnpm --filter @onda/web-onda test`
 - **Result**: 3 passed, 0 failed, 0 skipped
 - **Test count before feature** (`ecd7639^`): 0 (`apps/web-onda` did not exist)
-- **Test count after feature**: 60 (12 files)
-- **Delta**: +60 tests
+- **Test count after feature**: 62 (12 files) — +2 router index redirects (`router.test.ts`)
+- **Delta**: +62 tests
 - **Failures**: none
 - **Skipped**: none
 
@@ -150,7 +150,6 @@ Do **not** block merge or close of #170. Pick up in polish or pre-cutover.
 | ---- | ---- | ------ |
 | **1440px layout sign-off** (T06 / RST-SHELL-01) | Before Phase 2 live screens or **required** before T17 cutover (`design.md` §9) | Human side-by-side vs `design-reference/serve-well` at 1440px; record in issue or checklist |
 | **Campus switcher behavior test** | Anytime (minor) | Behavior test with 2-campus church fixture + `onCampusChange` |
-| **Right Grotesk `.otf` binaries** | Visual polish | Add font files under `apps/web-onda/src/assets/fonts/` (metadata only in design-reference today) |
 | **Supabase auth path tests** | Phase 2+ or auth hardening | Extend `AuthSessionProvider` behavior tests beyond dev-bypass |
 
 ### Spec-precision only (no action required)
@@ -184,12 +183,12 @@ Prior pass (2026-07-01): Specify + Design + Tasks — ✅ PASS. See git history 
 
 **Spec-anchored check**: 10/13 sub-criteria with matching assertions; 0 ❌ GAP; 4 ⚠️ spec-precision / manual  
 **Sensor**: 3/3 mutations killed  
-**Gate**: 3 passed (build, typecheck, 60 tests)
+**Gate**: 3 passed (build, typecheck, 62 tests)
 
 **What works**: Package scaffold, Onda theme contract, apiClient/auth dev path, i18n pt-BR default, working context module + picker labels, org provider, nav reaction to context switch, full §6 route registration + legacy redirects.
 
 **Blocking #170?** No — automated work is complete.
 
-**Deferred / HITL**: 1440px layout sign-off (human), campus test (minor), font binaries (polish). See [Deferred / HITL](#deferred--hitl-not-blocking-170).
+**Deferred / HITL**: 1440px layout sign-off (human), campus test (minor). See [Deferred / HITL](#deferred--hitl-not-blocking-170).
 
 **Next steps**: Merge branch; close #170; Phase 2+ (T08–T17) in follow-up issues.
