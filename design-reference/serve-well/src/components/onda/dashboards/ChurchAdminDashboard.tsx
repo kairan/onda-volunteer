@@ -1,4 +1,4 @@
-import { Plus, MoreHorizontal, Church, Users, Calendar, TrendingUp } from "lucide-react";
+import { Plus, Pencil, Trash2, Church, Users, Calendar, TrendingUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EventDialog, MinistryDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
+import { WeekTimeline } from "@/components/onda/WeekTimeline";
 
 const stats = [
   { label: "Active ministries", value: "12", icon: Church, change: "+1 this month" },
@@ -44,9 +46,13 @@ export function ChurchAdminDashboard() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">Manage role catalog</Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4" /> Create event
-          </Button>
+          <EventDialog
+            trigger={
+              <Button size="sm">
+                <Plus className="h-4 w-4" /> Create event
+              </Button>
+            }
+          />
         </div>
       </div>
 
@@ -63,15 +69,21 @@ export function ChurchAdminDashboard() {
         ))}
       </div>
 
+      <WeekTimeline />
+
       <section>
         <div className="mb-4 flex items-end justify-between">
           <div>
             <h3 className="text-base font-semibold">Ministries</h3>
             <p className="text-sm text-muted-foreground">Leaders, scope, and membership</p>
           </div>
-          <Button size="sm" variant="outline">
-            <Plus className="h-4 w-4" /> Add ministry
-          </Button>
+          <MinistryDialog
+            trigger={
+              <Button size="sm" variant="outline">
+                <Plus className="h-4 w-4" /> Add ministry
+              </Button>
+            }
+          />
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
           <Table>
@@ -105,9 +117,26 @@ export function ChurchAdminDashboard() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+                    <div className="flex justify-end">
+                      <MinistryDialog
+                        mode="edit"
+                        initial={{ name: m.name, leader: m.leader }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit ministry">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Delete "${m.name}" ministry?`}
+                        description="Volunteers and events tied to this ministry will be unassigned."
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Delete ministry">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -141,7 +170,20 @@ export function ChurchAdminDashboard() {
                 >
                   {e.status}
                 </Badge>
-                <Button size="sm" variant="ghost">Edit</Button>
+                <EventDialog
+                  mode="edit"
+                  initial={{ title: e.name }}
+                  trigger={<Button size="sm" variant="ghost">Edit</Button>}
+                />
+                <ConfirmDeleteDialog
+                  title={`Delete ${e.name}?`}
+                  description={`${e.date} · ${e.scope}`}
+                  trigger={
+                    <Button size="icon" variant="ghost" aria-label="Delete event">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  }
+                />
               </li>
             ))}
           </ul>

@@ -7,7 +7,7 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 1. **Scheduling & events** — private/public events, assignments, conflicts, cancellation.
 2. **Availability** — unavailability, time away UX, leader-managed blocks.
 3. **Organization** — ministries, roles, membership, leader/admin stewardship.
-4. **Web shell & i18n** — Onda brand, pt-BR default, leader/volunteer dashboards (`apps/web-next`).
+4. **Web shell & i18n** — Onda brand, pt-BR default, leader/volunteer dashboards (`apps/web-onda` — serve-well presentation + API).
 
 ## How to use this file
 
@@ -18,10 +18,10 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature | Status | TLC / spec |
 |-------|---------|--------|------------|
-| **Web shell & i18n** | `frontend-migration-web-next` Slice 6 — CI & cutover | **#148 ready for agent** (T28 ✅; T27 partial) | [`.specs/features/frontend-migration-web-next/`](../features/frontend-migration-web-next/) · `docs/issues/148-web-next-migration-slice-6-cutover.md` |
+| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Specify complete** — Execute T01+ | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for migration (no standalone execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
-**Frontend rebuild (`web-next`):** parallel strangler migration — `apps/web-next` on React 19 · Vite · TanStack Router · Tailwind 4 plus TanStack Query, Onda brand tokens, route-by-route parity, single cutover. ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md). Lovable reference: [`design-reference/serve-well/`](../../design-reference/serve-well/).
+**Frontend restart (2026-07-01):** **`apps/web-onda`** = serve-well presentation (`design-reference/serve-well/`) + salvaged API/data layer from `web-next`. **`frontend-migration-web-next` cutover ([#148](https://github.com/kairan/onda-volunteer/issues/148)) frozen** — ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md). Tokens: ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).
 
 ## Shipped summary
 
@@ -51,3 +51,4 @@ All product tracer bullets through web-next Slices 1–5 are shipped. Full index
 | Per-Church white-label branding | Deferred |
 | Retiring legacy `/` demo landing | Deferred; ADR 0001 dual entry. Event detail legacy path retired via ADR 0004 / #58 |
 | HOPE / #49 HITL sign-off | Automated gate shipped; human rows in `.specs/features/49-hope-polish-and-wcag-release-gate/hitl-signoff.md` |
+| `frontend-migration-web-next` Slice 6 ([#148](https://github.com/kairan/onda-volunteer/issues/148)) | **Frozen** 2026-07-01 — superseded by `frontend-restart-serve-well-base` (ADR 0007); do not execute cutover |

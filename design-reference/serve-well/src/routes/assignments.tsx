@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Calendar, MapPin, Filter } from "lucide-react";
+import { toast } from "sonner";
 import { AppShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmDeleteDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/assignments")({
   head: () => ({
@@ -57,8 +59,13 @@ function AssignmentsPage() {
               </div>
               {a.status === "Pending" && (
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm">Accept</Button>
-                  <Button size="sm" variant="outline">Decline</Button>
+                  <Button size="sm" onClick={() => toast.success(`Accepted ${a.event}`)}>Accept</Button>
+                  <ConfirmDeleteDialog
+                    title={`Decline ${a.event}?`}
+                    description={`Your leader will be notified that you can't serve as ${a.role}.`}
+                    confirmLabel="Decline"
+                    trigger={<Button size="sm" variant="outline">Decline</Button>}
+                  />
                 </div>
               )}
             </Card>

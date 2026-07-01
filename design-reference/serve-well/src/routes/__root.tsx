@@ -12,6 +12,10 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { RoleProvider } from "../lib/role";
+import { CampusProvider } from "../lib/campus";
+import { AuthProvider, useAuth } from "../lib/auth";
+import { Toaster } from "@/components/ui/sonner";
+import { useRouterState, useNavigate } from "@tanstack/react-router";
 
 function NotFoundComponent() {
   return (
@@ -121,14 +125,43 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function AuthGate({ children }: { children: ReactNode }) {
+  const { session, loading } = useAuth();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+  const isAuthRoute = pathname === "/auth";
+
+  useEffect(() => {
+    if (loading) return;
+    if (!session && !isAuthRoute) navigate({ to: "/auth" });
+  }, [loading, session, isAuthRoute, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-sm text-muted-foreground">Loading…</div>
+      </div>
+    );
+  }
+  if (!session && !isAuthRoute) return null;
+  return <>{children}</>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RoleProvider>
-        <Outlet />
-      </RoleProvider>
+      <AuthProvider>
+        <RoleProvider>
+          <CampusProvider>
+            <AuthGate>
+              <Outlet />
+            </AuthGate>
+            <Toaster />
+          </CampusProvider>
+        </RoleProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

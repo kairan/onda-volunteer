@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { UserPlus, MoreHorizontal } from "lucide-react";
+import { UserPlus, Pencil, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { LeaderDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/leaders")({
   head: () => ({
@@ -45,7 +46,13 @@ function LeadersPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Leaders</h2>
             <p className="mt-1 text-sm text-muted-foreground">{leaders.length} ministry leaders</p>
           </div>
-          <Button size="sm"><UserPlus className="h-4 w-4" /> Add leader</Button>
+          <LeaderDialog
+            trigger={
+              <Button size="sm">
+                <UserPlus className="h-4 w-4" /> Add leader
+              </Button>
+            }
+          />
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
           <Table>
@@ -55,7 +62,7 @@ function LeadersPage() {
                 <TableHead>Ministry</TableHead>
                 <TableHead>Leader since</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -77,7 +84,29 @@ function LeadersPage() {
                   <TableCell>
                     <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">{l.status}</Badge>
                   </TableCell>
-                  <TableCell><Button size="icon" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button></TableCell>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <LeaderDialog
+                        mode="edit"
+                        initial={{ name: l.name, email: l.email, ministry: l.ministry }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit leader">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Remove ${l.name} as leader?`}
+                        description="They'll lose access to manage their ministry. Their volunteer profile is kept."
+                        confirmLabel="Remove"
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Remove leader">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

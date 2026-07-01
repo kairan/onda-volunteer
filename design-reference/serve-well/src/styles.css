@@ -2,7 +2,35 @@
 @source "../src";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "Right Grotesk";
+  src: url("/__l5e/assets-v1/81d08f07-f054-4aa3-a0bd-57533ac12358/RightGrotesk-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Right Grotesk";
+  src: url("/__l5e/assets-v1/8bad66fe-9ab8-4f12-9827-a37c60d3aaee/RightGrotesk-Dark.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Right Grotesk Tight";
+  src: url("/__l5e/assets-v1/8d0a8846-64c5-4f75-9577-ffc162a50a50/RightGrotesk-TightDark.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
+
+@utility font-display {
+  font-family: "Right Grotesk Tight", "Right Grotesk", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
 
 /*
  * Design system definition — Onda Brand Provisório

@@ -1,6 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { OperatorShell } from "@/components/onda/AppShell";
-import { SystemAdminDashboard } from "@/components/onda/dashboards/SystemAdminDashboard";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/system-admin")({
   head: () => ({
@@ -12,13 +10,5 @@ export const Route = createFileRoute("/system-admin")({
       },
     ],
   }),
-  component: SystemAdmin,
+  component: () => <Outlet />,
 });
-
-function SystemAdmin() {
-  return (
-    <OperatorShell title="System Admin" subtitle="Platform operator">
-      <SystemAdminDashboard />
-    </OperatorShell>
-  );
-}

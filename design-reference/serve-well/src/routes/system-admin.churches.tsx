@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { OperatorShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ChurchDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/system-admin/churches")({
   head: () => ({ meta: [{ title: "Churches · Operator · Onda" }] }),
@@ -36,7 +37,11 @@ function ChurchesPage() {
             <h2 className="text-2xl font-semibold tracking-tight">Churches</h2>
             <p className="mt-1 text-sm text-muted-foreground">{churches.length} active tenants</p>
           </div>
-          <Button size="sm"><Plus className="h-4 w-4" /> New church</Button>
+          <ChurchDialog
+            trigger={
+              <Button size="sm"><Plus className="h-4 w-4" /> New church</Button>
+            }
+          />
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
           <Table>
@@ -48,7 +53,7 @@ function ChurchesPage() {
                 <TableHead className="text-right">Admins</TableHead>
                 <TableHead className="text-right">Volunteers</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -64,7 +69,29 @@ function ChurchesPage() {
                       {c.status}
                     </Badge>
                   </TableCell>
-                  <TableCell><Button size="icon" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button></TableCell>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <ChurchDialog
+                        mode="edit"
+                        initial={{ name: c.name, city: c.city }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit church">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Archive ${c.name}?`}
+                        description="Archived tenants lose access. Data is retained for 30 days."
+                        confirmLabel="Archive"
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Archive church">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

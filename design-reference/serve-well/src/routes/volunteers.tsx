@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { UserPlus, Search, MoreHorizontal } from "lucide-react";
+import { UserPlus, Search, Pencil, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/onda/AppShell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { VolunteerDialog, ConfirmDeleteDialog } from "@/components/onda/modals";
 
 export const Route = createFileRoute("/volunteers")({
   head: () => ({
@@ -53,7 +54,13 @@ function VolunteersPage() {
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input placeholder="Search volunteers…" className="h-9 w-64 pl-8" />
             </div>
-            <Button size="sm"><UserPlus className="h-4 w-4" /> Invite</Button>
+            <VolunteerDialog
+              trigger={
+                <Button size="sm">
+                  <UserPlus className="h-4 w-4" /> Invite
+                </Button>
+              }
+            />
           </div>
         </div>
         <Card className="overflow-hidden rounded-lg border border-border p-0 shadow-card">
@@ -64,7 +71,7 @@ function VolunteersPage() {
                 <TableHead>Ministries</TableHead>
                 <TableHead className="text-right">Serves YTD</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-12"></TableHead>
+                <TableHead className="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -97,7 +104,27 @@ function VolunteersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button size="icon" variant="ghost"><MoreHorizontal className="h-4 w-4" /></Button>
+                    <div className="flex justify-end">
+                      <VolunteerDialog
+                        mode="edit"
+                        initial={{ name: v.name, email: v.email }}
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Edit volunteer">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <ConfirmDeleteDialog
+                        title={`Remove ${v.name}?`}
+                        description="They'll be unassigned from upcoming events and lose access to the team."
+                        confirmLabel="Remove"
+                        trigger={
+                          <Button size="icon" variant="ghost" aria-label="Remove volunteer">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

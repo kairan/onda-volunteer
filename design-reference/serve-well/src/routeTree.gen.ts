@@ -18,8 +18,11 @@ import { Route as RosterRouteImport } from './routes/roster'
 import { Route as MinistriesRouteImport } from './routes/ministries'
 import { Route as LeadersRouteImport } from './routes/leaders'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssignmentsRouteImport } from './routes/assignments'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SystemAdminIndexRouteImport } from './routes/system-admin.index'
 import { Route as SystemAdminVolunteersRouteImport } from './routes/system-admin.volunteers'
 import { Route as SystemAdminSchedulingRouteImport } from './routes/system-admin.scheduling'
 import { Route as SystemAdminInvitesRouteImport } from './routes/system-admin.invites'
@@ -70,15 +73,30 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssignmentsRoute = AssignmentsRouteImport.update({
   id: '/assignments',
   path: '/assignments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const SystemAdminIndexRoute = SystemAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SystemAdminRoute,
 } as any)
 const SystemAdminVolunteersRoute = SystemAdminVolunteersRouteImport.update({
   id: '/volunteers',
@@ -103,7 +121,9 @@ const SystemAdminChurchesRoute = SystemAdminChurchesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/assignments': typeof AssignmentsRoute
+  '/auth': typeof AuthRoute
   '/events': typeof EventsRoute
   '/leaders': typeof LeadersRoute
   '/ministries': typeof MinistriesRoute
@@ -117,28 +137,33 @@ export interface FileRoutesByFullPath {
   '/system-admin/invites': typeof SystemAdminInvitesRoute
   '/system-admin/scheduling': typeof SystemAdminSchedulingRoute
   '/system-admin/volunteers': typeof SystemAdminVolunteersRoute
+  '/system-admin/': typeof SystemAdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/assignments': typeof AssignmentsRoute
+  '/auth': typeof AuthRoute
   '/events': typeof EventsRoute
   '/leaders': typeof LeadersRoute
   '/ministries': typeof MinistriesRoute
   '/roster': typeof RosterRoute
   '/scheduling': typeof SchedulingRoute
   '/settings': typeof SettingsRoute
-  '/system-admin': typeof SystemAdminRouteWithChildren
   '/time-away': typeof TimeAwayRoute
   '/volunteers': typeof VolunteersRoute
   '/system-admin/churches': typeof SystemAdminChurchesRoute
   '/system-admin/invites': typeof SystemAdminInvitesRoute
   '/system-admin/scheduling': typeof SystemAdminSchedulingRoute
   '/system-admin/volunteers': typeof SystemAdminVolunteersRoute
+  '/system-admin': typeof SystemAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
   '/assignments': typeof AssignmentsRoute
+  '/auth': typeof AuthRoute
   '/events': typeof EventsRoute
   '/leaders': typeof LeadersRoute
   '/ministries': typeof MinistriesRoute
@@ -152,12 +177,15 @@ export interface FileRoutesById {
   '/system-admin/invites': typeof SystemAdminInvitesRoute
   '/system-admin/scheduling': typeof SystemAdminSchedulingRoute
   '/system-admin/volunteers': typeof SystemAdminVolunteersRoute
+  '/system-admin/': typeof SystemAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/assignments'
+    | '/auth'
     | '/events'
     | '/leaders'
     | '/ministries'
@@ -171,27 +199,32 @@ export interface FileRouteTypes {
     | '/system-admin/invites'
     | '/system-admin/scheduling'
     | '/system-admin/volunteers'
+    | '/system-admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
     | '/assignments'
+    | '/auth'
     | '/events'
     | '/leaders'
     | '/ministries'
     | '/roster'
     | '/scheduling'
     | '/settings'
-    | '/system-admin'
     | '/time-away'
     | '/volunteers'
     | '/system-admin/churches'
     | '/system-admin/invites'
     | '/system-admin/scheduling'
     | '/system-admin/volunteers'
+    | '/system-admin'
   id:
     | '__root__'
     | '/'
+    | '/account'
     | '/assignments'
+    | '/auth'
     | '/events'
     | '/leaders'
     | '/ministries'
@@ -205,11 +238,14 @@ export interface FileRouteTypes {
     | '/system-admin/invites'
     | '/system-admin/scheduling'
     | '/system-admin/volunteers'
+    | '/system-admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
   AssignmentsRoute: typeof AssignmentsRoute
+  AuthRoute: typeof AuthRoute
   EventsRoute: typeof EventsRoute
   LeadersRoute: typeof LeadersRoute
   MinistriesRoute: typeof MinistriesRoute
@@ -286,11 +322,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/assignments': {
       id: '/assignments'
       path: '/assignments'
       fullPath: '/assignments'
       preLoaderRoute: typeof AssignmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -299,6 +349,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/system-admin/': {
+      id: '/system-admin/'
+      path: '/'
+      fullPath: '/system-admin/'
+      preLoaderRoute: typeof SystemAdminIndexRouteImport
+      parentRoute: typeof SystemAdminRoute
     }
     '/system-admin/volunteers': {
       id: '/system-admin/volunteers'
@@ -336,6 +393,7 @@ interface SystemAdminRouteChildren {
   SystemAdminInvitesRoute: typeof SystemAdminInvitesRoute
   SystemAdminSchedulingRoute: typeof SystemAdminSchedulingRoute
   SystemAdminVolunteersRoute: typeof SystemAdminVolunteersRoute
+  SystemAdminIndexRoute: typeof SystemAdminIndexRoute
 }
 
 const SystemAdminRouteChildren: SystemAdminRouteChildren = {
@@ -343,6 +401,7 @@ const SystemAdminRouteChildren: SystemAdminRouteChildren = {
   SystemAdminInvitesRoute: SystemAdminInvitesRoute,
   SystemAdminSchedulingRoute: SystemAdminSchedulingRoute,
   SystemAdminVolunteersRoute: SystemAdminVolunteersRoute,
+  SystemAdminIndexRoute: SystemAdminIndexRoute,
 }
 
 const SystemAdminRouteWithChildren = SystemAdminRoute._addFileChildren(
@@ -351,7 +410,9 @@ const SystemAdminRouteWithChildren = SystemAdminRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
   AssignmentsRoute: AssignmentsRoute,
+  AuthRoute: AuthRoute,
   EventsRoute: EventsRoute,
   LeadersRoute: LeadersRoute,
   MinistriesRoute: MinistriesRoute,

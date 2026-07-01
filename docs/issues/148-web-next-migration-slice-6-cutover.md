@@ -1,8 +1,8 @@
 # 148 — web-next migration Slice 6: CI parity & cutover (T27–T30)
 
 **Type:** Feature / infrastructure  
-**Status:** Open — **ready for agent** (Slices 1–5 [#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147) shipped 2026-06-24)  
-**Label:** `ready-for-agent`  
+**Status:** **Frozen** (2026-07-01) — cutover superseded by [ADR 0007](../adr/0007-frontend-serve-well-plus-api.md) / [`.specs/features/frontend-restart-serve-well-base/`](../../.specs/features/frontend-restart-serve-well-base/). Do not execute.  
+**Label:** ~~`ready-for-agent`~~ removed  
 **TLC:** `.specs/features/frontend-migration-web-next/` (MIG-ENG-01, MIG-CUT-01)
 
 ## Parent
