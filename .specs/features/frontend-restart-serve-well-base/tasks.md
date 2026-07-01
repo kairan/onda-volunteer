@@ -59,8 +59,8 @@ Phase 5:  T16 → T17
 **Reuses**: working-context-picker spec
 
 **Done when**:
-- [ ] `buildWorkingContextOptions` + `resolveWorkingContext` tests green
-- [ ] Dual-role fixture covered
+- [x] `buildWorkingContextOptions` + `resolveWorkingContext` tests green
+- [x] Dual-role fixture covered
 
 ---
 
@@ -71,7 +71,7 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/organization/*`
 
 **Done when**:
-- [ ] `OrganizationProvider.behavior.test.tsx` passes (adapted)
+- [x] `OrganizationProvider.behavior.test.tsx` passes (adapted)
 
 ---
 
@@ -83,8 +83,8 @@ Phase 5:  T16 → T17
 
 **Done when**:
 - [ ] Signed-in shell matches serve-well layout at 1440px (manual)
-- [ ] No role demo dropdown
-- [ ] Nav changes when working context changes (behavior test)
+- [x] No role demo dropdown
+- [x] Nav changes when working context changes (behavior test)
 
 ---
 
@@ -95,8 +95,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/router.tsx` route list
 
 **Done when**:
-- [ ] All paths in design.md §6 resolve without 404 (including §6 parity notes: `/auth`, `/events/$eventId` redirect per ADR 0004, `/user-select` when dev headers enabled)
-- [ ] `router.test.ts` passes
+- [x] All paths in design.md §6 resolve without 404 (including §6 parity notes: `/auth`, `/events/$eventId` redirect per ADR 0004, `/user-select` when dev headers enabled)
+- [x] `router.test.ts` passes
 
 ---
 
