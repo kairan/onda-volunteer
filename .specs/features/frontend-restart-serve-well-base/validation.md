@@ -3,7 +3,7 @@
 **Date**: 2026-07-01  
 **Phase verified**: Specify + Design + Tasks (planning complete; Execute not started)  
 **Spec**: `.specs/features/frontend-restart-serve-well-base/spec.md`  
-**Diff range**: `2298a13..367df39` (PR #168) + local verify fixes (HANDOFF, frozen migration tasks/spec)  
+**Diff range**: PR #169 (`2298a13`..branch HEAD on `spec/frontend-restart-serve-well-base`)  
 **Verifier**: independent pass (author ≠ verifier)
 
 ---
@@ -71,11 +71,11 @@
 
 ## Spec-precision gaps (planning)
 
-| Gap | Location | Recommendation |
-| --- | -------- | -------------- |
-| `/auth` listed in design.md §6 but absent from `web-next` router | design.md §6 vs `apps/web-next/src/router.tsx` | Clarify auth entry path during T07 (e.g. Supabase callback route name) |
-| Legacy `/events/$eventId` redirect not in design.md §6 | design.md §6 | Add ADR 0004 redirect to T07 Done-when or §6 footnote |
-| `/user-select` in web-next not in §6 | design.md §6 | Document include/exclude for cutover parity |
+| Gap | Location | Status |
+| --- | -------- | ------ |
+| `/auth` vs `web-next` router | design.md §6 footnote + T07 Done-when | ✅ Documented |
+| Legacy `/events/$eventId` redirect | design.md §6 footnote + T07 Done-when (ADR 0004) | ✅ Documented |
+| `/user-select` dev parity | design.md §6 footnote + T07 Done-when | ✅ Documented |
 
 ---
 
@@ -87,9 +87,9 @@
 
 ## Gate Check
 
-- **Gate command**: PR #168 CI (`build`, `lint`, `test`, `coverage`, `typecheck-*`, `playwright*`)
+- **Gate command**: PR #169 CI (`build`, `lint`, `test`, `coverage`, `typecheck-*`, `playwright*`)
 - **Local**: `pnpm lint` — pass
-- **CI on `367df39`**: all jobs pass
+- **CI on latest push**: all jobs pass (re-run after review-fix push)
 - **Result**: ✅ Planning PR does not regress runtime
 
 ---
@@ -122,7 +122,7 @@
 
 **Planning**: Requirements trace cleanly to 17 tasks; trackers aligned after verify fixes; ADR 0007 is canonical entry point.
 
-**Open for Execute**: T01+; three route-tree precision gaps to resolve in T07; feature closeout items remain for post-cutover.
+**Open for Execute**: T01+; route-tree parity criteria documented in design.md §6 + T07; feature closeout items remain for post-cutover.
 
 **Next steps**:
 1. Merge PR #169

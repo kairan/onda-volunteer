@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API
 
-**Status:** Specify complete — ready for Tasks / Execute (2026-07-01)  
+**Status:** Planning complete — ready for Execute (T01) (2026-07-01)  
 **Supersedes cutover:** [#148](https://github.com/kairan/onda-volunteer/issues/148) — frozen per [ADR 0007](../../../docs/adr/0007-frontend-serve-well-plus-api.md)
 
 ## Artifacts

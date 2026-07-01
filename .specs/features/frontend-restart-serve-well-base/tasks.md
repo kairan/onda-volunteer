@@ -1,7 +1,7 @@
 # Frontend restart — serve-well + API — Tasks
 
 **Design**: [design.md](./design.md)  
-**Status**: Not started — Specify complete 2026-07-01
+**Status**: Planning complete — Execute not started (2026-07-01)
 
 ## Execution plan
 
@@ -95,7 +95,7 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/router.tsx` route list
 
 **Done when**:
-- [ ] All paths in design.md §6 resolve without 404
+- [ ] All paths in design.md §6 resolve without 404 (including §6 parity notes: `/auth`, `/events/$eventId` redirect per ADR 0004, `/user-select` when dev headers enabled)
 - [ ] `router.test.ts` passes
 
 ---

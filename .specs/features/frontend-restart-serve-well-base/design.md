@@ -159,6 +159,12 @@ Align with `apps/web` for cutover parity (RST-IA-01 visual composition may diffe
 
 Router file names can mirror `web-next/src/router.tsx` — **page components** are serve-well layouts.
 
+> **Parity notes (T07):** `apps/web-next/src/router.tsx` is the mechanical source for protected paths. Gaps vs this list — resolve in T07 scaffold / `router.test.ts`:
+>
+> - `/auth` — **not** in `web-next` today; auth entry is legacy `/` + `AuthPanel`. serve-well uses `/auth`; add explicit route at T07 (Supabase callback entry).
+> - `/events/$eventId` — legacy redirect to `/scheduling/events/$eventId` per [ADR 0004](../../../docs/adr/0004-retire-legacy-event-detail-route.md); include in T07.
+> - `/user-select` — dev-only persona switcher (`devUserSelectAvailable`); include for local dev parity with `web-next`, not production cutover checklist.
+
 ---
 
 ## 7. Migration from web-next (mechanical)
