@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
@@ -39,6 +39,17 @@ describe('theme CSS variable contract (Onda)', () => {
     expect(globalsCss).toContain("url('../assets/fonts/RightGrotesk-Dark.otf')");
     expect(globalsCss).toContain("url('../assets/fonts/RightGrotesk-TightDark.otf')");
     expect(globalsCss).not.toMatch(/__l5e\/assets/);
+
+    for (const file of [
+      'RightGrotesk-Bold.otf',
+      'RightGrotesk-Dark.otf',
+      'RightGrotesk-TightDark.otf',
+    ]) {
+      expect(
+        existsSync(join(process.cwd(), 'src/assets/fonts', file)),
+        `missing font binary ${file}`,
+      ).toBe(true);
+    }
   });
 
   it('defines shadcn semantic variables aliased to Onda palette', () => {
