@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 3,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "ac_gap::when grafting web next i18n port resolveinitiallocale localepersistence tests in the same task as resources ts",
+      "text": "When grafting web-next i18n, port resolveInitialLocale + localePersistence tests in the same task as resources.ts.",
+      "signal": "ac_gap",
+      "scope": "",
+      "status": "candidate",
+      "features": [
+        "frontend-restart-serve-well-base"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md RST-FND-03 i18n"
+      ],
+      "created": "2026-07-01T15:57:04Z",
+      "last_seen": "2026-07-01T15:57:04Z"
+    },
+    {
+      "id": "L-002",
+      "key": "ac_gap::shell working context picker needs a behavior test asserting ministry l der volunt rio label text in pt br",
+      "text": "Shell working-context picker needs a behavior test asserting ministry · Líder/Voluntário label text in pt-BR.",
+      "signal": "ac_gap",
+      "scope": "",
+      "status": "candidate",
+      "features": [
+        "frontend-restart-serve-well-base"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md RST-SHELL-01 picker labels"
+      ],
+      "created": "2026-07-01T15:57:04Z",
+      "last_seen": "2026-07-01T15:57:04Z"
+    }
+  ]
+}
