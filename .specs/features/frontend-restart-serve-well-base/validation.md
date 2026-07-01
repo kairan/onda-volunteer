@@ -3,8 +3,8 @@
 **Date**: 2026-07-01  
 **Phase verified**: Execute Phase 0–1 (T01–T07) — issue [#170](https://github.com/kairan/onda-volunteer/issues/170)  
 **Spec**: `.specs/features/frontend-restart-serve-well-base/spec.md`  
-**Diff range**: `ecd7639^..2328666` (branch `issue-170-web-onda-foundation`; includes post-validation `b052c9a` fonts + `2328666` local-dev/CORS/redirect)  
-**Verifier**: independent sub-agent (author ≠ verifier); fix iteration 2 after review follow-ups
+**Diff range**: `ecd7639^..cb948cb` (branch `issue-170-web-onda-foundation`; includes `b052c9a` fonts, `2328666` local-dev/CORS/redirect, `cb948cb` CI wiring)  
+**Verifier**: independent sub-agent (author ≠ verifier); fix iteration 3 after CI wiring (`cb948cb`)
 
 ---
 
@@ -57,6 +57,15 @@
 | WHEN multiple ministry grants THEN picker shows `{{ministry}} · Líder` / `{{ministry}} · Voluntário` | i18n keys `shell:context.leader/volunteer` | `WorkingContextPicker.behavior.test.tsx:38-40` — `toHaveTextContent('Louvor · Líder')`, `Kids · Voluntário` | ✅ PASS |
 | WHEN demo role dropdown in serve-well THEN SHALL NOT exist | No role switcher / search | `AppShell.behavior.test.tsx:131-132` — `queryByLabelText(/switch role/i)` and `queryByPlaceholderText(/search/i)` not in document | ✅ PASS |
 
+### RST-ENG-01 — Quality gates (partial — CI wired in #170)
+
+| Criterion | Spec-defined outcome | Evidence | Result |
+| --------- | -------------------- | -------- | ------ |
+| `pnpm --filter @onda/web-onda` lint, typecheck, vitest in CI | Same bar as `web-next` automation | Root `test` + `typecheck-web-onda` job (`cb948cb`); CI green on PR #171 | ✅ PASS |
+| Coverage floors | Vitest thresholds enforced in CI | `vitest.config.ts` thresholds; root `test:coverage` + CI `coverage` job | ✅ PASS |
+| Playwright smoke | Browser smoke with API | `e2e/dashboard.smoke.spec.ts`; `playwright-web-onda` job green | ✅ PASS |
+| Manual 1440px side-by-side | Volunteer + Leader before cutover | PR test plan marked done by author; not re-verified in this pass | 🧑 HITL — pre-cutover |
+
 ### Issue #170 done-when
 
 | Criterion | Evidence | Result |
@@ -86,10 +95,12 @@
 
 ## Gate Check
 
-- **Build gate**: `pnpm --filter @onda/web-onda build`
-- **Typecheck gate**: `pnpm --filter @onda/web-onda typecheck`
-- **Test gate**: `pnpm --filter @onda/web-onda test`
-- **Result**: 3 passed, 0 failed, 0 skipped
+- **Build gate**: `pnpm --filter @onda/web-onda build` (CI `build` via `pnpm -r build`)
+- **Typecheck gate**: `pnpm typecheck:web-onda` (CI job `typecheck-web-onda`)
+- **Test gate**: root `pnpm test` includes `@onda/web-onda` (CI `test` job, 62 vitest)
+- **Coverage gate**: `pnpm --filter @onda/web-onda test:coverage` (CI `coverage` job, ~60% stmts)
+- **Playwright smoke**: `pnpm test:e2e:web-onda` (CI job `playwright-web-onda`, 2 specs)
+- **Result**: all gates green on PR #171 @ `cb948cb`
 - **Test count before feature** (`ecd7639^`): 0 (`apps/web-onda` did not exist)
 - **Test count after feature**: 62 (12 files) — +2 router index redirects (`router.test.ts`)
 - **Delta**: +62 tests
@@ -167,6 +178,7 @@ Do **not** block merge or close of #170. Pick up in polish or pre-cutover.
 | RST-FND-02 | Implementing | ✅ Verified |
 | RST-FND-03 | Implementing | ✅ Verified (Supabase path spec-precision only) |
 | RST-SHELL-01 | Implementing | ⚠️ Verified (manual 1440px + campus minor gaps) |
+| RST-ENG-01 | Not started | ⚠️ Partial — CI gates wired (`cb948cb`); 1440px HITL pre-cutover |
 | RST-VOL-01.. | Not started | ⏳ Phase 2+ |
 
 ---
@@ -183,7 +195,7 @@ Prior pass (2026-07-01): Specify + Design + Tasks — ✅ PASS. See git history 
 
 **Spec-anchored check**: 10/13 sub-criteria with matching assertions; 0 ❌ GAP; 4 ⚠️ spec-precision / manual  
 **Sensor**: 3/3 mutations killed  
-**Gate**: 3 passed (build, typecheck, 62 tests)
+**Gate**: CI green — build, lint, test (incl. 62 vitest), typecheck-web-onda, coverage, playwright-web-onda
 
 **What works**: Package scaffold, Onda theme contract, apiClient/auth dev path, i18n pt-BR default, working context module + picker labels, org provider, nav reaction to context switch, full §6 route registration + legacy redirects.
 
