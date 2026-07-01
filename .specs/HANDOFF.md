@@ -2,29 +2,36 @@
 
 ## Completed this session
 
-1. **#170 Phase 0–1 executed** on branch `issue-170-web-onda-foundation` — T01–T07 complete (`apps/web-onda`).
-2. **Verifier** — automated ACs PASS after gap-fix commit `4174fad` (i18n + picker label tests).
-3. **Validation report** — `.specs/features/frontend-restart-serve-well-base/validation.md` updated.
+1. **#170 Phase 0–1** — PR [#171](https://github.com/kairan/onda-volunteer/pull/171) merge-ready (CI green, review addressed).
+2. **Hygiene** — `docs/issues/done/170-*.md`, `tasks.md` T01–T07 + T16 marked done, next issues **#172–#175** created on GitHub.
+3. **CI** — `web-onda` in root `test`/`coverage`, `typecheck-web-onda`, `playwright-web-onda`.
 
 ## Next agent action
 
-Open PR from `issue-170-web-onda-foundation` → `main` for #170. Phase 2+ (T08–T17) remain out of scope per issue.
+1. **Merge PR #171** → closes #170.
+2. Label **[#172](https://github.com/kairan/onda-volunteer/issues/172)** `ready-for-agent` and start Phase 2 Volunteer (T08–T10).
+
+## Backlog (web-onda)
+
+| Issue | Phase | Tasks |
+|------:|-------|-------|
+| [#172](https://github.com/kairan/onda-volunteer/issues/172) | Volunteer | T08–T10 |
+| [#173](https://github.com/kairan/onda-volunteer/issues/173) | Leader | T11–T13 |
+| [#174](https://github.com/kairan/onda-volunteer/issues/174) | Admin | T14–T15 |
+| [#175](https://github.com/kairan/onda-volunteer/issues/175) | Cutover | T17 |
 
 ## Blockers
 
-None for PR/merge.
+- #172–#175 blocked until #170 merges (foundation on `main`).
 
 ## HITL
 
-- **Manual 1440px layout sign-off** (T06 / design.md §9) — not yet done; schedule before T17 cutover.
-- Visual sign-off checklist: `frontend-restart-serve-well-base/design.md` §9 — required before T17 cutover.
+- **1440px layout sign-off** (design.md §9) — required before **#175** cutover; author signed off manually on PR #171 for foundation.
 
 ## Doc map (quick)
 
 | Need | Path |
 |------|------|
-| Active TLC | `.specs/features/frontend-restart-serve-well-base/`, `working-context-picker/` |
-| Validation | `.specs/features/frontend-restart-serve-well-base/validation.md` |
-| Frozen migration (salvage) | `.specs/features/frontend-migration-web-next/` |
-| Shipped TLC detail | `.specs/archive/features/INDEX.md` |
-| Ship records | `docs/issues/done/` |
+| Active TLC | `.specs/features/frontend-restart-serve-well-base/` |
+| Shipped #170 | `docs/issues/done/170-web-onda-foundation-phase-0-1.md` |
+| Next execute | `docs/issues/172-web-onda-phase-2-volunteer.md` |

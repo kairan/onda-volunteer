@@ -1,7 +1,7 @@
 # Frontend restart — serve-well + API — Tasks
 
 **Design**: [design.md](./design.md)  
-**Status**: Planning complete — Execute not started (2026-07-01)
+**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2+ tracked as #172–#175
 
 ## Execution plan
 
@@ -195,7 +195,7 @@ Phase 5:  T16 → T17
 **What**: Add `@onda/web-onda` to `ci.yml`, coverage floors, Playwright config.
 
 **Done when**:
-- [ ] PR CI green for web-onda
+- [x] PR CI green for web-onda
 
 ---
 
@@ -215,6 +215,6 @@ Phase 5:  T16 → T17
 ## Verify (feature closeout)
 
 - [ ] All RST-* requirements traced to tasks
-- [ ] `docs/issues/done/` entry created
+- [x] `docs/issues/done/` entry created (#170)
 - [ ] `frontend-migration-web-next` archived with redirect stub
-- [ ] #148 closed as superseded or cancelled with link to this feature
+- [x] #148 closed as superseded or cancelled with link to this feature
