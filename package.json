@@ -7,6 +7,7 @@
     "typecheck:api": "pnpm --filter @onda/api typecheck",
     "typecheck:web": "pnpm --filter @onda/web typecheck",
     "typecheck:web-next": "pnpm --filter @onda/web-next typecheck",
+    "typecheck:web-onda": "pnpm --filter @onda/web-onda typecheck",
     "test": "pnpm --filter @onda/api test && pnpm --filter @onda/web test && pnpm --filter @onda/web-next test",
     "test:coverage": "pnpm --filter @onda/api test:coverage && pnpm --filter @onda/web test:coverage",
     "test:e2e:web": "PLAYWRIGHT_WITH_API=true pnpm --filter @onda/web test:e2e",
@@ -14,6 +15,7 @@
     "dev:api": "pnpm --filter @onda/api dev",
     "dev:web": "pnpm --filter @onda/web dev",
     "dev:web-next": "pnpm --filter @onda/web-next dev",
+    "dev:web-onda": "pnpm --filter @onda/web-onda dev",
     "link:volunteer-auth": "pnpm --filter @onda/api link:volunteer-auth"
   },
   "packageManager": "pnpm@11.1.2",
