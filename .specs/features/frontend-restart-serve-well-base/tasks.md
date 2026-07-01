@@ -23,8 +23,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next` vite/tsconfig as template (not source copy)
 
 **Done when**:
-- [ ] `pnpm --filter @onda/web-onda build` succeeds
-- [ ] `pnpm --filter @onda/web-onda typecheck` succeeds
+- [x] `pnpm --filter @onda/web-onda build` succeeds
+- [x] `pnpm --filter @onda/web-onda typecheck` succeeds
 
 ---
 
@@ -35,8 +35,8 @@ Phase 5:  T16 → T17
 **Reuses**: `design-reference/serve-well/`; `apps/web-next/src/theme/theme.contract.test.ts` (adapt package name)
 
 **Done when**:
-- [ ] Theme contract test passes (Onda vars present, HOPE vars absent)
-- [ ] Button/Card/Sidebar render in smoke test
+- [x] Theme contract test passes (Onda vars present, HOPE vars absent)
+- [x] Button/Card/Sidebar render in smoke test
 
 ---
 
@@ -47,8 +47,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/{api,auth,query,i18n}`
 
 **Done when**:
-- [ ] `apiClient` unit tests pass
-- [ ] Auth session provider tests pass (port or minimal)
+- [x] `apiClient` unit tests pass
+- [x] Auth session provider tests pass (port or minimal)
 
 ---
 

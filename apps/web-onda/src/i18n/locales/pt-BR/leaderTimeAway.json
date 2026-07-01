@@ -1,0 +1,38 @@
+{
+  "eyebrow": "Apoio de líder",
+  "title": "Ausências do voluntário",
+  "body": "Registre ou ajuste indisponibilidade em nome de um voluntário em um ministério que você lidera. Isso é separado do autoatendimento Ausências do voluntário.",
+  "selfServiceLink": "← Voltar às suas ausências",
+  "ministry": "Ministério que você lidera",
+  "volunteer": "Voluntário",
+  "selectVolunteer": "Selecione um voluntário",
+  "listHeading": "Indisponibilidades do voluntário",
+  "loading": "Carregando…",
+  "emptyState": "Nenhuma indisponibilidade futura para este voluntário nos ministérios que você lidera.",
+  "createHeading": "Adicionar em nome do voluntário",
+  "editHeading": "Editar indisponibilidade",
+  "form": {
+    "startsAt": "Início",
+    "endsAt": "Fim",
+    "submit": "Salvar para o voluntário",
+    "submitting": "Salvando…",
+    "cancelEdit": "Cancelar edição"
+  },
+  "successCreate": "Indisponibilidade salva para o voluntário.",
+  "successUpdate": "Indisponibilidade atualizada.",
+  "successDelete": "Indisponibilidade removida.",
+  "actions": {
+    "edit": "Editar",
+    "delete": "Remover",
+    "deleting": "Removendo…"
+  },
+  "errors": {
+    "ministryRequired": "Selecione um ministério que você lidera.",
+    "volunteerRequired": "Selecione um voluntário.",
+    "startsAtRequired": "Informe o horário de início.",
+    "endsAtRequired": "Informe o horário de fim.",
+    "invalidWindow": "O fim deve ser depois do início.",
+    "summary": "Corrija os campos destacados e tente novamente.",
+    "deleteFailed": "Não foi possível remover esta indisponibilidade. Tente novamente."
+  }
+}

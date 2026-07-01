@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
-import { vi } from 'vitest';
+import { afterEach, vi } from 'vitest';
+import { resetAppToastOrchestratorForTests } from '@/feedback/toastOrchestrator';
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -16,3 +17,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 window.scrollTo = vi.fn();
+
+afterEach(() => {
+  resetAppToastOrchestratorForTests();
+});
