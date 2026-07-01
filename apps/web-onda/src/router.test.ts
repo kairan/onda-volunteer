@@ -63,6 +63,45 @@ describe('buildRouteTree', () => {
     }
   });
 
+  it('redirects / to /dashboard when dev auth bypass is available', async () => {
+    vi.spyOn(authSession, 'devAuthBypassAllowed').mockReturnValue(true);
+    vi.spyOn(authSession, 'demoVolunteerId').mockReturnValue('seed-volunteer-demo');
+    vi.spyOn(authSession, 'volunteerIdForProtectedRequests').mockReturnValue(
+      'seed-volunteer-demo',
+    );
+    authSession.syncAuthVolunteerId({
+      status: 'dev-bypass',
+      volunteerId: 'seed-volunteer-demo',
+    });
+
+    const routeTree = buildRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/'] });
+    const router = createRouter({ routeTree, history });
+
+    await router.load();
+
+    expect(history.location.pathname).toBe('/dashboard');
+  });
+
+  it('redirects / to /auth when unauthenticated', async () => {
+    vi.spyOn(authSession, 'devAuthBypassAllowed').mockReturnValue(false);
+    vi.spyOn(authSession, 'demoVolunteerId').mockReturnValue(undefined);
+    vi.spyOn(authSession, 'volunteerIdForProtectedRequests').mockReturnValue(undefined);
+    vi.spyOn(supabaseClient, 'getSupabaseClient').mockReturnValue(null);
+    authSession.syncAuthVolunteerId({
+      status: 'unauthenticated',
+      reason: 'signed-out',
+    });
+
+    const routeTree = buildRouteTree();
+    const history = createMemoryHistory({ initialEntries: ['/'] });
+    const router = createRouter({ routeTree, history });
+
+    await router.load();
+
+    expect(history.location.pathname).toBe('/auth');
+  });
+
   it('redirects unauthenticated dashboard access to /auth', async () => {
     vi.spyOn(authSession, 'devAuthBypassAllowed').mockReturnValue(false);
     vi.spyOn(authSession, 'demoVolunteerId').mockReturnValue(undefined);

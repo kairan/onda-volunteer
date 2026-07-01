@@ -6,6 +6,10 @@ import {
   redirect,
 } from '@tanstack/react-router';
 import { shellRouteErrorMessage } from '@/api/apiError';
+import {
+  devAuthBypassAllowed,
+  volunteerIdForProtectedRequests,
+} from '@/auth/authSession';
 import { AuthPage } from '@/routes/auth';
 import { placeholderPage } from '@/routes/placeholders';
 import { UserSelectPage } from '@/routes/userSelect';
@@ -15,6 +19,7 @@ import { shellRoute } from '@/shell/shellRoute';
 import { ensureShellRouteAuth } from '@/shell/shellRouteAuth';
 import { SystemAdminShell } from '@/system-admin/SystemAdminShell';
 import { ensureSystemAdminRouteAccess } from '@/system-admin/ensureSystemAdminRouteAccess';
+import { getSupabaseClient } from '@/supabaseClient';
 import {
   SystemAdminChurchDetailPage,
   SystemAdminChurchesPage,
@@ -74,6 +79,28 @@ function systemAdminErrorComponent({
 }
 
 const shellBeforeLoad = () => ensureShellRouteAuth();
+
+async function redirectFromAppRoot(): Promise<void> {
+  if (volunteerIdForProtectedRequests() || devAuthBypassAllowed()) {
+    throw redirect({ to: '/dashboard', replace: true });
+  }
+
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      throw redirect({ to: '/dashboard', replace: true });
+    }
+  }
+
+  throw redirect({ to: '/auth', replace: true });
+}
+
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  beforeLoad: () => redirectFromAppRoot(),
+});
 
 const authRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -231,6 +258,7 @@ const systemAdminSchedulingEventDetailRoute = createRoute({
 
 export function buildRouteTree() {
   return rootRoute.addChildren([
+    indexRoute,
     authRoute,
     userSelectRoute,
     legacyEventRedirectRoute,
