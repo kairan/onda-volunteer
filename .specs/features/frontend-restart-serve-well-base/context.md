@@ -30,8 +30,8 @@ Captured 2026-07-01. Product owner direction: **visual layer of `web-next` is no
 | RST-07 | Working context (**ministério · chapéu**) in **Foundation** shell | See [working-context-picker](../working-context-picker/) — not a later patch |
 | RST-08 | Reject Lovable **demo role dropdown** | Use Church/Campus + working context + grants |
 | RST-09 | `apps/web` remains **production** until single cutover of new package | No multi-month dual deploy of three apps |
-| RST-11 | At cutover, **delete** `apps/web` and `apps/web-next` from monorepo | Avoid three frontend packages permanently; git history preserves old code |
 | RST-10 | Admin / System Admin: **functional port** with inherited Onda tokens | Same as MIG-ADMIN-01 — no bespoke redesign v1 |
+| RST-11 | At cutover, **delete** `apps/web` and `apps/web-next` from monorepo | Avoid three frontend packages permanently; git history preserves old code |
 
 ---
 

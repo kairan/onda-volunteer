@@ -95,7 +95,7 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/router.tsx` route list
 
 **Done when**:
-- [ ] All paths in spec §6 resolve without 404
+- [ ] All paths in design.md §6 resolve without 404
 - [ ] `router.test.ts` passes
 
 ---

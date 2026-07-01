@@ -7,7 +7,7 @@
 
 ## Context
 
-`apps/web-next` ported API behavior (TanStack Query, auth, organization, routes) but built UI by cherry-picking Onda tokens onto patterns from `apps/web`. The result did not match the **serve-well** Lovable prototype stakeholders validated. Continuing #148 would ship an rejected visual layer.
+`apps/web-next` ported API behavior (TanStack Query, auth, organization, routes) but built UI by cherry-picking Onda tokens onto patterns from `apps/web`. The result did not match the **serve-well** Lovable prototype stakeholders validated. Continuing #148 would ship a rejected visual layer.
 
 The team will **restart the church-role frontend** with presentation copied from `design-reference/serve-well/` and attach the existing REST + Supabase integration as a thin data layer — not another in-place visual port.
 
