@@ -1,7 +1,7 @@
 # Frontend rebuild — `web-next` — Tasks
 
 **Design**: [./design.md](./design.md)  
-**Status**: Slices 1–5 shipped — validated 2026-06-24 ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)); Slice 6 Execute continues ([#148](https://github.com/kairan/onda-volunteer/issues/148); T28 shipped via [#157](https://github.com/kairan/onda-volunteer/pull/157))
+**Status**: Slices 1–5 shipped — validated 2026-06-24 ([#143](https://github.com/kairan/onda-volunteer/issues/143)–[#147](https://github.com/kairan/onda-volunteer/issues/147)); **Slice 6 frozen** 2026-07-01 — superseded by [frontend-restart-serve-well-base](../frontend-restart-serve-well-base/) (ADR [0007](../../../docs/adr/0007-frontend-serve-well-plus-api.md))
 
 ## GitHub issue map
 
@@ -12,7 +12,7 @@
 | [#145](https://github.com/kairan/onda-volunteer/issues/145) | T18–T23 | Ministry Leader screens | ✅ Shipped ([#158](https://github.com/kairan/onda-volunteer/pull/158)) |
 | [#146](https://github.com/kairan/onda-volunteer/issues/146) | T24 | Org-admin routes functional port | ✅ Shipped ([#159](https://github.com/kairan/onda-volunteer/pull/159)) |
 | [#147](https://github.com/kairan/onda-volunteer/issues/147) | T25–T26 | System Admin functional port | ✅ Shipped ([#160](https://github.com/kairan/onda-volunteer/pull/160)) |
-| [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | Open — **ready for agent** (T28 ✅; T27 partial; T29–T30 pending) |
+| [#148](https://github.com/kairan/onda-volunteer/issues/148) | T27–T30 | CI parity & cutover | **Frozen** 2026-07-01 — do not execute; successor `frontend-restart-serve-well-base` |
 
 ## Verify (Slice 1 closeout — #143)
 
