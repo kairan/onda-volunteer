@@ -204,3 +204,141 @@ Prior pass (2026-07-01): Specify + Design + Tasks — ✅ PASS. See git history 
 **Deferred / HITL**: 1440px layout sign-off (human), campus test (minor). See [Deferred / HITL](#deferred--hitl-not-blocking-170).
 
 **Next steps**: Merge branch; close #170; Phase 2+ (T08–T17) in follow-up issues.
+
+---
+
+# Phase 2 — Volunteer vertical slice (#172, T08–T10) Validation
+
+**Date**: 2026-07-03  
+**Spec**: `.specs/features/frontend-restart-serve-well-base/spec.md` (RST-VOL-01)  
+**Issue**: [#172](https://github.com/kairan/onda-volunteer/issues/172) · PR [#176](https://github.com/kairan/onda-volunteer/pull/176)  
+**Diff range**: `61b6118..HEAD` (`feat/172-web-onda-volunteer-slice` + verify fixes)  
+**Verifier**: independent pass (author ≠ verifier)  
+**Re-verified**: 2026-07-03 after Fix 1–3 (e2e church pin, seed future dates, edit behavior test)
+
+---
+
+## Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T08 Volunteer dashboard | ✅ Done | Live queries wired; behavior + e2e smoke green |
+| T09 Volunteer `/scheduling` | ✅ Done | Grid + `AssignmentCard`; loading/empty covered |
+| T10 Time away CRUD | ✅ Done | Create/edit/delete + ministry pre-select; pessimistic mutations |
+| T10.1 Optional description | ✅ Done | API column + POST/PATCH; textarea in modals; list display |
+
+---
+
+## Spec-Anchored Acceptance Criteria (RST-VOL-01 + #172 slice gates)
+
+| Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
+| ------------------------- | -------------------- | ----------------------- | ------ |
+| WHEN `/dashboard` renders THEN serve-well layout + live greeting | Heading `Hi {displayName}` from identity/auth | `dashboard.behavior.test.tsx:21-23` — `findByRole('heading', { name: /hi alex volunteer/i })` | ✅ PASS |
+| WHEN `/dashboard` renders THEN assignment summary from live query | `{{count}} upcoming assignments` with count from API | `dashboard.behavior.test.tsx:30` — `findByText('1 upcoming assignments')` | ✅ PASS |
+| WHEN `/dashboard` renders THEN time-away preview + View all | Ministry row + link `href=/time-away` | `dashboard.behavior.test.tsx:37-41` — `findByText('Hospitality')` + `getByRole('link', { name: 'View all' }).toHaveAttribute('href', '/time-away')` | ✅ PASS |
+| WHEN dashboard empty THEN empty states | `0 upcoming assignments` + time-away empty copy | `dashboard.behavior.test.tsx:71-76` — `findByText('No upcoming time away recorded.')` + `getByText('0 upcoming assignments')` | ✅ PASS |
+| WHEN volunteer `/scheduling` renders THEN assignment card grid | `md:grid-cols-2` grid, event title, role, Confirmed badge | `scheduling.behavior.test.tsx:21-26` — `toHaveClass('md:grid-cols-2')`, `getByText('Sunday Service')`, `getByText('Confirmed')` | ✅ PASS |
+| WHEN volunteer `/scheduling` THEN omit Accept/Decline/pending | No accept/decline buttons; no pending text | `scheduling.behavior.test.tsx:32-34` — `queryByRole('button', { name: /accept/i })` is null | ✅ PASS |
+| WHEN assignments empty THEN empty state | Copy from i18n empty message | `scheduling.behavior.test.tsx:64-68` — `findByTestId('volunteer-assignments-empty')` text content | ✅ PASS |
+| WHEN assignments loading THEN skeleton | Loading test id visible until resolve | `scheduling.behavior.test.tsx:102-109` — `findByTestId('volunteer-assignments-loading')` then empty | ✅ PASS |
+| WHEN `/time-away` renders THEN rows grouped by ministry | Ministry heading + page heading | `timeAway.behavior.test.tsx:63-64` — `findByRole('heading', { name: 'Hospitality' })` | ✅ PASS |
+| WHEN create unavailability THEN POST pessimistic mutation | `mutateJson` POST to `/volunteers/{id}/unavailability` | `timeAway.behavior.test.tsx:81-86` — `mutateJson` called with `method: 'POST'` | ✅ PASS |
+| WHEN create fails THEN inline error (ADR 0001) | Alert with API message; dialog stays open | `timeAway.behavior.test.tsx:153-155` — `findByRole('alert')` text `Overlaps existing unavailability` | ✅ PASS |
+| WHEN delete THEN confirm dialog + DELETE + list refresh | Confirm heading; DELETE call; empty list after refetch | `timeAway.behavior.test.tsx:199-209` — `mutateJson` `{ method: 'DELETE' }` + empty copy | ✅ PASS |
+| WHEN create dialog opens THEN ministry pre-selected from working context | Select value = stored ministry id | `timeAway.behavior.test.tsx:131-133` — `ministrySelect.value` `toBe('ministry-1')` | ✅ PASS |
+| WHEN create/edit time away THEN optional description persisted (RST-VOL-01 §5) | POST/PATCH body includes trimmed description; list shows text | `timeAway.behavior.test.tsx:77-86` — body contains `"description":"Family vacation"`; `volunteerQueries.test.ts:85-103`; `unavailability.e2e-spec.ts` Pending membership create | ✅ PASS |
+| WHEN update unavailability THEN PATCH pessimistic (T10 CRUD) | PATCH via dialog; list refetch after success | `timeAway.behavior.test.tsx:274-281` — `mutateJson` `method: 'PATCH'`; dialog closes; refetch ≥2 | ✅ PASS |
+| WHEN layout matches serve-well at 1440px | Side-by-side visual parity | — | ⚠️ Spec-precision gap (RST-ENG-01 HITL deferred) |
+| WHEN Playwright smoke with real API THEN volunteer paths show seed data | `1 upcoming assignments`, `Sunday Gathering`, time-away preview | `dashboard.smoke.spec.ts:16-21`, `scheduling.smoke.spec.ts:10` | ✅ PASS |
+
+**Status**: ✅ All automated ACs covered; 1 ⚠️ HITL visual sign-off deferred
+
+---
+
+## Verify Fixes Applied (2026-07-03)
+
+| Fix | Change | Verified |
+| --- | ------ | -------- |
+| E2E church + working context | `e2e/fixtures.ts` pins `seed-church-demo` / campus / volunteer context when API-backed | `pnpm test:e2e:web-onda` 3/3 |
+| Seed demo dates rolling forward | `apps/api/prisma/seed.ts` uses `SEED_DEMO_EVENT_DAY_OFFSET` (14d) so assignments/unavailability stay upcoming | e2e + `scheduling-event-roster.integration.spec.ts` dates aligned |
+| Edit behavior test | `timeAway.behavior.test.tsx` PATCH flow | 84 vitest pass |
+
+---
+
+## Discrimination Sensor
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| 1 | `dashboard.tsx:80` | Force assignment count to `0` instead of `data.length` | ✅ Killed (`dashboard.behavior.test.tsx` count test) |
+| 2 | `unavailabilityMutations.ts` | Change DELETE → GET | ✅ Killed (`volunteerQueries.test.ts:138`) |
+| 3 | `VolunteerMyAssignmentsPage.tsx` | `md:grid-cols-2` → `md:grid-cols-1` | ✅ Killed (`scheduling.behavior.test.tsx:22`) |
+
+**Sensor depth**: lightweight (3 targeted mutations)  
+**Result**: 3/3 killed — ✅ PASS
+
+---
+
+## Code Quality
+
+| Principle | Status |
+| --------- | ------ |
+| Minimum code / surgical changes | ✅ Reuses web-next query/mutation patterns |
+| No scope creep | ✅ Leader scheduling left as placeholder |
+| Matches patterns | ✅ TanStack Query, RTL + userEvent, i18n namespaces |
+| Spec-anchored outcome check | ✅ |
+| Per-layer coverage | ✅ Domain queries 1:1; routes happy+edge+error incl. edit |
+| Documented guidelines | ✅ `AGENTS.md` (userEvent, dev headers) |
+
+---
+
+## Edge Cases
+
+- [x] Dashboard: zero assignments + zero unavailability (`dashboard.behavior.test.tsx:44-77`)
+- [x] Scheduling: empty + loading skeleton (`scheduling.behavior.test.tsx:37-110`)
+- [x] Time away: create API error inline (`timeAway.behavior.test.tsx:136-159`)
+- [x] Time away: delete confirm before mutation (`timeAway.behavior.test.tsx:212-232`)
+- [x] Time away: edit/update dialog PATCH + refetch (`timeAway.behavior.test.tsx:212-285`)
+
+---
+
+## Gate Check
+
+| Gate | Command | Result |
+| ---- | ------- | ------ |
+| Vitest | `pnpm --filter @onda/web-onda test` | ✅ 84 passed (was 62 pre–Phase 2; **+22**) |
+| Typecheck | `pnpm typecheck:web-onda` | ✅ pass |
+| Build | `pnpm --filter @onda/web-onda build` | ✅ pass |
+| Playwright (API-backed) | `pnpm test:e2e:web-onda` | ✅ **3 passed** |
+
+**Skipped tests**: none
+
+---
+
+## Fix Plans
+
+_All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-cutover (RST-ENG-01)._
+
+---
+
+## Requirement Traceability Update (Phase 2)
+
+| Requirement | Previous | New Status |
+| ----------- | -------- | ---------- |
+| RST-VOL-01 | ⏳ Phase 2+ | ✅ Verified — automated gates green; 1440px HITL deferred |
+| RST-ENG-01 | ⚠️ Partial | ⚠️ Partial — automated gates green; manual 1440px pre-cutover |
+
+---
+
+## Summary (Phase 2)
+
+**Overall**: ✅ **Ready to close #172** — all automated slice gates green
+
+**Spec-anchored check**: 16/16 automated criteria matched; 1 ⚠️ HITL visual (deferred)  
+**Sensor**: 3/3 mutations killed  
+**Gate**: Vitest 84, build, typecheck, Playwright 3/3 green
+
+**What works**: Live volunteer dashboard, assignments grid, time-away full CRUD with pessimistic mutations, API-backed Playwright smoke, rolling seed demo dates.
+
+**Blocking #172?** No — merge after CI green.
+
+**Deferred**: Side-by-side serve-well vs web-onda at 1440px (RST-ENG-01 human sign-off).

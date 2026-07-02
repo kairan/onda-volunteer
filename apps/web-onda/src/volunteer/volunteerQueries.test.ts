@@ -87,6 +87,7 @@ describe('unavailabilityMutations', () => {
       ministryId: 'min-1',
       startsAtUtc: '2026-07-01T00:00:00.000Z',
       endsAtUtc: '2026-07-02T00:00:00.000Z',
+      description: 'Family trip',
     });
 
     expect(apiClient.mutateJson).toHaveBeenCalledWith(
@@ -98,6 +99,7 @@ describe('unavailabilityMutations', () => {
           ministryId: 'min-1',
           startsAtUtc: '2026-07-01T00:00:00.000Z',
           endsAtUtc: '2026-07-02T00:00:00.000Z',
+          description: 'Family trip',
         }),
       }),
     );
@@ -118,12 +120,20 @@ describe('unavailabilityMutations', () => {
       actingVolunteerId: 'vol-1',
       startsAtUtc: '2026-07-03T00:00:00.000Z',
       endsAtUtc: '2026-07-04T00:00:00.000Z',
+      description: 'Updated note',
     });
 
     expect(apiClient.mutateJson).toHaveBeenCalledWith(
       '/unavailability/away-1',
       { volunteerId: 'vol-1' },
-      expect.objectContaining({ method: 'PATCH' }),
+      expect.objectContaining({
+        method: 'PATCH',
+        body: JSON.stringify({
+          startsAtUtc: '2026-07-03T00:00:00.000Z',
+          endsAtUtc: '2026-07-04T00:00:00.000Z',
+          description: 'Updated note',
+        }),
+      }),
     );
   });
 

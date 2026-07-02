@@ -109,6 +109,7 @@
 2. WHEN volunteer `/scheduling` renders THEN layout SHALL match serve-well assignment card grid (`VolunteerDashboard` assignments section / `/assignments` route).
 3. WHEN empty/loading THEN skeleton/empty states SHALL follow ui-refresh UI-VOL-05 patterns.
 4. **Omit:** Accept/Decline, location rows, pending badges (unchanged deferrals).
+5. WHEN volunteer creates or edits time away THEN an optional **description** textarea SHALL be available (serve-well “Reason” parity), persisted on `Unavailability`, and shown in the list when set.
 
 ### RST-LEAD-01 ⭐ MVP — Leader screens (serve-well layout + API)
 

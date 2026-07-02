@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 3,
+  "next_id": 4,
   "lessons": [
     {
       "id": "L-001",
@@ -40,6 +40,24 @@
       ],
       "created": "2026-07-01T15:57:04Z",
       "last_seen": "2026-07-01T15:57:04Z"
+    },
+    {
+      "id": "L-003",
+      "key": "gate_fail::api backed playwright smoke must pin org church campus localstorage to the seed church that owns demo assignments or assertions on assignment counts will flake against the default church",
+      "text": "API-backed Playwright smoke must pin org church/campus localStorage to the seed church that owns demo assignments, or assertions on assignment counts will flake against the default church.",
+      "signal": "gate_fail",
+      "scope": "",
+      "status": "candidate",
+      "features": [
+        "frontend-restart-serve-well-base"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md Phase 2 e2e"
+      ],
+      "created": "2026-07-02T23:27:06Z",
+      "last_seen": "2026-07-02T23:27:06Z"
     }
   ]
 }

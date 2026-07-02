@@ -19,6 +19,7 @@ export type VolunteerUnavailability = {
   id: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
   ministry: {
     id: string;
     name: string;
@@ -28,6 +29,7 @@ export type VolunteerUnavailability = {
 export type CreateUnavailabilityResult = {
   id: string;
   ministryId: string;
+  description?: string | null;
   window: {
     startsAtUtc: string;
     endsAtUtc: string;

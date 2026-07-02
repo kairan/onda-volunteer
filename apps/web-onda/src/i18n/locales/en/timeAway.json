@@ -13,6 +13,8 @@
     "ministry": "Ministry",
     "startsAt": "Starts",
     "endsAt": "Ends",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Family vacation, travel, etc.",
     "submit": "Save unavailability",
     "submitting": "Saving...",
     "saveEdit": "Save changes",

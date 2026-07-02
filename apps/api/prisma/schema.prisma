@@ -191,6 +191,7 @@ model Unavailability {
   ministryId  String
   startsAtUtc DateTime  @db.Timestamptz
   endsAtUtc   DateTime  @db.Timestamptz
+  description String?
   volunteer   Volunteer @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
   ministry    Ministry  @relation(fields: [ministryId], references: [id], onDelete: Cascade)
 

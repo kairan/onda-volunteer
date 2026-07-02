@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { ministriesForWritePickers } from '@/organization/ministryArchive';
 import { useOrganization } from '@/organization/OrganizationProvider';
 import { queryKeys } from '@/query/queryKeys';
@@ -93,6 +94,7 @@ export function TimeAwayPage() {
   const [ministryId, setMinistryId] = useState('');
   const [startsAt, setStartsAt] = useState('');
   const [endsAt, setEndsAt] = useState('');
+  const [description, setDescription] = useState('');
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const [editingRow, setEditingRow] = useState<VolunteerUnavailability | null>(
@@ -100,6 +102,7 @@ export function TimeAwayPage() {
   );
   const [editStartsAt, setEditStartsAt] = useState('');
   const [editEndsAt, setEditEndsAt] = useState('');
+  const [editDescription, setEditDescription] = useState('');
   const [editFieldErrors, setFieldErrorsForEdit] = useState<FieldErrors>({});
 
   const [deleteTarget, setDeleteTarget] = useState<VolunteerUnavailability | null>(
@@ -120,6 +123,7 @@ export function TimeAwayPage() {
       setMinistryId(defaultMinistryId);
       setStartsAt('');
       setEndsAt('');
+      setDescription('');
       setFieldErrors({});
     }
   }, [createOpen, defaultMinistryId]);
@@ -143,6 +147,7 @@ export function TimeAwayPage() {
       setMinistryId('');
       setStartsAt('');
       setEndsAt('');
+      setDescription('');
       setFieldErrors({});
       await invalidateUnavailability();
     },
@@ -241,6 +246,7 @@ export function TimeAwayPage() {
       ministryId,
       startsAtUtc: datetimeLocalToUtcIso(startsAt),
       endsAtUtc: datetimeLocalToUtcIso(endsAt),
+      description: description.trim() || null,
     });
   }
 
@@ -259,6 +265,7 @@ export function TimeAwayPage() {
       actingVolunteerId: volunteerId,
       startsAtUtc: datetimeLocalToUtcIso(editStartsAt),
       endsAtUtc: datetimeLocalToUtcIso(editEndsAt),
+      description: editDescription.trim() || null,
     });
   }
 
@@ -266,6 +273,7 @@ export function TimeAwayPage() {
     setEditingRow(row);
     setEditStartsAt(utcIsoToDatetimeLocalInput(row.startsAtUtc));
     setEditEndsAt(utcIsoToDatetimeLocalInput(row.endsAtUtc));
+    setEditDescription(row.description ?? '');
     setFieldErrorsForEdit({});
   }
 
@@ -350,6 +358,11 @@ export function TimeAwayPage() {
                               i18n.language,
                             )}
                           </p>
+                          {row.description ? (
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {row.description}
+                            </p>
+                          ) : null}
                         </div>
                         <Button
                           size="icon"
@@ -441,6 +454,21 @@ export function TimeAwayPage() {
                   ) : null}
                 </div>
               </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="time-away-description"
+                  className="text-sm font-medium"
+                >
+                  {t('form.description')}
+                </label>
+                <Textarea
+                  id="time-away-description"
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                  placeholder={t('form.descriptionPlaceholder')}
+                  rows={3}
+                />
+              </div>
               {fieldErrors.summary ? (
                 <p className="text-sm text-destructive" role="alert">
                   {fieldErrors.summary}
@@ -512,6 +540,21 @@ export function TimeAwayPage() {
                     </p>
                   ) : null}
                 </div>
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="time-away-edit-description"
+                  className="text-sm font-medium"
+                >
+                  {t('form.description')}
+                </label>
+                <Textarea
+                  id="time-away-edit-description"
+                  value={editDescription}
+                  onChange={(event) => setEditDescription(event.target.value)}
+                  placeholder={t('form.descriptionPlaceholder')}
+                  rows={3}
+                />
               </div>
               {editFieldErrors.summary ? (
                 <p className="text-sm text-destructive" role="alert">

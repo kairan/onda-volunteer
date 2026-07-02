@@ -28,6 +28,7 @@ type CreateUnavailabilityBody = {
   ministryId: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
 };
 
 @Controller()
@@ -82,13 +83,14 @@ export class AssignmentsController {
   updateUnavailability(
     @Param('unavailabilityId') unavailabilityId: string,
     @AuthContext() auth: AuthenticatedRequestContext,
-    @Body() body: { startsAtUtc: string; endsAtUtc: string },
+    @Body() body: { startsAtUtc: string; endsAtUtc: string; description?: string | null },
   ) {
     return this.scheduling.updateUnavailability({
       unavailabilityId,
       auth,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
+      description: body.description,
     });
   }
 
@@ -166,6 +168,7 @@ export class AssignmentsController {
       ministryId: body.ministryId,
       startsAtUtc: body.startsAtUtc,
       endsAtUtc: body.endsAtUtc,
+      description: body.description,
     });
   }
 }

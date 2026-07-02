@@ -37,6 +37,27 @@ function parseInstant(label: string, iso: string): Date {
   return parsed;
 }
 
+const UNAVAILABILITY_DESCRIPTION_MAX_LENGTH = 500;
+
+function normalizeUnavailabilityDescription(
+  value: string | null | undefined,
+): string | null {
+  if (value == null) {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (trimmed.length > UNAVAILABILITY_DESCRIPTION_MAX_LENGTH) {
+    throw new BadRequestException({
+      code: 'DESCRIPTION_TOO_LONG',
+      message: `Description must be at most ${UNAVAILABILITY_DESCRIPTION_MAX_LENGTH} characters.`,
+    });
+  }
+  return trimmed;
+}
+
 function assertAssignmentGuards(
   input: Parameters<typeof validateAssignmentGuards>[0],
 ): void {
@@ -76,6 +97,7 @@ export type CreateUnavailabilityInput = {
   ministryId: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
 };
 
 export type GetVolunteerAssignmentsInput = {
@@ -95,6 +117,7 @@ export type UpdateUnavailabilityInput = {
   auth: AuthenticatedRequestContext;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
 };
 
 export type DeleteUnavailabilityInput = {
@@ -609,12 +632,14 @@ export class SchedulingService {
         ministryId: input.ministryId,
         startsAtUtc: u0,
         endsAtUtc: u1,
+        description: normalizeUnavailabilityDescription(input.description),
       },
     });
 
     return {
       id: created.id,
       ministryId: created.ministryId,
+      description: created.description,
       window: {
         startsAtUtc: created.startsAtUtc.toISOString(),
         endsAtUtc: created.endsAtUtc.toISOString(),
@@ -662,12 +687,18 @@ export class SchedulingService {
       data: {
         startsAtUtc: u0,
         endsAtUtc: u1,
+        ...(input.description !== undefined
+          ? {
+              description: normalizeUnavailabilityDescription(input.description),
+            }
+          : {}),
       },
     });
 
     return {
       id: updated.id,
       ministryId: updated.ministryId,
+      description: updated.description,
       window: {
         startsAtUtc: updated.startsAtUtc.toISOString(),
         endsAtUtc: updated.endsAtUtc.toISOString(),

@@ -17,10 +17,9 @@ test.describe('dashboard @smoke', () => {
     await expect(
       page.getByRole('heading', { name: 'Time away', exact: true }),
     ).toBeVisible();
-    await expect(
-      page.getByText('No upcoming time away recorded.'),
-    ).toBeVisible();
-    await expect(page.getByRole('link', { name: 'View all' })).toBeVisible();
+    const timeAway = page.getByRole('region', { name: 'Time away' });
+    await expect(timeAway.getByText('Hospitality', { exact: true })).toBeVisible();
+    await expect(timeAway.getByRole('link', { name: 'View all' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible();
   });
 });

@@ -15,6 +15,7 @@ Phase 0–1 scaffolded placeholder routes. Volunteers need live `/dashboard`, vo
 - **T08** — `/dashboard`: serve-well `VolunteerDashboard` layout; `volunteerAssignmentsQuery`, unavailability preview
 - **T09** — Volunteer `/scheduling`: serve-well assignment cards; live assignments query
 - **T10** — `/time-away`: serve-well list + dialog; unavailability CRUD; ministry pre-selected from working context
+- **T10.1** — Optional unavailability **description** (API + create/edit textarea + list display; serve-well Reason parity)
 
 **Reuses:** `design-reference/serve-well/` dashboards; `apps/web-next/src/routes/{dashboard,scheduling,timeAway}.tsx` data wiring; `apps/web-next/src/volunteer/*` queries
 
@@ -23,6 +24,7 @@ Phase 0–1 scaffolded placeholder routes. Volunteers need live `/dashboard`, vo
 - [ ] **T08** — Live dashboard: greeting, assignment count, time-away preview + "View all"
 - [ ] **T09** — Volunteer My Assignments grid at `/scheduling` (working context = volunteer)
 - [ ] **T10** — Time away CRUD with pessimistic mutations and inline errors (ADR 0001)
+- [ ] **T10.1** — Optional description on time-away create/edit (API `Unavailability.description` + textarea in modals)
 
 ### Done when (slice gates)
 

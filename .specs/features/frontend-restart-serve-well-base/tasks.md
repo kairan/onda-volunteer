@@ -8,7 +8,7 @@
 ```
 Phase 0:  T01 → T02 → T03
 Phase 1:  T04 → T05 → T06 → T07
-Phase 2:  T08 → T09 → T10
+Phase 2:  T08 → T09 → T10 → T10.1
 Phase 3:  T11 → T12 → T13
 Phase 4:  T14 → T15
 Phase 5:  T16 → T17
@@ -107,8 +107,8 @@ Phase 5:  T16 → T17
 **Reuses**: serve-well `VolunteerDashboard.tsx`; web-next `routes/dashboard.tsx` data wiring
 
 **Done when**:
-- [ ] RST-VOL-01 dashboard criteria met
-- [ ] `dashboard.behavior.test.tsx` passes
+- [x] RST-VOL-01 dashboard criteria met
+- [x] `dashboard.behavior.test.tsx` passes
 
 ---
 
@@ -119,8 +119,8 @@ Phase 5:  T16 → T17
 **Reuses**: serve-well assignment cards; web-next `VolunteerMyAssignmentsPage` data
 
 **Done when**:
-- [ ] RST-VOL-01 scheduling criteria met
-- [ ] Behavior tests pass
+- [x] RST-VOL-01 scheduling criteria met
+- [x] Behavior tests pass
 
 ---
 
@@ -131,8 +131,31 @@ Phase 5:  T16 → T17
 **Reuses**: serve-well `TimeAwayDialog`; web-next `routes/timeAway.tsx`
 
 **Done when**:
-- [ ] CRUD works pessimistically
-- [ ] Ministry pre-selected from working context (volunteer mode)
+- [x] CRUD works pessimistically
+- [x] Ministry pre-selected from working context (volunteer mode)
+
+---
+
+### T10.1: Time away optional description [P1]
+
+**What**: Optional `description` on volunteer unavailability — API column + POST/PATCH; serve-well `TimeAwayDialog` parity ("Reason (optional)" as textarea in create/edit modals); show in list when set.
+
+**Where**: `apps/api/prisma` (`Unavailability.description`); `scheduling.service.ts` + `assignments.controller.ts`; `apps/web-onda/src/routes/timeAway.tsx`, `volunteer/unavailabilityMutations.ts`, `volunteer/types.ts`; `i18n/locales/{en,pt-BR}/timeAway.json`
+
+**Depends on**: T10
+
+**Reuses**: serve-well `TimeAwayDialog` reason field (`design-reference/serve-well/src/components/onda/modals.tsx`)
+
+**Done when**:
+- [x] Migration `20260703120000_unavailability_description` applied; create/update persist trimmed optional text (max 500 chars)
+- [x] Create + edit dialogs include description `Textarea` (en + pt-BR labels)
+- [x] List row shows description under the date interval when present
+- [x] `timeAway.behavior.test.tsx` asserts description in POST body; edit PATCH flow covered
+- [x] `volunteerQueries.test.ts` + `apps/api/test/unavailability.e2e-spec.ts` cover description on create
+
+**Verify**:
+- `pnpm --filter @onda/web-onda test`
+- `cd apps/api && pnpm exec jest --config ./test/jest-e2e.json --runInBand test/unavailability.e2e-spec.ts`
 
 ---
 

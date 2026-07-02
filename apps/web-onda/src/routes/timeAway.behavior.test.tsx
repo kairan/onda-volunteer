@@ -76,13 +76,20 @@ describe('TimeAwayPage', () => {
     await user.selectOptions(within(dialog).getByLabelText('Ministry'), 'ministry-1');
     await user.type(within(dialog).getByLabelText('Starts'), '2026-08-01T09:00');
     await user.type(within(dialog).getByLabelText('Ends'), '2026-08-02T09:00');
+    await user.type(
+      within(dialog).getByLabelText('Description (optional)'),
+      'Family vacation',
+    );
     await user.click(within(dialog).getByRole('button', { name: 'Save unavailability' }));
 
     await waitFor(() => {
       expect(mutateJsonMock).toHaveBeenCalledWith(
         '/volunteers/vol-1/unavailability',
         { volunteerId: 'vol-1' },
-        expect.objectContaining({ method: 'POST' }),
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('"description":"Family vacation"'),
+        }),
       );
     });
   });
@@ -207,6 +214,81 @@ describe('TimeAwayPage', () => {
     expect(
       await screen.findByText('No upcoming unavailability recorded for this church.'),
     ).toBeInTheDocument();
+  });
+
+  it('submits edit form via PATCH and closes dialog after refetch', async () => {
+    await initI18n(undefined, 'en');
+    let unavailabilityFetchCount = 0;
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path.startsWith('/organization/context')) {
+        return volunteerRouteOrgContext;
+      }
+      if (path.includes('/unavailability')) {
+        unavailabilityFetchCount += 1;
+        if (unavailabilityFetchCount >= 2) {
+          return [
+            {
+              id: 'away-1',
+              startsAtUtc: '2026-08-01T00:00:00.000Z',
+              endsAtUtc: '2026-08-02T00:00:00.000Z',
+              ministry: { id: 'ministry-1', name: 'Hospitality' },
+            },
+          ];
+        }
+        return volunteerRouteUnavailability;
+      }
+      if (path.includes('/assignments')) {
+        return [];
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+    mutateJsonMock.mockImplementationOnce(
+      async (_path: string, _scope: unknown, init?: RequestInit) => {
+        expect(init?.method).toBe('PATCH');
+        return {
+          id: 'away-1',
+          ministryId: 'ministry-1',
+          window: {
+            startsAtUtc: '2026-08-01T00:00:00.000Z',
+            endsAtUtc: '2026-08-02T00:00:00.000Z',
+          },
+        };
+      },
+    );
+
+    const user = userEvent.setup();
+    await renderVolunteerRoute('/time-away');
+
+    await screen.findByRole('heading', { name: 'Hospitality' });
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByRole('heading', { name: 'Edit unavailability' }),
+    ).toBeInTheDocument();
+
+    const starts = within(dialog).getByLabelText('Starts');
+    const ends = within(dialog).getByLabelText('Ends');
+    await waitFor(() => {
+      expect(starts).toHaveValue('2026-07-05T00:00');
+    });
+    await user.clear(starts);
+    await user.type(starts, '2026-08-01T09:00');
+    await user.clear(ends);
+    await user.type(ends, '2026-08-02T09:00');
+    await user.click(within(dialog).getByRole('button', { name: 'Save changes' }));
+
+    await waitFor(() => {
+      expect(mutateJsonMock).toHaveBeenCalledWith(
+        '/unavailability/away-1',
+        { volunteerId: 'vol-1' },
+        expect.objectContaining({ method: 'PATCH' }),
+      );
+    });
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
+    expect(unavailabilityFetchCount).toBeGreaterThanOrEqual(2);
   });
 
   it('shows delete confirm dialog before removing a row', async () => {

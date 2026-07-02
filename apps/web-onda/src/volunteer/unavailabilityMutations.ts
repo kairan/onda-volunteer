@@ -6,6 +6,7 @@ export async function createVolunteerUnavailability(input: {
   ministryId: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
   leaderMinistryId?: string;
   actingVolunteerId?: string;
 }): Promise<CreateUnavailabilityResult> {
@@ -22,6 +23,7 @@ export async function createVolunteerUnavailability(input: {
         ministryId: input.ministryId,
         startsAtUtc: input.startsAtUtc,
         endsAtUtc: input.endsAtUtc,
+        description: input.description ?? null,
       }),
     },
   );
@@ -32,6 +34,7 @@ export async function updateVolunteerUnavailability(input: {
   actingVolunteerId: string;
   startsAtUtc: string;
   endsAtUtc: string;
+  description?: string | null;
   leaderMinistryId?: string;
 }): Promise<CreateUnavailabilityResult> {
   return mutateJson<CreateUnavailabilityResult>(
@@ -45,6 +48,7 @@ export async function updateVolunteerUnavailability(input: {
       body: JSON.stringify({
         startsAtUtc: input.startsAtUtc,
         endsAtUtc: input.endsAtUtc,
+        description: input.description ?? null,
       }),
     },
   );

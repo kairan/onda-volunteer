@@ -13,6 +13,8 @@
     "ministry": "Ministério",
     "startsAt": "Início",
     "endsAt": "Fim",
+    "description": "Descrição (opcional)",
+    "descriptionPlaceholder": "Férias em família, viagem, etc.",
     "submit": "Salvar indisponibilidade",
     "submitting": "Salvando...",
     "saveEdit": "Salvar alterações",
