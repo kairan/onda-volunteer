@@ -7,7 +7,9 @@
   "emptyState": "Nenhuma indisponibilidade futura registrada para esta igreja.",
   "createHeading": "Adicionar indisponibilidade",
   "editHeading": "Editar indisponibilidade",
+  "dialogDescription": "Escolha as datas em que você não pode servir.",
   "form": {
+    "addPeriod": "Adicionar período",
     "ministry": "Ministério",
     "startsAt": "Início",
     "endsAt": "Fim",

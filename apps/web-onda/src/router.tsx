@@ -13,6 +13,7 @@ import {
 import { AuthPage } from '@/routes/auth';
 import { DashboardPage } from '@/routes/dashboard';
 import { SchedulingPage } from '@/routes/scheduling';
+import { TimeAwayPage } from '@/routes/timeAway';
 import { placeholderPage } from '@/routes/placeholders';
 import { UserSelectPage } from '@/routes/userSelect';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
@@ -32,7 +33,6 @@ import {
   SystemAdminUsersPage,
 } from '@/system-admin/pages';
 
-const TimeAwayPage = placeholderPage('Time away');
 const MinistriesPage = placeholderPage('Ministries');
 const VolunteersPage = placeholderPage('Volunteers');
 const MinistryLeadersPage = placeholderPage('Ministry leaders');

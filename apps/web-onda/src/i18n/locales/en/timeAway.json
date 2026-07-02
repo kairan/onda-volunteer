@@ -7,7 +7,9 @@
   "emptyState": "No upcoming unavailability recorded for this church.",
   "createHeading": "Add unavailability",
   "editHeading": "Edit unavailability",
+  "dialogDescription": "Pick the dates you're unavailable to serve.",
   "form": {
+    "addPeriod": "Add period",
     "ministry": "Ministry",
     "startsAt": "Starts",
     "endsAt": "Ends",
