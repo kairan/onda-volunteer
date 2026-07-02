@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API — Specification
 
-**Status:** Specify complete (2026-07-01)  
+**Status:** Specify complete · Phase 0–1 shipped (#170) · Phase 2+ #172–#175  
 **Design:** [design.md](./design.md)  
 **Decisions:** [context.md](./context.md)  
 **Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen
@@ -17,7 +17,7 @@
 
 ## Goals
 
-- [ ] Stand up **`apps/web-onda`** (or agreed package name) with serve-well visual structure on monorepo stack (Vite, pnpm, TanStack Router).
+- [x] Stand up **`apps/web-onda`** (or agreed package name) with serve-well visual structure on monorepo stack (Vite, pnpm, TanStack Router).
 - [ ] Wire **real API** (NestJS + Supabase auth) — no mock arrays in shipped routes.
 - [ ] Shell includes **working context** (ministério · chapéu) from Foundation.
 - [ ] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist).

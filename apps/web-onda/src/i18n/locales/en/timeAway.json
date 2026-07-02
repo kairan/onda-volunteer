@@ -1,0 +1,57 @@
+{
+  "title": "Time away",
+  "body": "Record when you cannot serve for a ministry.",
+  "eyebrow": "Availability",
+  "listHeading": "Your unavailability",
+  "loading": "Loading unavailability...",
+  "emptyState": "No upcoming unavailability recorded for this church.",
+  "createHeading": "Add unavailability",
+  "editHeading": "Edit unavailability",
+  "form": {
+    "ministry": "Ministry",
+    "startsAt": "Starts",
+    "endsAt": "Ends",
+    "submit": "Save unavailability",
+    "submitting": "Saving...",
+    "saveEdit": "Save changes",
+    "cancelEdit": "Cancel edit"
+  },
+  "success": "Unavailability saved.",
+  "successUpdate": "Unavailability updated.",
+  "successDelete": "Unavailability removed.",
+  "actions": {
+    "edit": "Edit",
+    "delete": "Remove",
+    "deleting": "Removing..."
+  },
+  "mirrorHeading": "Mirror across ministries",
+  "mirrorBody": "Apply the same dates to separate unavailability records—one per ministry you select. This does not create a church-wide absence.",
+  "mirrorScope": "These ministries will receive mirrored unavailability:",
+  "mirrorNoMinistries": "You need membership in at least two ministries in this church to mirror dates.",
+  "mirrorForm": {
+    "startsAt": "Mirror starts",
+    "endsAt": "Mirror ends",
+    "submit": "Mirror to ministries",
+    "submitting": "Mirroring..."
+  },
+  "mirrorSuccess": "{{count}} unavailability records created.",
+  "mirrorPartial": "{{count}} unavailability records created. These ministries could not be updated: {{failed}}.",
+  "mirrorAllFailed": "These ministries could not be updated: {{failed}}.",
+  "pendingNotice": "You have Pending membership in {{ministries}}. You cannot be rostered until Active, but you can still record unavailability for calendar truth.",
+  "leaderSupportLink": "Manage volunteer time away (leader support)",
+  "deleteConfirm": {
+    "title": "Remove unavailability?",
+    "body": "This removes the selected period. You can add it again later if needed.",
+    "confirm": "Remove",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "mirrorMinistriesRequired": "Select at least one ministry to mirror.",
+    "ministryRequired": "Select a ministry.",
+    "startsAtRequired": "Enter a start time.",
+    "endsAtRequired": "Enter an end time.",
+    "invalidWindow": "End time must be after start time.",
+    "summary": "Fix the highlighted fields and try again.",
+    "deleteFailed": "Could not remove this unavailability. Try again."
+  }
+}

@@ -16,6 +16,8 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 
 - **2026-06-24 (#144–#147 Slices 2–5 closeout):** Volunteer, leader, org-admin, system-admin slices shipped in `apps/web-next`. 105 Vitest tests green. ~~**Next Execute:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (cutover).~~ **Superseded 2026-07-01** — see pivot below.
 
+- **2026-07-01 (#170 Phase 0–1 closeout):** Foundation shipped in PR [#171](https://github.com/kairan/onda-volunteer/pull/171) — `apps/web-onda`, T01–T07 + T16 CI. Record: `docs/issues/done/170-web-onda-foundation-phase-0-1.md`. **Next Execute:** [#172](https://github.com/kairan/onda-volunteer/issues/172)–[#175](https://github.com/kairan/onda-volunteer/issues/175) (volunteer → leader → admin → cutover). TLC folder stays active until #175.
+
 - **2026-07-01 (Frontend pivot — serve-well + API):** `web-next` **visual layer rejected**. **Freeze #148 cutover.** New direction: **`apps/web-onda`** = serve-well presentation + `web-next` data layer. TLC: `.specs/features/frontend-restart-serve-well-base/`; ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md); ADR index [docs/adr/README.md](../../docs/adr/README.md) (0002–0003 archived, 0001 trimmed). Delete `apps/web` + `apps/web-next` at cutover (T17).
 
 - **2026-06-18 (Ubiquitous language drift closeout):** #131–#135 shipped. No HIGH drift items remain from the 2026-06-18 audit. TLC archived: `.specs/archive/features/ubiquitous-language-drift/`.

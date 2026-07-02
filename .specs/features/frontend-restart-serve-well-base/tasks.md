@@ -1,7 +1,7 @@
 # Frontend restart — serve-well + API — Tasks
 
 **Design**: [design.md](./design.md)  
-**Status**: Planning complete — Execute not started (2026-07-01)
+**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2+ tracked as #172–#175
 
 ## Execution plan
 
@@ -23,8 +23,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next` vite/tsconfig as template (not source copy)
 
 **Done when**:
-- [ ] `pnpm --filter @onda/web-onda build` succeeds
-- [ ] `pnpm --filter @onda/web-onda typecheck` succeeds
+- [x] `pnpm --filter @onda/web-onda build` succeeds
+- [x] `pnpm --filter @onda/web-onda typecheck` succeeds
 
 ---
 
@@ -35,8 +35,8 @@ Phase 5:  T16 → T17
 **Reuses**: `design-reference/serve-well/`; `apps/web-next/src/theme/theme.contract.test.ts` (adapt package name)
 
 **Done when**:
-- [ ] Theme contract test passes (Onda vars present, HOPE vars absent)
-- [ ] Button/Card/Sidebar render in smoke test
+- [x] Theme contract test passes (Onda vars present, HOPE vars absent)
+- [x] Button/Card/Sidebar render in smoke test
 
 ---
 
@@ -47,8 +47,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/{api,auth,query,i18n}`
 
 **Done when**:
-- [ ] `apiClient` unit tests pass
-- [ ] Auth session provider tests pass (port or minimal)
+- [x] `apiClient` unit tests pass
+- [x] Auth session provider tests pass (port or minimal)
 
 ---
 
@@ -59,8 +59,8 @@ Phase 5:  T16 → T17
 **Reuses**: working-context-picker spec
 
 **Done when**:
-- [ ] `buildWorkingContextOptions` + `resolveWorkingContext` tests green
-- [ ] Dual-role fixture covered
+- [x] `buildWorkingContextOptions` + `resolveWorkingContext` tests green
+- [x] Dual-role fixture covered
 
 ---
 
@@ -71,7 +71,7 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/organization/*`
 
 **Done when**:
-- [ ] `OrganizationProvider.behavior.test.tsx` passes (adapted)
+- [x] `OrganizationProvider.behavior.test.tsx` passes (adapted)
 
 ---
 
@@ -83,8 +83,8 @@ Phase 5:  T16 → T17
 
 **Done when**:
 - [ ] Signed-in shell matches serve-well layout at 1440px (manual)
-- [ ] No role demo dropdown
-- [ ] Nav changes when working context changes (behavior test)
+- [x] No role demo dropdown
+- [x] Nav changes when working context changes (behavior test)
 
 ---
 
@@ -95,8 +95,8 @@ Phase 5:  T16 → T17
 **Reuses**: `apps/web-next/src/router.tsx` route list
 
 **Done when**:
-- [ ] All paths in design.md §6 resolve without 404 (including §6 parity notes: `/auth`, `/events/$eventId` redirect per ADR 0004, `/user-select` when dev headers enabled)
-- [ ] `router.test.ts` passes
+- [x] All paths in design.md §6 resolve without 404 (including §6 parity notes: `/auth`, `/events/$eventId` redirect per ADR 0004, `/user-select` when dev headers enabled)
+- [x] `router.test.ts` passes
 
 ---
 
@@ -195,7 +195,7 @@ Phase 5:  T16 → T17
 **What**: Add `@onda/web-onda` to `ci.yml`, coverage floors, Playwright config.
 
 **Done when**:
-- [ ] PR CI green for web-onda
+- [x] PR CI green for web-onda
 
 ---
 
@@ -215,6 +215,6 @@ Phase 5:  T16 → T17
 ## Verify (feature closeout)
 
 - [ ] All RST-* requirements traced to tasks
-- [ ] `docs/issues/done/` entry created
+- [x] `docs/issues/done/` entry created (#170)
 - [ ] `frontend-migration-web-next` archived with redirect stub
-- [ ] #148 closed as superseded or cancelled with link to this feature
+- [x] #148 closed as superseded or cancelled with link to this feature

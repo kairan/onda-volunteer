@@ -6,7 +6,10 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: process.env.WEB_ORIGIN?.split(',') ?? true,
+    origin:
+      process.env.WEB_ORIGIN?.split(',')
+        .map((value) => value.trim())
+        .filter(Boolean) ?? true,
     credentials: true,
     allowedHeaders: [
       'Content-Type',

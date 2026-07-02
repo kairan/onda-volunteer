@@ -10,9 +10,12 @@ Enable required status checks **after** the new [`.github/workflows/ci.yml`](../
 | `CI / lint` | [ci.yml](../../.github/workflows/ci.yml) | `lint` |
 | `CI / typecheck-api` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-api` |
 | `CI / typecheck-web` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web` |
+| `CI / typecheck-web-next` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-next` |
+| `CI / typecheck-web-onda` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-onda` |
 | `CI / test` | [ci.yml](../../.github/workflows/ci.yml) | `test` |
 | `CI / coverage` | [ci.yml](../../.github/workflows/ci.yml) | `coverage` |
 | `Web Playwright e2e / playwright` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright` |
+| `Web Playwright e2e / playwright-web-onda` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright-web-onda` |
 
 ## UI (recommended)
 
