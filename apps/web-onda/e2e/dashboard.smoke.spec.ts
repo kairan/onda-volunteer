@@ -13,7 +13,7 @@ test.describe('dashboard @smoke', () => {
     await expect(
       page.getByRole('heading', { name: /hi demo volunteer/i }),
     ).toBeVisible();
-    await expect(page.getByText('0 upcoming assignments')).toBeVisible();
+    await expect(page.getByText('1 upcoming assignments')).toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Time away', exact: true }),
     ).toBeVisible();

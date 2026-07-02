@@ -89,6 +89,22 @@ const smokeEventDetail = {
 
 const smokeRoles = [{ id: 'seed-role-greeter', name: 'Greeter', retired: false }];
 
+const smokeVolunteerAssignments = [
+  {
+    id: 'seed-assignment-public-greeter',
+    ministryId: 'seed-ministry-demo',
+    startsAtUtc: '2026-06-28T14:00:00.000Z',
+    endsAtUtc: '2026-06-28T15:00:00.000Z',
+    event: {
+      id: 'seed-event-public',
+      title: 'Sunday Gathering',
+      startsAtUtc: '2026-06-28T13:00:00.000Z',
+      endsAtUtc: '2026-06-28T15:00:00.000Z',
+    },
+    role: { id: 'seed-role-greeter', name: 'Greeter' },
+  },
+];
+
 export function shouldUseSmokeApiMocks(): boolean {
   return process.env.PLAYWRIGHT_WITH_API !== 'true';
 }
@@ -168,7 +184,7 @@ export async function installSmokeApiMocks(page: Page): Promise<void> {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify([]),
+      body: JSON.stringify(smokeVolunteerAssignments),
     });
   });
 

@@ -12,6 +12,7 @@ import {
 } from '@/auth/authSession';
 import { AuthPage } from '@/routes/auth';
 import { DashboardPage } from '@/routes/dashboard';
+import { SchedulingPage } from '@/routes/scheduling';
 import { placeholderPage } from '@/routes/placeholders';
 import { UserSelectPage } from '@/routes/userSelect';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
@@ -31,7 +32,6 @@ import {
   SystemAdminUsersPage,
 } from '@/system-admin/pages';
 
-const SchedulingPage = placeholderPage('Scheduling');
 const TimeAwayPage = placeholderPage('Time away');
 const MinistriesPage = placeholderPage('Ministries');
 const VolunteersPage = placeholderPage('Volunteers');
@@ -138,7 +138,18 @@ const schedulingHubRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/scheduling',
   beforeLoad: shellBeforeLoad,
-  component: shellRoute(SchedulingPage),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { previewRole?: 'volunteer' | 'leader' } => ({
+    previewRole:
+      search.previewRole === 'volunteer' || search.previewRole === 'leader'
+        ? search.previewRole
+        : undefined,
+  }),
+  component: shellRoute(function SchedulingHubPage() {
+    const { previewRole } = schedulingHubRoute.useSearch();
+    return <SchedulingPage previewRole={previewRole} />;
+  }),
   errorComponent: shellErrorComponent,
 });
 
