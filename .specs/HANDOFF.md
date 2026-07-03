@@ -1,28 +1,27 @@
-# Session handoff (2026-07-01)
+# Session handoff (2026-07-03)
 
 ## Completed this session
 
-1. **#170 Phase 0–1** — PR [#171](https://github.com/kairan/onda-volunteer/pull/171) merge-ready (CI green, review addressed).
-2. **Hygiene** — `docs/issues/done/170-*.md`, `tasks.md` T01–T07 + T16 marked done, next issues **#172–#175** created on GitHub.
-3. **CI** — `web-onda` in root `test`/`coverage`, `typecheck-web-onda`, `playwright-web-onda`.
+1. **#172 Phase 2** — PR [#176](https://github.com/kairan/onda-volunteer/pull/176) merge-ready (CI green, validation PASS).
+2. **Hygiene** — `docs/issues/done/172-*.md`, `tasks.md` T08–T10.1 marked done, #173 unblocked.
+3. **Verify** — 84 Vitest, 3/3 Playwright web-onda, discrimination sensor green; 1440px HITL deferred pre-cutover.
 
 ## Next agent action
 
-1. **Merge PR #171** → closes #170.
-2. Label **[#172](https://github.com/kairan/onda-volunteer/issues/172)** `ready-for-agent` and start Phase 2 Volunteer (T08–T10).
+1. **Merge PR #176** → closes #172.
+2. Label **[#173](https://github.com/kairan/onda-volunteer/issues/173)** `ready-for-agent` and start Phase 3 Leader (T11–T13).
 
 ## Backlog (web-onda)
 
 | Issue | Phase | Tasks |
 |------:|-------|-------|
-| [#172](https://github.com/kairan/onda-volunteer/issues/172) | Volunteer | T08–T10 |
 | [#173](https://github.com/kairan/onda-volunteer/issues/173) | Leader | T11–T13 |
 | [#174](https://github.com/kairan/onda-volunteer/issues/174) | Admin | T14–T15 |
 | [#175](https://github.com/kairan/onda-volunteer/issues/175) | Cutover | T17 |
 
 ## Blockers
 
-- #172–#175 blocked until #170 merges (foundation on `main`).
+_(none for #173–#175)_
 
 ## HITL
 
@@ -33,5 +32,6 @@
 | Need | Path |
 |------|------|
 | Active TLC | `.specs/features/frontend-restart-serve-well-base/` |
+| Shipped #172 | `docs/issues/done/172-web-onda-phase-2-volunteer.md` |
 | Shipped #170 | `docs/issues/done/170-web-onda-foundation-phase-0-1.md` |
-| Next execute | `docs/issues/172-web-onda-phase-2-volunteer.md` |
+| Next execute | `docs/issues/173-web-onda-phase-3-leader.md` |

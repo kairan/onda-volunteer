@@ -1,7 +1,7 @@
 # Frontend restart — serve-well + API — Tasks
 
 **Design**: [design.md](./design.md)  
-**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2+ tracked as #172–#175
+**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2 shipped ([#172](https://github.com/kairan/onda-volunteer/issues/172), PR [#176](https://github.com/kairan/onda-volunteer/pull/176)); Phase 3+ tracked as #173–#175
 
 ## Execution plan
 

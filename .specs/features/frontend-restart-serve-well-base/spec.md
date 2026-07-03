@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API — Specification
 
-**Status:** Specify complete · Phase 0–1 shipped (#170) · Phase 2+ #172–#175  
+**Status:** Specify complete · Phase 0–1 shipped (#170) · Phase 2 shipped (#172, PR #176) · Phase 3+ #173–#175  
 **Design:** [design.md](./design.md)  
 **Decisions:** [context.md](./context.md)  
 **Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen
