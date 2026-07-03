@@ -2,6 +2,16 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+/** Keep in sync with `apps/web/e2e/scheduling-event-roster.integration.spec.ts` (`SEED_DEMO_EVENT_DAY_OFFSET`). */
+const SEED_DEMO_EVENT_DAY_OFFSET = 14;
+
+function daysFromNow(days: number, hourUtc = 0, minuteUtc = 0): Date {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  date.setUTCHours(hourUtc, minuteUtc, 0, 0);
+  return date;
+}
+
 async function main() {
   const churchCentral = await prisma.church.upsert({
     where: { id: 'seed-church-demo' },
@@ -259,27 +269,31 @@ async function main() {
   await prisma.unavailability.upsert({
     where: { id: 'seed-unavailability-morning' },
     update: {
-      startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
-      endsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
     },
     create: {
       id: 'seed-unavailability-morning',
       volunteerId: 'seed-volunteer-demo',
       ministryId: 'seed-ministry-demo',
-      startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
-      endsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
     },
   });
 
   await prisma.event.upsert({
     where: { id: 'seed-event-public' },
-    update: { churchId: churchCentral.id },
+    update: {
+      churchId: churchCentral.id,
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
+    },
     create: {
       id: 'seed-event-public',
       kind: 'PUBLIC',
       title: 'Sunday Gathering',
-      startsAtUtc: new Date('2026-06-07T15:00:00.000Z'),
-      endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
       churchId: churchCentral.id,
     },
   });
@@ -292,8 +306,8 @@ async function main() {
       ministryId: 'seed-ministry-demo',
       volunteerId: 'seed-volunteer-demo',
       roleId: 'seed-role-greeter',
-      startsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
-      endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
     },
     create: {
       id: 'seed-assignment-public-greeter',
@@ -301,8 +315,8 @@ async function main() {
       ministryId: 'seed-ministry-demo',
       volunteerId: 'seed-volunteer-demo',
       roleId: 'seed-role-greeter',
-      startsAtUtc: new Date('2026-06-07T16:00:00.000Z'),
-      endsAtUtc: new Date('2026-06-07T16:30:00.000Z'),
+      startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
+      endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
     },
   });
 }

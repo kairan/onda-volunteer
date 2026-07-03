@@ -163,11 +163,13 @@ describe('Volunteer unavailability (e2e)', () => {
         ministryId: ministry.id,
         startsAtUtc: '2026-06-02T14:00:00.000Z',
         endsAtUtc: '2026-06-02T16:00:00.000Z',
+        description: '  Family vacation  ',
       })
       .expect(201);
 
     expect(res.body).toMatchObject({
       ministryId: ministry.id,
+      description: 'Family vacation',
       window: {
         startsAtUtc: '2026-06-02T14:00:00.000Z',
         endsAtUtc: '2026-06-02T16:00:00.000Z',

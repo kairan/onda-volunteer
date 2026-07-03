@@ -1,9 +1,9 @@
 # 173 — web-onda Phase 3: Leader vertical slice (T11–T13)
 
 **Type:** Feature  
-**Status:** Blocked by [#172](https://github.com/kairan/onda-volunteer/issues/172)  
+**Status:** Ready (`ready-for-agent`)  
 **TLC:** `.specs/features/frontend-restart-serve-well-base/` (RST-LEAD-01)  
-**Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)
+**Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170) · **Unblocked by:** [#172](https://github.com/kairan/onda-volunteer/issues/172) (PR [#176](https://github.com/kairan/onda-volunteer/pull/176))
 
 ## Problem
 

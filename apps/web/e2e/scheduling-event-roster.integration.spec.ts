@@ -3,6 +3,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from './fixtures';
 
+/** Keep in sync with `apps/api/prisma/seed.ts` (`SEED_DEMO_EVENT_DAY_OFFSET`). */
+const SEED_DEMO_EVENT_DAY_OFFSET = 14;
+
+function daysFromNowIso(days: number, hourUtc: number, minuteUtc = 0): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  date.setUTCHours(hourUtc, minuteUtc, 0, 0);
+  return date.toISOString();
+}
+
 const apiDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../api');
 
 function reseedDatabase() {
@@ -128,8 +138,10 @@ test.describe('scheduling event roster @integration', () => {
     await expect(endInput).toBeVisible();
 
     // 8. Try to assign during the volunteer's unavailability block (15:00 to 16:00) to verify conflict handling
-    await startInput.fill('2026-06-07T15:00:00.000Z');
-    await endInput.fill('2026-06-07T16:00:00.000Z');
+    await startInput.fill(
+      daysFromNowIso(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
+    );
+    await endInput.fill(daysFromNowIso(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0));
     
     const submitBtn = assignForm.getByRole('button', { name: 'Create assignment' });
     await submitBtn.click();
@@ -140,8 +152,10 @@ test.describe('scheduling event roster @integration', () => {
     await expect(assignError).toContainText(/unavailable/i);
 
     // 10. Now assign to a valid slot (16:00 to 16:30)
-    await startInput.fill('2026-06-07T16:00:00.000Z');
-    await endInput.fill('2026-06-07T16:30:00.000Z');
+    await startInput.fill(
+      daysFromNowIso(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
+    );
+    await endInput.fill(daysFromNowIso(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30));
     await submitBtn.click();
 
     // 11. The new assignment should appear in the table, error cleared, success toast shown

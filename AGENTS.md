@@ -117,6 +117,6 @@ Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
 
 - ESLint: `pnpm lint` (`--max-warnings 0`; required CI gate per #126). Typecheck: `pnpm typecheck:api` / `pnpm typecheck:web`. Coverage: `pnpm test:coverage` enforces global floors per #129 (API Jest e2e, web Vitest).
 - API auth context contract: [`docs/runbooks/api-auth-context.md`](docs/runbooks/api-auth-context.md).
-- The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00-16:00 UTC on 2026-06-07. Assignment creation in that window will be rejected by design.
+- The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00–16:00 UTC on the demo event day (`SEED_DEMO_EVENT_DAY_OFFSET` days from seed run — currently 14). Assignment creation in that window will be rejected by design.
 - `pnpm-workspace.yaml` has `allowBuilds` entries that prevent interactive build prompts during install.
 - Prisma warns about deprecated `package.json#prisma` config — this is expected and harmless.

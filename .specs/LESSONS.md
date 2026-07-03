@@ -26,6 +26,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md RST-SHELL-01 picker labels
 - last seen: 2026-07-01T15:57:04Z
 
+### L-003 — API-backed Playwright smoke must pin org church/campus localStorage to the seed church that owns demo assignments, or assertions on assignment counts will flake against the default church.
+- signal: `gate_fail` · recurrence: 1 feature(s) · harmful: 0
+- features: frontend-restart-serve-well-base
+- evidence: validation.md Phase 2 e2e
+- last seen: 2026-07-02T23:27:06Z
+
 ## Quarantined (failed when applied — ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

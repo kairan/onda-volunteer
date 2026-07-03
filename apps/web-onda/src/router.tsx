@@ -11,6 +11,9 @@ import {
   volunteerIdForProtectedRequests,
 } from '@/auth/authSession';
 import { AuthPage } from '@/routes/auth';
+import { DashboardPage } from '@/routes/dashboard';
+import { SchedulingPage } from '@/routes/scheduling';
+import { TimeAwayPage } from '@/routes/timeAway';
 import { placeholderPage } from '@/routes/placeholders';
 import { UserSelectPage } from '@/routes/userSelect';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
@@ -30,9 +33,6 @@ import {
   SystemAdminUsersPage,
 } from '@/system-admin/pages';
 
-const DashboardPage = placeholderPage('Dashboard');
-const SchedulingPage = placeholderPage('Scheduling');
-const TimeAwayPage = placeholderPage('Time away');
 const MinistriesPage = placeholderPage('Ministries');
 const VolunteersPage = placeholderPage('Volunteers');
 const MinistryLeadersPage = placeholderPage('Ministry leaders');
@@ -138,7 +138,18 @@ const schedulingHubRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/scheduling',
   beforeLoad: shellBeforeLoad,
-  component: shellRoute(SchedulingPage),
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { previewRole?: 'volunteer' | 'leader' } => ({
+    previewRole:
+      search.previewRole === 'volunteer' || search.previewRole === 'leader'
+        ? search.previewRole
+        : undefined,
+  }),
+  component: shellRoute(function SchedulingHubPage() {
+    const { previewRole } = schedulingHubRoute.useSearch();
+    return <SchedulingPage previewRole={previewRole} />;
+  }),
   errorComponent: shellErrorComponent,
 });
 
