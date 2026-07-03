@@ -11,6 +11,7 @@ import { buildNavForWorkingContext } from '@/navigation/manifest';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from './AppSidebar';
 import { OrganizationContextControls } from '@/shell/OrganizationContextControls';
+import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 
 export function AppShell({ children }: { children?: ReactNode }) {
   const auth = useAuthSession();
@@ -76,7 +77,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
       devVolunteerId={devVolunteerIdForOrg}
       isSystemAdmin={isSystemAdmin}
     >
-      <AppShellContent isSystemAdmin={isSystemAdmin}>{children}</AppShellContent>
+      <LocalTimeProvider>
+        <AppShellContent isSystemAdmin={isSystemAdmin}>{children}</AppShellContent>
+      </LocalTimeProvider>
     </OrganizationProvider>
   );
 }

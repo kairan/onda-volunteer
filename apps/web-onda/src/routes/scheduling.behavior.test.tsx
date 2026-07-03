@@ -109,14 +109,12 @@ describe('VolunteerMyAssignmentsPage at /scheduling', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders leader scheduling placeholder when previewRole=leader', async () => {
+  it('renders leader scheduling when previewRole=leader', async () => {
     await initI18n(undefined, 'en');
     await renderVolunteerRoute('/scheduling?previewRole=leader');
 
-    expect(
-      await screen.findByRole('heading', { name: 'Scheduling' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Coming soon.')).toBeInTheDocument();
-    expect(screen.queryByTestId('volunteer-assignments-grid')).toBeNull();
+    expect(await screen.findByTestId('leader-ministry-hero')).toBeInTheDocument();
+    expect(await screen.findByTestId('leader-roster-section')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Roster' })).toBeInTheDocument();
   });
 });

@@ -9,6 +9,7 @@ import { AuthSessionTestProvider } from '@/auth/AuthSessionProvider';
 import type { AuthSessionState } from '@/auth/authSession';
 import { syncAuthVolunteerId } from '@/auth/authSession';
 import { I18nProvider } from '@/i18n/I18nProvider';
+import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
 import { clearStoredOrganizationSelection } from '@/organization/organizationContextStorage';
 import { buildRouteTree } from '@/router';
 import { getJsonMock, mutateJsonMock } from './volunteerRouteTestSetup';
@@ -40,9 +41,11 @@ export async function renderVolunteerRoute(
   const view = render(
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <AuthSessionTestProvider state={authState}>
-          <RouterProvider router={router} />
-        </AuthSessionTestProvider>
+        <LocalTimeProvider>
+          <AuthSessionTestProvider state={authState}>
+            <RouterProvider router={router} />
+          </AuthSessionTestProvider>
+        </LocalTimeProvider>
       </I18nProvider>
     </QueryClientProvider>,
   );

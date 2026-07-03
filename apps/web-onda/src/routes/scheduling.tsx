@@ -1,8 +1,6 @@
 import { useOrganization } from '@/organization/OrganizationProvider';
-import { placeholderPage } from '@/routes/placeholders';
+import { LeaderSchedulingPage } from '@/routes/LeaderSchedulingPage';
 import { VolunteerMyAssignmentsPage } from '@/routes/VolunteerMyAssignmentsPage';
-
-const LeaderSchedulingPlaceholder = placeholderPage('Scheduling');
 
 function useSchedulingViewRole(
   previewRole?: 'volunteer' | 'leader',
@@ -24,7 +22,7 @@ export function SchedulingPage({
   const viewRole = useSchedulingViewRole(previewRole);
 
   if (viewRole === 'leader') {
-    return <LeaderSchedulingPlaceholder />;
+    return <LeaderSchedulingPage />;
   }
 
   return <VolunteerMyAssignmentsPage />;

@@ -63,6 +63,20 @@ export const leaderRouteEvents = [
   },
 ];
 
+export const leaderRouteEventDetail = {
+  church: { id: 'church-demo', name: 'Demo Church', defaultTimezone: 'UTC' },
+  event: {
+    id: 'evt-1',
+    kind: 'PUBLIC' as const,
+    title: 'Sunday Service',
+    window: leaderRouteEvents[0].window,
+    framing: leaderRouteEvents[0].framing,
+    cancelledAtUtc: null,
+  },
+  ministry: null,
+  assignments: [],
+};
+
 export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unknown>>(
   async (path: string) => {
     if (path.startsWith('/organization/context')) {
@@ -70,6 +84,24 @@ export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unk
     }
     if (path.startsWith('/events?')) {
       return leaderRouteEvents;
+    }
+    if (path.startsWith('/events/evt-1')) {
+      return leaderRouteEventDetail;
+    }
+    if (path.endsWith('/roles')) {
+      return [{ id: 'role-1', name: 'Greeter', retired: false }];
+    }
+    if (path.includes('/ministries/') && path.endsWith('/memberships')) {
+      return [{ volunteerId: 'vol-2', displayName: 'Alex', status: 'ACTIVE' }];
+    }
+    if (path.includes('/ministries/') && path.endsWith('/leaders')) {
+      return [{ volunteerId: 'leader-1', displayName: 'Pat Leader' }];
+    }
+    if (path.includes('/ministries/') && path.endsWith('/invites')) {
+      return { invites: [] };
+    }
+    if (path.includes('/volunteers/search')) {
+      return { volunteers: [] };
     }
     if (path.includes('/assignments')) {
       return volunteerRouteAssignments;
@@ -104,3 +136,11 @@ vi.mock('@/api/apiClient', async (importOriginal) => {
       mutateJsonMock(...args),
   };
 });
+
+vi.mock('@/volunteer/prefetchVolunteerDashboard', () => ({
+  prefetchVolunteerDashboardQueries: vi.fn(async () => {}),
+}));
+
+vi.mock('@/leader/prefetchLeaderScheduling', () => ({
+  prefetchLeaderSchedulingQueries: vi.fn(async () => {}),
+}));

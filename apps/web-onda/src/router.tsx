@@ -13,9 +13,18 @@ import {
 import { AuthPage } from '@/routes/auth';
 import { DashboardPage } from '@/routes/dashboard';
 import { SchedulingPage } from '@/routes/scheduling';
+import {
+  SchedulingEventDetailPending,
+  SchedulingEventDetailView,
+} from '@/routes/schedulingEventDetail';
+import { SchedulingCreatePrivateEventPage } from '@/routes/schedulingCreatePrivateEvent';
+import { LeaderVolunteerTimeAwayPage } from '@/routes/leaderVolunteerTimeAway';
 import { TimeAwayPage } from '@/routes/timeAway';
 import { placeholderPage } from '@/routes/placeholders';
 import { UserSelectPage } from '@/routes/userSelect';
+import { fetchEventDetail } from '@/leader/eventDetailQuery';
+import { ensureLeaderRouteAccess } from '@/leader/ensureLeaderRouteAccess';
+import type { EventDetailPayload } from '@/eventDetailPayload';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
 import { ProtectedAppShell } from '@/shell/ProtectedAppShell';
 import { shellRoute } from '@/shell/shellRoute';
@@ -36,10 +45,7 @@ import {
 const MinistriesPage = placeholderPage('Ministries');
 const VolunteersPage = placeholderPage('Volunteers');
 const MinistryLeadersPage = placeholderPage('Ministry leaders');
-const SchedulingEventDetailPage = placeholderPage('Event detail');
 const SchedulingCreateEventPage = placeholderPage('New event');
-const SchedulingCreatePrivateEventPage = placeholderPage('New private event');
-const LeaderVolunteerTimeAwayPage = placeholderPage('Volunteer time away');
 
 const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -153,13 +159,38 @@ const schedulingHubRoute = createRoute({
   errorComponent: shellErrorComponent,
 });
 
-const schedulingEventDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/scheduling/events/$eventId',
-  beforeLoad: shellBeforeLoad,
-  component: shellRoute(SchedulingEventDetailPage),
-  errorComponent: shellErrorComponent,
-});
+async function defaultSchedulingEventDetailLoader({
+  params,
+}: {
+  params: { eventId: string };
+}): Promise<EventDetailPayload> {
+  const volunteerId = volunteerIdForProtectedRequests();
+  if (!volunteerId) {
+    throw new Error('Sign in required');
+  }
+  return fetchEventDetail({ eventId: params.eventId, volunteerId });
+}
+
+function createSchedulingEventDetailRoute(
+  schedulingEventDetailLoader: typeof defaultSchedulingEventDetailLoader,
+) {
+  return createRoute({
+    getParentRoute: () => rootRoute,
+    path: '/scheduling/events/$eventId',
+    beforeLoad: shellBeforeLoad,
+    loader: ({ params }) => schedulingEventDetailLoader({ params }),
+    pendingComponent: shellRoute(SchedulingEventDetailPending),
+    component: shellRoute(function SchedulingEventDetailShellPage() {
+      const data = schedulingEventDetailRoute.useLoaderData();
+      return <SchedulingEventDetailView data={data} />;
+    }),
+    errorComponent: shellErrorComponent,
+  });
+}
+
+const schedulingEventDetailRoute = createSchedulingEventDetailRoute(
+  defaultSchedulingEventDetailLoader,
+);
 
 const schedulingCreateEventRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -188,7 +219,10 @@ const timeAwayRoute = createRoute({
 const leaderVolunteerTimeAwayRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/leader/volunteer-time-away',
-  beforeLoad: shellBeforeLoad,
+  beforeLoad: async () => {
+    shellBeforeLoad();
+    await ensureLeaderRouteAccess();
+  },
   component: shellRoute(LeaderVolunteerTimeAwayPage),
   errorComponent: shellErrorComponent,
 });
