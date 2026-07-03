@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { vi, afterEach } from 'vitest';
 
 function daysFromNowIso(days: number, hourUtc = 13): string {
   const date = new Date();
@@ -77,43 +77,47 @@ export const leaderRouteEventDetail = {
   assignments: [],
 };
 
-export const getJsonMock = vi.fn<(path: string, _scope?: unknown) => Promise<unknown>>(
-  async (path: string) => {
-    if (path.startsWith('/organization/context')) {
-      return volunteerRouteOrgContext;
-    }
-    if (path.startsWith('/events?')) {
-      return leaderRouteEvents;
-    }
-    if (path.startsWith('/events/evt-1')) {
-      return leaderRouteEventDetail;
-    }
-    if (path.endsWith('/roles')) {
-      return [{ id: 'role-1', name: 'Greeter', retired: false }];
-    }
-    if (path.includes('/ministries/') && path.endsWith('/memberships')) {
-      return [{ volunteerId: 'vol-2', displayName: 'Alex', status: 'ACTIVE' }];
-    }
-    if (path.includes('/ministries/') && path.endsWith('/leaders')) {
-      return [{ volunteerId: 'leader-1', displayName: 'Pat Leader' }];
-    }
-    if (path.includes('/ministries/') && path.endsWith('/invites')) {
-      return { invites: [] };
-    }
-    if (path.includes('/volunteers/search')) {
-      return { volunteers: [] };
-    }
-    if (path.includes('/assignments')) {
-      return volunteerRouteAssignments;
-    }
-    if (path.includes('/unavailability')) {
-      return volunteerRouteUnavailability;
-    }
-    throw new Error(`Unexpected getJson path: ${path}`);
-  },
-);
+export async function defaultGetJsonMock(path: string): Promise<unknown> {
+  if (path.startsWith('/organization/context')) {
+    return volunteerRouteOrgContext;
+  }
+  if (path.startsWith('/events?')) {
+    return leaderRouteEvents;
+  }
+  if (path.startsWith('/events/evt-1')) {
+    return leaderRouteEventDetail;
+  }
+  if (path.endsWith('/roles')) {
+    return [{ id: 'role-1', name: 'Greeter', retired: false }];
+  }
+  if (path.includes('/ministries/') && path.endsWith('/memberships')) {
+    return [{ volunteerId: 'vol-2', displayName: 'Alex', status: 'ACTIVE' }];
+  }
+  if (path.includes('/ministries/') && path.endsWith('/leaders')) {
+    return [{ volunteerId: 'leader-1', displayName: 'Pat Leader' }];
+  }
+  if (path.includes('/ministries/') && path.endsWith('/invites')) {
+    return { invites: [] };
+  }
+  if (path.includes('/volunteers/search')) {
+    return { volunteers: [] };
+  }
+  if (path.includes('/assignments')) {
+    return volunteerRouteAssignments;
+  }
+  if (path.includes('/unavailability')) {
+    return volunteerRouteUnavailability;
+  }
+  throw new Error(`Unexpected getJson path: ${path}`);
+}
 
-export const mutateJsonMock = vi.fn(async (_path: string, _scope: unknown, init?: RequestInit) => {
+export const getJsonMock = vi.fn(defaultGetJsonMock);
+
+export async function defaultMutateJsonMock(
+  _path: string,
+  _scope: unknown,
+  init?: RequestInit,
+): Promise<unknown> {
   if (init?.method === 'DELETE') {
     return { id: 'away-1' };
   }
@@ -125,7 +129,16 @@ export const mutateJsonMock = vi.fn(async (_path: string, _scope: unknown, init?
       endsAtUtc: '2026-08-02T00:00:00.000Z',
     },
   };
-});
+}
+
+export const mutateJsonMock = vi.fn(defaultMutateJsonMock);
+
+export function resetVolunteerRouteMocks(): void {
+  getJsonMock.mockReset();
+  getJsonMock.mockImplementation(defaultGetJsonMock);
+  mutateJsonMock.mockReset();
+  mutateJsonMock.mockImplementation(defaultMutateJsonMock);
+}
 
 vi.mock('@/api/apiClient', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/api/apiClient')>();
@@ -144,3 +157,7 @@ vi.mock('@/volunteer/prefetchVolunteerDashboard', () => ({
 vi.mock('@/leader/prefetchLeaderScheduling', () => ({
   prefetchLeaderSchedulingQueries: vi.fn(async () => {}),
 }));
+
+afterEach(() => {
+  resetVolunteerRouteMocks();
+});

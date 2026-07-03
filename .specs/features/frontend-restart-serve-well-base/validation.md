@@ -369,17 +369,17 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 | Criterion (WHEN X THEN Y) | Spec-defined outcome | `file:line` + assertion | Result |
 | ------------------------- | -------------------- | ----------------------- | ------ |
-| WHEN leader `/scheduling` renders THEN serve-well layout (hero, roster, fill badge, Assign/Release) | `leader-ministry-hero`, `leader-roster-section`, Roster heading | `scheduling.behavior.test.tsx:116-118` — `findByTestId('leader-ministry-hero')`, `findByTestId('leader-roster-section')`, `getByRole('heading', { name: 'Roster' })` | ✅ PASS |
+| WHEN leader `/scheduling` renders THEN serve-well layout (hero, roster, fill badge, Assign/Release) | `leader-ministry-hero`, summary counts, roster card, fill badge, assign | `scheduling.behavior.test.tsx:124-130` — `findByText('1 events this week · 1 open slots')`; `getByTestId('roster-fill-badge')` `0/1 filled`; `getByRole('button', { name: /assign/i })` | ✅ PASS |
 | WHEN actions run THEN pessimistic mutations + cache invalidation | POST assign / void + invalidate queries | `leaderQueries.test.ts:61-91` — `mutateJson` POST; `invalidateQueries` event + list keys | ✅ PASS |
 | WHEN scope is leader THEN `X-Leader-Ministry-Id` from working context | `leaderMinistryId` on mutation scope | `assignMutation.ts:31-34` — `leaderMinistryId: input.ministryId` in scope; `useApiScope.ts` (existing) | ✅ PASS |
 | WHEN event detail opens THEN title + fill badge + assign form | Event heading, `0/1 filled`, assign dialog | `schedulingEventDetail.behavior.test.tsx:22-36` — heading `Sunday Service`; `roster-fill-badge` `/0\/1 filled/`; assign heading | ✅ PASS |
-| WHEN private event create THEN form + navigate to detail | Create mutation + route | `schedulingCreatePrivateEvent.tsx` (impl); e2e smoke loads seeded event detail | ⚠️ Spec-precision gap (no dedicated create behavior test) |
+| WHEN private event create THEN form + navigate to detail | POST `/events` kind PRIVATE + navigate to detail | `schedulingCreatePrivateEvent.behavior.test.tsx:57-84` — `mutateJson` POST with `"kind":"PRIVATE"`; `navigateMock` `{ to: '/scheduling/events/$eventId', params: { eventId: 'evt-private-new' } }` | ✅ PASS |
 | WHEN leader time-away THEN behavior test passes | Support copy + POST on behalf | `schedulingEventDetail.behavior.test.tsx:46-93` — heading; POST body scope with `leaderMinistryId` | ✅ PASS |
 | WHEN Playwright smoke THEN leader paths green | Hero + roster; event detail | `leader-scheduling.spec.ts:7-9`; `scheduling-event-detail.spec.ts:7-11` | ✅ PASS |
 | WHEN layout matches serve-well at 1440px | Side-by-side visual parity | — | ⚠️ HITL deferred (RST-ENG-01) |
 | WHEN create public event | Full public create flow | `router.tsx` — `SchedulingCreateEventPage` placeholder (web-next parity) | ⚠️ Deferred — accredited-admin flow out of leader slice scope |
 
-**Status**: ✅ All automated ACs covered; 2 ⚠️ gaps (HITL visual, public event create placeholder)
+**Status**: ✅ All automated ACs covered; 1 ⚠️ HITL visual deferred; public event create remains placeholder (web-next parity, out of leader slice scope)
 
 ---
 
@@ -387,12 +387,12 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 | Mutation | File:line | Description | Killed? |
 | -------- | --------- | ----------- | ------- |
-| 1 | `LeaderSchedulingPage.tsx` (summary) | Force `upcomingEvents.length` → `0` in summary line | ⚠️ Survived — hero/roster test ids still present with empty roster |
+| 1 | `LeaderSchedulingPage.tsx` (summary) | Force `events: 0` in leader summary line | ✅ Killed — `scheduling.behavior.test.tsx:124` |
 | 2 | `buildRosterRows.ts` | Break `volunteerName` fill detection | ✅ Killed — `leaderQueries.test.ts:132` |
 | 3 | `schedulingEventDetail.tsx` | Wrong event title | ✅ Killed — `schedulingEventDetail.behavior.test.tsx:23` |
 
 **Sensor depth**: lightweight (3 targeted mutations)  
-**Result**: 2/3 killed — ⚠️ minor gap (MUT1: summary count not asserted in behavior test)
+**Result**: 3/3 killed — ✅ PASS
 
 ---
 
@@ -400,7 +400,7 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 | Gate | Command | Result |
 | ---- | ------- | ------ |
-| Vitest | `pnpm --filter @onda/web-onda test` | ✅ **98 passed** (was 84 pre–Phase 3; **+14**) |
+| Vitest | `pnpm --filter @onda/web-onda test` | ✅ **100 passed** (was 98; **+2** new behavior tests) |
 | Typecheck | `pnpm typecheck:web-onda` | ✅ pass |
 | Build | `pnpm --filter @onda/web-onda build` | ✅ pass |
 | Playwright (API-backed) | `pnpm test:e2e:web-onda` | ✅ **5 passed** (was 3; +2 leader specs) |
@@ -422,13 +422,13 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 **Overall**: ✅ **Ready to close #173** — all automated slice gates green
 
-**Spec-anchored check**: 7/9 criteria with matching assertions; 2 ⚠️ (HITL visual, public event create placeholder)  
-**Sensor**: 2/3 mutations killed (summary line count not behavior-tested)  
-**Gate**: Vitest 98, build, typecheck, Playwright 5/5 green
+**Spec-anchored check**: 8/9 criteria with matching assertions; 1 ⚠️ HITL visual (deferred); public event create intentionally out of scope  
+**Sensor**: 3/3 mutations killed  
+**Gate**: Vitest 100, build, typecheck, Playwright 5/5 green
 
 **What works**: Live leader scheduling hub with roster cards and assign/release, event detail with roster management, private event create, leader volunteer time-away CRUD, API-backed Playwright smoke for leader paths.
 
 **Blocking #173?** No.
 
-**Deferred**: 1440px serve-well side-by-side (RST-ENG-01); public event create (accredited-admin — same as web-next placeholder); roster nav dedupe note from PR #171 review.
+**Deferred**: 1440px serve-well side-by-side (RST-ENG-01); public event create (accredited-admin — web-next placeholder); roster nav dedupe note from PR #171 review.
 
