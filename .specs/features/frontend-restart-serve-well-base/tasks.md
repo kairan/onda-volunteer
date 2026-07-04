@@ -82,7 +82,7 @@ Phase 5:  T16 → T17
 **Reuses**: serve-well `onda/*`; web-next `shell/shellRoute.tsx` patterns
 
 **Done when**:
-- [ ] Signed-in shell matches serve-well layout at 1440px (manual)
+- [x] Signed-in shell matches serve-well layout at 1440px (manual — HITL 2026-07-04)
 - [x] No role demo dropdown
 - [x] Nav changes when working context changes (behavior test)
 
@@ -166,8 +166,8 @@ Phase 5:  T16 → T17
 **Reuses**: serve-well `MinistryLeaderDashboard.tsx`; web-next `LeaderSchedulingPage` data
 
 **Done when**:
-- [ ] RST-LEAD-01 met
-- [ ] Leader behavior tests pass
+- [x] RST-LEAD-01 met
+- [x] Leader behavior tests pass
 
 ---
 
@@ -178,8 +178,8 @@ Phase 5:  T16 → T17
 **Reuses**: web-next scheduling event routes
 
 **Done when**:
-- [ ] Leader can open event detail and assign/release
-- [ ] E2E smoke path green
+- [x] Leader can open event detail and assign/release
+- [x] E2E smoke path green
 
 ---
 
@@ -190,7 +190,7 @@ Phase 5:  T16 → T17
 **Reuses**: web-next route
 
 **Done when**:
-- [ ] Behavior test passes
+- [x] Behavior test passes
 
 ---
 
