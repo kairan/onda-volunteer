@@ -1,4 +1,5 @@
 import { vi, afterEach } from 'vitest';
+import type { ProtectedScope } from '@/api/apiClient';
 
 function daysFromNowIso(days: number, hourUtc = 13): string {
   const date = new Date();
@@ -77,7 +78,10 @@ export const leaderRouteEventDetail = {
   assignments: [],
 };
 
-export async function defaultGetJsonMock(path: string): Promise<unknown> {
+export async function defaultGetJsonMock(
+  path: string,
+  _scope?: ProtectedScope,
+): Promise<unknown> {
   if (path.startsWith('/organization/context')) {
     return volunteerRouteOrgContext;
   }
