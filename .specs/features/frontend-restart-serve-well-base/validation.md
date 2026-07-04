@@ -324,8 +324,8 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 | Requirement | Previous | New Status |
 | ----------- | -------- | ---------- |
-| RST-VOL-01 | ⏳ Phase 2+ | ✅ Verified — automated gates green; 1440px HITL deferred |
-| RST-ENG-01 | ⚠️ Partial | ⚠️ Partial — automated gates green; manual 1440px pre-cutover |
+| RST-VOL-01 | ⏳ Phase 2+ | ✅ Verified — automated gates + 1440px HITL (2026-07-04) |
+| RST-ENG-01 | ⚠️ Partial | ✅ Verified — automated gates + 1440px HITL (2026-07-04) |
 
 ---
 
@@ -341,7 +341,7 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 **Blocking #172?** No — merge after CI green.
 
-**Deferred**: Side-by-side serve-well vs web-onda at 1440px (RST-ENG-01 human sign-off).
+**Deferred**: Side-by-side serve-well vs web-onda at 1440px — ✅ **signed off 2026-07-04** (see Phase 3 HITL).
 
 ---
 
@@ -376,10 +376,10 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 | WHEN private event create THEN form + navigate to detail | POST `/events` kind PRIVATE + navigate to detail | `schedulingCreatePrivateEvent.behavior.test.tsx:57-84` — `mutateJson` POST with `"kind":"PRIVATE"`; `navigateMock` `{ to: '/scheduling/events/$eventId', params: { eventId: 'evt-private-new' } }` | ✅ PASS |
 | WHEN leader time-away THEN behavior test passes | Support copy + POST on behalf | `schedulingEventDetail.behavior.test.tsx:46-93` — heading; POST body scope with `leaderMinistryId` | ✅ PASS |
 | WHEN Playwright smoke THEN leader paths green | Hero + roster; event detail | `leader-scheduling.spec.ts:7-9`; `scheduling-event-detail.spec.ts:7-11` | ✅ PASS |
-| WHEN layout matches serve-well at 1440px | Side-by-side visual parity | — | ⚠️ HITL deferred (RST-ENG-01) |
+| WHEN layout matches serve-well at 1440px | Side-by-side visual parity | Human sign-off 2026-07-04 — volunteer + leader at 1440px vs serve-well (tester confirmed) | 🧑 HITL ✅ PASS |
 | WHEN create public event | Full public create flow | `router.tsx` — `SchedulingCreateEventPage` placeholder (web-next parity) | ⚠️ Deferred — accredited-admin flow out of leader slice scope |
 
-**Status**: ✅ All automated ACs covered; 1 ⚠️ HITL visual deferred; public event create remains placeholder (web-next parity, out of leader slice scope)
+**Status**: ✅ All automated ACs covered; 1440px HITL signed off 2026-07-04; public event create remains placeholder (web-next parity, out of leader slice scope)
 
 ---
 
@@ -413,8 +413,8 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 | Requirement | Previous | New Status |
 | ----------- | -------- | ---------- |
-| RST-LEAD-01 | ⏳ Phase 3+ | ✅ Verified — automated gates green; 1440px HITL deferred |
-| RST-ENG-01 | ⚠️ Partial | ⚠️ Partial — automated gates green; manual 1440px pre-cutover |
+| RST-LEAD-01 | ⏳ Phase 3+ | ✅ Verified — automated gates + 1440px HITL (2026-07-04) |
+| RST-ENG-01 | ⚠️ Partial | ✅ Verified — automated gates + 1440px HITL (2026-07-04); cutover checklist otherwise pre-T17 |
 
 ---
 
@@ -422,13 +422,13 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 **Overall**: ✅ **Ready to close #173** — all automated slice gates green
 
-**Spec-anchored check**: 8/9 criteria with matching assertions; 1 ⚠️ HITL visual (deferred); public event create intentionally out of scope  
+**Spec-anchored check**: 9/9 criteria met (8 automated + 1 HITL); public event create intentionally out of scope  
 **Sensor**: 3/3 mutations killed  
 **Gate**: Vitest 100, build, typecheck, Playwright 5/5 green
 
-**What works**: Live leader scheduling hub with roster cards and assign/release, event detail with roster management, private event create, leader volunteer time-away CRUD, API-backed Playwright smoke for leader paths.
+**What works**: Live leader scheduling hub with roster cards and assign/release, event detail with roster management, private event create, leader volunteer time-away CRUD, API-backed Playwright smoke for leader paths, **serve-well visual parity at 1440px (human sign-off)**.
 
 **Blocking #173?** No.
 
-**Deferred**: 1440px serve-well side-by-side (RST-ENG-01); public event create (accredited-admin — web-next placeholder); roster nav dedupe note from PR #171 review.
+**Deferred**: Public event create (accredited-admin — web-next placeholder); roster nav dedupe note from PR #171 review.
 

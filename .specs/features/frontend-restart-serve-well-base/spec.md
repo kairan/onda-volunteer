@@ -20,7 +20,7 @@
 - [x] Stand up **`apps/web-onda`** (or agreed package name) with serve-well visual structure on monorepo stack (Vite, pnpm, TanStack Router).
 - [ ] Wire **real API** (NestJS + Supabase auth) — no mock arrays in shipped routes.
 - [ ] Shell includes **working context** (ministério · chapéu) from Foundation.
-- [ ] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist).
+- [x] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist) — HITL sign-off 2026-07-04
 - [ ] Port org-admin + system-admin **functionally** (neutral tokens).
 - [ ] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
 
