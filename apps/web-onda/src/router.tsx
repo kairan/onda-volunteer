@@ -21,6 +21,9 @@ import { SchedulingCreatePrivateEventPage } from '@/routes/schedulingCreatePriva
 import { LeaderVolunteerTimeAwayPage } from '@/routes/leaderVolunteerTimeAway';
 import { TimeAwayPage } from '@/routes/timeAway';
 import { placeholderPage } from '@/routes/placeholders';
+import { MinistriesPage } from '@/routes/ministries';
+import { MinistryLeadersPage } from '@/routes/ministryLeaders';
+import { VolunteersPage } from '@/routes/volunteers';
 import { UserSelectPage } from '@/routes/userSelect';
 import { fetchEventDetail } from '@/leader/eventDetailQuery';
 import { ensureLeaderRouteAccess } from '@/leader/ensureLeaderRouteAccess';
@@ -42,9 +45,6 @@ import {
   SystemAdminUsersPage,
 } from '@/system-admin/pages';
 
-const MinistriesPage = placeholderPage('Ministries');
-const VolunteersPage = placeholderPage('Volunteers');
-const MinistryLeadersPage = placeholderPage('Ministry leaders');
 const SchedulingCreateEventPage = placeholderPage('New event');
 
 const rootRoute = createRootRoute({
