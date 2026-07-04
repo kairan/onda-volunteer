@@ -432,3 +432,52 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 **Deferred**: Public event create (accredited-admin — web-next placeholder); roster nav dedupe note from PR #171 review.
 
+---
+
+## Phase 4 validation (#174 — T14–T15)
+
+**Date**: 2026-07-04  
+**Phase verified**: Execute Phase 4 (T14–T15) — issue [#174](https://github.com/kairan/onda-volunteer/issues/174)  
+**Diff range**: `fa879d5..8715017` (branch `issue-174-web-onda-phase-4-admin`)  
+**Verifier**: orchestrator independent pass (author ≠ verifier)
+
+### Task completion (T14–T15)
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T14 | ✅ Done | `/ministries`, `/volunteers`, `/ministry-leaders` + church/campus settings |
+| T15 | ✅ Done | `/system-admin/*` pages, queries, ADR 0005 guard tests |
+
+### RST-ADMIN-01 — Org-admin + System Admin functional port
+
+| Criterion | Spec-defined outcome | `file:line` + assertion | Result |
+| --------- | -------------------- | ----------------------- | ------ |
+| WHEN admin routes render THEN behavior matches web-next with serve-well tokens | Live query data on stewardship pages | `ministries.behavior.test.tsx:37-38` — `expect(...getByText('Greeter')).toBeInTheDocument()`; `volunteers.behavior.test.tsx:37-38` — `expect(...getByText('Sam Member')).toBeInTheDocument()`; `ministryLeaders.behavior.test.tsx:37-40` — `expect(...getByText(/Pat Leader/))` + Revoke button | ✅ PASS |
+| WHEN operator routes render THEN ADR 0005 guards preserved | Non-operator redirected to `/dashboard`; operator sees dashboard | `systemAdminShell.behavior.test.tsx:49-51` — `expect(router.state.location.pathname).toBe('/dashboard')`; `:33-37` — operator dashboard heading | ✅ PASS |
+| System-admin scheduling read-only | Events listed; no assign/create actions | `systemAdminScheduling.behavior.test.tsx:63-69` — Sunday Service visible; `queryByRole('link', { name: /create/i })` null; `queryByRole('button', { name: /assign/i })` null | ✅ PASS |
+| Church create (operator) | POST + list refresh | `systemAdmin.behavior.test.tsx:88-92` — `expect(mutateJsonMock).toHaveBeenCalled()` + `findByText('New Parish')` | ✅ PASS |
+
+### Issue #174 done-when
+
+| Criterion | Evidence | Result |
+| --------- | -------- | ------ |
+| Org-admin + system-admin routes functional against live API | Behavior tests mock `getJson`/`mutateJson` with production paths | ✅ PASS |
+| Vitest behavior tests ported for `web-onda` | 6 new behavior files (3 org-admin + 3 system-admin) | ✅ PASS |
+| CI green (`pnpm test`, `typecheck-web-onda`) | `pnpm --filter @onda/web-onda test` — **112 passed**; `pnpm --filter @onda/web-onda typecheck` — exit 0 | ✅ PASS |
+
+### Discrimination sensor
+
+| Mutation | Target | Tests run | Killed? |
+| -------- | ------ | --------- | ------- |
+| Role name → `"WRONG"` | `ministries.tsx` render | `ministries.behavior.test.tsx` | ✅ |
+| Disable `isSystemAdmin` guard | `ensureSystemAdminRouteAccess.ts` | `systemAdminShell.behavior.test.tsx` | ✅ |
+
+### Gate check
+
+| Gate | Command | Result |
+| ---- | ------- | ------ |
+| Vitest | `pnpm --filter @onda/web-onda test` | ✅ **112 passed** (+5 vs Phase 3) |
+| Typecheck | `pnpm typecheck:web-onda` | ✅ pass |
+
+**Overall**: ✅ **PASS for #174** — RST-ADMIN-01 automated criteria met; ready for PR.
+

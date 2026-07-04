@@ -199,7 +199,7 @@ Phase 5:  T16 → T17
 **What**: Port `/ministries`, `/volunteers`, `/ministry-leaders` — web-next logic, serve-well tokens only.
 
 **Done when**:
-- [ ] RST-ADMIN-01 org-admin criteria met
+- [x] RST-ADMIN-01 org-admin criteria met
 
 ---
 
@@ -208,8 +208,8 @@ Phase 5:  T16 → T17
 **What**: Port `/system-admin/*` from web-next with `OperatorShell` pattern from serve-well (neutral).
 
 **Done when**:
-- [ ] ADR 0005 guards preserved
-- [ ] system-admin behavior tests pass
+- [x] ADR 0005 guards preserved
+- [x] system-admin behavior tests pass
 
 ---
 

@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API — Specification
 
-**Status:** Specify complete · Phase 0–1 shipped (#170) · Phase 2 shipped (#172, PR #176) · Phase 3 shipped (#173) · Phase 4+ #174–#175  
+**Status:** Phase 4 shipped ([#174](https://github.com/kairan/onda-volunteer/issues/174)) · Phase 5 #175  
 **Design:** [design.md](./design.md)  
 **Decisions:** [context.md](./context.md)  
 **Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen
@@ -21,7 +21,7 @@
 - [ ] Wire **real API** (NestJS + Supabase auth) — no mock arrays in shipped routes.
 - [ ] Shell includes **working context** (ministério · chapéu) from Foundation.
 - [x] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist) — HITL sign-off 2026-07-04
-- [ ] Port org-admin + system-admin **functionally** (neutral tokens).
+- [x] Port org-admin + system-admin **functionally** (neutral tokens).
 - [ ] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
 
 ## Non-goals

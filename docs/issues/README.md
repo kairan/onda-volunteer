@@ -16,11 +16,9 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 | Issue | Feature | Tasks | Spec |
 |------:|---------|-------|------|
-| [#173](https://github.com/kairan/onda-volunteer/issues/173) | web-onda Phase 3 — Leader | T11–T13 | `173-web-onda-phase-3-leader.md` |
-| [#174](https://github.com/kairan/onda-volunteer/issues/174) | web-onda Phase 4 — Admin | T14–T15 | `174-web-onda-phase-4-admin.md` |
 | [#175](https://github.com/kairan/onda-volunteer/issues/175) | web-onda Phase 5 — Cutover | T17 | `175-web-onda-phase-5-cutover.md` |
 
-**Shipped:** [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
+**Shipped:** [#174](https://github.com/kairan/onda-volunteer/issues/174) admin slice — `done/174-web-onda-phase-4-admin.md` · [#173](https://github.com/kairan/onda-volunteer/issues/173) leader slice (PR [#177](https://github.com/kairan/onda-volunteer/pull/177)) — `173-web-onda-phase-3-leader.md` · [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
 
 **Superseded:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` cutover) — closed 2026-07-01.
 

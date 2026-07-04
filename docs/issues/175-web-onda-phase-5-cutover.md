@@ -1,7 +1,7 @@
 # 175 — web-onda Phase 5: Production cutover (T17)
 
 **Type:** Feature  
-**Status:** Blocked by [#174](https://github.com/kairan/onda-volunteer/issues/174)  
+**Status:** Blocked by [#174](https://github.com/kairan/onda-volunteer/issues/174) — **cleared** (shipped 2026-07-04)  
 **TLC:** `.specs/features/frontend-restart-serve-well-base/` (RST-CUT-01)  
 **Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)
 
