@@ -438,8 +438,8 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 
 **Date**: 2026-07-04  
 **Phase verified**: Execute Phase 4 (T14–T15) — issue [#174](https://github.com/kairan/onda-volunteer/issues/174)  
-**Diff range**: `fa879d5..8715017` (branch `issue-174-web-onda-phase-4-admin`)  
-**Verifier**: orchestrator independent pass (author ≠ verifier)
+**Diff range**: `fa879d5..9b823d7` (branch `cursor/issue-174-web-onda-phase-4-admin`, PR [#178](https://github.com/kairan/onda-volunteer/pull/178))  
+**Verifier**: orchestrator independent pass (author ≠ verifier); fix iteration 1 (`9b823d7` ToastProvider)
 
 ### Task completion (T14–T15)
 
@@ -479,5 +479,11 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 | Vitest | `pnpm --filter @onda/web-onda test` | ✅ **112 passed** (+5 vs Phase 3) |
 | Typecheck | `pnpm typecheck:web-onda` | ✅ pass |
 
-**Overall**: ✅ **PASS for #174** — RST-ADMIN-01 automated criteria met; ready for PR.
+**Overall**: ✅ **PASS for #174** — RST-ADMIN-01 automated criteria met; merge-ready on PR #178.
+
+### Fix iteration 1 (`9b823d7`)
+
+| Finding | Fix | Verified |
+| ------- | --- | -------- |
+| `ToastProvider` not mounted in `main.tsx` — `SystemAdminChurchDetailPage` would throw | Wrap `RouterProvider` with `ToastProvider` in `main.tsx` | CI green on `9b823d7`; Bugbot threads resolved |
 

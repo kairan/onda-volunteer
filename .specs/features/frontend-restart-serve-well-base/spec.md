@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API — Specification
 
-**Status:** Phase 4 shipped ([#174](https://github.com/kairan/onda-volunteer/issues/174)) · Phase 5 #175  
+**Status:** Phase 4 in PR ([#174](https://github.com/kairan/onda-volunteer/issues/174), PR [#178](https://github.com/kairan/onda-volunteer/pull/178)) · Phase 5 #175  
 **Design:** [design.md](./design.md)  
 **Decisions:** [context.md](./context.md)  
 **Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen
@@ -18,8 +18,8 @@
 ## Goals
 
 - [x] Stand up **`apps/web-onda`** (or agreed package name) with serve-well visual structure on monorepo stack (Vite, pnpm, TanStack Router).
-- [ ] Wire **real API** (NestJS + Supabase auth) — no mock arrays in shipped routes.
-- [ ] Shell includes **working context** (ministério · chapéu) from Foundation.
+- [x] Wire **real API** (NestJS + Supabase auth) — no mock arrays in shipped routes. *(Exception: `/scheduling/events/new` public create remains placeholder — deferred from `web-next`.)*
+- [x] Shell includes **working context** (ministério · chapéu) from Foundation.
 - [x] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist) — HITL sign-off 2026-07-04
 - [x] Port org-admin + system-admin **functionally** (neutral tokens).
 - [ ] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
