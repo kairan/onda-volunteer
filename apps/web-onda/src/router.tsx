@@ -295,11 +295,22 @@ const systemAdminSchedulingRoute = createRoute({
   component: SystemAdminSchedulingPage,
 });
 
-const systemAdminSchedulingEventDetailRoute = createRoute({
-  getParentRoute: () => systemAdminRoute,
-  path: '/scheduling/events/$eventId',
-  component: SystemAdminSchedulingEventDetailPage,
-});
+function createSystemAdminSchedulingEventDetailRoute(
+  schedulingEventDetailLoader: typeof defaultSchedulingEventDetailLoader,
+) {
+  return createRoute({
+    getParentRoute: () => systemAdminRoute,
+    path: '/scheduling/events/$eventId',
+    loader: ({ params }) => schedulingEventDetailLoader({ params }),
+    component: function SystemAdminSchedulingEventDetailRoute() {
+      const data = systemAdminSchedulingEventDetailRoute.useLoaderData();
+      return <SystemAdminSchedulingEventDetailPage data={data} />;
+    },
+  });
+}
+
+const systemAdminSchedulingEventDetailRoute =
+  createSystemAdminSchedulingEventDetailRoute(defaultSchedulingEventDetailLoader);
 
 export function buildRouteTree() {
   return rootRoute.addChildren([
