@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from '@tanstack/react-router';
 import { AuthSessionProvider } from '@/auth/AuthSessionProvider';
+import { ToastProvider } from '@/feedback/ToastHost';
 import { I18nProvider } from '@/i18n/I18nProvider';
 import { QueryProvider } from '@/query/QueryProvider';
 import { router } from '@/router';
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')!).render(
     <I18nProvider>
       <QueryProvider>
         <AuthSessionProvider>
-          <RouterProvider router={router} />
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
         </AuthSessionProvider>
       </QueryProvider>
     </I18nProvider>

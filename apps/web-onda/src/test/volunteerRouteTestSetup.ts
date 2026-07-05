@@ -21,6 +21,26 @@ export const volunteerRouteOrgContext = {
   ],
 };
 
+export const adminRouteOrgContext = {
+  churches: [
+    {
+      id: 'church-admin',
+      name: 'Admin Church',
+      defaultTimezone: 'UTC',
+      isAccreditedAdmin: true,
+      campuses: [{ id: 'campus-1', name: 'Main', timezone: 'UTC' }],
+      ministries: [
+        {
+          id: 'min-greeters',
+          name: 'Greeters',
+          isChurchAdmin: true,
+          isLeader: true,
+        },
+      ],
+    },
+  ],
+};
+
 export const volunteerRouteAssignments = [
   {
     id: 'asg-1',

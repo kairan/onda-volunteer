@@ -21,6 +21,9 @@ import { SchedulingCreatePrivateEventPage } from '@/routes/schedulingCreatePriva
 import { LeaderVolunteerTimeAwayPage } from '@/routes/leaderVolunteerTimeAway';
 import { TimeAwayPage } from '@/routes/timeAway';
 import { placeholderPage } from '@/routes/placeholders';
+import { MinistriesPage } from '@/routes/ministries';
+import { MinistryLeadersPage } from '@/routes/ministryLeaders';
+import { VolunteersPage } from '@/routes/volunteers';
 import { UserSelectPage } from '@/routes/userSelect';
 import { fetchEventDetail } from '@/leader/eventDetailQuery';
 import { ensureLeaderRouteAccess } from '@/leader/ensureLeaderRouteAccess';
@@ -42,9 +45,6 @@ import {
   SystemAdminUsersPage,
 } from '@/system-admin/pages';
 
-const MinistriesPage = placeholderPage('Ministries');
-const VolunteersPage = placeholderPage('Volunteers');
-const MinistryLeadersPage = placeholderPage('Ministry leaders');
 const SchedulingCreateEventPage = placeholderPage('New event');
 
 const rootRoute = createRootRoute({
@@ -295,11 +295,22 @@ const systemAdminSchedulingRoute = createRoute({
   component: SystemAdminSchedulingPage,
 });
 
-const systemAdminSchedulingEventDetailRoute = createRoute({
-  getParentRoute: () => systemAdminRoute,
-  path: '/scheduling/events/$eventId',
-  component: SystemAdminSchedulingEventDetailPage,
-});
+function createSystemAdminSchedulingEventDetailRoute(
+  schedulingEventDetailLoader: typeof defaultSchedulingEventDetailLoader,
+) {
+  return createRoute({
+    getParentRoute: () => systemAdminRoute,
+    path: '/scheduling/events/$eventId',
+    loader: ({ params }) => schedulingEventDetailLoader({ params }),
+    component: function SystemAdminSchedulingEventDetailRoute() {
+      const data = systemAdminSchedulingEventDetailRoute.useLoaderData();
+      return <SystemAdminSchedulingEventDetailPage data={data} />;
+    },
+  });
+}
+
+const systemAdminSchedulingEventDetailRoute =
+  createSystemAdminSchedulingEventDetailRoute(defaultSchedulingEventDetailLoader);
 
 export function buildRouteTree() {
   return rootRoute.addChildren([
