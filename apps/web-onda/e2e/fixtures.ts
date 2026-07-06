@@ -7,7 +7,7 @@ const usesRealApi = Boolean(
 
 const seedChurchSelection = {
   churchId: 'seed-church-demo',
-  campusId: 'seed-campus-central-sede',
+  campusId: 'seed-campus-joinville',
   workingContext: {
     ministryId: 'seed-ministry-demo',
     mode: 'volunteer' as const,

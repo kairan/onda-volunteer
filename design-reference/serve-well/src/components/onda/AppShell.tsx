@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AppSidebar, SystemAdminSidebar } from "./AppSidebar";
 import { useRole, ROLE_LABELS, type Role } from "@/lib/role";
-import { useCampus } from "@/lib/campus";
+import { useCampus, CAMPUS_REGIONS } from "@/lib/campus";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -55,22 +55,33 @@ function CampusSwitcher({ variant = "light" }: { variant?: "light" | "dark" }) {
           Campus / Igreja
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {campuses.map((c) => (
-          <DropdownMenuItem
-            key={c.id}
-            onClick={() => {
-              setCampusId(c.id);
-              toast.success(`Switched to ${c.name}`);
-            }}
-            className="flex items-start gap-2"
-          >
-            <div className="flex-1">
-              <div className="text-sm font-medium">{c.name}</div>
-              <div className="text-xs text-muted-foreground">{c.city}</div>
+        {CAMPUS_REGIONS.map((region) => {
+          const regionCampuses = campuses.filter((c) => c.region === region);
+          if (regionCampuses.length === 0) return null;
+          return (
+            <div key={region}>
+              <DropdownMenuLabel className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                {region}
+              </DropdownMenuLabel>
+              {regionCampuses.map((c) => (
+                <DropdownMenuItem
+                  key={c.id}
+                  onClick={() => {
+                    setCampusId(c.id);
+                    toast.success(`Switched to ${c.name}`);
+                  }}
+                  className="flex items-start gap-2"
+                >
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{c.name}</div>
+                    <div className="text-xs text-muted-foreground">{c.city}</div>
+                  </div>
+                  {c.id === campus.id && <Check className="h-4 w-4 text-primary" />}
+                </DropdownMenuItem>
+              ))}
             </div>
-            {c.id === campus.id && <Check className="h-4 w-4 text-primary" />}
-          </DropdownMenuItem>
-        ))}
+          );
+        })}
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/settings" className="text-xs text-muted-foreground">

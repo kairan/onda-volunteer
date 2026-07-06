@@ -22,7 +22,7 @@ describe('OrganizationContextControls', () => {
           <OrganizationContextControls
             churches={DEMO_CHURCHES}
             activeChurchId="church-a"
-            activeCampusId="campus-a1"
+            activeCampusId="campus-joinville"
             activeMinistryId="ministry-a"
             onChurchChange={onChurchChange}
             onCampusChange={() => {}}
@@ -41,13 +41,17 @@ describe('OrganizationContextControls', () => {
 
   it('shows campus selector only when the church has multiple campuses', async () => {
     await initI18n();
+    const singleCampusChurch = {
+      ...DEMO_CHURCHES[1]!,
+      campuses: [DEMO_CHURCHES[1]!.campuses[0]!],
+    };
     const { rerender } = render(
       <I18nProvider>
         <LocalTimeProvider>
           <OrganizationContextControls
-            churches={DEMO_CHURCHES}
-            activeChurchId="church-b"
-            activeCampusId="campus-b1"
+            churches={[singleCampusChurch]}
+            activeChurchId={singleCampusChurch.id}
+            activeCampusId={singleCampusChurch.campuses[0]!.id}
             activeMinistryId="ministry-b"
             onChurchChange={() => {}}
             onCampusChange={() => {}}
@@ -64,7 +68,7 @@ describe('OrganizationContextControls', () => {
           <OrganizationContextControls
             churches={DEMO_CHURCHES}
             activeChurchId="church-a"
-            activeCampusId="campus-a1"
+            activeCampusId="campus-joinville"
             activeMinistryId="ministry-a"
             onChurchChange={() => {}}
             onCampusChange={() => {}}

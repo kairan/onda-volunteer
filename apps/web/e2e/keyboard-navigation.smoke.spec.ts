@@ -58,7 +58,7 @@ test.describe('keyboard navigation @smoke @a11y', () => {
 
     await page
       .getByRole('combobox', { name: /church|igreja/i })
-      .selectOption('Igreja Central');
+      .selectOption('Onda Brasil');
 
     await expect(
       page.getByRole('heading', {
@@ -97,7 +97,7 @@ test.describe('keyboard navigation @smoke @a11y', () => {
     await expect(page.getByRole('heading', { name: /schedule/i })).toBeVisible();
 
     const churchSelect = page.getByRole('combobox', { name: 'Church' });
-    await churchSelect.selectOption('Igreja Central');
+    await churchSelect.selectOption('Onda Brasil');
 
     const eventLink = page
       .locator('#main')

@@ -85,7 +85,7 @@ afterEach(() => {
 describe('OrganizationContextProvider', () => {
   it('restores stored church selection after remount', async () => {
     await initI18n();
-    setStoredOrganizationSelection('church-b', 'campus-b1');
+    setStoredOrganizationSelection('church-b', 'campus-charlotte');
     vi.mocked(fetchOrgContext.fetchOrganizationContext).mockResolvedValue({
       churches,
     });

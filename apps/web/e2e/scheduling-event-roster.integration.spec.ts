@@ -44,7 +44,7 @@ test.describe('scheduling event roster @integration', () => {
       ),
       page.goto('/scheduling'),
     ]);
-    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central');
+    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Onda Brasil');
 
     const listLink = page.getByRole('link', { name: 'Sunday Gathering' });
     await expect(listLink).toBeVisible({ timeout: 30_000 });
@@ -98,7 +98,7 @@ test.describe('scheduling event roster @integration', () => {
       ),
       page.goto('/scheduling'),
     ]);
-    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Igreja Central');
+    await page.getByRole('combobox', { name: /church|igreja/i }).selectOption('Onda Brasil');
     await page.getByRole('link', { name: 'Sunday Gathering' }).click();
     await expect(page).toHaveURL(/\/scheduling\/events\/seed-event-public$/);
     await expect(page.getByRole('heading', { name: 'Sunday Gathering', level: 1 })).toBeVisible();

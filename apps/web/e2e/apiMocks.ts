@@ -5,11 +5,11 @@ const smokeOrganizationContext = {
   churches: [
     {
       id: 'church-seed',
-      name: 'Igreja Central',
+      name: 'Onda Brasil',
       defaultTimezone: 'America/Sao_Paulo',
       isAccreditedAdmin: true,
       campuses: [
-        { id: 'campus-seed', name: 'Sede', timezone: 'America/Sao_Paulo' },
+        { id: 'campus-seed', name: 'Joinville', timezone: 'America/Sao_Paulo' },
       ],
       ministries: [
         {
@@ -17,7 +17,7 @@ const smokeOrganizationContext = {
           name: 'Hospitality',
           membershipStatus: 'ACTIVE',
           // Single-church mock: leader flows pass without API. With PLAYWRIGHT_WITH_API,
-          // seed has multiple churches — pick Igreja Central in tests that need led ministries.
+          // seed has multiple churches — pick Onda Brasil in tests that need led ministries.
           isLeader: true,
         },
       ],

@@ -4,11 +4,11 @@ const smokeOrganizationContext = {
   churches: [
     {
       id: 'seed-church-demo',
-      name: 'Igreja Central',
+      name: 'Onda Brasil',
       defaultTimezone: 'America/Sao_Paulo',
       isAccreditedAdmin: false,
       campuses: [
-        { id: 'seed-campus-central-sede', name: 'Sede', timezone: 'America/Sao_Paulo' },
+        { id: 'seed-campus-joinville', name: 'Joinville', timezone: 'America/Sao_Paulo' },
       ],
       ministries: [
         {
@@ -54,7 +54,7 @@ const smokeEvents = [
 const smokeEventDetail = {
   church: {
     id: 'seed-church-demo',
-    name: 'Igreja Central',
+    name: 'Onda Brasil',
     defaultTimezone: 'America/Sao_Paulo',
   },
   event: {
