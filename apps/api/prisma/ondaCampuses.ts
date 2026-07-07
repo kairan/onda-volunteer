@@ -42,6 +42,7 @@ export const ONDA_REGIONAL_CHURCHES: OndaRegionalChurchSeed[] = [
     ],
   },
   {
+    // Legacy id retained for backward compatibility with existing seeds/fixtures.
     id: 'seed-church-norte',
     name: 'Onda USA',
     defaultTimezone: 'America/New_York',

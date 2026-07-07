@@ -58,6 +58,7 @@ async function main() {
 
   const churchBrasil = churchById.get('seed-church-demo')!;
   const churchUsa = churchById.get('seed-church-norte')!;
+  const churchEuropa = churchById.get('seed-church-europa')!;
 
   await prisma.ministry.upsert({
     where: { id: 'seed-ministry-demo' },
@@ -86,6 +87,16 @@ async function main() {
       id: 'seed-ministry-norte',
       name: 'Louvor',
       churchId: churchUsa.id,
+    },
+  });
+
+  await prisma.ministry.upsert({
+    where: { id: 'seed-ministry-europa' },
+    update: { churchId: churchEuropa.id },
+    create: {
+      id: 'seed-ministry-europa',
+      name: 'Mídia',
+      churchId: churchEuropa.id,
     },
   });
 
@@ -219,6 +230,21 @@ async function main() {
     create: {
       volunteerId: 'seed-volunteer-demo',
       ministryId: 'seed-ministry-norte',
+      status: 'ACTIVE',
+    },
+  });
+
+  await prisma.ministryMembership.upsert({
+    where: {
+      volunteerId_ministryId: {
+        volunteerId: 'seed-volunteer-demo',
+        ministryId: 'seed-ministry-europa',
+      },
+    },
+    update: { status: 'ACTIVE' },
+    create: {
+      volunteerId: 'seed-volunteer-demo',
+      ministryId: 'seed-ministry-europa',
       status: 'ACTIVE',
     },
   });

@@ -3,6 +3,8 @@ import type { Church } from './types';
 /**
  * Regional demo churches sourced from https://www.ondadura.com.br/campus
  * (last verified 2026-07-06).
+ *
+ * Keep campus names and timezones in sync with `apps/api/prisma/ondaCampuses.ts`.
  */
 export const ONDA_DEMO_CHURCHES: Church[] = [
   {
