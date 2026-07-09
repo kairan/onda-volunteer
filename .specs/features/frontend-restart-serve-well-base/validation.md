@@ -479,7 +479,7 @@ _All blocking fixes applied 2026-07-03. HITL 1440px layout sign-off remains pre-
 | Vitest | `pnpm --filter @onda/web-onda test` | ✅ **112 passed** (+5 vs Phase 3) |
 | Typecheck | `pnpm typecheck:web-onda` | ✅ pass |
 
-**Overall**: ✅ **PASS for #174** — RST-ADMIN-01 automated criteria met; merge-ready on PR #178.
+**Overall**: ✅ **PASS for #174** — RST-ADMIN-01 automated criteria met; merged PR #178 (2026-07-05).
 
 ### Fix iteration 1 (`9b823d7`)
 

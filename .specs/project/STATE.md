@@ -16,6 +16,10 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 
 - **2026-06-24 (#144–#147 Slices 2–5 closeout):** Volunteer, leader, org-admin, system-admin slices shipped in `apps/web-next`. 105 Vitest tests green. ~~**Next Execute:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (cutover).~~ **Superseded 2026-07-01** — see pivot below.
 
+- **2026-07-09 (Regional campus seed):** Demo/seed churches replaced with real Onda Dura campuses from [ondadura.com.br/campus](https://www.ondadura.com.br/campus), grouped as **Onda Brasil** / **Onda USA** / **Onda Europa**. Catalog: `apps/api/prisma/ondaCampuses.ts` (+ web mirror). PR [#179](https://github.com/kairan/onda-volunteer/pull/179).
+
+- **2026-07-05 (#174 Phase 4 closeout):** Org-admin + system-admin shipped in PR [#178](https://github.com/kairan/onda-volunteer/pull/178) — T14–T15 (ministries, volunteers, ministry-leaders, system-admin routes; `ToastProvider` fix). Record: `docs/issues/done/174-web-onda-phase-4-admin.md`. **Next Execute:** [#175](https://github.com/kairan/onda-volunteer/issues/175) (T17 cutover). TLC folder stays active until #175.
+
 - **2026-07-03 (#172 Phase 2 closeout):** Volunteer slice shipped in PR [#176](https://github.com/kairan/onda-volunteer/pull/176) — T08–T10.1 (dashboard, scheduling, time-away + optional description). Record: `docs/issues/done/172-web-onda-phase-2-volunteer.md`. **Next Execute:** [#173](https://github.com/kairan/onda-volunteer/issues/173)–[#175](https://github.com/kairan/onda-volunteer/issues/175). TLC folder stays active until #175.
 
 - **2026-07-01 (#170 Phase 0–1 closeout):** Foundation shipped in PR [#171](https://github.com/kairan/onda-volunteer/pull/171) — `apps/web-onda`, T01–T07 + T16 CI. Record: `docs/issues/done/170-web-onda-foundation-phase-0-1.md`. **Next Execute:** [#172](https://github.com/kairan/onda-volunteer/issues/172)–[#175](https://github.com/kairan/onda-volunteer/issues/175) (volunteer → leader → admin → cutover). TLC folder stays active until #175.

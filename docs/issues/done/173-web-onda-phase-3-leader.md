@@ -37,8 +37,7 @@ Playwright API-backed smoke for leader paths. 1440px HITL sign-off 2026-07-04.
 
 ## Next
 
-- [#174](https://github.com/kairan/onda-volunteer/issues/174) — Phase 4 Admin (T14–T15) — PR [#178](https://github.com/kairan/onda-volunteer/pull/178)
-- [#175](https://github.com/kairan/onda-volunteer/issues/175) — Phase 5 Cutover (T17)
+- [#175](https://github.com/kairan/onda-volunteer/issues/175) — Phase 5 Cutover (T17) — unblocked after [#174](https://github.com/kairan/onda-volunteer/issues/174) (PR [#178](https://github.com/kairan/onda-volunteer/pull/178) merged)
 
 ## Tracker
 

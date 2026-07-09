@@ -1,6 +1,6 @@
 # Frontend restart — serve-well + API — Design
 
-**Status:** Design draft (2026-07-01)  
+**Status:** Design locked — Execute Phase 5 cutover pending (#175, T17)  
 **Spec:** [spec.md](./spec.md)  
 **Decisions:** [context.md](./context.md)
 

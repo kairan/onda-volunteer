@@ -1,8 +1,8 @@
 # 174 — web-onda Phase 4: Org-admin + system-admin (T14–T15)
 
 **Type:** Feature  
-**Status:** Shipped pending merge (validated 2026-07-04)  
-**PR:** [#178](https://github.com/kairan/onda-volunteer/pull/178)  
+**Status:** Shipped (merged 2026-07-05)  
+**PR:** [#178](https://github.com/kairan/onda-volunteer/pull/178) (merged)  
 **TLC:** `.specs/features/frontend-restart-serve-well-base/` (RST-ADMIN-01)  
 **Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)
 
