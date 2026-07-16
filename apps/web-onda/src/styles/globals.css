@@ -37,6 +37,10 @@
   letter-spacing: -0.01em;
 }
 
+@utility auth-brand-gradient {
+  background: linear-gradient(160deg, #181e5f 0%, #2537de 45%, #eeeee7 100%);
+}
+
 @theme inline {
   --font-sans: var(--font-sans);
   --shadow-card: var(--shadow-card);

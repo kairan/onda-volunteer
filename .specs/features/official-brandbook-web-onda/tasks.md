@@ -201,10 +201,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Auth surfaces show soft blue gradient (not flat `bg-background` only)
-- [ ] Logo 1 present with adequate contrast
-- [ ] Form/card stays solid surface (no glass fill)
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Auth surfaces show soft blue gradient (not flat `bg-background` only)
+- [x] Logo 1 present with adequate contrast
+- [x] Form/card stays solid surface (no glass fill)
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior (auth layout smoke via existing shell/auth tests or new focused test)  
 **Gate**: quick  
