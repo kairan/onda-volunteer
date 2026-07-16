@@ -2,6 +2,7 @@ import { Link, Outlet } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { AuthPanel } from '@/AuthPanel';
+import { IgrejaOndaWordmark } from '@/components/brand/IgrejaOndaWordmark';
 import { Button } from '@/components/ui/button';
 import { RouteErrorPanel } from '@/shell/RouteErrorPanel';
 import { LocalTimeProvider } from '@/settings/LocalTimeProvider';
@@ -13,7 +14,7 @@ export function SystemAdminShell() {
   if (auth.status === 'loading') {
     return (
       <OperatorGateLayout>
-        <p className="text-sm text-muted-foreground">{t('shell.brand')}</p>
+        <IgrejaOndaWordmark variant="preto" className="max-h-7" />
       </OperatorGateLayout>
     );
   }
@@ -42,7 +43,10 @@ export function SystemAdminShell() {
       <div className="min-h-screen bg-background text-foreground">
         <header className="border-b border-border px-4 py-4">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
-            <p className="text-xl font-semibold leading-none">{t('shell.brand')}</p>
+            <div className="flex flex-col gap-1">
+              <IgrejaOndaWordmark variant="preto" className="max-h-7" />
+              <p className="text-sm text-muted-foreground">{t('shell.brand')}</p>
+            </div>
             <Button variant="outline" asChild>
               <Link to="/dashboard">{t('shell.backToApp')}</Link>
             </Button>

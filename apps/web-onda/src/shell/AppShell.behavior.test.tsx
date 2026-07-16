@@ -116,7 +116,7 @@ beforeEach(() => {
 });
 
 describe('AppShell', () => {
-  it('renders the Onda wordmark and church name from organization context', async () => {
+  it('renders the igreja onda wordmark and church name from organization context', async () => {
     await initI18n(undefined, 'en');
     syncAuthVolunteerId({
       status: 'dev-bypass',
@@ -126,7 +126,9 @@ describe('AppShell', () => {
 
     render(shellTestProviders(<RouterProvider router={router} />));
 
-    expect((await screen.findAllByText('Onda')).length).toBeGreaterThan(0);
+    expect(
+      (await screen.findAllByRole('img', { name: /igreja onda/i })).length,
+    ).toBeGreaterThan(0);
     expect((await screen.findAllByText('Demo Church')).length).toBeGreaterThan(0);
     expect(screen.queryByLabelText(/switch role/i)).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText(/search/i)).not.toBeInTheDocument();

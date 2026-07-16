@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { AuthPanel } from '@/AuthPanel';
+import { IgrejaOndaWordmark } from '@/components/brand/IgrejaOndaWordmark';
 import { AppShell } from '@/components/onda/AppShell';
 import { RouteErrorPanel } from './RouteErrorPanel';
 
@@ -68,7 +69,7 @@ function AuthGateLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-4 py-12">
         <div>
-          <p className="text-xl font-semibold leading-none text-primary">Onda</p>
+          <IgrejaOndaWordmark variant="preto" className="max-h-7" />
           <div className="mt-3 h-1 w-12 rounded-full bg-primary" aria-hidden />
         </div>
         {children}

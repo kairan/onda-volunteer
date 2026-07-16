@@ -179,11 +179,11 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] No shell header uses sole text “Onda” as the brand mark
-- [ ] Light surfaces use preto; dark/primary tiles use branco where applicable
-- [ ] `AppShell.behavior.test.tsx` asserts logo / `igreja onda`, not `findAllByText('Onda')` as brand proof
-- [ ] Collapsed sidebar remains recognizable (compact crop per design)
-- [ ] Gate: `pnpm --filter @onda/web-onda test && pnpm typecheck:web-onda`
+- [x] No shell header uses sole text “Onda” as the brand mark
+- [x] Light surfaces use preto; dark/primary tiles use branco where applicable
+- [x] `AppShell.behavior.test.tsx` asserts logo / `igreja onda`, not `findAllByText('Onda')` as brand proof
+- [x] Collapsed sidebar remains recognizable (compact crop per design)
+- [x] Gate: `pnpm --filter @onda/web-onda test && pnpm typecheck:web-onda`
 
 **Tests**: behavior  
 **Gate**: full  

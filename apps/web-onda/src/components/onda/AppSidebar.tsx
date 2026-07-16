@@ -1,6 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import {
-  Building2,
   CalendarCheck,
   CalendarDays,
   CalendarOff,
@@ -12,6 +11,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { IgrejaOndaWordmark } from '@/components/brand/IgrejaOndaWordmark';
 import { pickActiveNavItem, type NavManifestItem } from '@/navigation/manifest';
 import {
   Sidebar,
@@ -60,11 +60,13 @@ export function AppSidebar({
     <Sidebar collapsible="icon">
       <SidebarHeader className="border-b border-sidebar-border">
         <Link to="/dashboard" className="flex items-center gap-2 px-2 py-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-card">
-            <Building2 className="h-4 w-4" />
-          </div>
-          <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="text-sm font-semibold tracking-tight">Onda</span>
+          <IgrejaOndaWordmark
+            variant="preto"
+            compact
+            className="hidden group-data-[collapsible=icon]:block"
+          />
+          <div className="flex flex-col gap-0.5 leading-tight group-data-[collapsible=icon]:hidden">
+            <IgrejaOndaWordmark variant="preto" className="max-h-6" />
             {churchName ? (
               <span className="text-xs text-muted-foreground">{churchName}</span>
             ) : null}
