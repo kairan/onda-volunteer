@@ -4,7 +4,7 @@ import { IgrejaOndaWordmark } from '@/components/brand/IgrejaOndaWordmark';
 export function AuthGateLayout({ children }: { children: ReactNode }) {
   return (
     <div
-      className="auth-brand-gradient min-h-screen text-foreground"
+      className="auth-brand-gradient min-h-screen text-foreground print:bg-background"
       data-testid="auth-gate-layout"
     >
       <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-4 py-12">

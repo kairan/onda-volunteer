@@ -153,7 +153,7 @@ function AppShellContent({
         />
 
         <SidebarInset>
-          <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur md:px-6">
+          <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 md:px-6">
             <SidebarTrigger />
             <div className="hidden md:block">
               <IgrejaOndaWordmark variant="preto" className="max-h-5" />

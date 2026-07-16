@@ -185,4 +185,31 @@ describe('AppShell', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it('shows sidebar line grafismo watermark while nav stays interactive', async () => {
+    await initI18n(undefined, 'en');
+    syncAuthVolunteerId({
+      status: 'dev-bypass',
+      volunteerId: 'seed-volunteer-demo',
+    });
+    const user = userEvent.setup();
+    const router = buildTestRouter();
+
+    render(shellTestProviders(<RouterProvider router={router} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    const watermark = primaryNav.parentElement?.querySelector('.sidebar-brand-watermark');
+    expect(watermark).toBeInTheDocument();
+    expect(watermark).toHaveAttribute('aria-hidden', 'true');
+    expect(watermark).toHaveAttribute('data-variant', 'line');
+
+    const contextSelect = await screen.findByLabelText('Act as');
+    await user.selectOptions(contextSelect, 'min-kids:volunteer');
+
+    await waitFor(() => {
+      expect(
+        within(primaryNav).getByRole('link', { name: 'My assignments' }),
+      ).toBeInTheDocument();
+    });
+  });
 });

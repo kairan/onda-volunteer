@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { IgrejaOndaWordmark } from '@/components/brand/IgrejaOndaWordmark';
+import { BrandGrafismo } from '@/components/brand/BrandGrafismo';
 import { pickActiveNavItem, type NavManifestItem } from '@/navigation/manifest';
 import {
   Sidebar,
@@ -80,8 +81,13 @@ export function AppSidebar({
         </div>
       ) : null}
 
-      <SidebarContent>
-        <nav aria-label="Primary">
+      <SidebarContent className="relative overflow-hidden">
+        <BrandGrafismo
+          variant="line"
+          opacity={0.1}
+          className="sidebar-brand-watermark pointer-events-none absolute -bottom-6 -right-4 w-44 object-contain print:hidden"
+        />
+        <nav aria-label="Primary" className="relative z-10">
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>

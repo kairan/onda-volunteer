@@ -243,10 +243,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Watermark opacity does not break nav AA / hit targets
-- [ ] No glass classes on `AssignmentCard` / roster tables
-- [ ] Print CSS may hide watermark/gradient
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Watermark opacity does not break nav AA / hit targets
+- [x] No glass classes on `AssignmentCard` / roster tables
+- [x] Print CSS may hide watermark/gradient
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior (sidebar still interactive; optional class assertion)  
 **Gate**: quick  

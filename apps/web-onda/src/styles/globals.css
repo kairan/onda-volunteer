@@ -186,3 +186,13 @@
     cursor: pointer;
   }
 }
+
+@media print {
+  .auth-brand-gradient {
+    background: var(--background) !important;
+  }
+
+  .sidebar-brand-watermark {
+    display: none !important;
+  }
+}

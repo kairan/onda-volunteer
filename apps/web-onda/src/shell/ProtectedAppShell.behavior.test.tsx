@@ -49,7 +49,7 @@ describe('AuthGateLayout', () => {
 
     const layout = screen.getByTestId('auth-gate-layout');
     expect(layout.className).toContain('auth-brand-gradient');
-    expect(layout.className).not.toContain('bg-background');
+    expect(layout.className.split(/\s+/)).not.toContain('bg-background');
 
     const wordmark = screen.getByRole('img', { name: /igreja onda/i });
     expect(wordmark.getAttribute('src')).toMatch(/logo-igreja-onda-branco/);
