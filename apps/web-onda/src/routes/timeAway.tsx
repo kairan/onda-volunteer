@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/api/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { Button } from '@/components/ui/button';
+import { BrandGrafismo } from '@/components/brand/BrandGrafismo';
 import { Card } from '@/components/ui/card';
 import {
   Dialog,
@@ -328,7 +329,14 @@ export function TimeAwayPage() {
         {rowsQuery.isLoading ? (
           <p className="text-sm text-muted-foreground">{t('loading')}</p>
         ) : groupedByMinistry.length === 0 ? (
-          <Card className="rounded-lg border border-border p-6 text-center text-sm text-muted-foreground shadow-card">
+          <Card
+            className="rounded-lg border border-border p-6 text-center text-sm text-muted-foreground shadow-card"
+            data-testid="time-away-empty"
+          >
+            <BrandGrafismo
+              variant="filled"
+              className="mx-auto mb-4 h-16 w-16 object-contain"
+            />
             {t('emptyState')}
           </Card>
         ) : (

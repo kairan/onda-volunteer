@@ -131,6 +131,10 @@ describe('TimeAwayPage', () => {
     await renderVolunteerRoute('/time-away');
 
     await screen.findByText('No upcoming unavailability recorded for this church.');
+    const emptyState = screen.getByTestId('time-away-empty');
+    const grafismo = within(emptyState).getByTestId('brand-grafismo');
+    expect(grafismo).toHaveAttribute('aria-hidden', 'true');
+    expect(grafismo).toHaveAttribute('data-variant', 'filled');
     await user.click(screen.getByRole('button', { name: 'Add period' }));
 
     const dialog = await screen.findByRole('dialog');

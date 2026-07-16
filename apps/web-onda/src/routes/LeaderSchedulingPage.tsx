@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiRequestError } from '@/api/apiError';
 import { useAuthSession } from '@/auth/AuthSessionProvider';
 import { RosterByEventSection } from '@/components/RosterByEventSection';
+import { BrandGrafismo } from '@/components/brand/BrandGrafismo';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -333,6 +334,10 @@ export function LeaderSchedulingPage() {
             data-testid="leader-scheduling-empty"
             className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground shadow-[var(--shadow-card)]"
           >
+            <BrandGrafismo
+              variant="filled"
+              className="mx-auto mb-4 h-16 w-16 object-contain"
+            />
             {t('emptyState')}
           </div>
         ) : (

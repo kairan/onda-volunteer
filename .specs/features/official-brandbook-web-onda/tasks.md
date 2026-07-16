@@ -222,10 +222,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Grafismo is decorative (`aria-hidden`) and does not replace wordmark
-- [ ] At least the three major empty surfaces include it
-- [ ] Behavior/unit tests assert presence
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Grafismo is decorative (`aria-hidden`) and does not replace wordmark
+- [x] At least the three major empty surfaces include it
+- [x] Behavior/unit tests assert presence
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior  
 **Gate**: quick  
