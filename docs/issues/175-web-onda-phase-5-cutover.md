@@ -1,9 +1,10 @@
 # 175 — web-onda Phase 5: Production cutover (T17)
 
 **Type:** Feature  
-**Status:** Blocked by [#174](https://github.com/kairan/onda-volunteer/issues/174) — **cleared** (shipped 2026-07-04)  
+**Status:** Blocked by [#180](https://github.com/kairan/onda-volunteer/issues/180) — official BrandBook alignment must ship (or land on the cutover branch) before T17  
 **TLC:** `.specs/features/frontend-restart-serve-well-base/` (RST-CUT-01)  
-**Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)
+**Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)  
+**Also:** [#174](https://github.com/kairan/onda-volunteer/issues/174) cleared (shipped 2026-07-04)
 
 ## Problem
 

@@ -18,8 +18,9 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature | Status | TLC / spec |
 |-------|---------|--------|------------|
-| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Phase 0–4 shipped** (#170–#174); Execute Phase 5 cutover (#175) | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
-| **Web shell & i18n** | `ui-refresh-onda-brand` | Design source for migration (no standalone execute) | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
+| **Web shell & i18n** | `official-brandbook-web-onda` — Brandbook 2027 | **Tasks ready** ([#180](https://github.com/kairan/onda-volunteer/issues/180)); **blocks #175** | [`.specs/features/official-brandbook-web-onda/`](../features/official-brandbook-web-onda/) · ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md) |
+| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Phase 0–4 shipped** (#170–#174); Phase 5 cutover (#175) blocked by #180 | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
+| **Web shell & i18n** | `ui-refresh-onda-brand` | Design source (provisional); superseded by #180 for official tokens | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
 **Frontend restart (2026-07-01):** **`apps/web-onda`** = serve-well presentation (`design-reference/serve-well/`) + salvaged API/data layer from `web-next`. **`frontend-migration-web-next` cutover ([#148](https://github.com/kairan/onda-volunteer/issues/148)) frozen** — ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md). Tokens: ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md).
 
