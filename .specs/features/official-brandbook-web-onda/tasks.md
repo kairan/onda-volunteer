@@ -12,7 +12,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 **Spec**: [spec.md](./spec.md)  
 **Issue**: [#180](https://github.com/kairan/onda-volunteer/issues/180)  
 **Blocks**: [#175](https://github.com/kairan/onda-volunteer/issues/175)  
-**Status**: Draft — awaiting approval before Execute
+**Status**: Approved for Tasks — assets vendored for CI/cloud (T01 prep)
 
 ---
 
@@ -85,10 +85,10 @@ T07 + T08 complete → T09
 
 ### T01: Vendor BrandBook assets into `web-onda`
 
-**What**: Copy Logo 1 PNG (preto/branco) and two grafismos into `apps/web-onda/src/assets/brand/` with stable filenames from [design.md](./design.md).  
+**What**: Ensure Logo 1 PNG (preto/branco) and two grafismos exist under `apps/web-onda/src/assets/brand/` with stable filenames from [design.md](./design.md).  
 **Where**: `apps/web-onda/src/assets/brand/*`  
 **Depends on**: None  
-**Reuses**: Files from `/Users/kairan/workspace/branding/1. LOGO/IGREJA ONDA/` and `3. GRAFISMOS/`  
+**Reuses**: Canonical in-repo files (see [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md)). Optional local marketing kit may refresh copies; **cloud/CI must use committed paths only** — never require a machine-local `branding/` folder.  
 **Requirement**: BB-LOGO-01, BB-FLR-01  
 
 **Tools**: filesystem  
@@ -96,9 +96,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Four named assets exist under `src/assets/brand/` (logo preto/branco + grafismo filled/line)
-- [ ] No SF Pro (or other BrandBook font) binaries added
-- [ ] Gate: files present on disk (`ls` / later contract test in T02)
+- [x] Four named assets exist under `src/assets/brand/` (logo preto/branco + grafismo filled/line) — vendored in planning PR for AFK/cloud Execute
+- [x] No SF Pro (or other BrandBook font) binaries added
+- [x] Gate: files present on disk (`ls` / later contract test in T02)
+- [x] Runbook [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md) documents mapping
 
 **Tests**: none (binaries — existence asserted in T02 contract)  
 **Gate**: build (file presence)  

@@ -66,7 +66,7 @@ Execute converts to `oklch(...)` matching current `globals.css` style; theme con
   - `logo-igreja-onda-branco.png` ← Logo 1 BRANCO
   - `grafismo-ondas-filled.png` ← GRAFISMO 3 (blue filled)
   - `grafismo-ondas-line.png` ← GRAFISMO 4 (line; light-bg watermark)
-- **Source:** `/Users/kairan/workspace/branding/1. LOGO/IGREJA ONDA/` and `3. GRAFISMOS/`
+- **Source:** Canonical copies in this folder (vendored for CI/cloud). Mapping from optional local Brandbook kit: [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md).
 - **Rule:** Do not commit SF Pro OTFs.
 
 ### `IgrejaOndaWordmark`

@@ -2,13 +2,13 @@
 
 **Gathered:** 2026-07-16  
 **Spec:** `.specs/features/official-brandbook-web-onda/spec.md`  
-**Status:** Ready for design (pending user confirmation of spec)
+**Status:** Approved for Tasks (Specify confirmed 2026-07-16)
 
 ---
 
 ## Feature Boundary
 
-Align `apps/web-onda` with the official **Igreja Onda Brandbook 2027** (source: `/Users/kairan/workspace/branding`) using a **Balanced** visual pass — tokens, official **Logo 1** PNG wordmark, restrained grafismos/gradients/glass — **before** Phase 5 cutover (#175). Does not redesign Volunteer/Leader IA or add new product flows.
+Align `apps/web-onda` with the official **Igreja Onda Brandbook 2027** (in-repo: `apps/web-onda/src/assets/brand/` — see [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md)) using a **Balanced** visual pass — tokens, official **Logo 1** PNG wordmark, restrained grafismos/gradients/glass — **before** Phase 5 cutover (#175). Does not redesign Volunteer/Leader IA or add new product flows.
 
 ---
 
@@ -59,7 +59,7 @@ Align `apps/web-onda` with the official **Igreja Onda Brandbook 2027** (source: 
 
 ## Specific References
 
-- Brand kit: `/Users/kairan/workspace/branding` — `IgrejaOnda_ManualDeMarca.pdf`, Logo 1 PNGs, grafismos, typography OTFs (Space / Right only for app).
+- Brand assets (canonical): `apps/web-onda/src/assets/brand/` + [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md). Optional local marketing kit may exist outside the repo for humans; agents/CI use in-repo files only.
 - Supersedes provisional hex in ADR 0006 (`#2034D6`, `#FAFAFA`) and typed shell “Onda” text.
 - Target package: `apps/web-onda` only (not re-skinning `apps/web` / `apps/web-next` before delete at cutover).
 

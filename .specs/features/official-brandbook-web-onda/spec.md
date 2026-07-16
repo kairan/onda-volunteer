@@ -9,7 +9,7 @@
 - **Amends:** ADR 0006 (provisional → official Brandbook 2027)
 - **Blocks:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover until this feature ships
 - **Issue:** [#180](https://github.com/kairan/onda-volunteer/issues/180)
-- **Brand source:** `/Users/kairan/workspace/branding` (`IgrejaOnda_ManualDeMarca.pdf` + asset folders)
+- **Brand source (canonical):** `apps/web-onda/src/assets/brand/` after T01 (see [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md)). Optional local marketing kit is human-only; do not require machine-local paths for Execute.
 
 ## Problem Statement
 
