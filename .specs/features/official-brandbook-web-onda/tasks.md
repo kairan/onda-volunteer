@@ -158,10 +158,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Renders `<img>` with alt/accessible name including `igreja onda`
-- [ ] Fallback text on error is `igreja onda` (not `Onda`)
-- [ ] Unit/behavior tests cover variants + fallback
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Renders `<img>` with alt/accessible name including `igreja onda`
+- [x] Fallback text on error is `igreja onda` (not `Onda`)
+- [x] Unit/behavior tests cover variants + fallback
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: unit  
 **Gate**: quick  
