@@ -32,6 +32,36 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md Phase 2 e2e
 - last seen: 2026-07-02T23:27:06Z
 
+### L-004 — When wiring a shared brand mark into multiple shells, assert the accessible logo in each shell behavior suite — implementation alone is not coverage
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `apps/web-onda/shell` · harmful: 0
+- features: official-brandbook-web-onda
+- evidence: BB-LOGO-01 AC4 (apps/web-onda/shell)
+- last seen: 2026-07-16T20:28:22Z
+
+### L-005 — Display typography utilities that require uppercase must encode text-transform in the utility and lock it in the theme contract
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `apps/web-onda/theme` · harmful: 0
+- features: official-brandbook-web-onda
+- evidence: BB-TYPE-01 AC2 (apps/web-onda/theme)
+- last seen: 2026-07-16T20:28:22Z
+
+### L-006 — Negative flourish rules (no glass on cards/tables) need class assertions on those components, not only on auth chrome
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `apps/web-onda` · harmful: 0
+- features: official-brandbook-web-onda
+- evidence: BB-FLR-01 AC4 (apps/web-onda)
+- last seen: 2026-07-16T20:28:22Z
+
+### L-007 — WCAG AA acceptance criteria require locked token values or measured contrast evidence — spot-check claims are not verification
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `apps/web-onda/theme` · harmful: 0
+- features: official-brandbook-web-onda
+- evidence: BB-TOK-01 AC5 / BB-DARK-01 AC2 (apps/web-onda/theme)
+- last seen: 2026-07-16T20:28:22Z
+
+### L-008 — Do not piggyback new UI asserts onto unrelated dialog/flow tests; give empty-state flourishes their own findByTestId case
+- signal: `gate_fail` · recurrence: 1 feature(s) · scope: `apps/web-onda/tests` · harmful: 0
+- features: official-brandbook-web-onda
+- evidence: timeAway.behavior.test.tsx:134 (apps/web-onda/tests)
+- last seen: 2026-07-16T20:28:22Z
+
 ## Quarantined (failed when applied — ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
