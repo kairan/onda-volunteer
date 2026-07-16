@@ -35,6 +35,9 @@ describe('System Admin shell routing', () => {
         name: /operator dashboard/i,
       }),
     ).toBeInTheDocument();
+    expect(
+      (await screen.findAllByRole('img', { name: /igreja onda/i })).length,
+    ).toBeGreaterThan(0);
   });
 
   it('redirects a non-operator volunteer to the dashboard', async () => {
