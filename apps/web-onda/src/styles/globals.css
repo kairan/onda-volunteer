@@ -35,6 +35,7 @@
   font-family: 'Right Grotesk Tight', 'Right Grotesk', 'Space Grotesk', ui-sans-serif,
     system-ui, sans-serif;
   letter-spacing: -0.01em;
+  text-transform: uppercase;
 }
 
 @utility auth-brand-gradient {
