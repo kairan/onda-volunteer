@@ -138,9 +138,9 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] `.dark` `--primary` / `--ring` are BrandBook blue-family (documented hex in commit/PR)
-- [ ] Critical chrome remains AA-reasonable on dark surfaces (spot-check)
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] `.dark` `--primary` / `--ring` are BrandBook blue-family (documented hex in commit/PR)
+- [x] Critical chrome remains AA-reasonable on dark surfaces (spot-check)
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: unit  
 **Gate**: quick  

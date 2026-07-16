@@ -96,6 +96,14 @@ describe('theme CSS variable contract (Onda)', () => {
     }
   });
 
+  it('locks BrandBook blue family in .dark', () => {
+    const darkBlock = globalsCss.match(/\.dark\s*\{([^}]+)\}/s)?.[1] ?? '';
+    expect(darkBlock).toMatch(/--primary:\s*oklch\(0\.6053\s+0\.1677\s+266\.4\)/);
+    expect(darkBlock).toMatch(/--ring:\s*oklch\(0\.6053\s+0\.1677\s+266\.4\)/);
+    expect(darkBlock).toMatch(/--background:\s*oklch\(0\.2576\s+0\.1224\s+270\.1\)/);
+    expect(darkBlock).toMatch(/--card:\s*oklch\(0\.2779\s+0\.1141\s+272\.4\)/);
+  });
+
   it('does not define HOPE structural tokens', () => {
     for (const name of FORBIDDEN_HOPE_CSS_VARIABLES) {
       expect(globalsCss, `forbidden HOPE var ${name}`).not.toContain(
