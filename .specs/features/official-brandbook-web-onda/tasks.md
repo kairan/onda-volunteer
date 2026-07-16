@@ -12,7 +12,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 **Spec**: [spec.md](./spec.md)  
 **Issue**: [#180](https://github.com/kairan/onda-volunteer/issues/180)  
 **Blocks**: [#175](https://github.com/kairan/onda-volunteer/issues/175)  
-**Status**: Approved for Tasks — assets vendored for CI/cloud (T01 prep)
+**Status**: Execute complete (T01–T09) — pre-Verifier on `feat/180-official-brandbook-web-onda`
 
 ---
 
@@ -266,11 +266,11 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] ADR 0006 no longer presents `#2034D6` / `#FAFAFA` as current truth
-- [ ] SF Pro = print/marketing only documented
-- [ ] #175 docs mention this feature as prerequisite or completed
-- [ ] Spec status + traceability updated to Verified/Implementing as appropriate
-- [ ] Gate: `pnpm lint` (docs-only OK) + build gate if desired
+- [x] ADR 0006 no longer presents `#2034D6` / `#FAFAFA` as current truth
+- [x] SF Pro = print/marketing only documented
+- [x] #175 docs mention this feature as prerequisite or completed
+- [x] Spec status + traceability updated to Verified/Implementing as appropriate
+- [x] Gate: `pnpm lint` (docs-only OK) + build gate if desired
 
 **Tests**: none  
 **Gate**: build  

@@ -2,12 +2,12 @@
 
 ## Status
 
-- **Phase:** Tasks (awaiting approval) — Specify confirmed 2026-07-16
-- **Decisions:** [context.md](./context.md)
+- **Phase:** Execute complete (pre-Verifier) — T01–T09 shipped on `feat/180-official-brandbook-web-onda` (2026-07-16)
+- **Decisions:** [context.md](./context.md) · **AD-002** in [`.specs/project/STATE.md`](../../project/STATE.md)
 - **Design:** [design.md](./design.md)
-- **Tasks:** [tasks.md](./tasks.md)
-- **Amends:** ADR 0006 (provisional → official Brandbook 2027)
-- **Blocks:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover until this feature ships
+- **Tasks:** [tasks.md](./tasks.md) — all tasks `[x]`
+- **Amends:** ADR 0006 (provisional → official Brandbook 2027) — amended 2026-07-16
+- **Unblocks:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover after merge to `main`
 - **Issue:** [#180](https://github.com/kairan/onda-volunteer/issues/180)
 - **Brand source (canonical):** `apps/web-onda/src/assets/brand/` after T01 (see [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md)). Optional local marketing kit is human-only; do not require machine-local paths for Execute.
 
@@ -17,11 +17,11 @@
 
 ## Goals
 
-- [ ] Official BrandBook tokens (background `#eeeee7`, primary blues, borders/muted from secondary scale) drive `web-onda` theme contract tests.
-- [ ] Shell shows official **Logo 1** PNG wordmark **`igreja onda`** (not typed “Onda”).
-- [ ] Balanced brand flourishes: auth gradient, empty-state grafismo, subtle sidebar watermark, glass only on existing frosted chrome.
-- [ ] Typography: Space Grotesk for all product UI; Right Grotesk display uppercase only; **no** SF Pro embedding.
-- [ ] Feature complete before #175 Execute.
+- [x] Official BrandBook tokens (background `#eeeee7`, primary blues, borders/muted from secondary scale) drive `web-onda` theme contract tests.
+- [x] Shell shows official **Logo 1** PNG wordmark **`igreja onda`** (not typed “Onda”).
+- [x] Balanced brand flourishes: auth gradient, empty-state grafismo, subtle sidebar watermark, glass only on existing frosted chrome.
+- [x] Typography: Space Grotesk for all product UI; Right Grotesk display uppercase only; **no** SF Pro embedding.
+- [x] Feature complete before #175 Execute (pending merge to `main`).
 
 ## Out of Scope
 
@@ -168,12 +168,12 @@
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| BB-TOK-01 | P1: Official design tokens | Tasks (T02) | In Tasks |
-| BB-LOGO-01 | P1: Official Logo 1 wordmark | Tasks (T01, T04, T05) | In Tasks |
-| BB-TYPE-01 | P1: Typography product-safe | Tasks (T02, T09) | In Tasks |
-| BB-FLR-01 | P1: Balanced flourishes | Tasks (T01, T06–T08) | In Tasks |
-| BB-DOC-01 | P1: Docs & ADR | Tasks (T09) | In Tasks |
-| BB-DARK-01 | P2: Dark mode retune | Tasks (T03) | In Tasks |
+| BB-TOK-01 | P1: Official design tokens | T02 | ✅ Implemented |
+| BB-LOGO-01 | P1: Official Logo 1 wordmark | T01, T04, T05 | ✅ Implemented |
+| BB-TYPE-01 | P1: Typography product-safe | T02, T09 | ✅ Implemented |
+| BB-FLR-01 | P1: Balanced flourishes | T01, T06–T08 | ✅ Implemented |
+| BB-DOC-01 | P1: Docs & ADR | T09 | ✅ Implemented |
+| BB-DARK-01 | P2: Dark mode retune | T03 | ✅ Implemented |
 
 **Coverage:** 6 total, 6 mapped to tasks, 0 unmapped ✅
 
@@ -199,8 +199,8 @@ Remaining dimensions N/A for this visual scope.
 
 ## Success Criteria
 
-- [ ] Theme contract tests lock `#eeeee7` + `#2537de` / `#1f2bc8` (or documented oklch equivalents).
-- [ ] Shell behavior tests expect Logo 1 / `igreja onda`, not sole “Onda” text mark.
-- [ ] No SF Pro files under `apps/web-onda`.
-- [ ] Auth + empty states show Balanced flourishes; cards/tables stay non-glass.
-- [ ] ADR 0006 amended; ready to unblock #175.
+- [x] Theme contract tests lock `#eeeee7` + `#2537de` / `#1f2bc8` (or documented oklch equivalents).
+- [x] Shell behavior tests expect Logo 1 / `igreja onda`, not sole “Onda” text mark.
+- [x] No SF Pro files under `apps/web-onda`.
+- [x] Auth + empty states show Balanced flourishes; cards/tables stay non-glass.
+- [x] ADR 0006 amended; ready to unblock #175 (after merge).
