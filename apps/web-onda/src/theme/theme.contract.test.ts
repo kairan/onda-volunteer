@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
@@ -20,12 +20,16 @@ describe('theme CSS variable contract (Onda)', () => {
     }
   });
 
-  it('locks Onda brand anchors in :root', () => {
-    expect(globalsCss).toMatch(/--primary:\s*oklch\(0\.4455\s+0\.241\s+267\.39\)/);
-    expect(globalsCss).toMatch(/--background:\s*oklch\(0\.9851\s+0\s+0\)/);
+  it('locks official BrandBook anchors in :root', () => {
+    expect(globalsCss).toMatch(/--background:\s*oklch\(0\.9472\s+0\.0093\s+106\.58\)/);
+    expect(globalsCss).toMatch(/--foreground:\s*oklch\(0\.2779\s+0\.1141\s+272\.4\)/);
+    expect(globalsCss).toMatch(/--primary:\s*oklch\(0\.4601\s+0\.2464\s+267\.96\)/);
+    expect(globalsCss).toMatch(/--primary-hover:\s*oklch\(0\.4176\s+0\.233\s+268\.04\)/);
+    expect(globalsCss).toMatch(/--border:\s*oklch\(0\.8088\s+0\.0613\s+238\.02\)/);
+    expect(globalsCss).toMatch(/--muted:\s*oklch\(0\.959\s+0\.0209\s+236\.75\)/);
+    expect(globalsCss).toMatch(/--muted-foreground:\s*oklch\(0\.45\s+0\.0834\s+257\.06\)/);
     expect(globalsCss).toMatch(/--shadow-card:/);
     expect(globalsCss).toMatch(/--radius:\s*0\.5rem/);
-    expect(globalsCss).toMatch(/--primary-hover:\s*oklch\(0\.3743/);
   });
 
   it('uses Space Grotesk for UI typography', () => {
@@ -60,7 +64,36 @@ describe('theme CSS variable contract (Onda)', () => {
       expect(globalsCss, `missing ${name}`).toContain(`${name}:`);
     }
     expect(globalsCss).toMatch(/--card:\s*oklch\(1\s+0\s+0\)/);
-    expect(globalsCss).toMatch(/--input:\s*oklch\(0\.89\s+0\.01\s+250\)/);
+    expect(globalsCss).toMatch(/--input:\s*oklch\(0\.8088\s+0\.0613\s+238\.02\)/);
+  });
+
+  it('does not import SF Pro or other BrandBook print-only fonts', () => {
+    expect(globalsCss).not.toMatch(/sf[\s-]?pro/i);
+    expect(globalsCss).not.toMatch(/SFPro/i);
+    expect(globalsCss).not.toMatch(/SF-Pro/i);
+
+    const fontsDir = join(process.cwd(), 'src/assets/fonts');
+    if (existsSync(fontsDir)) {
+      for (const file of readdirSync(fontsDir)) {
+        expect(String(file), 'SF Pro must not be vendored in web-onda').not.toMatch(
+          /sf[\s-]?pro/i,
+        );
+      }
+    }
+  });
+
+  it('vendors official BrandBook logo and grafismo assets', () => {
+    for (const file of [
+      'logo-igreja-onda-preto.png',
+      'logo-igreja-onda-branco.png',
+      'grafismo-ondas-filled.png',
+      'grafismo-ondas-line.png',
+    ]) {
+      expect(
+        existsSync(join(process.cwd(), 'src/assets/brand', file)),
+        `missing brand asset ${file}`,
+      ).toBe(true);
+    }
   });
 
   it('does not define HOPE structural tokens', () => {

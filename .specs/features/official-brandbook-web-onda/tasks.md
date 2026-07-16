@@ -117,10 +117,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] `--background` matches `#eeeee7`; `--primary` `#2537de`; `--primary-hover` `#1f2bc8` (oklch locked in tests)
-- [ ] Borders/muted use secondary cool blues per design table
-- [ ] Contract test fails if SF Pro path appears or logo/grafismo files missing
-- [ ] Gate: `pnpm --filter @onda/web-onda test` (theme suite green)
+- [x] `--background` matches `#eeeee7`; `--primary` `#2537de`; `--primary-hover` `#1f2bc8` (oklch locked in tests)
+- [x] Borders/muted use secondary cool blues per design table
+- [x] Contract test fails if SF Pro path appears or logo/grafismo files missing
+- [x] Gate: `pnpm --filter @onda/web-onda test` (theme suite green)
 
 **Tests**: unit  
 **Gate**: quick  
