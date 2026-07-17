@@ -116,7 +116,7 @@ beforeEach(() => {
 });
 
 describe('AppShell', () => {
-  it('renders the Onda wordmark and church name from organization context', async () => {
+  it('renders the igreja onda wordmark and church name from organization context', async () => {
     await initI18n(undefined, 'en');
     syncAuthVolunteerId({
       status: 'dev-bypass',
@@ -126,7 +126,9 @@ describe('AppShell', () => {
 
     render(shellTestProviders(<RouterProvider router={router} />));
 
-    expect((await screen.findAllByText('Onda')).length).toBeGreaterThan(0);
+    expect(
+      (await screen.findAllByRole('img', { name: /igreja onda/i })).length,
+    ).toBeGreaterThan(0);
     expect((await screen.findAllByText('Demo Church')).length).toBeGreaterThan(0);
     expect(screen.queryByLabelText(/switch role/i)).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText(/search/i)).not.toBeInTheDocument();
@@ -181,6 +183,33 @@ describe('AppShell', () => {
       expect(
         within(primaryNav).queryByRole('link', { name: 'Events' }),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows sidebar line grafismo watermark while nav stays interactive', async () => {
+    await initI18n(undefined, 'en');
+    syncAuthVolunteerId({
+      status: 'dev-bypass',
+      volunteerId: 'seed-volunteer-demo',
+    });
+    const user = userEvent.setup();
+    const router = buildTestRouter();
+
+    render(shellTestProviders(<RouterProvider router={router} />));
+
+    const primaryNav = await screen.findByRole('navigation', { name: 'Primary' });
+    const watermark = primaryNav.parentElement?.querySelector('.sidebar-brand-watermark');
+    expect(watermark).toBeInTheDocument();
+    expect(watermark).toHaveAttribute('aria-hidden', 'true');
+    expect(watermark).toHaveAttribute('data-variant', 'line');
+
+    const contextSelect = await screen.findByLabelText('Act as');
+    await user.selectOptions(contextSelect, 'min-kids:volunteer');
+
+    await waitFor(() => {
+      expect(
+        within(primaryNav).getByRole('link', { name: 'My assignments' }),
+      ).toBeInTheDocument();
     });
   });
 });

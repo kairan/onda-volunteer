@@ -66,6 +66,10 @@ describe('VolunteerMyAssignmentsPage at /scheduling', () => {
     ).toHaveTextContent(
       'No upcoming assignments. Check scheduling for open opportunities.',
     );
+    const emptyState = screen.getByTestId('volunteer-assignments-empty');
+    const grafismo = within(emptyState).getByTestId('brand-grafismo');
+    expect(grafismo).toHaveAttribute('aria-hidden', 'true');
+    expect(grafismo).toHaveAttribute('data-variant', 'filled');
   });
 
   it('shows loading skeletons while assignments load', async () => {
@@ -174,5 +178,9 @@ describe('VolunteerMyAssignmentsPage at /scheduling', () => {
     expect(await screen.findByTestId('leader-ministry-hero')).toBeInTheDocument();
     expect(await screen.findByText('0 events this week · 0 open slots')).toBeInTheDocument();
     expect(await screen.findByTestId('leader-scheduling-empty')).toBeInTheDocument();
+    const emptyState = screen.getByTestId('leader-scheduling-empty');
+    const grafismo = within(emptyState).getByTestId('brand-grafismo');
+    expect(grafismo).toHaveAttribute('aria-hidden', 'true');
+    expect(grafismo).toHaveAttribute('data-variant', 'filled');
   });
 });

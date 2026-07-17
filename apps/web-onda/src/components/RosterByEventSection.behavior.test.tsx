@@ -50,6 +50,13 @@ describe('RosterByEventSection', () => {
     expect(screen.getByTestId('roster-fill-badge')).toHaveTextContent('1/2 filled');
   });
 
+  it('does not use glass/backdrop-blur on roster cards (BB-FLR-01 AC4)', async () => {
+    await initI18n(undefined, 'en');
+    renderSection();
+    const card = screen.getByTestId('roster-event-card');
+    expect(card.className).not.toContain('backdrop-blur');
+  });
+
   it('renders assigned row with volunteer name and initials avatar', async () => {
     await initI18n(undefined, 'en');
     renderSection();

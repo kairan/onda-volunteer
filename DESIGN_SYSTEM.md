@@ -1,6 +1,6 @@
 # HOPE Design System — Ondadura Visual Identity
 
-> **Historical — HOPE era only.** Current authority: ADR [0006](docs/adr/0006-onda-brand-visual-system.md) + [0007](docs/adr/0007-frontend-serve-well-plus-api.md) + [`design-reference/serve-well/`](design-reference/serve-well/). HOPE full text retained below for #49 gate history; see [docs/adr/archive/](docs/adr/archive/).
+> **Historical — HOPE era only.** **Current product authority:** amended ADR [0006](docs/adr/0006-onda-brand-visual-system.md) (official **Brandbook 2027** — page bg `#eeeee7`, primary `#2537de`, Logo 1 PNG `igreja onda`, Balanced flourishes; SF Pro = print/marketing only) + ADR [0007](docs/adr/0007-frontend-serve-well-plus-api.md) (`apps/web-onda`). Provisional tokens (`#2034D6`, `#FAFAFA`) are **not** current truth. HOPE full text retained below for #49 gate history; see [docs/adr/archive/](docs/adr/archive/).
 
 A sharp, flat, brutalist-inspired design system. No rounded corners. Heavy borders. Bold typography. Yellow accent on black-and-white base.
 

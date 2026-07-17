@@ -5,6 +5,7 @@ import {
   AssignmentCard,
   AssignmentCardSkeleton,
 } from '@/components/AssignmentCard';
+import { BrandGrafismo } from '@/components/brand/BrandGrafismo';
 import { useOrganization } from '@/organization/OrganizationProvider';
 import { volunteerAssignmentsQuery } from '@/volunteer/volunteerAssignmentsQuery';
 import type { VolunteerAssignment } from '@/volunteer/types';
@@ -93,6 +94,10 @@ export function VolunteerMyAssignmentsPage() {
           data-testid="volunteer-assignments-empty"
           className="rounded-lg border border-border bg-card p-8 text-center text-sm text-muted-foreground shadow-card"
         >
+          <BrandGrafismo
+            variant="filled"
+            className="mx-auto mb-4 h-16 w-16 object-contain"
+          />
           {t('dashboard:emptyState')}
         </div>
       ) : (

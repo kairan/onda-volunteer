@@ -12,7 +12,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 **Spec**: [spec.md](./spec.md)  
 **Issue**: [#180](https://github.com/kairan/onda-volunteer/issues/180)  
 **Blocks**: [#175](https://github.com/kairan/onda-volunteer/issues/175)  
-**Status**: Approved for Tasks — assets vendored for CI/cloud (T01 prep)
+**Status**: Execute complete (T01–T09) — pre-Verifier on `feat/180-official-brandbook-web-onda`
 
 ---
 
@@ -117,10 +117,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] `--background` matches `#eeeee7`; `--primary` `#2537de`; `--primary-hover` `#1f2bc8` (oklch locked in tests)
-- [ ] Borders/muted use secondary cool blues per design table
-- [ ] Contract test fails if SF Pro path appears or logo/grafismo files missing
-- [ ] Gate: `pnpm --filter @onda/web-onda test` (theme suite green)
+- [x] `--background` matches `#eeeee7`; `--primary` `#2537de`; `--primary-hover` `#1f2bc8` (oklch locked in tests)
+- [x] Borders/muted use secondary cool blues per design table
+- [x] Contract test fails if SF Pro path appears or logo/grafismo files missing
+- [x] Gate: `pnpm --filter @onda/web-onda test` (theme suite green)
 
 **Tests**: unit  
 **Gate**: quick  
@@ -138,9 +138,9 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] `.dark` `--primary` / `--ring` are BrandBook blue-family (documented hex in commit/PR)
-- [ ] Critical chrome remains AA-reasonable on dark surfaces (spot-check)
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] `.dark` `--primary` / `--ring` are BrandBook blue-family (documented hex in commit/PR)
+- [x] Critical chrome remains AA-reasonable on dark surfaces (spot-check)
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: unit  
 **Gate**: quick  
@@ -158,10 +158,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Renders `<img>` with alt/accessible name including `igreja onda`
-- [ ] Fallback text on error is `igreja onda` (not `Onda`)
-- [ ] Unit/behavior tests cover variants + fallback
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Renders `<img>` with alt/accessible name including `igreja onda`
+- [x] Fallback text on error is `igreja onda` (not `Onda`)
+- [x] Unit/behavior tests cover variants + fallback
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: unit  
 **Gate**: quick  
@@ -179,11 +179,11 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] No shell header uses sole text “Onda” as the brand mark
-- [ ] Light surfaces use preto; dark/primary tiles use branco where applicable
-- [ ] `AppShell.behavior.test.tsx` asserts logo / `igreja onda`, not `findAllByText('Onda')` as brand proof
-- [ ] Collapsed sidebar remains recognizable (compact crop per design)
-- [ ] Gate: `pnpm --filter @onda/web-onda test && pnpm typecheck:web-onda`
+- [x] No shell header uses sole text “Onda” as the brand mark
+- [x] Light surfaces use preto; dark/primary tiles use branco where applicable
+- [x] `AppShell.behavior.test.tsx` asserts logo / `igreja onda`, not `findAllByText('Onda')` as brand proof
+- [x] Collapsed sidebar remains recognizable (compact crop per design)
+- [x] Gate: `pnpm --filter @onda/web-onda test && pnpm typecheck:web-onda`
 
 **Tests**: behavior  
 **Gate**: full  
@@ -201,10 +201,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Auth surfaces show soft blue gradient (not flat `bg-background` only)
-- [ ] Logo 1 present with adequate contrast
-- [ ] Form/card stays solid surface (no glass fill)
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Auth surfaces show soft blue gradient (not flat `bg-background` only)
+- [x] Logo 1 present with adequate contrast
+- [x] Form/card stays solid surface (no glass fill)
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior (auth layout smoke via existing shell/auth tests or new focused test)  
 **Gate**: quick  
@@ -222,10 +222,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Grafismo is decorative (`aria-hidden`) and does not replace wordmark
-- [ ] At least the three major empty surfaces include it
-- [ ] Behavior/unit tests assert presence
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Grafismo is decorative (`aria-hidden`) and does not replace wordmark
+- [x] At least the three major empty surfaces include it
+- [x] Behavior/unit tests assert presence
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior  
 **Gate**: quick  
@@ -243,10 +243,10 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] Watermark opacity does not break nav AA / hit targets
-- [ ] No glass classes on `AssignmentCard` / roster tables
-- [ ] Print CSS may hide watermark/gradient
-- [ ] Gate: `pnpm --filter @onda/web-onda test`
+- [x] Watermark opacity does not break nav AA / hit targets
+- [x] No glass classes on `AssignmentCard` / roster tables
+- [x] Print CSS may hide watermark/gradient
+- [x] Gate: `pnpm --filter @onda/web-onda test`
 
 **Tests**: behavior (sidebar still interactive; optional class assertion)  
 **Gate**: quick  
@@ -266,11 +266,11 @@ T07 + T08 complete → T09
 
 **Done when**:
 
-- [ ] ADR 0006 no longer presents `#2034D6` / `#FAFAFA` as current truth
-- [ ] SF Pro = print/marketing only documented
-- [ ] #175 docs mention this feature as prerequisite or completed
-- [ ] Spec status + traceability updated to Verified/Implementing as appropriate
-- [ ] Gate: `pnpm lint` (docs-only OK) + build gate if desired
+- [x] ADR 0006 no longer presents `#2034D6` / `#FAFAFA` as current truth
+- [x] SF Pro = print/marketing only documented
+- [x] #175 docs mention this feature as prerequisite or completed
+- [x] Spec status + traceability updated to Verified/Implementing as appropriate
+- [x] Gate: `pnpm lint` (docs-only OK) + build gate if desired
 
 **Tests**: none  
 **Gate**: build  

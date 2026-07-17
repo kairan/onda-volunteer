@@ -94,6 +94,29 @@ describe('TimeAwayPage', () => {
     });
   });
 
+  it('shows filled grafismo on empty time-away', async () => {
+    await initI18n(undefined, 'en');
+    getJsonMock.mockImplementation(async (path: string) => {
+      if (path.startsWith('/organization/context')) {
+        return volunteerRouteOrgContext;
+      }
+      if (path.includes('/unavailability')) {
+        return [];
+      }
+      if (path.includes('/assignments')) {
+        return [];
+      }
+      throw new Error(`Unexpected getJson path: ${path}`);
+    });
+
+    await renderVolunteerRoute('/time-away');
+
+    const emptyState = await screen.findByTestId('time-away-empty');
+    const grafismo = within(emptyState).getByTestId('brand-grafismo');
+    expect(grafismo).toHaveAttribute('aria-hidden', 'true');
+    expect(grafismo).toHaveAttribute('data-variant', 'filled');
+  });
+
   it('pre-selects ministry from volunteer working context in create dialog', async () => {
     await initI18n(undefined, 'en');
     getJsonMock.mockImplementation(async (path: string) => {
@@ -130,7 +153,7 @@ describe('TimeAwayPage', () => {
     const user = userEvent.setup();
     await renderVolunteerRoute('/time-away');
 
-    await screen.findByText('No upcoming unavailability recorded for this church.');
+    await screen.findByTestId('time-away-empty');
     await user.click(screen.getByRole('button', { name: 'Add period' }));
 
     const dialog = await screen.findByRole('dialog');

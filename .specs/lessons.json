@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 4,
+  "next_id": 9,
   "lessons": [
     {
       "id": "L-001",
@@ -58,6 +58,96 @@
       ],
       "created": "2026-07-02T23:27:06Z",
       "last_seen": "2026-07-02T23:27:06Z"
+    },
+    {
+      "id": "L-004",
+      "key": "ac_gap::when wiring a shared brand mark into multiple shells assert the accessible logo in each shell behavior suite implementation alone is not coverage",
+      "text": "When wiring a shared brand mark into multiple shells, assert the accessible logo in each shell behavior suite — implementation alone is not coverage",
+      "signal": "ac_gap",
+      "scope": "apps/web-onda/shell",
+      "status": "candidate",
+      "features": [
+        "official-brandbook-web-onda"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "BB-LOGO-01 AC4 (apps/web-onda/shell)"
+      ],
+      "created": "2026-07-16T20:28:22Z",
+      "last_seen": "2026-07-16T20:28:22Z"
+    },
+    {
+      "id": "L-005",
+      "key": "ac_gap::display typography utilities that require uppercase must encode text transform in the utility and lock it in the theme contract",
+      "text": "Display typography utilities that require uppercase must encode text-transform in the utility and lock it in the theme contract",
+      "signal": "ac_gap",
+      "scope": "apps/web-onda/theme",
+      "status": "candidate",
+      "features": [
+        "official-brandbook-web-onda"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "BB-TYPE-01 AC2 (apps/web-onda/theme)"
+      ],
+      "created": "2026-07-16T20:28:22Z",
+      "last_seen": "2026-07-16T20:28:22Z"
+    },
+    {
+      "id": "L-006",
+      "key": "ac_gap::negative flourish rules no glass on cards tables need class assertions on those components not only on auth chrome",
+      "text": "Negative flourish rules (no glass on cards/tables) need class assertions on those components, not only on auth chrome",
+      "signal": "ac_gap",
+      "scope": "apps/web-onda",
+      "status": "candidate",
+      "features": [
+        "official-brandbook-web-onda"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "BB-FLR-01 AC4 (apps/web-onda)"
+      ],
+      "created": "2026-07-16T20:28:22Z",
+      "last_seen": "2026-07-16T20:28:22Z"
+    },
+    {
+      "id": "L-007",
+      "key": "ac_gap::wcag aa acceptance criteria require locked token values or measured contrast evidence spot check claims are not verification",
+      "text": "WCAG AA acceptance criteria require locked token values or measured contrast evidence — spot-check claims are not verification",
+      "signal": "ac_gap",
+      "scope": "apps/web-onda/theme",
+      "status": "candidate",
+      "features": [
+        "official-brandbook-web-onda"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "BB-TOK-01 AC5 / BB-DARK-01 AC2 (apps/web-onda/theme)"
+      ],
+      "created": "2026-07-16T20:28:22Z",
+      "last_seen": "2026-07-16T20:28:22Z"
+    },
+    {
+      "id": "L-008",
+      "key": "gate_fail::do not piggyback new ui asserts onto unrelated dialog flow tests give empty state flourishes their own findbytestid case",
+      "text": "Do not piggyback new UI asserts onto unrelated dialog/flow tests; give empty-state flourishes their own findByTestId case",
+      "signal": "gate_fail",
+      "scope": "apps/web-onda/tests",
+      "status": "candidate",
+      "features": [
+        "official-brandbook-web-onda"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "timeAway.behavior.test.tsx:134 (apps/web-onda/tests)"
+      ],
+      "created": "2026-07-16T20:28:22Z",
+      "last_seen": "2026-07-16T20:28:22Z"
     }
   ]
 }
