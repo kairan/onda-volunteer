@@ -40,7 +40,7 @@ All architecture-debt waves **shipped** ([#54](https://github.com/kairan/onda-vo
 |------:|------|
 | [#180](https://github.com/kairan/onda-volunteer/issues/180) | `done/180-web-onda-official-brandbook.md` |
 | [#172](https://github.com/kairan/onda-volunteer/issues/172) | `done/172-web-onda-phase-2-volunteer.md` |
-| [#170](https://github.com/kairan/onda-volunteer/issues/170) | `done/170-web-onda-foundation-phase-0-1.md`
+| [#170](https://github.com/kairan/onda-volunteer/issues/170) | `done/170-web-onda-foundation-phase-0-1.md` |
 | [#147](https://github.com/kairan/onda-volunteer/issues/147) | `done/147-web-next-migration-slice-5-system-admin.md` |
 | [#146](https://github.com/kairan/onda-volunteer/issues/146) | `done/146-web-next-migration-slice-4-org-admin.md` |
 | [#145](https://github.com/kairan/onda-volunteer/issues/145) | `done/145-web-next-migration-slice-3-leader.md` |
