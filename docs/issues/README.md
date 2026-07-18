@@ -16,10 +16,9 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 | Issue | Feature | Tasks | Spec |
 |------:|---------|-------|------|
-| [#180](https://github.com/kairan/onda-volunteer/issues/180) | Official BrandBook 2027 → web-onda | T01–T09 | `180-web-onda-official-brandbook.md` · TLC `.specs/features/official-brandbook-web-onda/` |
-| [#175](https://github.com/kairan/onda-volunteer/issues/175) | web-onda Phase 5 — Cutover | T17 | `175-web-onda-phase-5-cutover.md` (**blocked by #180**) |
+| [#175](https://github.com/kairan/onda-volunteer/issues/175) | web-onda Phase 5 — Cutover | T17 | `175-web-onda-phase-5-cutover.md` (**#180 prerequisite shipped**) |
 
-**Shipped:** [#173](https://github.com/kairan/onda-volunteer/issues/173) leader slice (PR [#177](https://github.com/kairan/onda-volunteer/pull/177)) — `done/173-web-onda-phase-3-leader.md` · [#174](https://github.com/kairan/onda-volunteer/issues/174) admin slice (PR [#178](https://github.com/kairan/onda-volunteer/pull/178) open) — `done/174-web-onda-phase-4-admin.md` · [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
+**Shipped:** [#180](https://github.com/kairan/onda-volunteer/issues/180) BrandBook 2027 (PR [#182](https://github.com/kairan/onda-volunteer/pull/182)) — `done/180-web-onda-official-brandbook.md` · [#174](https://github.com/kairan/onda-volunteer/issues/174) admin slice (PR [#178](https://github.com/kairan/onda-volunteer/pull/178)) — `done/174-web-onda-phase-4-admin.md` · [#173](https://github.com/kairan/onda-volunteer/issues/173) leader slice (PR [#177](https://github.com/kairan/onda-volunteer/pull/177)) — `done/173-web-onda-phase-3-leader.md` · [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
 
 **Superseded:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` cutover) — closed 2026-07-01.
 
@@ -39,8 +38,9 @@ All architecture-debt waves **shipped** ([#54](https://github.com/kairan/onda-vo
 
 | Issue | Spec |
 |------:|------|
+| [#180](https://github.com/kairan/onda-volunteer/issues/180) | `done/180-web-onda-official-brandbook.md` |
 | [#172](https://github.com/kairan/onda-volunteer/issues/172) | `done/172-web-onda-phase-2-volunteer.md` |
-| [#170](https://github.com/kairan/onda-volunteer/issues/170) | `done/170-web-onda-foundation-phase-0-1.md` |
+| [#170](https://github.com/kairan/onda-volunteer/issues/170) | `done/170-web-onda-foundation-phase-0-1.md`
 | [#147](https://github.com/kairan/onda-volunteer/issues/147) | `done/147-web-next-migration-slice-5-system-admin.md` |
 | [#146](https://github.com/kairan/onda-volunteer/issues/146) | `done/146-web-next-migration-slice-4-org-admin.md` |
 | [#145](https://github.com/kairan/onda-volunteer/issues/145) | `done/145-web-next-migration-slice-3-leader.md` |

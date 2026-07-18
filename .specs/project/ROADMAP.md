@@ -18,11 +18,10 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature | Status | TLC / spec |
 |-------|---------|--------|------------|
-| **Web shell & i18n** | `official-brandbook-web-onda` — Brandbook 2027 | **Execute complete** on `feat/180-official-brandbook-web-onda` ([#180](https://github.com/kairan/onda-volunteer/issues/180)); merge before **#175** cutover | [`.specs/features/official-brandbook-web-onda/`](../features/official-brandbook-web-onda/) · ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md) (amended 2026-07-16) |
-| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Phase 0–4 shipped** (#170–#174); Phase 5 cutover (**#175**) gated on **#180** merge to `main` | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
+| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Phase 0–4 + BrandBook shipped** (#170–#174, #180); Phase 5 cutover (**#175**) ready | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source (provisional); superseded by #180 for official tokens | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
-**Frontend restart (2026-07-01):** **`apps/web-onda`** = serve-well presentation (`design-reference/serve-well/`) + salvaged API/data layer from `web-next`. **`frontend-migration-web-next` cutover ([#148](https://github.com/kairan/onda-volunteer/issues/148)) frozen** — ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md). **Brand tokens/logo:** official Brandbook 2027 per amended ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md) ([#180](https://github.com/kairan/onda-volunteer/issues/180) before [#175](https://github.com/kairan/onda-volunteer/issues/175)).
+**Frontend restart (2026-07-01):** **`apps/web-onda`** = serve-well presentation (`design-reference/serve-well/`) + salvaged API/data layer from `web-next`. **`frontend-migration-web-next` cutover ([#148](https://github.com/kairan/onda-volunteer/issues/148)) frozen** — ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md). **Brand tokens/logo:** official Brandbook 2027 per amended ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md) — [#180](https://github.com/kairan/onda-volunteer/issues/180) shipped (PR [#182](https://github.com/kairan/onda-volunteer/pull/182)); TLC archived.
 
 ## Shipped summary
 
@@ -30,6 +29,7 @@ All product tracer bullets through web-next Slices 1–5 are shipped. Full index
 
 | Theme | Representative issues | Status |
 |-------|----------------------|--------|
+| **Web-onda BrandBook** | #180 | ✅ Shipped (PR #182) |
 | **Organization** | #87–#93, #107–#109, #115–#118 | ✅ Shipped |
 | **Scheduling & Availability** | #36–#47, #115, #117 | ✅ Shipped |
 | **Domain / i18n hygiene** | #131–#135 | ✅ Shipped |

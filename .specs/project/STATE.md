@@ -6,7 +6,7 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 
 - **AD-001 (2026-06-26):** After a feature ships, move `.specs/features/<slug>/` → `.specs/archive/features/<slug>/` in the same PR that archives `docs/issues/done/<#>-*.md`. Leave a redirect stub at `.specs/features/<slug>/README.md`. Active `.specs/features/` holds **in-flight work only**. Index: [`.specs/archive/features/INDEX.md`](../archive/features/INDEX.md).
 
-- **AD-002 (2026-07-16):** Official **Brandbook 2027** is the source of truth for `apps/web-onda` visuals — palette (`#eeeee7`, `#2537de`), Logo 1 PNG wordmark **`igreja onda`**, Balanced grafismos, Space Grotesk UI + Right Grotesk display; **SF Pro = print/marketing only** (no web embedding). Amended ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md); TLC [`.specs/features/official-brandbook-web-onda/`](../features/official-brandbook-web-onda/) ([#180](https://github.com/kairan/onda-volunteer/issues/180)). **Blocks [#175](https://github.com/kairan/onda-volunteer/issues/175)** until merged to `main`.
+- **AD-002 (2026-07-16):** Official **Brandbook 2027** is the source of truth for `apps/web-onda` visuals — palette (`#eeeee7`, `#2537de`), Logo 1 PNG wordmark **`igreja onda`**, Balanced grafismos, Space Grotesk UI + Right Grotesk display; **SF Pro = print/marketing only** (no web embedding). Amended ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md). **Shipped** [#180](https://github.com/kairan/onda-volunteer/issues/180) / PR [#182](https://github.com/kairan/onda-volunteer/pull/182) (2026-07-17); TLC archived [`.specs/archive/features/official-brandbook-web-onda/`](../archive/features/official-brandbook-web-onda/). Ship record: `docs/issues/done/180-web-onda-official-brandbook.md`. **#175 cutover unblocked.**
 
 - **2026-06-20 (UI refresh Specify):** HOPE visual layer rejected for multi-church product direction. Adopt **provisional Igreja Onda** brand (Space Grotesk, `#2034D6` palette). Lovable prototype is reference only. **In scope:** Volunteer + Ministry Leader screens + shell tokens. TLC: `.specs/features/ui-refresh-onda-brand/`; ADR [0006](../../docs/adr/0006-onda-brand-visual-system.md); `design-reference/serve-well/`.
 
@@ -17,6 +17,8 @@ Cross-session decisions, blockers, lessons, and deferred ideas. Agents update th
 - **2026-06-21 (#143 Slice 1 closeout):** Foundation shipped — `apps/web-next`, Onda tokens, TanStack Query data core, shell + route parity. Next: #144–#148.
 
 - **2026-06-24 (#144–#147 Slices 2–5 closeout):** Volunteer, leader, org-admin, system-admin slices shipped in `apps/web-next`. 105 Vitest tests green. ~~**Next Execute:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (cutover).~~ **Superseded 2026-07-01** — see pivot below.
+
+- **2026-07-17 (#180 BrandBook closeout):** Official Brandbook 2027 shipped in PR [#182](https://github.com/kairan/onda-volunteer/pull/182) — T01–T09. Record: `docs/issues/done/180-web-onda-official-brandbook.md`. TLC archived per AD-001. **Next Execute:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover (T17).
 
 - **2026-07-03 (#172 Phase 2 closeout):** Volunteer slice shipped in PR [#176](https://github.com/kairan/onda-volunteer/pull/176) — T08–T10.1 (dashboard, scheduling, time-away + optional description). Record: `docs/issues/done/172-web-onda-phase-2-volunteer.md`. **Next Execute:** [#173](https://github.com/kairan/onda-volunteer/issues/173)–[#175](https://github.com/kairan/onda-volunteer/issues/175). TLC folder stays active until #175.
 

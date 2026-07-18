@@ -30,3 +30,4 @@ Redirect stubs live at `.specs/features/<slug>/README.md`. Ship records are cano
 | `eslint-baseline-clean` | `docs/issues/done/126-eslint-baseline-clean.md` | [#126](https://github.com/kairan/onda-volunteer/issues/126) | 2026-06 |
 | `web-typecheck-strict-clean` | `docs/issues/done/128-web-typecheck-strict-clean.md` | [#128](https://github.com/kairan/onda-volunteer/issues/128) | 2026-06 |
 | `coverage-threshold-gates` | `docs/issues/done/129-coverage-threshold-gates.md` | [#129](https://github.com/kairan/onda-volunteer/issues/129) | 2026-06 |
+| `official-brandbook-web-onda` | `docs/issues/done/180-web-onda-official-brandbook.md` | [#180](https://github.com/kairan/onda-volunteer/issues/180) / PR [#182](https://github.com/kairan/onda-volunteer/pull/182) | 2026-07 |
