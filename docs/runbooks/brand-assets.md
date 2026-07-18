@@ -27,4 +27,4 @@ The marketing Brandbook kit may also live outside the repo (e.g. a sibling `bran
 - Do **not** recreate the wordmark by typing Space Grotesk — use Logo 1 PNG (or a future Marketing SVG export).
 - SVG wordmark swap is deferred until Marketing exports from Illustrator.
 
-See TLC: `.specs/features/official-brandbook-web-onda/` · issue [#180](https://github.com/kairan/onda-volunteer/issues/180).
+See TLC (archived): `.specs/archive/features/official-brandbook-web-onda/` · issue [#180](https://github.com/kairan/onda-volunteer/issues/180).

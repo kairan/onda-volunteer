@@ -2,12 +2,12 @@
 
 **Status:** Accepted (amended 2026-07-16 — official Brandbook 2027)  
 **Date:** 2026-06-20  
-**Amended:** 2026-07-16 — [#180](https://github.com/kairan/onda-volunteer/issues/180) / [`.specs/features/official-brandbook-web-onda/`](../../.specs/features/official-brandbook-web-onda/)  
+**Amended:** 2026-07-16 — [#180](https://github.com/kairan/onda-volunteer/issues/180) / [`.specs/archive/features/official-brandbook-web-onda/`](../../.specs/archive/features/official-brandbook-web-onda/)  
 **Supersedes:** ADR 0003 (HOPE design system) — visual direction only; ADR 0002 archived  
 **Preserves:** ADR 0001 shell structure, i18n, accessibility, scheduling UI posture  
 **Frontend package:** ADR [0007](./0007-frontend-serve-well-plus-api.md) (`apps/web-onda`, serve-well + API)
 
-**Feature specs:** [`.specs/features/official-brandbook-web-onda/spec.md`](../../.specs/features/official-brandbook-web-onda/spec.md) (current) · [`.specs/features/ui-refresh-onda-brand/spec.md`](../../.specs/features/ui-refresh-onda-brand/spec.md) (provisional source, superseded for tokens/logo)
+**Feature specs:** [`.specs/archive/features/official-brandbook-web-onda/spec.md`](../../.specs/archive/features/official-brandbook-web-onda/spec.md) (shipped) · [`.specs/features/ui-refresh-onda-brand/spec.md`](../../.specs/features/ui-refresh-onda-brand/spec.md) (provisional source, superseded for tokens/logo)
 
 ## Context
 
@@ -137,11 +137,11 @@ Grafismo assets live under `apps/web-onda/src/assets/brand/`; components: `Igrej
 - Volunteer / Leader UX patterns; Church Admin / System Admin layout redesign still deferred (tokens + mark only)
 - WCAG 2.2 AA; pessimistic scheduling mutations; i18n posture
 
-**Unblocks:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover — official brand must be on `main` (or included on cutover branch) before T17.
+**#175 cutover:** unblocked — official brand is on `main` (PR [#182](https://github.com/kairan/onda-volunteer/pull/182)).
 
 ## References
 
-- Official Brandbook Execute: [`.specs/features/official-brandbook-web-onda/design.md`](../../.specs/features/official-brandbook-web-onda/design.md)
+- Official Brandbook Execute: [`.specs/archive/features/official-brandbook-web-onda/design.md`](../../.specs/archive/features/official-brandbook-web-onda/design.md)
 - Provisional design (historical): [`.specs/features/ui-refresh-onda-brand/design.md`](../../.specs/features/ui-refresh-onda-brand/design.md)
 - Brand assets runbook: [`docs/runbooks/brand-assets.md`](../runbooks/brand-assets.md)
 - Prototype index: [`design-reference/serve-well/README.md`](../../design-reference/serve-well/README.md)

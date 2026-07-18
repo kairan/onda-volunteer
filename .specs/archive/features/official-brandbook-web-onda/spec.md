@@ -2,13 +2,14 @@
 
 ## Status
 
-- **Phase:** Execute complete (pre-Verifier) — T01–T09 shipped on `feat/180-official-brandbook-web-onda` (2026-07-16)
-- **Decisions:** [context.md](./context.md) · **AD-002** in [`.specs/project/STATE.md`](../../project/STATE.md)
+- **Phase:** Shipped — merged PR [#182](https://github.com/kairan/onda-volunteer/pull/182) (2026-07-17); archived per AD-001
+- **Decisions:** [context.md](./context.md) · **AD-002** in [`.specs/project/STATE.md`](../../../project/STATE.md)
 - **Design:** [design.md](./design.md)
 - **Tasks:** [tasks.md](./tasks.md) — all tasks `[x]`
+- **Validation:** [validation.md](./validation.md) — PASS
 - **Amends:** ADR 0006 (provisional → official Brandbook 2027) — amended 2026-07-16
-- **Unblocks:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover after merge to `main`
-- **Issue:** [#180](https://github.com/kairan/onda-volunteer/issues/180)
+- **Ship record:** `docs/issues/done/180-web-onda-official-brandbook.md`
+- **Issue:** [#180](https://github.com/kairan/onda-volunteer/issues/180) (closed)
 - **Brand source (canonical):** `apps/web-onda/src/assets/brand/` after T01 (see [`docs/runbooks/brand-assets.md`](../../../docs/runbooks/brand-assets.md)). Optional local marketing kit is human-only; do not require machine-local paths for Execute.
 
 ## Problem Statement
@@ -168,12 +169,12 @@
 
 | Requirement ID | Story | Phase | Status |
 |----------------|-------|-------|--------|
-| BB-TOK-01 | P1: Official design tokens | T02 | ✅ Implemented |
-| BB-LOGO-01 | P1: Official Logo 1 wordmark | T01, T04, T05 | ✅ Implemented |
-| BB-TYPE-01 | P1: Typography product-safe | T02, T09 | ✅ Implemented |
-| BB-FLR-01 | P1: Balanced flourishes | T01, T06–T08 | ✅ Implemented |
-| BB-DOC-01 | P1: Docs & ADR | T09 | ✅ Implemented |
-| BB-DARK-01 | P2: Dark mode retune | T03 | ✅ Implemented |
+| BB-TOK-01 | P1: Official design tokens | T02 | ✅ Verified |
+| BB-LOGO-01 | P1: Official Logo 1 wordmark | T01, T04, T05 | ✅ Verified |
+| BB-TYPE-01 | P1: Typography product-safe | T02, T09 | ✅ Verified |
+| BB-FLR-01 | P1: Balanced flourishes | T01, T06–T08 | ✅ Verified |
+| BB-DOC-01 | P1: Docs & ADR | T09 | ✅ Verified |
+| BB-DARK-01 | P2: Dark mode retune | T03 | ✅ Verified |
 
 **Coverage:** 6 total, 6 mapped to tasks, 0 unmapped ✅
 
@@ -203,4 +204,4 @@ Remaining dimensions N/A for this visual scope.
 - [x] Shell behavior tests expect Logo 1 / `igreja onda`, not sole “Onda” text mark.
 - [x] No SF Pro files under `apps/web-onda`.
 - [x] Auth + empty states show Balanced flourishes; cards/tables stay non-glass.
-- [x] ADR 0006 amended; ready to unblock #175 (after merge).
+- [x] ADR 0006 amended; #175 unblocked (merged to `main`).

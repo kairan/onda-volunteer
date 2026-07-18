@@ -1,8 +1,8 @@
 # 175 — web-onda Phase 5: Production cutover (T17)
 
 **Type:** Feature  
-**Status:** Blocked by [#180](https://github.com/kairan/onda-volunteer/issues/180) — official BrandBook alignment must merge to `main` before T17  
-**Prerequisite:** [#180](https://github.com/kairan/onda-volunteer/issues/180) (`official-brandbook-web-onda`) — **Execute complete** on branch `feat/180-official-brandbook-web-onda` (tokens, Logo 1 PNG `igreja onda`, Balanced flourishes, ADR 0006 amended). Include #180 in cutover PR or merge #180 first.  
+**Status:** Ready for agent — [#180](https://github.com/kairan/onda-volunteer/issues/180) BrandBook shipped (PR [#182](https://github.com/kairan/onda-volunteer/pull/182))  
+**Prerequisite:** [#180](https://github.com/kairan/onda-volunteer/issues/180) (`official-brandbook-web-onda`) — **shipped** on `main`; TLC archived at `.specs/archive/features/official-brandbook-web-onda/`  
 **TLC:** `.specs/features/frontend-restart-serve-well-base/` (RST-CUT-01)  
 **Parent:** [#170](https://github.com/kairan/onda-volunteer/issues/170)  
 **Also:** [#174](https://github.com/kairan/onda-volunteer/issues/174) cleared (shipped 2026-07-04)
