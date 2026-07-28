@@ -1,25 +1,16 @@
-# Session handoff (2026-07-18)
+# Session handoff (2026-07-28)
 
 ## Completed this session
 
-1. **#180 BrandBook** — PR [#182](https://github.com/kairan/onda-volunteer/pull/182) merged; official Brandbook 2027 on `main`.
-2. **TLC hygiene (AD-001)** — `docs/issues/done/180-web-onda-official-brandbook.md`; TLC moved to `.specs/archive/features/official-brandbook-web-onda/`; redirect stub; ROADMAP / STATE / README / #175 unblocked.
+1. **Canvas polish** — `--background` → `#f4f4f2` (ondadura.com.br); BrandBook `#eeeee7` on auth gradient only.
+2. **#175 T17 cutover Execute** — deleted `apps/web` + `apps/web-next`; CI/scripts/docs retargeted to `web-onda`; redirects runbook; migration TLC archived; design.md §9 signed.
 
 ## Next agent action
 
-1. Execute **[#175](https://github.com/kairan/onda-volunteer/issues/175)** Phase 5 cutover (T17) — already labeled `ready-for-agent`.
-2. HITL: design.md §9 visual sign-off before cutover merge.
-
-## Backlog (web-onda)
-
-| Issue | Phase | Tasks | Status |
-|------:|-------|-------|--------|
-| [#175](https://github.com/kairan/onda-volunteer/issues/175) | Cutover | T17 | Open — unblocked |
+1. Run **TLC Verifier** on `frontend-restart-serve-well-base` (author ≠ verifier) → write/update `validation.md`.
+2. Open/merge PR for `feat/175-web-onda-cutover`; close #175; drop `ready-for-agent`.
+3. Archive `.specs/features/frontend-restart-serve-well-base/` → `.specs/archive/features/` per AD-001 after Verifier PASS.
 
 ## Blockers
 
 _(none)_
-
-## HITL
-
-- **1440px layout sign-off** (design.md §9) — required before **#175** cutover merge.

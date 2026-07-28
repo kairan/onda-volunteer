@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-/** Keep in sync with `apps/web/e2e/scheduling-event-roster.integration.spec.ts` (`SEED_DEMO_EVENT_DAY_OFFSET`). */
+/** Keep in sync with web-onda e2e / demo day offset (`SEED_DEMO_EVENT_DAY_OFFSET`). */
 const SEED_DEMO_EVENT_DAY_OFFSET = 14;
 
 function daysFromNow(days: number, hourUtc = 0, minuteUtc = 0): Date {

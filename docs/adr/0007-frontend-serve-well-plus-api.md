@@ -1,9 +1,9 @@
 # ADR 0007: Frontend — serve-well presentation + API data layer
 
-**Status:** Accepted (2026-07-01)  
+**Status:** Accepted (2026-07-01); **cutover shipped** 2026-07-28 ([#175](https://github.com/kairan/onda-volunteer/issues/175))  
 **Supersedes:** `frontend-migration-web-next` **cutover** ([#148](https://github.com/kairan/onda-volunteer/issues/148)) — frozen, not cancelled historically  
 **Preserves:** [ADR 0001](./0001-visual-system-shell-and-i18n-baseline.md) (shell/i18n/UX), [ADR 0005](./0005-system-admin-operator-role.md), [ADR 0006](./0006-onda-brand-visual-system.md) (tokens)  
-**Feature spec:** [`.specs/features/frontend-restart-serve-well-base/`](../../.specs/features/frontend-restart-serve-well-base/)
+**Feature spec:** [`.specs/features/frontend-restart-serve-well-base/`](../../.specs/features/frontend-restart-serve-well-base/) (archive after Verifier)
 
 ## Context
 
@@ -17,8 +17,8 @@ The team will **restart the church-role frontend** with presentation copied from
 
 1. New package **`apps/web-onda`** (default name) on monorepo stack: **React 19 · Vite · TanStack Router · Tailwind 4 · pnpm · TanStack Query v5**.
 2. **Do not** use TanStack Start, Lovable vite config, or Bun for this package.
-3. **`apps/web`** remains production until **`web-onda`** reaches route parity and CI gates pass.
-4. **`apps/web-next`** is **frozen** immediately (salvage data modules only; no #148 cutover).
+3. **`apps/web`** remained production until **`web-onda`** reached route parity and CI gates passed — **deleted at #175**.
+4. **`apps/web-next`** was **frozen** (salvage data modules only; no #148 cutover) — **deleted at #175**.
 
 ### Presentation authority
 

@@ -19,9 +19,10 @@ Upstream v2 had a **Map codebase** phase that wrote seven files under `.specs/co
 | Package | Path | Role |
 |---------|------|------|
 | API | `apps/api` | NestJS + Prisma + PostgreSQL — bounded contexts as modules: `identity/`, `organization/`, `scheduling/`, `events/`, `system-admin/` |
-| Web (current) | `apps/web` | React + Vite + TanStack Router — primary shipped UI |
-| Web-next (migration) | `apps/web-next` | Strangler migration target; Lovable/HOPE visual layer (see ADR 0006) |
-| Web-legacy | `apps/web-legacy` | Frozen reference during migration — do not extend unless a spec explicitly says so |
+| Web (production) | `apps/web-onda` | React + Vite + TanStack Router — serve-well presentation + API data layer (ADR 0007) |
+| Web-legacy | `apps/web-legacy` | Frozen reference — do not extend unless a spec explicitly says so |
+
+**Removed at #175 cutover:** `apps/web`, `apps/web-next` (history retained in git).
 
 **Monorepo:** pnpm workspace; root scripts in `package.json` (`build`, `lint`, `test`, `typecheck:*`, `dev:*`, `test:e2e:web*`).
 

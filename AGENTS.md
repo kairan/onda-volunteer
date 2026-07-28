@@ -1,4 +1,4 @@
-# AGENTS.md
+# Onda Volunteer — cloud / agent runbook
 
 ## Spec-driven workflow (TLC)
 
@@ -37,7 +37,7 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 **Legacy:** [`.cursor/skills/_legacy/`](.cursor/skills/_legacy/README.md) (`to-issues`, `to-prd`, `triage`, `tdd`, `grill-me`, `grill-with-docs`, `improve-codebase-architecture`). Do **not** load or follow legacy skills unless the user **explicitly** names one (e.g. “use the triage skill”). Otherwise always use **tlc-spec-driven** + `ONDA.md`.
 
 | Former workflow | Use TLC instead |
-|-----------------|-----------------|
+|-----------------|---------------|
 | PRD / plan → issues (`to-prd`, `to-issues`) | **Specify** → **Tasks** → `gh issue create` from `tasks.md` |
 | Issue triage / agent briefs (`triage`) | **Specify** / **Tasks** + GitHub; see `docs/issues/` conventions |
 | Test-first dev (`tdd`) | **Execute** + `references/implement.md` + `AGENTS.md` (Running tests) |
@@ -50,20 +50,20 @@ When the user says **implement**, **design**, **tasks**, **triage**, **TDD**, or
 
 ### Overview
 
-Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web`) for church volunteer scheduling.
+Onda Volunteer is a pnpm monorepo (`apps/api` + `apps/web-onda`) for church volunteer scheduling.
 
 - **API** (`apps/api`): NestJS + Prisma + PostgreSQL — `pnpm dev:api` (port 3000)
-- **Web** (`apps/web`): React + Vite + TanStack Router — `pnpm dev:web` (port 5173)
+- **Web** (`apps/web-onda`): React + Vite + TanStack Router — `pnpm dev:web-onda` (port 5175)
 - **Database**: PostgreSQL 16 via Docker (`docker compose up -d`)
 
-Standard scripts are in the root `package.json`: `dev:api`, `dev:web`, `test`, `build`.
+Standard scripts are in the root `package.json`: `dev:api`, `dev:web-onda`, `test`, `build`.
 
 ### CI (GitHub Actions)
 
 PRs and pushes to `main` run:
 
-- **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — parallel `build` (`pnpm build`) and `test` (`pnpm test` with Postgres 16).
-- **Web Playwright e2e** ([`.github/workflows/e2e-web.yml`](.github/workflows/e2e-web.yml)) — browser e2e with Postgres + API.
+- **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — parallel `build` (`pnpm build`), `lint`, typecheck (`api` + `web-onda`), `test`, and coverage.
+- **Web Playwright e2e** ([`.github/workflows/e2e-web.yml`](.github/workflows/e2e-web.yml)) — `playwright-web-onda` with Postgres + API.
 
 After the first green run on `main`, enable required status checks per [`docs/runbooks/github-branch-protection.md`](docs/runbooks/github-branch-protection.md). Lint/coverage baseline shipped in `docs/issues/done/61-ci-lint-and-coverage.md`.
 
@@ -83,11 +83,11 @@ Boot runs `.cursor/scripts/cloud-install.sh` from `environment.json` (`pnpm inst
 2. Start Postgres: `sudo docker compose up -d` (from repo root).
 3. Run Prisma migrations: `cd apps/api && pnpm exec prisma migrate deploy && cd ..`
 4. Start API: `pnpm dev:api` (uses `AUTH_ALLOW_DEV_HEADERS=true` so no Supabase needed).
-5. Start Web: `pnpm dev:web`.
+5. Start Web: `pnpm dev:web-onda`.
 
 ### Authentication bypass
 
-Local dev uses dev-header authentication (`AUTH_ALLOW_DEV_HEADERS=true` in `apps/api/.env`). Send `X-Leader-Ministry-Id` and `X-Volunteer-Id` headers to impersonate a volunteer/leader without Supabase. The web app also sends these automatically when `VITE_AUTH_USE_DEV_HEADERS=true`.
+Local dev uses dev-header authentication (`AUTH_ALLOW_DEV_HEADERS=true` in `apps/api/.env`). Send `X-Leader-Ministry-Id` and `X-Volunteer-Id` headers to impersonate a volunteer/leader without Supabase. The web app also sends these automatically when `VITE_AUTH_USE_DEV_HEADERS=true`. Ensure `WEB_ORIGIN` includes `http://localhost:5175`.
 
 ### Running tests
 
@@ -96,26 +96,26 @@ export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=p
 pnpm test
 ```
 
-API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
+API tests (Jest e2e) apply Prisma migrations and truncate tables between cases. Web unit tests (Vitest) cover design tokens and UI primitives. Browser e2e (Playwright) live in `apps/web-onda/e2e` and start the Vite dev server automatically. Both API and full dashboard Playwright flows require PostgreSQL (and `pnpm dev:api` for dashboard/API-backed UI).
 
 #### Web Vitest behavior tests (RTL)
 
 - Use `@testing-library/user-event` for all user interactions in Vitest + React Testing Library behavior tests (`*.behavior.test.tsx`).
 - Do **not** use `fireEvent` from Testing Library to simulate clicks, typing, or keyboard input.
-- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web/src/routes/ministries.behavior.test.tsx` (rename test ~L116–134).
+- For controlled inputs that hydrate asynchronously: `const user = userEvent.setup()`, `waitFor` until the field has the expected value, then `user.clear` + `user.type`. See `apps/web-onda` co-located `*.behavior.test.tsx` patterns.
 - Exception: only when `userEvent` cannot model the interaction — add a brief comment in the test explaining why. Keep exceptions rare.
 
 ```bash
-pnpm --filter @onda/web exec playwright install chromium   # once per machine
-pnpm test:e2e:web                                          # smoke + API integration (CI parity)
-pnpm --filter @onda/web test:e2e                           # smoke only (Vite, no API)
+pnpm --filter @onda/web-onda exec playwright install chromium   # once per machine
+pnpm test:e2e:web-onda                                          # smoke + API integration (CI parity)
+pnpm --filter @onda/web-onda test:e2e                           # smoke only (Vite, no API)
 ```
 
-Shipped spec: `docs/issues/done/60-web-playwright-browser-e2e.md`.
+Shipped Playwright foundation: `docs/issues/done/60-web-playwright-browser-e2e.md`. Production frontend cutover: `docs/issues/done/175-web-onda-phase-5-cutover.md`.
 
 ### Gotchas
 
-- ESLint: `pnpm lint` (`--max-warnings 0`; required CI gate per #126). Typecheck: `pnpm typecheck:api` / `pnpm typecheck:web`. Coverage: `pnpm test:coverage` enforces global floors per #129 (API Jest e2e, web Vitest).
+- ESLint: `pnpm lint` (`--max-warnings 0`; required CI gate per #126). Typecheck: `pnpm typecheck:api` / `pnpm typecheck:web-onda`. Coverage: `pnpm test:coverage` enforces global floors per #129 (API Jest e2e, web-onda Vitest).
 - API auth context contract: [`docs/runbooks/api-auth-context.md`](docs/runbooks/api-auth-context.md).
 - The seed creates an `Unavailability` row blocking the demo volunteer for `seed-ministry-demo` from 15:00–16:00 UTC on the demo event day (`SEED_DEMO_EVENT_DAY_OFFSET` days from seed run — currently 14). Assignment creation in that window will be rejected by design.
 - `pnpm-workspace.yaml` has `allowBuilds` entries that prevent interactive build prompts during install.

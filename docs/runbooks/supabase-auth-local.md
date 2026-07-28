@@ -13,8 +13,8 @@ This app keeps **Postgres in Docker** (`docker compose`) for Prisma data. **Supa
 1. **Authentication** → **Providers** → **Email** → enable.
 2. For quick testing you can leave “Confirm email” on; Supabase sends a 6-digit code (OTP) to your inbox.
 3. **Authentication** → **URL configuration**:
-   - **Site URL:** `http://localhost:5173`
-   - **Redirect URLs:** add `http://localhost:5173/**`
+   - **Site URL:** `http://localhost:5175`
+   - **Redirect URLs:** add `http://localhost:5175/**`
 
 ## 3. Copy API keys into env files
 
@@ -22,14 +22,14 @@ This app keeps **Postgres in Docker** (`docker compose`) for Prisma data. **Supa
 
 | Dashboard field | Env variable | File |
 |-----------------|--------------|------|
-| Project URL | `VITE_SUPABASE_URL` | `apps/web/.env` |
-| **Legacy** `anon` `public` key (`eyJhbG…`) | `VITE_SUPABASE_ANON_KEY` | `apps/web/.env` |
+| Project URL | `VITE_SUPABASE_URL` | `apps/web-onda/.env` |
+| **Legacy** `anon` `public` key (`eyJhbG…`) | `VITE_SUPABASE_ANON_KEY` | `apps/web-onda/.env` |
 | JWT Secret (under JWT Settings) | `SUPABASE_JWT_SECRET` | `apps/api/.env` |
 | **Legacy** `service_role` `secret` key (`eyJhbG…`) | `SUPABASE_SERVICE_ROLE_KEY` | `apps/api/.env` only |
 
 Use the **Legacy anon, service_role API keys** tab. The new `sb_publishable_…` key often returns `Invalid API key` with current `@supabase/supabase-js` — do **not** use `sb_secret_…` in the browser.
 
-Example `apps/web/.env` (add/update):
+Example `apps/web-onda/.env` (add/update):
 
 ```env
 VITE_SUPABASE_URL=https://xxxxxxxx.supabase.co
@@ -49,12 +49,12 @@ AUTH_AUTO_LINK_SEED_VOLUNTEER_ID=seed-volunteer-demo
 
 **`SUPABASE_SERVICE_ROLE_KEY`** (ADR [0005](../adr/0005-system-admin-operator-role.md)) — required for **System Admin** church **Admin** invites (`auth.admin.inviteUserByEmail`). Copy from **Project Settings → API → Legacy anon, service_role API keys → `service_role` `secret`**. **Never** commit or expose in the browser; API process only. When unset, invite endpoints fail or no-op per implementation; use dev-header operator flows for non-invite work.
 
-Restart `pnpm dev:api` and `pnpm dev:web` after changing env.
+Restart `pnpm dev:api` and `pnpm dev:web-onda` after changing env.
 
 ## 4. Happy path (shell routes)
 
 1. Run migrations and seed: `pnpm --filter @onda/api prisma:migrate` and `pnpm --filter @onda/api prisma:seed`.
-2. Open [http://localhost:5173/dashboard](http://localhost:5173/dashboard) (or any shell nav route).
+2. Open [http://localhost:5175/dashboard](http://localhost:5175/dashboard) (or any shell nav route).
 3. Sign in with email OTP when prompted.
 4. On first sign-in, `GET /identity/me` auto-links your Supabase `sub` to `seed-volunteer-demo` when `AUTH_AUTO_LINK_SEED_VOLUNTEER_ID` is set and that volunteer has no `authSubjectId` yet.
 5. The shell loads **Church** / **Campus** context from the API using your Bearer token.
@@ -105,7 +105,7 @@ Then every protected call **requires** a valid Bearer token.
 
 ### Dev bypass when email limit is hit
 
-With API running (`AUTH_ALLOW_DEV_HEADERS=true`) and in `apps/web/.env`:
+With API running (`AUTH_ALLOW_DEV_HEADERS=true`) and in `apps/web-onda/.env`:
 
 ```env
 VITE_AUTH_USE_DEV_HEADERS=true
@@ -146,7 +146,7 @@ Re-run `pnpm --filter @onda/api prisma:seed` after pulling identity migrations.
 With `AUTH_ALLOW_DEV_HEADERS=true` on the API:
 
 ```env
-# apps/web/.env — operator shell / e2e
+# apps/web-onda/.env — operator shell / e2e
 VITE_DEMO_VOLUNTEER_ID=seed-volunteer-system-admin
 ```
 
@@ -158,9 +158,9 @@ Send `X-Volunteer-Id: seed-volunteer-system-admin` (or set web demo id as above)
 
 | Environment | Site URL | Redirect URLs (add) |
 |-------------|----------|------------------------|
-| Local | `http://localhost:5173` | `http://localhost:5173/**` |
+| Local | `http://localhost:5175` | `http://localhost:5175/**` |
 
-**System Admin** invites use `redirectTo` **`http://localhost:5173/dashboard`** so new church **Admins** land in the normal shell after accepting Supabase email. Production: set the deployed web origin in Supabase and in API env (document prod URL when hosting).
+**System Admin** invites use `redirectTo` **`http://localhost:5175/dashboard`** so new church **Admins** land in the normal shell after accepting Supabase email. Production: set the deployed web origin in Supabase and in API env (document prod URL when hosting).
 
 ### Happy path: invite church Admin (JWT)
 

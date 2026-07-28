@@ -15,7 +15,7 @@ import { SupabaseAdminService } from './supabase-admin.service';
 function adminInviteRedirectTo(): string {
   return (
     process.env.ADMIN_INVITE_REDIRECT_TO?.trim() ??
-    'http://localhost:5173/dashboard'
+    'http://localhost:5175/dashboard'
   );
 }
 

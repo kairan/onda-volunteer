@@ -195,12 +195,12 @@ Extend `.github/workflows/ci.yml` with `@onda/web-onda` filter (clone web-next j
 
 Before RST-CUT-01 sign-off, compare at **1440px**:
 
-- [ ] Shell: sidebar width, top bar blur, Onda wordmark, church name
-- [ ] Volunteer dashboard: greeting typography, card `shadow-card`, spacing `max-w-6xl`
-- [ ] Assignment grid: 2 columns md+, badge tones (primary / amber gap)
-- [ ] Leader roster: event card header `bg-muted/30`, fill badge, row actions
-- [ ] Focus ring `#2034D6`
-- [ ] pt-BR copy on primary flows
+- [x] Shell: sidebar width, top bar blur, Onda wordmark, church name — **signed 2026-07-28** (PO authorized #175 cutover; BrandBook Logo 1 + `#f4f4f2` canvas)
+- [x] Volunteer dashboard: greeting typography, card `shadow-card`, spacing `max-w-6xl` — **signed 2026-07-28**
+- [x] Assignment grid: 2 columns md+, badge tones (primary / amber gap) — **signed 2026-07-28**
+- [x] Leader roster: event card header `bg-muted/30`, fill badge, row actions — **signed 2026-07-28**
+- [x] Focus ring BrandBook primary (`#2537de` / `--ring`) — **signed 2026-07-28** (checklist originally said provisional `#2034D6`)
+- [x] pt-BR copy on primary flows — **signed 2026-07-28**
 
 Reference screenshots: `design-reference/serve-well` local dev or lovable.app.
 
