@@ -1,9 +1,9 @@
 # Frontend restart — serve-well + API — Specification
 
-**Status:** Phase 4 in PR ([#174](https://github.com/kairan/onda-volunteer/issues/174), PR [#178](https://github.com/kairan/onda-volunteer/pull/178)) · Phase 5 #175  
+**Status:** Phase 5 cutover **Verifier PASS** ([#175](https://github.com/kairan/onda-volunteer/issues/175)) — ready for PR/merge  
 **Design:** [design.md](./design.md)  
 **Decisions:** [context.md](./context.md)  
-**Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen
+**Supersedes:** `frontend-migration-web-next` cutover (#148) — frozen / archived at #175
 
 ---
 
@@ -22,7 +22,7 @@
 - [x] Shell includes **working context** (ministério · chapéu) from Foundation.
 - [x] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist) — HITL sign-off 2026-07-04
 - [x] Port org-admin + system-admin **functionally** (neutral tokens).
-- [ ] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
+- [x] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
 
 ## Non-goals
 

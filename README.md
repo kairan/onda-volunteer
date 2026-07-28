@@ -1,6 +1,6 @@
 # Onda Volunteer (issue 01 slice)
 
-Tracer bullet: **Postgres → Prisma → Nest read API → Vite + TanStack Router** for a single **Event** with **Church** timezone framing. Canonical **Event** times are stored and returned as **UTC**; the API adds display strings in the **Church** default IANA timezone.
+Tracer bullet: **Postgres → Prisma → Nest read API → Vite + TanStack Router** for church volunteer scheduling. Canonical **Event** times are stored and returned as **UTC**; the API adds display strings in the **Campus** IANA timezone.
 
 ## Prerequisites
 
@@ -20,12 +20,12 @@ Wait until Postgres is healthy, then:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
+cp apps/web-onda/.env.example apps/web-onda/.env
 pnpm install
 cd apps/api && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm prisma:seed
 ```
 
-The seed creates multi-church demo data (`seed-church-demo`, `seed-church-norte` with campuses) and public event `seed-event-public` (used by the web `.env.example`).
+The seed creates multi-church demo data (`seed-church-demo`, `seed-church-norte` with campuses) and public event `seed-event-public`.
 
 ## Supabase Auth (optional)
 
@@ -40,19 +40,17 @@ pnpm dev:api
 ```
 
 ```bash
-pnpm dev:web
+pnpm dev:web-onda
 ```
 
-Open `http://localhost:5173/`, follow **View demo event**, or browse directly to `http://localhost:5173/events/seed-event-public`.
+Open `http://localhost:5175/`. Dev persona switcher: `/user-select`.
 
 ## Tests
-
-Integration tests apply migrations, use the same `DATABASE_URL` as local dev, and truncate tables between cases (API). Web unit tests cover the design token contract and foundation primitives (Vitest). Browser e2e uses Playwright in `apps/web/e2e` (see `docs/issues/done/60-web-playwright-browser-e2e.md`).
 
 ```bash
 export DATABASE_URL="postgresql://postgres:postgres@localhost:5432/onda?schema=public"
 pnpm test
-pnpm test:e2e:web   # Playwright: Chromium + seeded API + Vite
+pnpm test:e2e:web-onda   # Playwright: Chromium + seeded API + Vite
 ```
 
 ## Project layout
@@ -60,8 +58,8 @@ pnpm test:e2e:web   # Playwright: Chromium + seeded API + Vite
 | Path | Role |
 |------|------|
 | `apps/api/prisma` | Schema + migrations + seed |
-| `apps/api/src/events` | `GET /events/:id` read model |
-| `apps/web/src/router.tsx` | TanStack Router tree, event `loader` + page |
+| `apps/api/src/` | Nest bounded contexts |
+| `apps/web-onda/` | Production church-role frontend (serve-well + API) |
 | `docker-compose.yml` | Local Postgres |
 
-Domain vocabulary lives in `CONTEXT.md`; backlog slices are under `docs/issues/`.
+Domain vocabulary lives in `CONTEXT.md`; backlog slices are under `docs/issues/`. Cutover redirects: [`docs/runbooks/web-onda-cutover-redirects.md`](docs/runbooks/web-onda-cutover-redirects.md).

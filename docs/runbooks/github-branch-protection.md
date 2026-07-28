@@ -9,12 +9,9 @@ Enable required status checks **after** the new [`.github/workflows/ci.yml`](../
 | `CI / build` | [ci.yml](../../.github/workflows/ci.yml) | `build` |
 | `CI / lint` | [ci.yml](../../.github/workflows/ci.yml) | `lint` |
 | `CI / typecheck-api` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-api` |
-| `CI / typecheck-web` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web` |
-| `CI / typecheck-web-next` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-next` |
 | `CI / typecheck-web-onda` | [ci.yml](../../.github/workflows/ci.yml) | `typecheck-web-onda` |
 | `CI / test` | [ci.yml](../../.github/workflows/ci.yml) | `test` |
 | `CI / coverage` | [ci.yml](../../.github/workflows/ci.yml) | `coverage` |
-| `Web Playwright e2e / playwright` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright` |
 | `Web Playwright e2e / playwright-web-onda` | [e2e-web.yml](../../.github/workflows/e2e-web.yml) | `playwright-web-onda` |
 
 ## UI (recommended)
@@ -52,10 +49,10 @@ gh api --method PUT repos/kairan/onda-volunteer/branches/main/protection \
       "CI / build",
       "CI / lint",
       "CI / typecheck-api",
-      "CI / typecheck-web",
       "CI / test",
       "CI / coverage",
-      "Web Playwright e2e / playwright"
+      "CI / typecheck-web-onda",
+      "Web Playwright e2e / playwright-web-onda"
     ]
   },
   "enforce_admins": false
@@ -72,7 +69,7 @@ When protection already exists, read the current rule, union the CI contexts bel
 ```bash
 REPO=kairan/onda-volunteer
 BRANCH=main
-NEW_CHECKS='["CI / build","CI / lint","CI / typecheck-api","CI / typecheck-web","CI / test","CI / coverage","Web Playwright e2e / playwright"]'
+NEW_CHECKS='["CI / build","CI / lint","CI / typecheck-api","CI / typecheck-web-onda","CI / test","CI / coverage","Web Playwright e2e / playwright-web-onda"]'
 
 gh api "repos/$REPO/branches/$BRANCH/protection" > /tmp/protection.json
 

@@ -94,7 +94,13 @@ describe('theme CSS variable contract (Onda)', () => {
   });
 
   it('locks official BrandBook anchors in :root', () => {
-    expect(globalsCss).toMatch(/--background:\s*oklch\(0\.9472\s+0\.0093\s+106\.58\)/);
+    // App canvas #f4f4f2 (site oficial); BrandBook #eeeee7 stays on auth-brand-gradient only.
+    expect(globalsCss).toMatch(
+      /--background:\s*oklch\(0\.9666\s+0\.0026\s+106\.45\)/,
+    );
+    expect(globalsCss).toMatch(
+      /auth-brand-gradient[\s\S]*#eeeee7/,
+    );
     expect(globalsCss).toMatch(/--foreground:\s*oklch\(0\.2779\s+0\.1141\s+272\.4\)/);
     expect(globalsCss).toMatch(/--primary:\s*oklch\(0\.4601\s+0\.2464\s+267\.96\)/);
     expect(globalsCss).toMatch(/--primary-hover:\s*oklch\(0\.4176\s+0\.233\s+268\.04\)/);
@@ -198,7 +204,7 @@ describe('theme CSS variable contract (Onda)', () => {
     const card = parseOklchToken(globalsCss, '--card', ':root');
 
     // Measured contrast at lock values (warm red retained from BrandBook):
-    // destructive on #eeeee7 wash ≈ 3.8:1 (AA large/UI); on white card ≈ 4.4:1.
+    // destructive on #f4f4f2 canvas ≈ AA UI; on white card ≈ 4.4:1.
     expect(contrastRatio(destructive, background)).toBeGreaterThanOrEqual(AA_UI_COMPONENT);
     expect(contrastRatio(destructive, card)).toBeGreaterThanOrEqual(AA_UI_COMPONENT);
   });

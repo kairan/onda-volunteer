@@ -16,7 +16,7 @@ const INVITE_TTL_DAYS = 7;
 function volunteerInviteRedirectTo(): string {
   return (
     process.env.VOLUNTEER_INVITE_REDIRECT_TO?.trim() ??
-    'http://localhost:5173/dashboard'
+    'http://localhost:5175/dashboard'
   );
 }
 

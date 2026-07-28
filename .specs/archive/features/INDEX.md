@@ -31,3 +31,4 @@ Redirect stubs live at `.specs/features/<slug>/README.md`. Ship records are cano
 | `web-typecheck-strict-clean` | `docs/issues/done/128-web-typecheck-strict-clean.md` | [#128](https://github.com/kairan/onda-volunteer/issues/128) | 2026-06 |
 | `coverage-threshold-gates` | `docs/issues/done/129-coverage-threshold-gates.md` | [#129](https://github.com/kairan/onda-volunteer/issues/129) | 2026-06 |
 | `official-brandbook-web-onda` | `docs/issues/done/180-web-onda-official-brandbook.md` | [#180](https://github.com/kairan/onda-volunteer/issues/180) / PR [#182](https://github.com/kairan/onda-volunteer/pull/182) | 2026-07 |
+| `frontend-migration-web-next` | `docs/issues/done/143-*`…`147-*`; cutover superseded by #175 | [#143](https://github.com/kairan/onda-volunteer/issues/143)–[#148](https://github.com/kairan/onda-volunteer/issues/148) / [#175](https://github.com/kairan/onda-volunteer/issues/175) | 2026-06–07 |

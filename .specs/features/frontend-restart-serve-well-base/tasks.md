@@ -1,7 +1,7 @@
 # Frontend restart — serve-well + API — Tasks
 
 **Design**: [design.md](./design.md)  
-**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2 shipped ([#172](https://github.com/kairan/onda-volunteer/issues/172), PR [#176](https://github.com/kairan/onda-volunteer/pull/176)); Phase 3 shipped ([#173](https://github.com/kairan/onda-volunteer/issues/173), PR [#177](https://github.com/kairan/onda-volunteer/pull/177)); Phase 4 in PR ([#174](https://github.com/kairan/onda-volunteer/issues/174), PR [#178](https://github.com/kairan/onda-volunteer/pull/178)); Phase 5 #175
+**Status**: Phase 0–1 shipped ([#170](https://github.com/kairan/onda-volunteer/issues/170), PR [#171](https://github.com/kairan/onda-volunteer/pull/171)); Phase 2 shipped ([#172](https://github.com/kairan/onda-volunteer/issues/172), PR [#176](https://github.com/kairan/onda-volunteer/pull/176)); Phase 3 shipped ([#173](https://github.com/kairan/onda-volunteer/issues/173), PR [#177](https://github.com/kairan/onda-volunteer/pull/177)); Phase 5 cutover Execute complete ([#174](https://github.com/kairan/onda-volunteer/issues/174), PR [#178](https://github.com/kairan/onda-volunteer/pull/178)); Phase 5 #175 Execute complete — Verifier pending
 
 ## Execution plan
 
@@ -227,17 +227,18 @@ Phase 5:  T16 → T17
 **What**: Switch production build/deploy to `web-onda`; document redirects; **delete `apps/web` and `apps/web-next`** from the monorepo; remove `@onda/web` / `@onda/web-next` from workspace, CI workflows, and root `package.json` scripts; archive `frontend-migration-web-next` TLC folder per AD-001.
 
 **Done when**:
-- [ ] RST-CUT-01 complete
-- [ ] `apps/web` and `apps/web-next` directories **gone**; `pnpm install` and CI green with only `@onda/web-onda` (and `api`)
-- [ ] No `pnpm --filter @onda/web` or `@onda/web-next` references remain in repo
-- [ ] Visual sign-off checklist (design.md §9) signed
-- [ ] STATE.md + ROADMAP updated
+- [x] RST-CUT-01 complete
+- [x] `apps/web` and `apps/web-next` directories **gone**; `pnpm install` and CI green with only `@onda/web-onda` (and `api`)
+- [x] No `pnpm --filter @onda/web` or `@onda/web-next` references remain in repo
+- [x] Visual sign-off checklist (design.md §9) signed
+- [x] STATE.md + ROADMAP updated
 
 ---
 
 ## Verify (feature closeout)
 
-- [ ] All RST-* requirements traced to tasks
+- [x] All RST-* requirements traced to tasks
 - [x] `docs/issues/done/` entry created (#170)
-- [ ] `frontend-migration-web-next` archived with redirect stub
+- [x] `frontend-migration-web-next` archived with redirect stub
 - [x] #148 closed as superseded or cancelled with link to this feature
+- [x] `docs/issues/done/175-web-onda-phase-5-cutover.md` + Verifier `validation.md`
