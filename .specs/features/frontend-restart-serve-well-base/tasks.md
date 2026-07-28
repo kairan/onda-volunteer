@@ -241,4 +241,4 @@ Phase 5:  T16 → T17
 - [x] `docs/issues/done/` entry created (#170)
 - [x] `frontend-migration-web-next` archived with redirect stub
 - [x] #148 closed as superseded or cancelled with link to this feature
-- [ ] `docs/issues/done/175-web-onda-phase-5-cutover.md` + Verifier `validation.md`
+- [x] `docs/issues/done/175-web-onda-phase-5-cutover.md` + Verifier `validation.md`

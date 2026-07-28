@@ -22,7 +22,7 @@
 - [x] Shell includes **working context** (ministério · chapéu) from Foundation.
 - [x] Volunteer + Leader screens **visually match** serve-well at 1440px (side-by-side checklist) — HITL sign-off 2026-07-04
 - [x] Port org-admin + system-admin **functionally** (neutral tokens).
-- [ ] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
+- [x] Single production cutover: `apps/web` → new package; **delete** `apps/web` and **`apps/web-next`** from the monorepo after parity.
 
 ## Non-goals
 
