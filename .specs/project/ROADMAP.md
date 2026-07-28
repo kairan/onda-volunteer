@@ -18,10 +18,10 @@ High-level milestones for TLC planning. Detailed acceptance criteria and shipped
 
 | Theme | Feature | Status | TLC / spec |
 |-------|---------|--------|------------|
-| **Web shell & i18n** | `frontend-restart-serve-well-base` — serve-well + API | **Phase 0–5 Execute complete** (#170–#175, #180); Verifier + merge for #175 | [`.specs/features/frontend-restart-serve-well-base/`](../features/frontend-restart-serve-well-base/) · ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md) |
+| **Scheduling & events** | `role-slot-capacity-per-event` | Open (#165) | [`.specs/features/role-slot-capacity-per-event/`](../features/role-slot-capacity-per-event/) |
 | **Web shell & i18n** | `ui-refresh-onda-brand` | Design source (provisional); superseded by #180 for official tokens | [`.specs/features/ui-refresh-onda-brand/`](../features/ui-refresh-onda-brand/) |
 
-**Frontend restart (2026-07-01):** **`apps/web-onda`** = sole church-role frontend after **#175 cutover** (deleted `apps/web` + `apps/web-next`). ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md). **Brand tokens/logo:** official Brandbook 2027 — [#180](https://github.com/kairan/onda-volunteer/issues/180) shipped; canvas `#f4f4f2` aligned with ondadura.com.br.
+**Frontend restart (shipped 2026-07-28):** **`apps/web-onda`** is the sole church-role frontend after **#175** cutover (PR [#184](https://github.com/kairan/onda-volunteer/pull/184)). TLC archived: [`.specs/archive/features/frontend-restart-serve-well-base/`](../archive/features/frontend-restart-serve-well-base/). ADR [0007](../../docs/adr/0007-frontend-serve-well-plus-api.md).
 
 ## Shipped summary
 
@@ -29,7 +29,7 @@ All product tracer bullets through web-next Slices 1–5 are shipped. Full index
 
 | Theme | Representative issues | Status |
 |-------|----------------------|--------|
-| **Web-onda cutover** | #175 | ✅ Execute complete (Verifier pending) |
+| **Web-onda cutover** | #175 | ✅ Shipped (PR #184) |
 | **Web-onda BrandBook** | #180 | ✅ Shipped (PR #182) |
 | **Organization** | #87–#93, #107–#109, #115–#118 | ✅ Shipped |
 | **Scheduling & Availability** | #36–#47, #115, #117 | ✅ Shipped |
