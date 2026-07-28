@@ -88,7 +88,8 @@ Church Admin and System Admin layout redesign are **explicitly deferred**; this 
 
 | Role | Hex | CSS variable(s) |
 |------|-----|-----------------|
-| Page background | `#eeeee7` | `--background` |
+| Page background (app canvas) | `#f4f4f2` | `--background` — matches [ondadura.com.br](https://www.ondadura.com.br/) page wash |
+| BrandBook wash (auth gradient end) | `#eeeee7` | `auth-brand-gradient` only — not full-page app fill |
 | Primary text / deep | `#181e5f` | `--foreground`, `--card-foreground` |
 | Primary action | `#2537de` | `--primary`, `--ring`, `--sidebar-primary`, `--brand` |
 | Primary hover | `#1f2bc8` | `--primary-hover` |

@@ -93,7 +93,8 @@
   --shadow-card: 0 1px 2px rgb(24 26 67 / 0.04), 0 1px 3px rgb(24 26 67 / 0.06);
   --shadow-subtle: var(--shadow-card);
 
-  --background: oklch(0.9472 0.0093 106.58);
+  /* App canvas: ondadura.com.br #f4f4f2 (BrandBook #eeeee7 reserved for auth gradient) */
+  --background: oklch(0.9666 0.0026 106.45);
   --foreground: oklch(0.2779 0.1141 272.4);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.2779 0.1141 272.4);
