@@ -1,7 +1,7 @@
 # 186 — Replace demo campuses with Onda Dura regional churches
 
 **Type:** Feature (Organization / demo seed)  
-**Status:** Execute  
+**Status:** Verified (PR [#187](https://github.com/kairan/onda-volunteer/pull/187))  
 **TLC:** `.specs/features/186-onda-dura-regional-campuses/` (CAMPUS-01..04)  
 **Supersedes:** PR [#179](https://github.com/kairan/onda-volunteer/pull/179)
 
@@ -19,7 +19,7 @@ Seed and Playwright fixtures still use fictional `Igreja Central` / `Comunidade 
 
 ## Acceptance criteria
 
-- [ ] Catalog unit test matches ondadura.com.br/campus (verified 2026-08-12)
-- [ ] Seed upserts regional churches; demo event/assignment stay on Onda Brasil
-- [ ] web-onda smoke mocks/fixtures use Joinville
-- [ ] Serve-well lists Hamamatsu under Onda Japão
+- [x] Catalog unit test matches ondadura.com.br/campus (verified 2026-08-12)
+- [x] Seed upserts regional churches; demo event/assignment stay on Onda Brasil
+- [x] web-onda smoke mocks/fixtures use Joinville
+- [x] Serve-well lists Hamamatsu under Onda Japão

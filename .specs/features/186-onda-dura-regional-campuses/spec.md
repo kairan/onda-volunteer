@@ -13,10 +13,10 @@ Demo seed still uses fictional churches (`Igreja Central`, `Comunidade Norte`) a
 
 ## Goals
 
-- [ ] Seed regional demo **Churches** whose campus names match the public Onda Dura campus page.
-- [ ] Re-seed is idempotent and removes obsolete fake campus rows.
-- [ ] web-onda smoke/API e2e pin Joinville as HQ campus under **Onda Brasil**.
-- [ ] Serve-well campus picker groups campuses by region, including Japão.
+- [x] Seed regional demo **Churches** whose campus names match the public Onda Dura campus page.
+- [x] Re-seed is idempotent and removes obsolete fake campus rows.
+- [x] web-onda smoke/API e2e pin Joinville as HQ campus under **Onda Brasil**.
+- [x] Serve-well campus picker groups campuses by region, including Japão.
 
 ## Out of Scope
 
@@ -118,10 +118,10 @@ Demo seed still uses fictional churches (`Igreja Central`, `Comunidade Norte`) a
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAMPUS-01 | P1: catalog names + counts + unique ids | Execute | Implementing |
-| CAMPUS-02 | P1: seed upsert + obsolete delete + ministries | Execute | Implementing |
-| CAMPUS-03 | P1: web-onda e2e mocks/fixtures | Execute | Implementing |
-| CAMPUS-04 | P2: serve-well regional picker | Execute | Implementing |
+| CAMPUS-01 | P1: catalog names + counts + unique ids | Execute | Verified |
+| CAMPUS-02 | P1: seed upsert + obsolete delete + ministries | Execute | Verified |
+| CAMPUS-03 | P1: web-onda e2e mocks/fixtures | Execute | Verified |
+| CAMPUS-04 | P2: serve-well regional picker | Execute | Verified |
 
 **Coverage:** 4 total, 0 mapped to formal tasks (inline Execute), 0 unmapped.
 
@@ -129,7 +129,7 @@ Demo seed still uses fictional churches (`Igreja Central`, `Comunidade Norte`) a
 
 ## Success Criteria
 
-- [ ] Catalog unit test encodes the 2026-08-12 public campus list (including Hamamatsu).
-- [ ] Seed no longer creates Igreja Central / Comunidade Norte / Sede / Zona Sul / Único.
-- [ ] web-onda e2e does not reference `seed-campus-central-sede` or `Igreja Central`.
-- [ ] Stale PR #179 is closed as superseded.
+- [x] Catalog unit test encodes the 2026-08-12 public campus list (including Hamamatsu).
+- [x] Seed no longer creates Igreja Central / Comunidade Norte / Sede / Zona Sul / Único.
+- [x] web-onda e2e does not reference `seed-campus-central-sede` or `Igreja Central`.
+- [x] Stale PR #179 is closed as superseded.
