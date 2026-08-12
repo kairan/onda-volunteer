@@ -82,3 +82,43 @@ export const OBSOLETE_SEED_CAMPUS_IDS = [
   'seed-campus-central-sul',
   'seed-campus-norte-unico',
 ] as const;
+
+export type OndaSeedMinistry = {
+  id: string;
+  name: string;
+  churchId: string;
+};
+
+/** Demo ministries owned by each regional church (P1 seed AC7). */
+export const ONDA_SEED_MINISTRIES: OndaSeedMinistry[] = [
+  { id: 'seed-ministry-demo', name: 'Hospitality', churchId: 'seed-church-demo' },
+  { id: 'seed-ministry-band', name: 'Band', churchId: 'seed-church-demo' },
+  { id: 'seed-ministry-norte', name: 'Louvor', churchId: 'seed-church-norte' },
+  { id: 'seed-ministry-europa', name: 'Mídia', churchId: 'seed-church-europa' },
+  { id: 'seed-ministry-japao', name: 'Recepção', churchId: 'seed-church-japao' },
+];
+
+export const ONDA_SEED_DEMO_VOLUNTEER_ID = 'seed-volunteer-demo';
+
+export const ONDA_SEED_DEMO_MEMBERSHIP_STATUS = 'ACTIVE' as const;
+
+export const ONDA_SEED_DEMO_MEMBERSHIP_MINISTRY_IDS = [
+  'seed-ministry-demo',
+  'seed-ministry-band',
+  'seed-ministry-norte',
+  'seed-ministry-europa',
+  'seed-ministry-japao',
+] as const;
+
+export const ONDA_SEED_PUBLIC_EVENT = {
+  id: 'seed-event-public',
+  churchId: 'seed-church-demo',
+} as const;
+
+export const ONDA_SEED_GREETER_ASSIGNMENT = {
+  id: 'seed-assignment-public-greeter',
+  eventId: 'seed-event-public',
+  ministryId: 'seed-ministry-demo',
+  volunteerId: 'seed-volunteer-demo',
+  roleId: 'seed-role-greeter',
+} as const;
