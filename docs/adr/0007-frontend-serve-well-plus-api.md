@@ -3,7 +3,7 @@
 **Status:** Accepted (2026-07-01); **cutover shipped** 2026-07-28 ([#175](https://github.com/kairan/onda-volunteer/issues/175))  
 **Supersedes:** `frontend-migration-web-next` **cutover** ([#148](https://github.com/kairan/onda-volunteer/issues/148)) — frozen, not cancelled historically  
 **Preserves:** [ADR 0001](./0001-visual-system-shell-and-i18n-baseline.md) (shell/i18n/UX), [ADR 0005](./0005-system-admin-operator-role.md), [ADR 0006](./0006-onda-brand-visual-system.md) (tokens)  
-**Feature spec:** [`.specs/features/frontend-restart-serve-well-base/`](../../.specs/features/frontend-restart-serve-well-base/) (archive after Verifier)
+**Feature spec:** [`.specs/archive/features/frontend-restart-serve-well-base/`](../../.specs/archive/features/frontend-restart-serve-well-base/) (redirect stub under `.specs/features/`)
 
 ## Context
 
@@ -67,4 +67,4 @@ When `web-onda` ships:
 
 - Prototype: [`design-reference/serve-well/README.md`](../../design-reference/serve-well/README.md)
 - Brand: [ADR 0006](./0006-onda-brand-visual-system.md)
-- Execute tasks: [`.specs/features/frontend-restart-serve-well-base/tasks.md`](../../.specs/features/frontend-restart-serve-well-base/tasks.md)
+- Execute tasks: [`.specs/archive/features/frontend-restart-serve-well-base/tasks.md`](../../.specs/archive/features/frontend-restart-serve-well-base/tasks.md)

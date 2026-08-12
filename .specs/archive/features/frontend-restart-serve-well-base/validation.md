@@ -2,7 +2,7 @@
 
 **Date**: 2026-07-28  
 **Phase verified**: Phase 5 cutover Execute — issue [#175](https://github.com/kairan/onda-volunteer/issues/175) / T17  
-**Spec**: `.specs/features/frontend-restart-serve-well-base/spec.md`  
+**Spec**: [./spec.md](./spec.md) (archive; redirect stub at `.specs/features/frontend-restart-serve-well-base/`)  
 **Diff range**: `1dc12fd^..61eb805` (`1dc12fd` canvas `#f4f4f2` + `61eb805` T17 cutover) on `feat/175-web-onda-cutover`  
 **Verifier**: independent sub-agent (author ≠ verifier)
 

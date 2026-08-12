@@ -12,23 +12,19 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 ## Active backlog
 
-**Frontend restart (`web-onda`)** — Phase 5 cutover Execute complete on branch; Verifier + merge pending. TLC [`.specs/features/frontend-restart-serve-well-base/`](../.specs/features/frontend-restart-serve-well-base/). ADR [0007](../adr/0007-frontend-serve-well-plus-api.md).
-
-| Issue | Feature | Tasks | Spec |
-|------:|---------|-------|------|
-| [#175](https://github.com/kairan/onda-volunteer/issues/175) | web-onda Phase 5 — Cutover | T17 | `done/175-web-onda-phase-5-cutover.md` (Execute done; Verifier pending) |
-
-**Shipped:** [#180](https://github.com/kairan/onda-volunteer/issues/180) BrandBook 2027 (PR [#182](https://github.com/kairan/onda-volunteer/pull/182)) — `done/180-web-onda-official-brandbook.md` · [#174](https://github.com/kairan/onda-volunteer/issues/174) admin slice (PR [#178](https://github.com/kairan/onda-volunteer/pull/178)) — `done/174-web-onda-phase-4-admin.md` · [#173](https://github.com/kairan/onda-volunteer/issues/173) leader slice (PR [#177](https://github.com/kairan/onda-volunteer/pull/177)) — `done/173-web-onda-phase-3-leader.md` · [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
-
-**Superseded:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` cutover) — closed 2026-07-01; TLC archived at cutover #175.
-
 **Scheduling — role slot capacity** — TLC [`.specs/features/role-slot-capacity-per-event/`](../.specs/features/role-slot-capacity-per-event/). Complements UI-LEAD / Serve Well roster visual.
 
 | Issue | Feature | Tasks | Spec |
 |------:|---------|-------|------|
 | [#165](https://github.com/kairan/onda-volunteer/issues/165) | Per-event role slot capacity | T01–T09 | `165-role-slot-capacity-per-event.md` |
 
-Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next; no standalone execute).
+**Frontend restart (`web-onda`)** — **shipped** (Phases 0–5 + BrandBook). ADR [0007](../adr/0007-frontend-serve-well-plus-api.md). TLC archived: [`.specs/archive/features/frontend-restart-serve-well-base/`](../.specs/archive/features/frontend-restart-serve-well-base/).
+
+**Shipped:** [#175](https://github.com/kairan/onda-volunteer/issues/175) cutover (PR [#184](https://github.com/kairan/onda-volunteer/pull/184)) — `done/175-web-onda-phase-5-cutover.md` · [#180](https://github.com/kairan/onda-volunteer/issues/180) BrandBook 2027 (PR [#182](https://github.com/kairan/onda-volunteer/pull/182)) — `done/180-web-onda-official-brandbook.md` · [#174](https://github.com/kairan/onda-volunteer/issues/174) admin slice (PR [#178](https://github.com/kairan/onda-volunteer/pull/178)) — `done/174-web-onda-phase-4-admin.md` · [#173](https://github.com/kairan/onda-volunteer/issues/173) leader slice (PR [#177](https://github.com/kairan/onda-volunteer/pull/177)) — `done/173-web-onda-phase-3-leader.md` · [#172](https://github.com/kairan/onda-volunteer/issues/172) volunteer slice (PR [#176](https://github.com/kairan/onda-volunteer/pull/176)) — `done/172-web-onda-phase-2-volunteer.md` · [#170](https://github.com/kairan/onda-volunteer/issues/170) foundation (PR [#171](https://github.com/kairan/onda-volunteer/pull/171)) — `done/170-web-onda-foundation-phase-0-1.md`
+
+**Superseded:** [#148](https://github.com/kairan/onda-volunteer/issues/148) (`frontend-migration-web-next` cutover) — closed 2026-07-01; TLC archived at cutover #175.
+
+Design source for migration: [`.specs/features/ui-refresh-onda-brand/`](../.specs/features/ui-refresh-onda-brand/) (consumed by web-next / web-onda; no standalone execute).
 
 ## Architecture tech debt
 
