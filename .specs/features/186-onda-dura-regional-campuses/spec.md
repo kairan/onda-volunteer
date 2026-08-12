@@ -118,10 +118,10 @@ Demo seed still uses fictional churches (`Igreja Central`, `Comunidade Norte`) a
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CAMPUS-01 | P1: catalog names + counts + unique ids | Execute | Pending |
-| CAMPUS-02 | P1: seed upsert + obsolete delete + ministries | Execute | Pending |
-| CAMPUS-03 | P1: web-onda e2e mocks/fixtures | Execute | Pending |
-| CAMPUS-04 | P2: serve-well regional picker | Execute | Pending |
+| CAMPUS-01 | P1: catalog names + counts + unique ids | Execute | Implementing |
+| CAMPUS-02 | P1: seed upsert + obsolete delete + ministries | Execute | Implementing |
+| CAMPUS-03 | P1: web-onda e2e mocks/fixtures | Execute | Implementing |
+| CAMPUS-04 | P2: serve-well regional picker | Execute | Implementing |
 
 **Coverage:** 4 total, 0 mapped to formal tasks (inline Execute), 0 unmapped.
 
