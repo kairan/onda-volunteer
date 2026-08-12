@@ -5,6 +5,7 @@ export type Campus = {
   name: string;
   city: string;
   timezone: string;
+  region: string;
 };
 
 export type TimezoneOption = {
@@ -101,19 +102,45 @@ export function canonicalTimezone(tz: string): string {
   return TIMEZONE_ALIASES[tz] ?? "America/Sao_Paulo";
 }
 
+export const CAMPUS_REGIONS = ["Onda Brasil", "Onda USA", "Onda Europa", "Onda Japão"] as const;
+
 const INITIAL: Campus[] = [
-  { id: "sede", name: "Onda · Sede", city: "São Paulo, SP", timezone: "America/Sao_Paulo" },
-  { id: "zona-sul", name: "Onda · Zona Sul", city: "São Paulo, SP", timezone: "America/Sao_Paulo" },
-  { id: "campinas", name: "Onda · Campinas", city: "Campinas, SP", timezone: "America/Sao_Paulo" },
-  { id: "rio", name: "Onda · Rio", city: "Rio de Janeiro, RJ", timezone: "America/Sao_Paulo" },
-  { id: "bh", name: "Onda · BH", city: "Belo Horizonte, MG", timezone: "America/Sao_Paulo" },
+  // Onda Brasil — https://www.ondadura.com.br/campus (verified 2026-08-12)
+  { id: "joinville", name: "Onda · Joinville", city: "Joinville, SC", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "avenida-paulista", name: "Onda · Av. Paulista", city: "São Paulo, SP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "mooca", name: "Onda · Mooca", city: "São Paulo, SP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "guarulhos", name: "Onda · Guarulhos", city: "Guarulhos, SP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "bauru", name: "Onda · Bauru", city: "Bauru, SP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "belo-horizonte", name: "Onda · Belo Horizonte", city: "Belo Horizonte, MG", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "blumenau", name: "Onda · Blumenau", city: "Blumenau, SC", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "cabo-frio", name: "Onda · Cabo Frio", city: "Cabo Frio, RJ", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "campinas", name: "Onda · Campinas", city: "Campinas, SP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "caxias-do-sul", name: "Onda · Caxias do Sul", city: "Caxias do Sul, RS", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "curitiba", name: "Onda · Curitiba", city: "Curitiba, PR", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "florianopolis", name: "Onda · Florianópolis", city: "Florianópolis, SC", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "itajai", name: "Onda · Itajaí", city: "Itajaí, SC", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "jaragua-do-sul", name: "Onda · Jaraguá do Sul", city: "Jaraguá do Sul, SC", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "macapa", name: "Onda · Macapá", city: "Macapá, AP", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "machado", name: "Onda · Machado", city: "Machado, MG", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "porto-alegre", name: "Onda · Porto Alegre", city: "Porto Alegre, RS", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  { id: "recife", name: "Onda · Recife", city: "Recife, PE", timezone: "America/Sao_Paulo", region: "Onda Brasil" },
+  // Onda USA
+  { id: "charlotte", name: "Onda · Charlotte", city: "Charlotte, NC", timezone: "America/New_York", region: "Onda USA" },
+  { id: "chicago", name: "Onda · Chicago", city: "Chicago, IL", timezone: "America/Chicago", region: "Onda USA" },
+  // Onda Europa
+  { id: "porto", name: "Onda · Porto", city: "Porto, Portugal", timezone: "Europe/Lisbon", region: "Onda Europa" },
+  { id: "sines", name: "Onda · Sines", city: "Sines, Portugal", timezone: "Europe/Lisbon", region: "Onda Europa" },
+  { id: "mallorca", name: "Onda · Mallorca", city: "Mallorca, Espanha", timezone: "Europe/Madrid", region: "Onda Europa" },
+  { id: "londres", name: "Onda · Londres", city: "Londres, Inglaterra", timezone: "Europe/London", region: "Onda Europa" },
+  // Onda Japão
+  { id: "hamamatsu", name: "Onda · Hamamatsu", city: "Hamamatsu, Japão", timezone: "Asia/Tokyo", region: "Onda Japão" },
 ];
 
 type CampusContextValue = {
   campus: Campus;
   setCampusId: (id: string) => void;
   campuses: Campus[];
-  addCampus: (data: Omit<Campus, "id">) => void;
+  addCampus: (data: Omit<Campus, "id" | "region"> & { region?: string }) => void;
   updateCampus: (id: string, data: Partial<Omit<Campus, "id">>) => void;
   removeCampus: (id: string) => void;
 };
@@ -130,7 +157,15 @@ export function CampusProvider({ children }: { children: ReactNode }) {
       data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") +
       "-" +
       Math.random().toString(36).slice(2, 6);
-    setCampuses((cs) => [...cs, { id, ...data, timezone: canonicalTimezone(data.timezone) }]);
+    setCampuses((cs) => [
+      ...cs,
+      {
+        id,
+        ...data,
+        region: data.region ?? "Onda Brasil",
+        timezone: canonicalTimezone(data.timezone),
+      },
+    ]);
   };
   const updateCampus: CampusContextValue["updateCampus"] = (id, data) => {
     setCampuses((cs) =>
