@@ -62,6 +62,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: timeAway.behavior.test.tsx:134 (apps/web-onda/tests)
 - last seen: 2026-07-16T20:28:22Z
 
+### L-009 — Assert seed-owned ministry names, church ownership, and volunteer membership status, not only campus catalog constants
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `api/prisma/seed` · harmful: 0
+- features: 186-onda-dura-regional-campuses
+- evidence: P1 seed AC7 (api/prisma/seed)
+- last seen: 2026-08-12T22:01:05Z
+
 ## Quarantined (failed when applied — ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

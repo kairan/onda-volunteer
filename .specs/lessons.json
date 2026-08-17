@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 9,
+  "next_id": 10,
   "lessons": [
     {
       "id": "L-001",
@@ -148,6 +148,24 @@
       ],
       "created": "2026-07-16T20:28:22Z",
       "last_seen": "2026-07-16T20:28:22Z"
+    },
+    {
+      "id": "L-009",
+      "key": "ac_gap::assert seed owned ministry names church ownership and volunteer membership status not only campus catalog constants",
+      "text": "Assert seed-owned ministry names, church ownership, and volunteer membership status, not only campus catalog constants",
+      "signal": "ac_gap",
+      "scope": "api/prisma/seed",
+      "status": "candidate",
+      "features": [
+        "186-onda-dura-regional-campuses"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "P1 seed AC7 (api/prisma/seed)"
+      ],
+      "created": "2026-08-12T22:01:05Z",
+      "last_seen": "2026-08-12T22:01:05Z"
     }
   ]
 }

@@ -1,4 +1,14 @@
 import { PrismaClient } from '@prisma/client';
+import {
+  OBSOLETE_SEED_CAMPUS_IDS,
+  ONDA_REGIONAL_CHURCHES,
+  ONDA_SEED_DEMO_MEMBERSHIP_MINISTRY_IDS,
+  ONDA_SEED_DEMO_MEMBERSHIP_STATUS,
+  ONDA_SEED_DEMO_VOLUNTEER_ID,
+  ONDA_SEED_GREETER_ASSIGNMENT,
+  ONDA_SEED_MINISTRIES,
+  ONDA_SEED_PUBLIC_EVENT,
+} from './ondaCampuses';
 
 const prisma = new PrismaClient();
 
@@ -13,100 +23,62 @@ function daysFromNow(days: number, hourUtc = 0, minuteUtc = 0): Date {
 }
 
 async function main() {
-  const churchCentral = await prisma.church.upsert({
-    where: { id: 'seed-church-demo' },
-    update: {
-      name: 'Igreja Central',
-      defaultTimezone: 'America/Sao_Paulo',
-    },
-    create: {
-      id: 'seed-church-demo',
-      name: 'Igreja Central',
-      defaultTimezone: 'America/Sao_Paulo',
-    },
+  await prisma.campus.deleteMany({
+    where: { id: { in: [...OBSOLETE_SEED_CAMPUS_IDS] } },
   });
 
-  const churchNorte = await prisma.church.upsert({
-    where: { id: 'seed-church-norte' },
-    update: {
-      name: 'Comunidade Norte',
-      defaultTimezone: 'America/Manaus',
-    },
-    create: {
-      id: 'seed-church-norte',
-      name: 'Comunidade Norte',
-      defaultTimezone: 'America/Manaus',
-    },
-  });
+  for (const churchSeed of ONDA_REGIONAL_CHURCHES) {
+    const church = await prisma.church.upsert({
+      where: { id: churchSeed.id },
+      update: {
+        name: churchSeed.name,
+        defaultTimezone: churchSeed.defaultTimezone,
+      },
+      create: {
+        id: churchSeed.id,
+        name: churchSeed.name,
+        defaultTimezone: churchSeed.defaultTimezone,
+      },
+    });
 
-  await prisma.campus.upsert({
-    where: { id: 'seed-campus-central-sede' },
-    update: {},
-    create: {
-      id: 'seed-campus-central-sede',
-      churchId: churchCentral.id,
-      name: 'Sede',
-      timezone: 'America/Sao_Paulo',
-    },
-  });
+    for (const campusSeed of churchSeed.campuses) {
+      await prisma.campus.upsert({
+        where: { id: campusSeed.id },
+        update: {
+          name: campusSeed.name,
+          timezone: campusSeed.timezone,
+          churchId: church.id,
+        },
+        create: {
+          id: campusSeed.id,
+          churchId: church.id,
+          name: campusSeed.name,
+          timezone: campusSeed.timezone,
+        },
+      });
+    }
+  }
 
-  await prisma.campus.upsert({
-    where: { id: 'seed-campus-central-sul' },
-    update: {},
-    create: {
-      id: 'seed-campus-central-sul',
-      churchId: churchCentral.id,
-      name: 'Zona Sul',
-      timezone: 'America/Sao_Paulo',
-    },
-  });
-
-  await prisma.campus.upsert({
-    where: { id: 'seed-campus-norte-unico' },
-    update: {},
-    create: {
-      id: 'seed-campus-norte-unico',
-      churchId: churchNorte.id,
-      name: 'Único',
-      timezone: 'America/Manaus',
-    },
-  });
-
-  await prisma.ministry.upsert({
-    where: { id: 'seed-ministry-demo' },
-    update: { churchId: churchCentral.id },
-    create: {
-      id: 'seed-ministry-demo',
-      name: 'Hospitality',
-      churchId: churchCentral.id,
-    },
-  });
-
-  const ministryBand = await prisma.ministry.upsert({
-    where: { id: 'seed-ministry-band' },
-    update: { churchId: churchCentral.id },
-    create: {
-      id: 'seed-ministry-band',
-      name: 'Band',
-      churchId: churchCentral.id,
-    },
-  });
-
-  await prisma.ministry.upsert({
-    where: { id: 'seed-ministry-norte' },
-    update: {},
-    create: {
-      id: 'seed-ministry-norte',
-      name: 'Louvor',
-      churchId: churchNorte.id,
-    },
-  });
+  for (const ministrySeed of ONDA_SEED_MINISTRIES) {
+    await prisma.ministry.upsert({
+      where: { id: ministrySeed.id },
+      update: {
+        name: ministrySeed.name,
+        churchId: ministrySeed.churchId,
+      },
+      create: {
+        id: ministrySeed.id,
+        name: ministrySeed.name,
+        churchId: ministrySeed.churchId,
+      },
+    });
+  }
 
   await prisma.volunteer.upsert({
-    where: { id: 'seed-volunteer-demo' },
+    where: { id: ONDA_SEED_DEMO_VOLUNTEER_ID },
     update: { displayName: 'Demo Volunteer' },
     create: {
-      id: 'seed-volunteer-demo',
+      id: ONDA_SEED_DEMO_VOLUNTEER_ID,
       displayName: 'Demo Volunteer',
     },
   });
@@ -152,86 +124,58 @@ async function main() {
     where: {
       volunteerId_churchId: {
         volunteerId: 'seed-volunteer-admin',
-        churchId: churchCentral.id,
+        churchId: ONDA_SEED_PUBLIC_EVENT.churchId,
       },
     },
     update: {},
     create: {
       volunteerId: 'seed-volunteer-admin',
-      churchId: churchCentral.id,
+      churchId: ONDA_SEED_PUBLIC_EVENT.churchId,
     },
   });
 
   await prisma.ministryLeader.upsert({
     where: {
       volunteerId_ministryId: {
-        volunteerId: 'seed-volunteer-demo',
-        ministryId: 'seed-ministry-demo',
+        volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+        ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       },
     },
     update: {},
     create: {
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: 'seed-ministry-demo',
+      volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
     },
   });
 
-  await prisma.ministryMembership.upsert({
-    where: {
-      volunteerId_ministryId: {
-        volunteerId: 'seed-volunteer-demo',
-        ministryId: 'seed-ministry-demo',
+  for (const ministryId of ONDA_SEED_DEMO_MEMBERSHIP_MINISTRY_IDS) {
+    await prisma.ministryMembership.upsert({
+      where: {
+        volunteerId_ministryId: {
+          volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+          ministryId,
+        },
       },
-    },
-    update: { status: 'ACTIVE' },
-    create: {
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: 'seed-ministry-demo',
-      status: 'ACTIVE',
-    },
-  });
+      update: { status: ONDA_SEED_DEMO_MEMBERSHIP_STATUS },
+      create: {
+        volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+        ministryId,
+        status: ONDA_SEED_DEMO_MEMBERSHIP_STATUS,
+      },
+    });
+  }
 
   await prisma.ministryMembership.upsert({
     where: {
       volunteerId_ministryId: {
         volunteerId: 'seed-volunteer-hospitality',
-        ministryId: 'seed-ministry-demo',
+        ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       },
     },
     update: { status: 'ACTIVE' },
     create: {
       volunteerId: 'seed-volunteer-hospitality',
-      ministryId: 'seed-ministry-demo',
-      status: 'ACTIVE',
-    },
-  });
-
-  await prisma.ministryMembership.upsert({
-    where: {
-      volunteerId_ministryId: {
-        volunteerId: 'seed-volunteer-demo',
-        ministryId: ministryBand.id,
-      },
-    },
-    update: { status: 'ACTIVE' },
-    create: {
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: ministryBand.id,
-      status: 'ACTIVE',
-    },
-  });
-
-  await prisma.ministryMembership.upsert({
-    where: {
-      volunteerId_ministryId: {
-        volunteerId: 'seed-volunteer-demo',
-        ministryId: 'seed-ministry-norte',
-      },
-    },
-    update: { status: 'ACTIVE' },
-    create: {
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: 'seed-ministry-norte',
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       status: 'ACTIVE',
     },
   });
@@ -241,7 +185,7 @@ async function main() {
     update: { retired: false },
     create: {
       id: 'seed-role-greeter',
-      ministryId: 'seed-ministry-demo',
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       name: 'Greeter',
       retired: false,
     },
@@ -252,7 +196,7 @@ async function main() {
     update: { retired: false },
     create: {
       id: 'seed-role-keys',
-      ministryId: ministryBand.id,
+      ministryId: 'seed-ministry-band',
       name: 'Keys',
       retired: false,
     },
@@ -260,8 +204,8 @@ async function main() {
 
   await prisma.unavailability.deleteMany({
     where: {
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: 'seed-ministry-demo',
+      volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       id: { not: 'seed-unavailability-morning' },
     },
   });
@@ -274,47 +218,47 @@ async function main() {
     },
     create: {
       id: 'seed-unavailability-morning',
-      volunteerId: 'seed-volunteer-demo',
-      ministryId: 'seed-ministry-demo',
+      volunteerId: ONDA_SEED_DEMO_VOLUNTEER_ID,
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
       startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
       endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
     },
   });
 
   await prisma.event.upsert({
-    where: { id: 'seed-event-public' },
+    where: { id: ONDA_SEED_PUBLIC_EVENT.id },
     update: {
-      churchId: churchCentral.id,
+      churchId: ONDA_SEED_PUBLIC_EVENT.churchId,
       startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
       endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
     },
     create: {
-      id: 'seed-event-public',
+      id: ONDA_SEED_PUBLIC_EVENT.id,
       kind: 'PUBLIC',
       title: 'Sunday Gathering',
       startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 15, 0),
       endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
-      churchId: churchCentral.id,
+      churchId: ONDA_SEED_PUBLIC_EVENT.churchId,
     },
   });
 
   await prisma.assignment.upsert({
-    where: { id: 'seed-assignment-public-greeter' },
+    where: { id: ONDA_SEED_GREETER_ASSIGNMENT.id },
     update: {
       voidedAtUtc: null,
-      eventId: 'seed-event-public',
-      ministryId: 'seed-ministry-demo',
-      volunteerId: 'seed-volunteer-demo',
-      roleId: 'seed-role-greeter',
+      eventId: ONDA_SEED_GREETER_ASSIGNMENT.eventId,
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
+      volunteerId: ONDA_SEED_GREETER_ASSIGNMENT.volunteerId,
+      roleId: ONDA_SEED_GREETER_ASSIGNMENT.roleId,
       startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
       endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
     },
     create: {
-      id: 'seed-assignment-public-greeter',
-      eventId: 'seed-event-public',
-      ministryId: 'seed-ministry-demo',
-      volunteerId: 'seed-volunteer-demo',
-      roleId: 'seed-role-greeter',
+      id: ONDA_SEED_GREETER_ASSIGNMENT.id,
+      eventId: ONDA_SEED_GREETER_ASSIGNMENT.eventId,
+      ministryId: ONDA_SEED_GREETER_ASSIGNMENT.ministryId,
+      volunteerId: ONDA_SEED_GREETER_ASSIGNMENT.volunteerId,
+      roleId: ONDA_SEED_GREETER_ASSIGNMENT.roleId,
       startsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 0),
       endsAtUtc: daysFromNow(SEED_DEMO_EVENT_DAY_OFFSET, 16, 30),
     },

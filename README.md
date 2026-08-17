@@ -25,7 +25,7 @@ pnpm install
 cd apps/api && pnpm exec prisma generate && pnpm exec prisma migrate deploy && pnpm prisma:seed
 ```
 
-The seed creates multi-church demo data (`seed-church-demo`, `seed-church-norte` with campuses) and public event `seed-event-public`.
+The seed creates multi-church demo data (`seed-church-demo` as Onda Brasil, `seed-church-norte` as Onda USA, `seed-church-europa` as Onda Europa, `seed-church-japao` as Onda Japão — campuses from [ondadura.com.br/campus](https://www.ondadura.com.br/campus)) and public event `seed-event-public`.
 
 ## Supabase Auth (optional)
 

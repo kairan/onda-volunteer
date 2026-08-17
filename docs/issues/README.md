@@ -12,6 +12,12 @@ Apply label **`ready-for-agent`** on GitHub when that issue's blockers are clear
 
 ## Active backlog
 
+**Demo seed — Onda Dura campuses** — TLC [`.specs/features/186-onda-dura-regional-campuses/`](../.specs/features/186-onda-dura-regional-campuses/). Restarts stale PR [#179](https://github.com/kairan/onda-volunteer/pull/179) on post-cutover `main`.
+
+| Issue | Feature | Tasks | Spec |
+|------:|---------|-------|------|
+| [#186](https://github.com/kairan/onda-volunteer/issues/186) | Regional Onda Dura campus seed | CAMPUS-01–04 | `186-onda-dura-regional-campuses.md` |
+
 **Scheduling — role slot capacity** — TLC [`.specs/features/role-slot-capacity-per-event/`](../.specs/features/role-slot-capacity-per-event/). Complements UI-LEAD / Serve Well roster visual.
 
 | Issue | Feature | Tasks | Spec |
