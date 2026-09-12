@@ -1,10 +1,12 @@
 # Onda Volunteer — TLC brownfield overlay
 
-Repo-specific rules for **tlc-spec-driven v3.1+** on this brownfield monorepo. **Read this file at the start of every TLC phase** before loading upstream references.
+Repo-specific rules for **tlc-spec-driven v3.3+** on this brownfield monorepo. **Read this file at the start of every TLC phase** before loading upstream references.
 
-## Brownfield model (v3.1)
+## Brownfield model (v3.3)
 
 Upstream v2 had a **Map codebase** phase that wrote seven files under `.specs/codebase/`. **v3.1 removed that.** Brownfield context is loaded continuously via the **Knowledge Verification Chain** (codebase → project docs → Context7 → web → flag uncertain) at Specify, Design, and Tasks — not as a one-time generated folder.
+
+v3.3 adds **deterministic Python gates** in this skill's `scripts/` directory. Run them from the **repo root** with the skill path below — never `python3 scripts/...` (that looks for a project-local `scripts/` tree).
 
 **On Onda Volunteer:**
 
@@ -66,25 +68,30 @@ If upstream `design.md` / `tasks.md` text mentions `.specs/codebase/TESTING.md` 
 
 ---
 
-## Path overrides (upstream v3.1 → Onda)
+## Path overrides (upstream v3.3 → Onda)
 
-Upstream v3.1 uses a flatter `.specs/` layout. **This repo keeps the existing paths:**
+Upstream v3.3 uses a flatter `.specs/` layout. **This repo keeps the existing paths:**
 
-| Upstream v3.1 | Onda path | Notes |
+| Upstream v3.3 | Onda path | Notes |
 |---------------|-----------|-------|
 | `.specs/STATE.md` → `## Decisions` | `.specs/project/STATE.md` | Append-only project decisions; use `AD-NNN` format per [memory.md](references/memory.md) for **new** entries (legacy bullet entries may remain) |
 | `.specs/STATE.md` → `## Handoff` | `.specs/HANDOFF.md` | Overwritten each pause; section-scoped write — never clobber `STATE.md` decisions |
 | `.specs/lessons.json` / `LESSONS.md` | `.specs/lessons.json` / `.specs/LESSONS.md` | Same paths; create on first lesson |
-| `scripts/lessons.py` | `.cursor/skills/tlc-spec-driven/scripts/lessons.py` | Run from **repo root** |
+| `<skill-dir>/scripts/*.py` | `.cursor/skills/tlc-spec-driven/scripts/*.py` | Run from **repo root** |
 
-**Lessons commands** (repo root):
+**Skill scripts** (repo root). Non-zero exit = STOP and fix:
 
 ```bash
-python3 .cursor/skills/tlc-spec-driven/scripts/lessons.py list --status confirmed
-python3 .cursor/skills/tlc-spec-driven/scripts/lessons.py init   # first use only
+SKILL=.cursor/skills/tlc-spec-driven/scripts
+python3 $SKILL/lessons.py list --status confirmed
+python3 $SKILL/lessons.py init   # first use only
+python3 $SKILL/validate_spec.py <feature>          # before confirming spec.md
+python3 $SKILL/validate_tasks.py <feature>         # before presenting tasks.md
+python3 $SKILL/check_commit.py --message "<msg>"   # before each atomic commit
+python3 $SKILL/validate_state.py <feature>         # after Verifier writes validation.md
 ```
 
-When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/project/STATE.md` and **handoff** from `.specs/HANDOFF.md` on resume. Do not migrate to `.specs/STATE.md` without an explicit repo decision.
+When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/project/STATE.md` and **handoff** from `.specs/HANDOFF.md` on resume. Reconcile Handoff against git (`branch`, `status --porcelain`, recent commits) and `tasks.md` — evidence wins over a stale snapshot. Do not migrate to `.specs/STATE.md` without an explicit repo decision.
 
 ---
 
@@ -97,6 +104,7 @@ When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/pro
 3. Read linked `docs/issues/<#>-*.md` when the feature maps to a GitHub issue.
 4. Skim `CONTEXT.md` for terms the feature touches.
 5. Run implicit-requirement dimensions sweep per upstream [specify.md](references/specify.md).
+6. Before presenting `spec.md`: `python3 .cursor/skills/tlc-spec-driven/scripts/validate_spec.py <feature>`.
 
 ### Design
 
@@ -110,6 +118,7 @@ When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/pro
 
 1. Read `design.md`.
 2. Generate **Test Coverage Matrix**, **Parallelism Assessment**, and **Gate Check Commands** per [tasks.md](references/tasks.md) — sample Onda tests and cite `AGENTS.md` as the guidelines source.
+3. Before presenting `tasks.md`: `python3 .cursor/skills/tlc-spec-driven/scripts/validate_tasks.py <feature>`.
 
 **Onda test matrix defaults** (confirm in each feature's `tasks.md`):
 
@@ -117,9 +126,8 @@ When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/pro
 |-------|------|------------------|-------------|
 | API domain | unit | `apps/api/src/**/*.test.ts` | `pnpm --filter @onda/api exec jest --config ./test/jest-unit.json` |
 | API HTTP | e2e (Jest + Postgres) | `apps/api/test/*.e2e-spec.ts` | `pnpm --filter @onda/api test` (unit + e2e `--runInBand`) |
-| Web UI | unit / behavior (Vitest + RTL) | `apps/web/src/**/*.test.ts(x)`, `*.behavior.test.tsx` | `pnpm --filter @onda/web test` |
-| Web browser | e2e (Playwright) | `apps/web/e2e/*.spec.ts` | `pnpm test:e2e:web` (CI parity) or `pnpm --filter @onda/web test:e2e` (smoke) |
-| Web-next | same patterns | `apps/web-next/` | `pnpm --filter @onda/web-next test` / `pnpm test:e2e:web-next` |
+| Web UI | unit / behavior (Vitest + RTL) | `apps/web-onda/src/**/*.test.ts(x)`, `*.behavior.test.tsx` | `pnpm --filter @onda/web-onda test` |
+| Web browser | e2e (Playwright) | `apps/web-onda/e2e/*.spec.ts` | `pnpm test:e2e:web-onda` (CI parity) or `pnpm --filter @onda/web-onda test:e2e` (smoke) |
 
 **Parallelism:** API Jest e2e truncates shared Postgres tables between cases → **not parallel-safe** (`--runInBand`). Web Vitest/Playwright: infer from existing config; default sequential when unsure.
 
@@ -127,7 +135,7 @@ When upstream says "read `.specs/STATE.md`", read **decisions** from `.specs/pro
 
 | Gate | Command |
 |------|---------|
-| Quick (web-only task) | `pnpm --filter @onda/web test` |
+| Quick (web-only task) | `pnpm --filter @onda/web-onda test` |
 | Full (API + web) | `export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/onda?schema=public && pnpm test` |
 | Build + lint (phase end) | `pnpm lint && pnpm build` |
 | Coverage (when spec requires) | `pnpm test:coverage` |
@@ -136,9 +144,13 @@ RTL behavior tests: use `@testing-library/user-event`, not `fireEvent` — see `
 
 ### Execute
 
-Follow [implement.md](references/implement.md) + `AGENTS.md` (Running tests). One atomic commit per task.
+Follow [implement.md](references/implement.md) + `AGENTS.md` (Running tests). One atomic commit per task. Mark the task complete in `tasks.md` **before** that commit and include those updates in the same commit. Validate the message with `check_commit.py`.
 
-After the **last** task: **Verifier always runs** (author ≠ verifier) → writes `.specs/features/<slug>/validation.md` → distills lessons if signals present. See [sub-agents.md](references/sub-agents.md) / [validate.md](references/validate.md).
+**Blast radius:** spec/tasks approval authorizes local implementation and local commits only. `git push`, deploy, and production DB changes need an explicit go-ahead.
+
+After the **last** task: **Verifier always runs** (author ≠ verifier) → writes `.specs/features/<slug>/validation.md` → `python3 .cursor/skills/tlc-spec-driven/scripts/validate_state.py <feature>` → distills lessons if signals present. See [sub-agents.md](references/sub-agents.md) / [validate.md](references/validate.md).
+
+Sub-agent offer is by **task-budgeted batch** (~8 tasks), not by phase count.
 
 ### Memory (pause / resume / decisions)
 
@@ -157,7 +169,7 @@ Follow [memory.md](references/memory.md) with Onda paths above. **Section-scoped
 └── validation.md   # Verifier report after Execute
 ```
 
-Use kebab-case slugs; prefer `<issue>-<slug>` when tied to GitHub (e.g. `58-web-retire-legacy-event-routes`). Do not write under `.specs/<slug>/` without the `features/` segment.
+Use kebab-case slugs; prefer `<issue>-<slug>` when tied to GitHub (e.g. `58-web-retire-legacy-event-routes`). Do not write under `.specs/<slug>/` without the `features/` segment. **Create artifacts lazily** — do not scaffold empty `context.md`, `design.md`, or `tasks.md`.
 
 ---
 
@@ -188,4 +200,4 @@ When closing a feature, update in order:
 
 ## Legacy skills
 
-Skills under [`.cursor/skills/_legacy/`](../_legacy/README.md) are retired from default routing. TLC v3.1 covers their workflows; see `_legacy/README.md` for the mapping. Do **not** invoke legacy [`tdd`](../_legacy/tdd/SKILL.md) unless the user explicitly names it.
+Skills under [`.cursor/skills/_legacy/`](../_legacy/README.md) are retired from default routing. TLC v3.3 covers their workflows; see `_legacy/README.md` for the mapping. Do **not** invoke legacy [`tdd`](../_legacy/tdd/SKILL.md) unless the user explicitly names it.

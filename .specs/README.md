@@ -1,4 +1,4 @@
-# Spec-driven artifacts (TLC v3.1)
+# Spec-driven artifacts (TLC v3.3)
 
 Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGENTS.md`](../AGENTS.md) and [`.cursor/skills/tlc-spec-driven/ONDA.md`](../.cursor/skills/tlc-spec-driven/ONDA.md) before any TLC phase.
 
@@ -15,6 +15,8 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 | `HANDOFF.md` | Latest session handoff (regenerated on pause) |
 | `lessons.json` / `LESSONS.md` | Self-improving execution lessons (machine-owned; use `.cursor/skills/tlc-spec-driven/scripts/lessons.py` from repo root) |
 
+Deterministic gates (same `scripts/` dir): `validate_spec.py`, `validate_tasks.py`, `check_commit.py`, `validate_state.py`. See **ONDA.md**.
+
 ## Active vs archived features
 
 - **Active:** `.specs/features/` holds in-flight work only (currently `frontend-restart-serve-well-base`, `working-context-picker`, `ui-refresh-onda-brand`, `role-slot-capacity-per-event`; `frontend-migration-web-next` frozen).
@@ -23,7 +25,7 @@ Active feature work for agents using **tlc-spec-driven** lives here. Read [`AGEN
 
 ## Brownfield (this repo)
 
-**Not used:** `.specs/codebase/` — v3.1 loads brownfield context via the Knowledge Verification Chain against existing docs:
+**Not used:** `.specs/codebase/` — v3.3 loads brownfield context via the Knowledge Verification Chain against existing docs:
 
 - [`CONTEXT.md`](../CONTEXT.md) — domain
 - [`docs/adr/README.md`](../docs/adr/README.md) — **start here** for ADRs (active: 0001, 0004–0007; archived: 0002–0003)

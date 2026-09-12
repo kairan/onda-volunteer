@@ -1,4 +1,6 @@
 {
-  "contentHash": "76e50c2dc0ec574d959e54cd084c725eb8b2faaf7638d432dc95045e3d4eec5f",
-  "downloadedAt": 1782502583928
+  "contentHash": "856cbefb6ec1167b81c68048efc6da6a62b1e9b14220d64b1c20ab3f1e6ecddf",
+  "downloadedAt": 1789221152434,
+  "source": "https://github.com/tech-leads-club/agent-skills",
+  "version": "3.3.0"
 }
