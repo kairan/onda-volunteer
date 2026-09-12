@@ -10,7 +10,7 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 
 | TLC / agent need | Use this repo source (do not duplicate) |
 |------------------|----------------------------------------|
-| Brownfield overlay (v3.1 paths, test matrix, phase loading) | [`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven/ONDA.md) |
+| Brownfield overlay (v3.3 paths, test matrix, phase loading, skill scripts) | [`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven/ONDA.md) |
 | Domain language, bounded contexts | [`CONTEXT.md`](CONTEXT.md) |
 | Architecture decisions | [`docs/adr/`](docs/adr/) |
 | Shipped / planned work, issue specs | [`docs/issues/`](docs/issues/) (`done/` for completed) |
@@ -22,7 +22,7 @@ Read **[`.cursor/skills/tlc-spec-driven/ONDA.md`](.cursor/skills/tlc-spec-driven
 | Pause / resume between sessions | `.specs/HANDOFF.md` |
 | Confirmed execution lessons | `.specs/LESSONS.md` (via `.cursor/skills/tlc-spec-driven/scripts/lessons.py`) |
 
-**Brownfield rule (TLC v3.1):** Do **not** generate `.specs/codebase/*`. There is no separate “map codebase” phase — load context through the Knowledge Verification Chain and [ONDA.md](.cursor/skills/tlc-spec-driven/ONDA.md) at Specify, Design, and Tasks.
+**Brownfield rule (TLC v3.3):** Do **not** generate `.specs/codebase/*`. There is no separate “map codebase” phase — load context through the Knowledge Verification Chain and [ONDA.md](.cursor/skills/tlc-spec-driven/ONDA.md) at Specify, Design, and Tasks. Structural gates (`validate_spec.py`, `validate_tasks.py`, `check_commit.py`, `validate_state.py`) live under `.cursor/skills/tlc-spec-driven/scripts/` — run them from the repo root.
 
 **Tracker rule:** GitHub Issues remain the execution queue for humans and cloud agents. After TLC **Tasks**, create or update issues from `tasks.md` (see skill routing below). Keep requirement IDs in specs aligned with issue numbers when both exist.
 
